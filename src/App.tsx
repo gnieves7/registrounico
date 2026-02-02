@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "./pages/Login";
 import DashboardHome from "./pages/DashboardHome";
 import EmotionalRecord from "./pages/EmotionalRecord";
+import Psychobiography from "./pages/Psychobiography";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,7 +37,7 @@ const App = () => (
             {/* Protected routes with sidebar layout */}
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardHome />} />
-              <Route path="/psychobiography" element={<PlaceholderPage title="Mi Psicobiografía" />} />
+              <Route path="/psychobiography" element={<Psychobiography />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
               <Route path="/sessions" element={<PlaceholderPage title="Mis Sesiones" />} />
               <Route path="/laura" element={<PlaceholderPage title="Laura - Tu Acompañante" />} />
