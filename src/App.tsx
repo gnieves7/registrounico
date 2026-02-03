@@ -10,6 +10,7 @@ import DashboardHome from "./pages/DashboardHome";
 import EmotionalRecord from "./pages/EmotionalRecord";
 import Psychobiography from "./pages/Psychobiography";
 import LauraChat from "./pages/LauraChat";
+import Sessions from "./pages/Sessions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,7 +41,7 @@ const App = () => (
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/psychobiography" element={<Psychobiography />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
-              <Route path="/sessions" element={<PlaceholderPage title="Mis Sesiones" />} />
+              <Route path="/sessions" element={<Sessions />} />
               <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<PlaceholderPage title="Mis Documentos" />} />
               {/* Admin routes */}
