@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import DashboardHome from "./pages/DashboardHome";
 import EmotionalRecord from "./pages/EmotionalRecord";
 import Psychobiography from "./pages/Psychobiography";
+import LauraChat from "./pages/LauraChat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,7 +41,7 @@ const App = () => (
               <Route path="/psychobiography" element={<Psychobiography />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
               <Route path="/sessions" element={<PlaceholderPage title="Mis Sesiones" />} />
-              <Route path="/laura" element={<PlaceholderPage title="Laura - Tu Acompañante" />} />
+              <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<PlaceholderPage title="Mis Documentos" />} />
               {/* Admin routes */}
               <Route path="/admin" element={<PlaceholderPage title="Panel de Administración" />} />
