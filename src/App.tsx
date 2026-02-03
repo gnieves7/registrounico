@@ -11,6 +11,7 @@ import EmotionalRecord from "./pages/EmotionalRecord";
 import Psychobiography from "./pages/Psychobiography";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,7 +46,7 @@ const App = () => (
               <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<PlaceholderPage title="Mis Documentos" />} />
               {/* Admin routes */}
-              <Route path="/admin" element={<PlaceholderPage title="Panel de Administración" />} />
+              <Route path="/admin" element={<Admin />} />
             </Route>
             
             {/* Catch-all */}
