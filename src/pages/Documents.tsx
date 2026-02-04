@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,8 @@ import {
   AlertCircle,
   FileCheck,
   FileClock,
-  CreditCard
+  CreditCard,
+  Loader2
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -34,8 +36,36 @@ interface Document {
 const Documents = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [processingPayment, setProcessingPayment] = useState<string | null>(null);
+
+  // Handle payment result from redirect
+  useEffect(() => {
+    const paymentResult = searchParams.get("payment");
+    if (paymentResult === "success") {
+      toast({
+        title: "¡Pago exitoso!",
+        description: "Tu documento estará disponible para descargar en breve.",
+      });
+      // Refresh documents to get updated payment status
+      if (user) {
+        fetchDocuments();
+      }
+    } else if (paymentResult === "failure") {
+      toast({
+        title: "Pago no completado",
+        description: "El pago no pudo procesarse. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } else if (paymentResult === "pending") {
+      toast({
+        title: "Pago pendiente",
+        description: "Tu pago está siendo procesado. Te notificaremos cuando se confirme.",
+      });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (user) {
@@ -96,12 +126,46 @@ const Documents = () => {
     }
   };
 
-  const handleRequestPayment = (document: Document) => {
-    // Por ahora mostramos un mensaje - la integración con Mercado Pago se haría aquí
-    toast({
-      title: "Solicitud de pago",
-      description: `Para abonar "${document.title}" ($${document.price.toLocaleString()}), contacta a tu terapeuta para coordinar el pago.`,
-    });
+  const handleRequestPayment = async (document: Document) => {
+    setProcessingPayment(document.id);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "Debes iniciar sesión para realizar un pago",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await supabase.functions.invoke("mercadopago-create-preference", {
+        body: { document_id: document.id },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      const { init_point } = response.data;
+      
+      if (init_point) {
+        // Redirect to MercadoPago checkout
+        window.location.href = init_point;
+      } else {
+        throw new Error("No se pudo generar el link de pago");
+      }
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo procesar la solicitud de pago. Intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setProcessingPayment(null);
+    }
   };
 
   const getDocumentTypeIcon = (type: string) => {
@@ -223,9 +287,19 @@ const Documents = () => {
                       <Button 
                         onClick={() => handleRequestPayment(doc)}
                         className="shrink-0"
+                        disabled={processingPayment === doc.id}
                       >
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Solicitar pago
+                        {processingPayment === doc.id ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Procesando...
+                          </>
+                        ) : (
+                          <>
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            Pagar con Mercado Pago
+                          </>
+                        )}
                       </Button>
                     </div>
                   </CardContent>
