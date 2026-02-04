@@ -11,20 +11,11 @@ import EmotionalRecord from "./pages/EmotionalRecord";
 import Psychobiography from "./pages/Psychobiography";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
+import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
-// Placeholder pages for routes not yet implemented
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <div className="container mx-auto flex h-[50vh] items-center justify-center px-4">
-    <div className="text-center">
-      <h1 className="font-serif text-2xl font-bold text-foreground">{title}</h1>
-      <p className="mt-2 text-muted-foreground">Esta sección estará disponible próximamente</p>
-    </div>
-  </div>
-);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -44,7 +35,7 @@ const App = () => (
               <Route path="/emotional-record" element={<EmotionalRecord />} />
               <Route path="/sessions" element={<Sessions />} />
               <Route path="/laura" element={<LauraChat />} />
-              <Route path="/documents" element={<PlaceholderPage title="Mis Documentos" />} />
+              <Route path="/documents" element={<Documents />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
             </Route>
