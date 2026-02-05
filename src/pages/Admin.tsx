@@ -25,6 +25,7 @@ import { es } from "date-fns/locale";
 import { PatientEmotionalView } from "@/components/admin/PatientEmotionalView";
 import { PatientPsychobiographyView } from "@/components/admin/PatientPsychobiographyView";
 import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
+import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 
 interface Patient {
   id: string;
@@ -362,20 +363,21 @@ export default function Admin() {
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="w-full mb-6">
-                  <TabsTrigger value="emotional" className="flex-1 gap-2">
+                  <TabsTrigger value="emotional" className="flex-1 gap-1">
                     <Smile className="h-4 w-4" />
                     <span className="hidden sm:inline">Emocional</span>
-                    <span className="sm:hidden">😊</span>
                   </TabsTrigger>
-                  <TabsTrigger value="psychobiography" className="flex-1 gap-2">
+                  <TabsTrigger value="psychobiography" className="flex-1 gap-1">
                     <FileText className="h-4 w-4" />
                     <span className="hidden sm:inline">Psicobio</span>
-                    <span className="sm:hidden">📋</span>
                   </TabsTrigger>
-                  <TabsTrigger value="documents" className="flex-1 gap-2">
+                  <TabsTrigger value="sessions" className="flex-1 gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sesiones</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="documents" className="flex-1 gap-1">
                     <FolderOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">Documentos</span>
-                    <span className="sm:hidden">📁</span>
+                    <span className="hidden sm:inline">Docs</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -385,6 +387,13 @@ export default function Admin() {
 
                 <TabsContent value="psychobiography">
                   <PatientPsychobiographyView userId={selectedPatient.user_id} />
+                </TabsContent>
+
+                <TabsContent value="sessions">
+                  <PatientSessionsView 
+                    userId={selectedPatient.user_id} 
+                    patientName={selectedPatient.full_name || "el paciente"} 
+                  />
                 </TabsContent>
 
                 <TabsContent value="documents">
