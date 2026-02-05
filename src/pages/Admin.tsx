@@ -13,18 +13,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Users, 
   Search, 
-  User,
   Smile,
   FileText,
   ChevronRight,
   Calendar,
-  TrendingUp,
-  Clock
+  Clock,
+  FolderOpen
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { PatientEmotionalView } from "@/components/admin/PatientEmotionalView";
 import { PatientPsychobiographyView } from "@/components/admin/PatientPsychobiographyView";
+import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 
 interface Patient {
   id: string;
@@ -364,13 +364,18 @@ export default function Admin() {
                 <TabsList className="w-full mb-6">
                   <TabsTrigger value="emotional" className="flex-1 gap-2">
                     <Smile className="h-4 w-4" />
-                    <span className="hidden sm:inline">Registro Emocional</span>
-                    <span className="sm:hidden">Emocional</span>
+                    <span className="hidden sm:inline">Emocional</span>
+                    <span className="sm:hidden">😊</span>
                   </TabsTrigger>
                   <TabsTrigger value="psychobiography" className="flex-1 gap-2">
                     <FileText className="h-4 w-4" />
-                    <span className="hidden sm:inline">Psicobiografía</span>
-                    <span className="sm:hidden">Psicobio</span>
+                    <span className="hidden sm:inline">Psicobio</span>
+                    <span className="sm:hidden">📋</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="documents" className="flex-1 gap-2">
+                    <FolderOpen className="h-4 w-4" />
+                    <span className="hidden sm:inline">Documentos</span>
+                    <span className="sm:hidden">📁</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -380,6 +385,13 @@ export default function Admin() {
 
                 <TabsContent value="psychobiography">
                   <PatientPsychobiographyView userId={selectedPatient.user_id} />
+                </TabsContent>
+
+                <TabsContent value="documents">
+                  <PatientDocumentsView 
+                    userId={selectedPatient.user_id} 
+                    patientName={selectedPatient.full_name || "el paciente"} 
+                  />
                 </TabsContent>
               </Tabs>
             </>
