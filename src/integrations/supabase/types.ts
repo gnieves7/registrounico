@@ -128,6 +128,116 @@ export type Database = {
         }
         Relationships: []
       }
+      forensic_cases: {
+        Row: {
+          additional_info: string | null
+          case_number: string | null
+          case_status: string | null
+          complainant_name: string | null
+          complainant_relationship: string | null
+          complaint_date: string | null
+          confidentiality_notice: string | null
+          court_name: string | null
+          created_at: string
+          defense_lawyer_email: string | null
+          defense_lawyer_name: string | null
+          defense_lawyer_phone: string | null
+          hearing_date: string | null
+          id: string
+          intervening_actors: Json | null
+          next_hearing_date: string | null
+          reported_fact: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_info?: string | null
+          case_number?: string | null
+          case_status?: string | null
+          complainant_name?: string | null
+          complainant_relationship?: string | null
+          complaint_date?: string | null
+          confidentiality_notice?: string | null
+          court_name?: string | null
+          created_at?: string
+          defense_lawyer_email?: string | null
+          defense_lawyer_name?: string | null
+          defense_lawyer_phone?: string | null
+          hearing_date?: string | null
+          id?: string
+          intervening_actors?: Json | null
+          next_hearing_date?: string | null
+          reported_fact?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_info?: string | null
+          case_number?: string | null
+          case_status?: string | null
+          complainant_name?: string | null
+          complainant_relationship?: string | null
+          complaint_date?: string | null
+          confidentiality_notice?: string | null
+          court_name?: string | null
+          created_at?: string
+          defense_lawyer_email?: string | null
+          defense_lawyer_name?: string | null
+          defense_lawyer_phone?: string | null
+          hearing_date?: string | null
+          id?: string
+          intervening_actors?: Json | null
+          next_hearing_date?: string | null
+          reported_fact?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      forensic_documents: {
+        Row: {
+          case_id: string
+          created_at: string
+          description: string | null
+          document_name: string
+          document_type: string | null
+          file_url: string | null
+          id: string
+          upload_date: string
+          user_id: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          description?: string | null
+          document_name: string
+          document_type?: string | null
+          file_url?: string | null
+          id?: string
+          upload_date?: string
+          user_id: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          description?: string | null
+          document_name?: string
+          document_type?: string | null
+          file_url?: string | null
+          id?: string
+          upload_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forensic_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "forensic_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       laura_conversations: {
         Row: {
           created_at: string
@@ -147,6 +257,108 @@ export type Database = {
           created_at?: string
           id?: string
           messages?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mbti_tests: {
+        Row: {
+          clinical_notes: string | null
+          created_at: string
+          extraversion_score: number | null
+          feeling_score: number | null
+          id: string
+          introversion_score: number | null
+          intuition_score: number | null
+          is_complete: boolean | null
+          judging_score: number | null
+          perceiving_score: number | null
+          personality_type: string | null
+          responses: Json
+          sensing_score: number | null
+          test_date: string
+          thinking_score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clinical_notes?: string | null
+          created_at?: string
+          extraversion_score?: number | null
+          feeling_score?: number | null
+          id?: string
+          introversion_score?: number | null
+          intuition_score?: number | null
+          is_complete?: boolean | null
+          judging_score?: number | null
+          perceiving_score?: number | null
+          personality_type?: string | null
+          responses?: Json
+          sensing_score?: number | null
+          test_date?: string
+          thinking_score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clinical_notes?: string | null
+          created_at?: string
+          extraversion_score?: number | null
+          feeling_score?: number | null
+          id?: string
+          introversion_score?: number | null
+          intuition_score?: number | null
+          is_complete?: boolean | null
+          judging_score?: number | null
+          perceiving_score?: number | null
+          personality_type?: string | null
+          responses?: Json
+          sensing_score?: number | null
+          test_date?: string
+          thinking_score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mmpi2_tests: {
+        Row: {
+          clinical_interpretation: string | null
+          clinical_notes: string | null
+          created_at: string
+          id: string
+          interpretation_date: string | null
+          is_complete: boolean | null
+          responses: Json
+          test_date: string
+          total_questions_answered: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
           updated_at?: string
           user_id?: string
         }

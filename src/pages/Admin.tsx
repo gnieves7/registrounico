@@ -19,7 +19,8 @@ import {
   Calendar,
   Clock,
   FolderOpen,
-  Moon
+  Moon,
+  Brain
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -28,6 +29,7 @@ import { PatientPsychobiographyView } from "@/components/admin/PatientPsychobiog
 import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
+import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodiagnosticView";
 
 interface Patient {
   id: string;
@@ -373,6 +375,10 @@ export default function Admin() {
                     <Moon className="h-4 w-4" />
                     <span className="hidden sm:inline">Sueños</span>
                   </TabsTrigger>
+                  <TabsTrigger value="psychodiagnostic" className="flex-1 gap-1">
+                    <Brain className="h-4 w-4" />
+                    <span className="hidden sm:inline">Tests</span>
+                  </TabsTrigger>
                   <TabsTrigger value="psychobiography" className="flex-1 gap-1">
                     <FileText className="h-4 w-4" />
                     <span className="hidden sm:inline">Psicobio</span>
@@ -396,6 +402,10 @@ export default function Admin() {
                     userId={selectedPatient.user_id} 
                     patientName={selectedPatient.full_name || "el paciente"} 
                   />
+                </TabsContent>
+
+                <TabsContent value="psychodiagnostic">
+                  <PatientPsychodiagnosticView patientId={selectedPatient.user_id} />
                 </TabsContent>
 
                 <TabsContent value="psychobiography">
