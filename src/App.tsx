@@ -10,6 +10,7 @@ import DashboardHome from "./pages/DashboardHome";
 import EmotionalRecord from "./pages/EmotionalRecord";
 import DreamRecord from "./pages/DreamRecord";
 import Psychobiography from "./pages/Psychobiography";
+import Psychodiagnostic from "./pages/Psychodiagnostic";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
 import Documents from "./pages/Documents";
@@ -33,6 +34,7 @@ const App = () => (
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/psychobiography" element={<Psychobiography />} />
+              <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
               <Route path="/dream-record" element={<DreamRecord />} />
               <Route path="/sessions" element={<Sessions />} />
