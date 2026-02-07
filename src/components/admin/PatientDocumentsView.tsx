@@ -18,7 +18,10 @@ import {
   CheckCircle, 
   Clock,
   Download,
-  Loader2
+  Loader2,
+  Key,
+  Copy,
+  Check
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -33,6 +36,8 @@ interface Document {
   payment_date: string | null;
   file_url: string | null;
   created_at: string;
+  download_code: string | null;
+  code_generated_at: string | null;
 }
 
 interface PatientDocumentsViewProps {
@@ -54,6 +59,8 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [generatingCode, setGeneratingCode] = useState<string | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -207,6 +214,59 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
         description: "No se pudo eliminar el documento",
         variant: "destructive",
       });
+    }
+  };
+
+  // Generate a unique download code
+  const generateDownloadCode = async (documentId: string) => {
+    setGeneratingCode(documentId);
+    try {
+      // Generate a random 8-character alphanumeric code
+      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars
+      let code = '';
+      for (let i = 0; i < 8; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+
+      const { error } = await supabase
+        .from("documents")
+        .update({ 
+          download_code: code,
+          code_generated_at: new Date().toISOString()
+        })
+        .eq("id", documentId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Código generado",
+        description: `Código: ${code} - Compártelo con el paciente`,
+      });
+
+      fetchDocuments();
+    } catch (error) {
+      console.error("Error generating code:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el código",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingCode(null);
+    }
+  };
+
+  const copyToClipboard = async (code: string, docId: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(docId);
+      setTimeout(() => setCopiedCode(null), 2000);
+      toast({
+        title: "Código copiado",
+        description: "El código se ha copiado al portapapeles",
+      });
+    } catch (error) {
+      console.error("Error copying:", error);
     }
   };
 
@@ -400,6 +460,50 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
                         </Badge>
                       )}
                     </div>
+                    
+                    {/* Download Code Section */}
+                    {doc.price > 0 && (
+                      <div className="flex items-center gap-2 mt-2 p-2 bg-muted/50 rounded-lg">
+                        <Key className="h-4 w-4 text-muted-foreground" />
+                        {doc.download_code ? (
+                          <div className="flex items-center gap-2">
+                            <code className="px-2 py-1 bg-background rounded text-sm font-mono font-bold tracking-wider">
+                              {doc.download_code}
+                            </code>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              onClick={() => copyToClipboard(doc.download_code!, doc.id)}
+                            >
+                              {copiedCode === doc.id ? (
+                                <Check className="h-3 w-3 text-primary" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
+                            </Button>
+                            <span className="text-xs text-muted-foreground">
+                              Generado: {format(new Date(doc.code_generated_at!), "dd/MM/yy", { locale: es })}
+                            </span>
+                          </div>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => generateDownloadCode(doc.id)}
+                            disabled={generatingCode === doc.id}
+                            className="h-7 text-xs"
+                          >
+                            {generatingCode === doc.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                            ) : (
+                              <Key className="h-3 w-3 mr-1" />
+                            )}
+                            Generar Código
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     {doc.file_url && (

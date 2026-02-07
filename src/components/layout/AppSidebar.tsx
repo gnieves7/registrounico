@@ -7,10 +7,10 @@ import {
   FileText, 
   Settings,
   LogOut,
-  Heart,
   Moon,
   Brain
 } from "lucide-react";
+import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { NavLink } from "@/components/NavLink";
@@ -76,9 +76,7 @@ export function AppSidebar() {
       {/* Header with Logo */}
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Heart className="h-4 w-4 text-primary-foreground" />
-          </div>
+          <ClinicLogo size="sm" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-sm font-semibold text-sidebar-foreground">

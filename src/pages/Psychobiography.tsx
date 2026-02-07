@@ -12,7 +12,8 @@ import {
   Heart, 
   Star,
   FileText,
-  CheckCircle2
+  CheckCircle2,
+  CalendarDays
 } from "lucide-react";
 import { usePsychobiography } from "@/hooks/usePsychobiography";
 import { PersonalDataSection } from "@/components/psychobiography/PersonalDataSection";
@@ -22,8 +23,10 @@ import { PsychologicalHistorySection } from "@/components/psychobiography/Psycho
 import { SocialWorkSection } from "@/components/psychobiography/SocialWorkSection";
 import { LifestyleSection } from "@/components/psychobiography/LifestyleSection";
 import { SignificantEventsSection } from "@/components/psychobiography/SignificantEventsSection";
+import { TreatmentSection } from "@/components/psychobiography/TreatmentSection";
 
 const sections = [
+  { id: "treatment", label: "Tratamiento", icon: CalendarDays },
   { id: "personal", label: "Datos Personales", icon: User },
   { id: "family", label: "Familia", icon: Users },
   { id: "medical", label: "Historia Médica", icon: Stethoscope },
@@ -34,7 +37,7 @@ const sections = [
 ];
 
 export default function Psychobiography() {
-  const [activeTab, setActiveTab] = useState("personal");
+  const [activeTab, setActiveTab] = useState("treatment");
   const { data, isLoading, isSaving, updateSection, calculateProgress } = usePsychobiography();
 
   const progress = calculateProgress();
@@ -98,6 +101,10 @@ export default function Psychobiography() {
             );
           })}
         </TabsList>
+
+        <TabsContent value="treatment">
+          <TreatmentSection data={data} onSave={updateSection} isSaving={isSaving} />
+        </TabsContent>
 
         <TabsContent value="personal">
           <PersonalDataSection data={data} onSave={updateSection} isSaving={isSaving} />
