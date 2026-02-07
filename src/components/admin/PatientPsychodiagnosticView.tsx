@@ -19,13 +19,15 @@ import {
   Edit, 
   Shield,
   Calendar,
-  Building2
+  Building2,
+  BarChart3
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { mbtiDescriptions } from "@/data/mbtiQuestions";
+import { Mmpi2ProfileAnalysis } from "./Mmpi2ProfileAnalysis";
 import type { Json } from "@/integrations/supabase/types";
 
 interface PatientPsychodiagnosticViewProps {
@@ -487,32 +489,56 @@ export const PatientPsychodiagnosticView = ({ patientId }: PatientPsychodiagnost
           </DialogHeader>
           
           {selectedMmpi2 && (
-            <ScrollArea className="max-h-[60vh]">
+            <ScrollArea className="max-h-[70vh]">
               <div className="space-y-4 pr-4">
                 <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                   <span>Respuestas completadas</span>
                   <Badge>{selectedMmpi2.total_questions_answered}/567</Badge>
                 </div>
 
-                <div>
-                  <Label>Interpretación Clínica</Label>
-                  <Textarea
-                    value={interpretation}
-                    onChange={(e) => setInterpretation(e.target.value)}
-                    placeholder="Escriba la interpretación clínica del MMPI-2..."
-                    rows={6}
-                  />
-                </div>
+                {/* Perfil Psicológico Automático */}
+                <Tabs defaultValue="profile" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="profile" className="gap-2">
+                      <BarChart3 className="h-4 w-4" />
+                      Perfil Automático
+                    </TabsTrigger>
+                    <TabsTrigger value="interpretation" className="gap-2">
+                      <Edit className="h-4 w-4" />
+                      Interpretación Manual
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="profile" className="mt-4">
+                    <Mmpi2ProfileAnalysis 
+                      responses={selectedMmpi2.responses}
+                      totalAnswered={selectedMmpi2.total_questions_answered}
+                      isComplete={selectedMmpi2.is_complete}
+                    />
+                  </TabsContent>
+                  
+                  <TabsContent value="interpretation" className="mt-4 space-y-4">
+                    <div>
+                      <Label>Interpretación Clínica</Label>
+                      <Textarea
+                        value={interpretation}
+                        onChange={(e) => setInterpretation(e.target.value)}
+                        placeholder="Escriba la interpretación clínica del MMPI-2..."
+                        rows={6}
+                      />
+                    </div>
 
-                <div>
-                  <Label>Notas Adicionales</Label>
-                  <Textarea
-                    value={clinicalNotes}
-                    onChange={(e) => setClinicalNotes(e.target.value)}
-                    placeholder="Notas adicionales..."
-                    rows={3}
-                  />
-                </div>
+                    <div>
+                      <Label>Notas Adicionales</Label>
+                      <Textarea
+                        value={clinicalNotes}
+                        onChange={(e) => setClinicalNotes(e.target.value)}
+                        placeholder="Notas adicionales..."
+                        rows={3}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </ScrollArea>
           )}
