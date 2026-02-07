@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Calendar,
   Clock,
-  FolderOpen
+  FolderOpen,
+  Moon
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -26,6 +27,7 @@ import { PatientEmotionalView } from "@/components/admin/PatientEmotionalView";
 import { PatientPsychobiographyView } from "@/components/admin/PatientPsychobiographyView";
 import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
+import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
 
 interface Patient {
   id: string;
@@ -362,10 +364,14 @@ export default function Admin() {
               </SheetHeader>
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full mb-6">
+                <TabsList className="w-full mb-6 flex-wrap h-auto gap-1">
                   <TabsTrigger value="emotional" className="flex-1 gap-1">
                     <Smile className="h-4 w-4" />
                     <span className="hidden sm:inline">Emocional</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="dreams" className="flex-1 gap-1">
+                    <Moon className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sueños</span>
                   </TabsTrigger>
                   <TabsTrigger value="psychobiography" className="flex-1 gap-1">
                     <FileText className="h-4 w-4" />
@@ -383,6 +389,13 @@ export default function Admin() {
 
                 <TabsContent value="emotional">
                   <PatientEmotionalView userId={selectedPatient.user_id} />
+                </TabsContent>
+
+                <TabsContent value="dreams">
+                  <PatientDreamsView 
+                    userId={selectedPatient.user_id} 
+                    patientName={selectedPatient.full_name || "el paciente"} 
+                  />
                 </TabsContent>
 
                 <TabsContent value="psychobiography">
