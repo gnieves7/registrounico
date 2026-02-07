@@ -59,6 +59,45 @@ export type Database = {
         }
         Relationships: []
       }
+      dream_records: {
+        Row: {
+          created_at: string
+          dream_content: string
+          dream_date: string
+          dream_emojis: Json | null
+          id: string
+          interpretation: string | null
+          interpretation_date: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dream_content: string
+          dream_date?: string
+          dream_emojis?: Json | null
+          id?: string
+          interpretation?: string | null
+          interpretation_date?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dream_content?: string
+          dream_date?: string
+          dream_emojis?: Json | null
+          id?: string
+          interpretation?: string | null
+          interpretation_date?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emotional_records: {
         Row: {
           created_at: string
