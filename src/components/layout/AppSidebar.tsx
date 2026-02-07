@@ -7,7 +7,8 @@ import {
   FileText, 
   Settings,
   LogOut,
-  Heart
+  Heart,
+  Moon
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,6 +33,7 @@ const patientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Registro Emocional", url: "/emotional-record", icon: Smile },
+  { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
   { title: "Mis Sesiones", url: "/sessions", icon: Calendar },
   { title: "Laura", url: "/laura", icon: MessageCircle },
   { title: "Documentos", url: "/documents", icon: FileText },

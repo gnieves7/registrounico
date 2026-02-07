@@ -8,6 +8,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "./pages/Login";
 import DashboardHome from "./pages/DashboardHome";
 import EmotionalRecord from "./pages/EmotionalRecord";
+import DreamRecord from "./pages/DreamRecord";
 import Psychobiography from "./pages/Psychobiography";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/psychobiography" element={<Psychobiography />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
+              <Route path="/dream-record" element={<DreamRecord />} />
               <Route path="/sessions" element={<Sessions />} />
               <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<Documents />} />
