@@ -15,11 +15,12 @@ import {
   AlertCircle,
   FileCheck,
   FileClock,
-  CreditCard,
+  Key,
   Loader2
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { DownloadCodeInput } from "@/components/documents/DownloadCodeInput";
 
 interface Document {
   id: string;
@@ -39,7 +40,7 @@ const Documents = () => {
   const [searchParams] = useSearchParams();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [processingPayment, setProcessingPayment] = useState<string | null>(null);
+  const [codeDialogDoc, setCodeDialogDoc] = useState<Document | null>(null);
 
   // Handle payment result from redirect
   useEffect(() => {
@@ -126,46 +127,12 @@ const Documents = () => {
     }
   };
 
-  const handleRequestPayment = async (document: Document) => {
-    setProcessingPayment(document.id);
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast({
-          title: "Error",
-          description: "Debes iniciar sesión para realizar un pago",
-          variant: "destructive",
-        });
-        return;
-      }
+  const handleEnterCode = (document: Document) => {
+    setCodeDialogDoc(document);
+  };
 
-      const response = await supabase.functions.invoke("mercadopago-create-preference", {
-        body: { document_id: document.id },
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-
-      const { init_point } = response.data;
-      
-      if (init_point) {
-        // Redirect to MercadoPago checkout
-        window.location.href = init_point;
-      } else {
-        throw new Error("No se pudo generar el link de pago");
-      }
-    } catch (error) {
-      console.error("Error creating payment:", error);
-      toast({
-        title: "Error",
-        description: "No se pudo procesar la solicitud de pago. Intenta nuevamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setProcessingPayment(null);
-    }
+  const handleCodeSuccess = () => {
+    fetchDocuments();
   };
 
   const getDocumentTypeIcon = (type: string) => {
@@ -285,21 +252,11 @@ const Documents = () => {
                         </div>
                       </div>
                       <Button 
-                        onClick={() => handleRequestPayment(doc)}
+                        onClick={() => handleEnterCode(doc)}
                         className="shrink-0"
-                        disabled={processingPayment === doc.id}
                       >
-                        {processingPayment === doc.id ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Procesando...
-                          </>
-                        ) : (
-                          <>
-                            <CreditCard className="mr-2 h-4 w-4" />
-                            Pagar con Mercado Pago
-                          </>
-                        )}
+                        <Key className="mr-2 h-4 w-4" />
+                        Ingresar Código
                       </Button>
                     </div>
                   </CardContent>
@@ -379,11 +336,21 @@ const Documents = () => {
       <Card className="mt-6 border-muted bg-muted/30">
         <CardContent className="py-4">
           <p className="text-center text-sm text-muted-foreground">
-            Los documentos estarán disponibles para descarga una vez confirmado el pago.
+            Para descargar un documento, solicita el código único a tu terapeuta una vez confirmado el pago.
             Para cualquier consulta, contacta a tu terapeuta.
           </p>
         </CardContent>
       </Card>
+
+      {/* Download Code Dialog */}
+      {codeDialogDoc && (
+        <DownloadCodeInput
+          open={!!codeDialogDoc}
+          onOpenChange={(open) => !open && setCodeDialogDoc(null)}
+          document={codeDialogDoc}
+          onSuccess={handleCodeSuccess}
+        />
+      )}
     </div>
   );
 };

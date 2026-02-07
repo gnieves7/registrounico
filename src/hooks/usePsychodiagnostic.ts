@@ -352,12 +352,14 @@ export const usePsychodiagnostic = () => {
     mbtiLoading: mbtiQuery.isLoading,
     createMbtiTest,
     updateMbtiTest,
+    refetchMbti: mbtiQuery.refetch,
     
     // MMPI-2
     mmpi2Tests: mmpi2Query.data || [],
     mmpi2Loading: mmpi2Query.isLoading,
     createMmpi2Test,
     updateMmpi2Test,
+    refetchMmpi2: mmpi2Query.refetch,
     
     // Forensic Cases
     forensicCases: forensicCasesQuery.data || [],

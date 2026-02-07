@@ -7,17 +7,144 @@ import { Brain, Scale, FileText, Clock, CheckCircle2 } from "lucide-react";
 import { MbtiTest } from "@/components/psychodiagnostic/MbtiTest";
 import { Mmpi2Test } from "@/components/psychodiagnostic/Mmpi2Test";
 import { ForensicSection } from "@/components/psychodiagnostic/ForensicSection";
+import { InformedConsent } from "@/components/psychodiagnostic/InformedConsent";
 import { usePsychodiagnostic } from "@/hooks/usePsychodiagnostic";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
 const Psychodiagnostic = () => {
-  const { mbtiTests, mmpi2Tests, mbtiLoading, mmpi2Loading } = usePsychodiagnostic();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { mbtiTests, mmpi2Tests, mbtiLoading, mmpi2Loading, refetchMbti, refetchMmpi2 } = usePsychodiagnostic();
   const [selectedMbtiTest, setSelectedMbtiTest] = useState<string | null>(null);
   const [selectedMmpi2Test, setSelectedMmpi2Test] = useState<string | null>(null);
+  const [showMbtiConsent, setShowMbtiConsent] = useState(false);
+  const [showMmpi2Consent, setShowMmpi2Consent] = useState(false);
+  const [pendingTestAction, setPendingTestAction] = useState<{ type: 'mbti' | 'mmpi2'; testId: string } | null>(null);
 
   const latestMbti = mbtiTests[0];
   const latestMmpi2 = mmpi2Tests[0];
+
+  // Check if user has already accepted consent for a test
+  const hasAcceptedConsent = (test: any) => test?.consent_accepted === true;
+
+  // Handle starting a test with consent check
+  const handleStartMbtiTest = (testId: string) => {
+    const test = testId === "new" ? null : mbtiTests.find(t => t.id === testId);
+    if (test && hasAcceptedConsent(test)) {
+      setSelectedMbtiTest(testId);
+    } else {
+      setPendingTestAction({ type: 'mbti', testId });
+      setShowMbtiConsent(true);
+    }
+  };
+
+  const handleStartMmpi2Test = (testId: string) => {
+    const test = testId === "new" ? null : mmpi2Tests.find(t => t.id === testId);
+    if (test && hasAcceptedConsent(test)) {
+      setSelectedMmpi2Test(testId);
+    } else {
+      setPendingTestAction({ type: 'mmpi2', testId });
+      setShowMmpi2Consent(true);
+    }
+  };
+
+  const handleMbtiConsentAccept = async () => {
+    if (!user || !pendingTestAction) return;
+    
+    try {
+      if (pendingTestAction.testId === "new") {
+        // Create new test with consent
+        const { data, error } = await supabase
+          .from("mbti_tests")
+          .insert({
+            user_id: user.id,
+            consent_accepted: true,
+            consent_date: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        await refetchMbti();
+        setSelectedMbtiTest(data.id);
+      } else {
+        // Update existing test with consent
+        await supabase
+          .from("mbti_tests")
+          .update({
+            consent_accepted: true,
+            consent_date: new Date().toISOString(),
+          })
+          .eq("id", pendingTestAction.testId);
+        
+        setSelectedMbtiTest(pendingTestAction.testId);
+      }
+    } catch (error) {
+      console.error("Error saving consent:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo guardar el consentimiento",
+        variant: "destructive",
+      });
+    }
+    
+    setShowMbtiConsent(false);
+    setPendingTestAction(null);
+  };
+
+  const handleMmpi2ConsentAccept = async () => {
+    if (!user || !pendingTestAction) return;
+    
+    try {
+      if (pendingTestAction.testId === "new") {
+        // Create new test with consent
+        const { data, error } = await supabase
+          .from("mmpi2_tests")
+          .insert({
+            user_id: user.id,
+            consent_accepted: true,
+            consent_date: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        await refetchMmpi2();
+        setSelectedMmpi2Test(data.id);
+      } else {
+        // Update existing test with consent
+        await supabase
+          .from("mmpi2_tests")
+          .update({
+            consent_accepted: true,
+            consent_date: new Date().toISOString(),
+          })
+          .eq("id", pendingTestAction.testId);
+        
+        setSelectedMmpi2Test(pendingTestAction.testId);
+      }
+    } catch (error) {
+      console.error("Error saving consent:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo guardar el consentimiento",
+        variant: "destructive",
+      });
+    }
+    
+    setShowMmpi2Consent(false);
+    setPendingTestAction(null);
+  };
+
+  const handleConsentDecline = () => {
+    setShowMbtiConsent(false);
+    setShowMmpi2Consent(false);
+    setPendingTestAction(null);
+  };
 
   return (
     <div className="container py-6 space-y-6">
@@ -77,7 +204,7 @@ const Psychodiagnostic = () => {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setSelectedMbtiTest(latestMbti.id)}
+                      onClick={() => handleStartMbtiTest(latestMbti.id)}
                     >
                       {latestMbti.is_complete ? "Ver Resultados" : "Continuar Test"}
                     </Button>
@@ -85,7 +212,7 @@ const Psychodiagnostic = () => {
                 ) : (
                   <div className="text-center py-4">
                     <p className="text-muted-foreground mb-3">No has realizado este test</p>
-                    <Button onClick={() => setSelectedMbtiTest("new")}>
+                    <Button onClick={() => handleStartMbtiTest("new")}>
                       Comenzar Test
                     </Button>
                   </div>
@@ -128,7 +255,7 @@ const Psychodiagnostic = () => {
                     <Button 
                       variant="outline" 
                       className="w-full"
-                      onClick={() => setSelectedMmpi2Test(latestMmpi2.id)}
+                      onClick={() => handleStartMmpi2Test(latestMmpi2.id)}
                     >
                       {latestMmpi2.is_complete ? "Ver Respuestas" : "Continuar"}
                     </Button>
@@ -136,7 +263,7 @@ const Psychodiagnostic = () => {
                 ) : (
                   <div className="text-center py-4">
                     <p className="text-muted-foreground mb-3">No has realizado este inventario</p>
-                    <Button onClick={() => setSelectedMmpi2Test("new")}>
+                    <Button onClick={() => handleStartMmpi2Test("new")}>
                       Comenzar
                     </Button>
                   </div>
@@ -172,7 +299,7 @@ const Psychodiagnostic = () => {
                     <div 
                       key={test.id} 
                       className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer"
-                      onClick={() => setSelectedMbtiTest(test.id)}
+                      onClick={() => handleStartMbtiTest(test.id)}
                     >
                       <div>
                         <span className="font-medium">{test.personality_type || "Incompleto"}</span>
@@ -195,6 +322,20 @@ const Psychodiagnostic = () => {
           <ForensicSection />
         </TabsContent>
       </Tabs>
+
+      {/* Informed Consent Dialogs */}
+      <InformedConsent
+        open={showMbtiConsent}
+        onAccept={handleMbtiConsentAccept}
+        onDecline={handleConsentDecline}
+        testName="Test MBTI"
+      />
+      <InformedConsent
+        open={showMmpi2Consent}
+        onAccept={handleMmpi2ConsentAccept}
+        onDecline={handleConsentDecline}
+        testName="MMPI-2"
+      />
     </div>
   );
 };

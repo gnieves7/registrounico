@@ -16,9 +16,11 @@ export type Database = {
     Tables: {
       documents: {
         Row: {
+          code_generated_at: string | null
           created_at: string
           description: string | null
           document_type: string
+          download_code: string | null
           file_url: string | null
           id: string
           is_paid: boolean | null
@@ -30,9 +32,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          code_generated_at?: string | null
           created_at?: string
           description?: string | null
           document_type: string
+          download_code?: string | null
           file_url?: string | null
           id?: string
           is_paid?: boolean | null
@@ -44,9 +48,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          code_generated_at?: string | null
           created_at?: string
           description?: string | null
           document_type?: string
+          download_code?: string | null
           file_url?: string | null
           id?: string
           is_paid?: boolean | null
@@ -265,6 +271,8 @@ export type Database = {
       mbti_tests: {
         Row: {
           clinical_notes: string | null
+          consent_accepted: boolean | null
+          consent_date: string | null
           created_at: string
           extraversion_score: number | null
           feeling_score: number | null
@@ -284,6 +292,8 @@ export type Database = {
         }
         Insert: {
           clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
           created_at?: string
           extraversion_score?: number | null
           feeling_score?: number | null
@@ -303,6 +313,8 @@ export type Database = {
         }
         Update: {
           clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
           created_at?: string
           extraversion_score?: number | null
           feeling_score?: number | null
@@ -326,6 +338,8 @@ export type Database = {
         Row: {
           clinical_interpretation: string | null
           clinical_notes: string | null
+          consent_accepted: boolean | null
+          consent_date: string | null
           created_at: string
           id: string
           interpretation_date: string | null
@@ -339,6 +353,8 @@ export type Database = {
         Insert: {
           clinical_interpretation?: string | null
           clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
           created_at?: string
           id?: string
           interpretation_date?: string | null
@@ -352,6 +368,8 @@ export type Database = {
         Update: {
           clinical_interpretation?: string | null
           clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
           created_at?: string
           id?: string
           interpretation_date?: string | null
@@ -415,8 +433,11 @@ export type Database = {
           occupation: string | null
           personal_values: Json | null
           psychological_history: Json | null
+          sessions_absent: number | null
+          sessions_attended: number | null
           social_data: Json | null
           traumatic_events: Json | null
+          treatment_start_date: string | null
           updated_at: string
           user_id: string
           work_history: Json | null
@@ -438,8 +459,11 @@ export type Database = {
           occupation?: string | null
           personal_values?: Json | null
           psychological_history?: Json | null
+          sessions_absent?: number | null
+          sessions_attended?: number | null
           social_data?: Json | null
           traumatic_events?: Json | null
+          treatment_start_date?: string | null
           updated_at?: string
           user_id: string
           work_history?: Json | null
@@ -461,8 +485,11 @@ export type Database = {
           occupation?: string | null
           personal_values?: Json | null
           psychological_history?: Json | null
+          sessions_absent?: number | null
+          sessions_attended?: number | null
           social_data?: Json | null
           traumatic_events?: Json | null
+          treatment_start_date?: string | null
           updated_at?: string
           user_id?: string
           work_history?: Json | null
