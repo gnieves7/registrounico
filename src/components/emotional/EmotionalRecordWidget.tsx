@@ -10,7 +10,7 @@ import { Check } from "lucide-react";
 const MOODS = [
   { emoji: "😊", label: "Feliz", score: 5 },
   { emoji: "😌", label: "Tranquilo", score: 4 },
-  { emoji: "🫠", label: "Inestable", score: 3 },
+  { emoji: "🥴", label: "Inestable", score: 3 },
   { emoji: "😔", label: "Triste", score: 2 },
   { emoji: "😤", label: "Frustrado", score: 2 },
   { emoji: "😰", label: "Ansioso", score: 1 },
