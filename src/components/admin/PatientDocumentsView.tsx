@@ -217,8 +217,8 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
     }
   };
 
-  // Generate a unique download code
-  const generateDownloadCode = async (documentId: string) => {
+  // Generate a unique download code and send email notification
+  const generateDownloadCode = async (documentId: string, documentTitle: string) => {
     setGeneratingCode(documentId);
     try {
       // Generate a random 8-character alphanumeric code
@@ -238,10 +238,32 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
       if (error) throw error;
 
-      toast({
-        title: "Código generado",
-        description: `Código: ${code} - Compártelo con el paciente`,
-      });
+      // Send email notification to patient
+      try {
+        const response = await supabase.functions.invoke('send-download-code', {
+          body: {
+            patientId: userId,
+            documentId: documentId,
+            documentTitle: documentTitle,
+            downloadCode: code,
+          },
+        });
+        
+        if (response.error) {
+          console.error("Email notification error:", response.error);
+        } else {
+          toast({
+            title: "Código generado y enviado",
+            description: `Código: ${code} - Se envió una notificación por email al paciente`,
+          });
+        }
+      } catch (emailError) {
+        console.error("Failed to send email:", emailError);
+        toast({
+          title: "Código generado",
+          description: `Código: ${code} - No se pudo enviar el email, compártelo manualmente`,
+        });
+      }
 
       fetchDocuments();
     } catch (error) {
@@ -490,7 +512,7 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => generateDownloadCode(doc.id)}
+                            onClick={() => generateDownloadCode(doc.id, doc.title)}
                             disabled={generatingCode === doc.id}
                             className="h-7 text-xs"
                           >
