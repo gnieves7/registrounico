@@ -97,70 +97,721 @@ export const mbtiQuestions: MbtiQuestion[] = [
   { id: 60, text: "No cree que la prolijidad sea importante, aunque preferiría tener las cosas en orden; lo importante es la creatividad, la espontaneidad y la capacidad de respuesta.", dimension: 'P' },
 ];
 
-// Descripciones de los tipos de personalidad MBTI
-export const mbtiDescriptions: Record<string, { title: string; description: string }> = {
-  INTJ: {
-    title: "El Arquitecto",
-    description: "Pensadores estratégicos e imaginativos con un plan para todo. Independientes, decididos y altamente analíticos."
+// Información de preferencias MBTI
+export const mbtiPreferences = {
+  E: {
+    name: "Extroversión",
+    letter: "E",
+    description: "Obtiene energía del mundo exterior, de la gente y de las experiencias.",
+    characteristics: [
+      "Enfoca la energía y la atención hacia la ACCIÓN",
+      "HACE-PIENSA-HACE",
+      "Prefiere comunicarse verbalmente. Piensa alto",
+      "Sociable y expresiva",
+      "Aprende mejor actuando y discutiendo",
+      "Amplitud de intereses",
+      "Toma fácilmente la iniciativa en el trabajo y en las relaciones"
+    ]
   },
-  INTP: {
-    title: "El Lógico",
-    description: "Inventores innovadores con una sed insaciable de conocimiento. Creativos, analíticos y objetivos."
+  I: {
+    name: "Introversión",
+    letter: "I",
+    description: "Obtiene energía del mundo interior, de sus reflexiones y pensamientos.",
+    characteristics: [
+      "Enfoca la energía y la atención hacia la REFLEXIÓN",
+      "PIENSA-HACE-PIENSA",
+      "Prefiere comunicarse por escrito. Piensa en su interior",
+      "Privada y reservada",
+      "Aprende mejor por la reflexión y concentración",
+      "Profundidad en sus intereses",
+      "Toma la iniciativa cuando la situación es muy importante"
+    ]
   },
-  ENTJ: {
-    title: "El Comandante",
-    description: "Líderes audaces, imaginativos y de voluntad fuerte. Eficientes, enérgicos y muy decididos."
+  S: {
+    name: "Sensación",
+    letter: "S",
+    description: "Prefiere poner atención a la información real y tangible.",
+    characteristics: [
+      "Se enfoca en lo que es real y verdadero",
+      "Comprende ideas mediante aplicaciones prácticas",
+      "Observa y presta atención a los detalles",
+      "Ve lo específico, cada árbol",
+      "Requiere información precisa y exacta",
+      "Actúa con cuidado y profundidad para llegar a conclusiones",
+      "Le gusta el presente, lo actual. Confía en la experiencia"
+    ]
   },
-  ENTP: {
-    title: "El Innovador",
-    description: "Pensadores inteligentes y curiosos que no pueden resistir un desafío intelectual. Ingeniosos y estratégicos."
+  N: {
+    name: "Intuición",
+    letter: "N",
+    description: "Prefiere observar el gran esquema, las relaciones y conexiones.",
+    characteristics: [
+      "Se enfoca en modelos y significados de la información",
+      "Desea aclarar ideas y teorías antes de llevarlas a la práctica",
+      "Recuerda detalles cuando se relacionan con modelos",
+      "Ve lo global, el bosque",
+      "Valora imaginación y perspicacia",
+      "Se mueve rápidamente siguiendo corazonadas",
+      "Vive en anticipar el futuro. Confía en la inspiración"
+    ]
   },
-  INFJ: {
-    title: "El Defensor",
-    description: "Idealistas silenciosos y místicos, pero muy inspiradores e incansables. Perspicaces y principistas."
+  T: {
+    name: "Pensamiento",
+    letter: "T",
+    description: "Prefiere tomar decisiones basadas en la lógica y la objetividad.",
+    characteristics: [
+      "Analiza los pro y contra objetivamente",
+      "Busca una norma aplicable en todas las situaciones similares",
+      "Analítico y busca un estándar objetivo de verdad",
+      "Guiado por razonamiento causa-efecto",
+      "Razonable con criterios interpersonales",
+      "Crítico: rápido para ver errores y áreas de mejora",
+      "Equitativo: desea que todos sean tratados de la misma manera"
+    ]
   },
-  INFP: {
-    title: "El Mediador",
-    description: "Personas poéticas, amables y altruistas, siempre dispuestas a ayudar en una buena causa. Idealistas y empáticos."
+  F: {
+    name: "Sentimiento",
+    letter: "F",
+    description: "Prefiere tomar decisiones basadas en sus valores y convicciones personales.",
+    characteristics: [
+      "Se mete en la situación para identificarse con todos",
+      "Busca crear armonía y tratar a cada persona como individuo único",
+      "Comprende los puntos de vista de los demás",
+      "Guiado por valores personales",
+      "Compasivo. Atiende a circunstancias personales",
+      "Rápido para mostrar aprecio y encontrar puntos en común",
+      "Busca la armonía e interacciones positivas"
+    ]
   },
-  ENFJ: {
-    title: "El Protagonista",
-    description: "Líderes carismáticos e inspiradores, capaces de cautivar a su audiencia. Altruistas y confiables."
+  J: {
+    name: "Juicio",
+    letter: "J",
+    description: "Prefiere vivir de una forma planeada y ordenada.",
+    characteristics: [
+      "Disfruta cerrando y siendo decisivo",
+      "Evita las prisas y estrés de última hora",
+      "Le gusta hacer planes y seguirlos hasta el final",
+      "Organizado y metódico",
+      "Controlado: le gusta tener las cosas decididas",
+      "Estructurado, paso a paso",
+      "Deriva energía al conseguir hacer las cosas"
+    ]
   },
-  ENFP: {
-    title: "El Activista",
-    description: "Espíritus libres entusiastas, creativos y sociables. Optimistas y apasionados."
-  },
+  P: {
+    name: "Percepción",
+    letter: "P",
+    description: "Prefiere vivir de manera espontánea y flexible.",
+    characteristics: [
+      "Disfruta manteniendo opciones abiertas",
+      "Necesita las prisas y el estrés del último minuto",
+      "Le gusta adaptarse a los cambios y responder a ellos",
+      "Flexible y abierto",
+      "Le gustan las cosas indeterminadas y abiertas al cambio",
+      "Sigue la corriente, 50 procesos abiertos",
+      "Deriva energía de su facultad de adaptarse a las demandas del momento"
+    ]
+  }
+};
+
+// Tabla de niveles de preferencia
+export const preferenceStrengthLevels = [
+  { min: 0, max: 10, label: "Leve", color: "text-muted-foreground" },
+  { min: 11, max: 20, label: "Moderado", color: "text-blue-600" },
+  { min: 21, max: 30, label: "Fuerte", color: "text-primary" },
+  { min: 31, max: 100, label: "Muy Fuerte", color: "text-destructive" }
+];
+
+export function getPreferenceStrength(difference: number): { label: string; color: string } {
+  const level = preferenceStrengthLevels.find(l => difference >= l.min && difference <= l.max);
+  return level || preferenceStrengthLevels[preferenceStrengthLevels.length - 1];
+}
+
+// Descripciones completas de los 16 tipos de personalidad MBTI
+export interface MbtiTypeDescription {
+  title: string;
+  subtitle: string;
+  description: string;
+  contributions: string[];
+  leadershipStyle: string[];
+  preferredEnvironment: string[];
+  potentialDangers: string[];
+  developmentSuggestions: string[];
+}
+
+export const mbtiDescriptions: Record<string, MbtiTypeDescription> = {
   ISTJ: {
-    title: "El Logístico",
-    description: "Individuos prácticos y orientados a los hechos, cuya fiabilidad no se puede cuestionar. Responsables y dedicados."
+    title: "Inspector",
+    subtitle: "Introvertido / Sensitivo / Reflexivo / Juicio",
+    description: "Son minuciosos, sistemáticos, esmerados, trabajadores, detallistas, serios y tranquilos. Alcanzan el éxito mediante la concentración y la minuciosidad. Práctico, ordenado, lógico, realista y formal. Se asegura de que todo está bien organizado. Asume la responsabilidad. Decide lo que debería conseguirse y trabaja para alcanzarlo, a pesar de las protestas y las distracciones.",
+    contributions: [
+      "Hacen las cosas con seguridad y en plazo",
+      "Destacan en el cuidado de los detalles",
+      "Tienen las cosas a tiempo y en su sitio",
+      "Trabajan bien dentro de la estructura de la organización",
+      "Se puede confiar en que realizarán lo que se les encomiende"
+    ],
+    leadershipStyle: [
+      "Usan la experiencia y el conocimiento de los hechos para tomar decisiones",
+      "Respetan los enfoques tradicionales y jerárquicos",
+      "Se basan en resultados fiables, estables y consistentes",
+      "Recompensan a quienes hacen su trabajo y respetan las reglas"
+    ],
+    preferredEnvironment: [
+      "Incluye personas trabajadoras dirigidas a la consecución de logros",
+      "Proporciona seguridad y recompensa la constancia",
+      "Está estructurado y orientado a las tareas",
+      "Permite concentrarse en su trabajo sin interrupciones"
+    ],
+    potentialDangers: [
+      "Olvidar las implicaciones a largo plazo, pensando en el día a día",
+      "Menospreciar las necesidades interpersonales",
+      "Llegar a ser rígidos y tener fama de inflexibles",
+      "Exigir adecuación a las normas e inhibir la innovación"
+    ],
+    developmentSuggestions: [
+      "Prestar atención a las ramificaciones de los problemas",
+      "Considerar el elemento humano y transmitir aprecio por los demás",
+      "Probar nuevas soluciones para salir de la rutina",
+      "Ejercitar la paciencia con quienes prueban nuevas técnicas"
+    ]
   },
   ISFJ: {
-    title: "El Protector",
-    description: "Protectores muy dedicados y cálidos, siempre listos para defender a sus seres queridos. Leales y considerados."
+    title: "Protector",
+    subtitle: "Introvertido / Sensitivo / Emotivo / Juicio",
+    description: "Tranquilo, responsable y concienzudo. Trabaja para cumplir sus obligaciones. Proporciona estabilidad a cualquier proyecto o grupo. Meticuloso, laborioso, preciso. Son comprensivos, leales, considerados, amables y capaces de cualquier esfuerzo para acudir en ayuda de los que lo necesitan. Se preocupa por los sentimientos de otras personas.",
+    contributions: [
+      "Tienen en cuenta las necesidades de los demás",
+      "Gran habilidad para conseguir llevar a cabo los objetivos",
+      "Son minuciosos y responsables en aspectos de detalle y rutina",
+      "Son serviciales y tienen las cosas ordenadas a tiempo"
+    ],
+    leadershipStyle: [
+      "Pueden resistirse a aceptar puestos de mando inicialmente",
+      "Acatan y esperan que los demás acaten la estructura y jerarquía",
+      "Usan su influencia personal sin alardes",
+      "Siguen concienzudamente los métodos tradicionales"
+    ],
+    preferredEnvironment: [
+      "Personas concienzudas trabajando en tareas bien estructuradas",
+      "Seguridad y estructura clara",
+      "Tranquilo, sosegado y eficiente",
+      "Orientado al servicio"
+    ],
+    potentialDangers: [
+      "Ser pesimistas sobre el futuro",
+      "No ser suficientemente fuertes al defender sus ideas",
+      "Ser infravalorados por su tranquilidad y modestia",
+      "No ser suficientemente flexibles"
+    ],
+    developmentSuggestions: [
+      "Ver el futuro en términos positivos y globales",
+      "Desarrollar seguridad en sí mismos y ser más directos",
+      "Aprender a comunicar y 'vender' sus propios logros",
+      "Estar abiertos a nuevas formas de hacer las cosas"
+    ]
   },
-  ESTJ: {
-    title: "El Ejecutivo",
-    description: "Excelentes administradores, insuperables en la gestión de cosas o personas. Organizados y líderes naturales."
+  INFJ: {
+    title: "Consejero",
+    subtitle: "Introvertido / Intuitivo / Emotivo / Juicio",
+    description: "Consigue el éxito mediante la perseverancia, la originalidad y el deseo de hacer lo que sea necesario. Trabaja de manera concienzuda, preocupándose por los demás. Se le respeta por sus principios firmes. Confían en sus propios puntos de vista, ejercen influencia suavemente, son profundamente compasivos, introspectivos y buscan la armonía.",
+    contributions: [
+      "Ofrecen perspectivas de futuro dirigidas a satisfacer necesidades humanas",
+      "Consiguen compromisos",
+      "Trabajan con honestidad y constancia",
+      "Prefieren trabajos que requieren soledad y concentración",
+      "Organizan relaciones complejas entre personas y tareas"
+    ],
+    leadershipStyle: [
+      "Dirigen a través de su visión de lo que es mejor para la organización",
+      "Ganan la cooperación más que pedirla",
+      "Utilizan una forma de actuar tranquila pero persistente",
+      "Animan a los demás con sus ideales"
+    ],
+    preferredEnvironment: [
+      "Personas interesadas por ideales",
+      "Oportunidades para la creatividad",
+      "Armonioso, tranquilo y organizado",
+      "Deja tiempo y espacio para la reflexión"
+    ],
+    potentialDangers: [
+      "Sentir que sus ideas no son apreciadas o valoradas",
+      "No ser claros en la crítica",
+      "Temer inmiscuirse en el campo de los demás y aislarse",
+      "Concentración unilateral, ignorando otras tareas"
+    ],
+    developmentSuggestions: [
+      "Desarrollar talento político y seguridad para defender sus ideales",
+      "Contrastar sus puntos de vista con los de los demás",
+      "Relajarse y estar más abiertos a lo realizable actualmente",
+      "Ejercer un control constructivo sobre sus subordinados"
+    ]
   },
-  ESFJ: {
-    title: "El Cónsul",
-    description: "Personas extraordinariamente cuidadosas, sociales y populares. Cooperativos y armoniosos."
+  INTJ: {
+    title: "Mente Maestra",
+    subtitle: "Introvertido / Intuitivo / Reflexivo / Juicio",
+    description: "Cuenta con una mente original y una gran motivación para sus propias ideas y propósitos. Tiene capacidad para organizar un trabajo y finalizarlo con o sin ayuda. Sabe lo que quiere y cómo conseguirlo. Escéptico, crítico, independiente, determinado. Son independientes, individualistas y resueltos; confían en su propia visión.",
+    contributions: [
+      "Grandes habilidades en tareas de concepción y diseño",
+      "Organizan las ideas en forma de planes de acción",
+      "Trabajan para eliminar obstáculos que dificultan los objetivos",
+      "Tienen ideas claras sobre cómo debe ser la organización",
+      "Ayudan a entender los sistemas como conjuntos complejos"
+    ],
+    leadershipStyle: [
+      "Se conducen a sí mismos y a los demás para alcanzar objetivos",
+      "Actúan con fuerza en el campo de las ideas",
+      "Conciben, diseñan y construyen nuevos modelos",
+      "Están dispuestos a reorganizar todo el sistema si es necesario"
+    ],
+    preferredEnvironment: [
+      "Personas intelectualmente competentes",
+      "Intimidad para la reflexión",
+      "Eficiente, fomenta la autonomía",
+      "Concede oportunidades para la creatividad"
+    ],
+    potentialDangers: [
+      "Parecer tan productivos que retraigan a los demás",
+      "Ser muy críticos en su lucha por el ideal",
+      "Dificultad en abandonar ideas poco prácticas",
+      "Ignorar el impacto de sus ideas sobre los demás"
+    ],
+    developmentSuggestions: [
+      "Pedir opiniones y sugerencias de los demás",
+      "Aprender a valorar a los demás",
+      "Aprender a abandonar las ideas inviables",
+      "Atender más al impacto de sus ideas sobre los demás"
+    ]
   },
   ISTP: {
-    title: "El Virtuoso",
-    description: "Experimentadores audaces y prácticos, maestros de todo tipo de herramientas. Analíticos y adaptables."
+    title: "Artesano",
+    subtitle: "Introvertido / Sensitivo / Reflexivo / Percepción",
+    description: "Observador frío, tranquilo, reservado, analiza la vida con curiosidad imparcial y con momentos inesperados de humor original. Interesado en la causa y el efecto, el cómo y por qué funcionan las cosas. Son capaces de manejar situaciones, son conscientes de los hechos, realistas y difíciles de convencer si no es mediante el razonamiento.",
+    contributions: [
+      "Actúan como 'apaga-fuegos' en función de las necesidades del momento",
+      "Son un compendio ambulante de información",
+      "Hacen las cosas a pesar de las normas",
+      "Permanecen tranquilos en las crisis, estabilizando a los demás",
+      "Inclinación natural hacia los temas técnicos"
+    ],
+    leadershipStyle: [
+      "Dirigen a través de la acción, dando ejemplo",
+      "Prefieren un equipo donde todos sean tratados como iguales",
+      "Responden de inmediato ante dificultades",
+      "Dejan libertad y prefieren un control mínimo"
+    ],
+    preferredEnvironment: [
+      "Personas activas ocupadas en acciones inmediatas",
+      "Orientado a la realización de proyectos",
+      "Escasa regulación normativa",
+      "Fomenta la independencia y la acción"
+    ],
+    potentialDangers: [
+      "Guardar para sí temas importantes y parecer despreocupado",
+      "Cambiar de tema antes que el anterior haya dado frutos",
+      "Ser precipitados y tomar 'atajos' peligrosos",
+      "Parecer indecisos o indisciplinados"
+    ],
+    developmentSuggestions: [
+      "Abrirse y compartir información con los demás",
+      "Desarrollar la perseverancia",
+      "Planificarse y mantener el esfuerzo hasta conseguir resultados",
+      "Desarrollar la costumbre de fijar objetivos"
+    ]
   },
   ISFP: {
-    title: "El Aventurero",
-    description: "Artistas flexibles y encantadores, siempre listos para explorar y experimentar algo nuevo. Sensibles y curiosos."
+    title: "Compositor",
+    subtitle: "Introvertido / Sensitivo / Emotivo / Percepción",
+    description: "Tranquilo, amistoso, sensible, amable, modesto con respecto a sus habilidades. Rehúye los desacuerdos. No trata de inculcar sus opiniones a otras personas. Son amables, considerados, compasivos hacia los más necesitados y tienen una mente abierta y flexible.",
+    contributions: [
+      "Atienden a las necesidades de las personas",
+      "Actúan para garantizar el bienestar de los demás",
+      "Infunden alegría en su trabajo",
+      "Integran bien las tareas y las personas",
+      "Atienden a los aspectos humanos de la organización"
+    ],
+    leadershipStyle: [
+      "Prefieren el trabajo en equipo",
+      "Usan la lealtad personal como forma de motivar",
+      "Más aptos para alabar que para criticar",
+      "Persuaden suavemente apelando a las buenas intenciones"
+    ],
+    preferredEnvironment: [
+      "Personas colaboradoras que disfrutan con su trabajo",
+      "Atiende a los aspectos personales",
+      "Flexible y estéticamente atractivo",
+      "Compañeros atentos y bien integrados"
+    ],
+    potentialDangers: [
+      "Ser demasiado ingenuos y crédulos",
+      "No criticar cuando es necesario, siendo demasiado autocríticos",
+      "No ver más allá de las realidades presentes",
+      "Sentirse heridos y abandonar con excesiva facilidad"
+    ],
+    developmentSuggestions: [
+      "Desarrollar escepticismo y espíritu crítico",
+      "Exigir más de otros y apreciar más los propios logros",
+      "Desarrollar una mayor visión de futuro",
+      "Ser más directos y seguros de sí"
+    ]
+  },
+  INFP: {
+    title: "Sanador",
+    subtitle: "Introvertido / Intuitivo / Emotivo / Percepción",
+    description: "Lleno de entusiasmo y lealtad. Se preocupa por el aprendizaje, las ideas, el lenguaje y los proyectos independientes. Tienen una mente abierta, son idealistas, perspicaces y flexibles. Quieren que su trabajo contribuya a algo valioso.",
+    contributions: [
+      "Intentan encontrar un sitio para cada persona",
+      "Son persuasivos en relación con sus ideas",
+      "Integran a las personas con relación a un propósito común",
+      "Buscan nuevas ideas y posibilidades",
+      "Presionan para establecer valores de la organización"
+    ],
+    leadershipStyle: [
+      "Tienden a facilitar",
+      "Prefieren papeles directivos especiales a los convencionales",
+      "Trabajan con independencia hacia sus ideales",
+      "Animan a otros a seguir sus ideales"
+    ],
+    preferredEnvironment: [
+      "Personas empeñadas en valores importantes",
+      "Ambiente de colaboración e intimidad",
+      "Flexible, no burocrático",
+      "Tranquilo con tiempo y lugar para reflexión"
+    ],
+    potentialDangers: [
+      "Retrasarse en la tarea por perfeccionismo",
+      "Intentar agradar a demasiada gente al mismo tiempo",
+      "No adecuarse a los hechos y la lógica del momento",
+      "Gastar más tiempo en reflexión que en acción"
+    ],
+    developmentSuggestions: [
+      "Ser realista y no pensar tanto en la solución ideal",
+      "Desarrollar la capacidad de decir 'no'",
+      "Reforzar su lógica y objetividad",
+      "Desarrollar e implantar planes de acción"
+    ]
+  },
+  INTP: {
+    title: "Arquitecto",
+    subtitle: "Introvertido / Intuitivo / Reflexivo / Percepción",
+    description: "Tranquilo y reservado. Disfruta de tareas teóricas o científicas. Le gusta resolver problemas mediante la lógica y el análisis. Son racionales, curiosos, teóricos, abstractos y prefieren trabajar con ideas más que con personas o situaciones.",
+    contributions: [
+      "Diseñan sistemas lógicos y complejos",
+      "Demuestran pericia para resolver problemas complejos",
+      "Tienen perspicacia intelectual a corto y largo plazo",
+      "Aplican capacidad de lógica, análisis y pensamiento crítico",
+      "Van directamente al núcleo del problema"
+    ],
+    leadershipStyle: [
+      "Dirigen mediante el análisis conceptual de problemas y objetivos",
+      "Aplican criterios lógicos y sistemáticos",
+      "Prefieren dirigir a otros tipos independientes",
+      "Se relacionan atendiendo más a la pericia que a la posición"
+    ],
+    preferredEnvironment: [
+      "Pensadores independientes dedicados a resolver problemas complejos",
+      "Concede intimidad y fomenta la independencia",
+      "Flexible, tranquilo y poco estructurado",
+      "Premia la autonomía"
+    ],
+    potentialDangers: [
+      "Ser demasiado abstractos y poco realistas",
+      "Ser demasiado intelectuales y teóricos en exposiciones",
+      "Prestar excesiva atención a incoherencias menores",
+      "Dirigir su pensamiento crítico hacia las personas"
+    ],
+    developmentSuggestions: [
+      "Fijarse en detalles prácticos y desarrollar capacidad de llevar a cabo",
+      "Expresar las cosas con sencillez",
+      "Mostrar aprecio por las acciones de los demás",
+      "Mejorar conocimiento de aspectos profesionales y personales de los demás"
+    ]
   },
   ESTP: {
-    title: "El Emprendedor",
-    description: "Personas inteligentes, enérgicas y muy perceptivas que disfrutan vivir al límite. Directos y pragmáticos."
+    title: "Promotor",
+    subtitle: "Extrovertido / Sensitivo / Reflexivo / Percepción",
+    description: "Es bueno para resolver problemas que se presentan de repente. Disfruta del momento. Adaptable, tolerante, generalmente con valores conservadores. Es flexible y sabe ajustarse a las necesidades del grupo. Están orientados hacia la acción; son pragmáticos, realistas y con recursos.",
+    contributions: [
+      "Negocian y buscan compromisos para que las cosas avancen",
+      "Ayudan a que los hechos se produzcan",
+      "Aportan un enfoque realista",
+      "Gustan del riesgo",
+      "Captan y retienen información sobre los hechos"
+    ],
+    leadershipStyle: [
+      "Se responsabilizan con rapidez en momentos de crisis",
+      "Persuaden a otros de sus puntos de vista",
+      "Tienen un estilo directo y confiado",
+      "Buscan acción y resultados inmediatos"
+    ],
+    preferredEnvironment: [
+      "Personas animosas interesadas por los resultados",
+      "Poco burocrático con tiempo para la diversión",
+      "Facilita flexibilidad y tiene aspectos técnicos",
+      "Se ajusta a las necesidades del momento"
+    ],
+    potentialDangers: [
+      "Parecer bruscos o insensibles al actuar rápidamente",
+      "Confiar con exceso en la improvisación",
+      "Sacrificar lo mediato a los problemas inmediatos",
+      "Quedarse en los aspectos materialistas"
+    ],
+    developmentSuggestions: [
+      "Suavizar su firmeza atendiendo a los sentimientos de los otros",
+      "Considerar aspectos más amplios, planificar a más largo plazo",
+      "Mirar más allá de los placeres inmediatos",
+      "Desarrollar su fidelidad"
+    ]
   },
   ESFP: {
-    title: "El Animador",
-    description: "Animadores espontáneos, enérgicos y entusiastas. Sociables y amantes de la diversión."
+    title: "Actor",
+    subtitle: "Extrovertido / Sensación / Emotivo / Percepción",
+    description: "Extrovertido, amistoso, disfruta con todo y hace que las cosas sean divertidas para los demás. Está al corriente de lo que ocurre y le gusta participar. Son joviales, simpáticos y naturalmente inclinados hacia las personas.",
+    contributions: [
+      "Producen entusiasmo y colaboración",
+      "Presentan una imagen positiva de la organización",
+      "Ofrecen acción y emoción",
+      "Integran personas y recursos",
+      "Aceptan y tratan a las personas tal como son"
+    ],
+    leadershipStyle: [
+      "Dirigen promoviendo la buena voluntad y el trabajo en equipo",
+      "Resuelven bien las crisis",
+      "Facilitan situaciones tensas mejorando el contacto",
+      "Facilitan interacciones positivas entre las personas"
+    ],
+    preferredEnvironment: [
+      "Personas enérgicas y tolerantes",
+      "Animado y orientado a la acción",
+      "Armónico y personalizado",
+      "Personas adaptables y ambiente atractivo"
+    ],
+    potentialDangers: [
+      "Sobrevalorar los aspectos subjetivos",
+      "Ser irreflexivos",
+      "Gastar mucho tiempo en temas sociales olvidando tareas",
+      "No acabar lo que empiezan"
+    ],
+    developmentSuggestions: [
+      "Incluir más lógica en sus decisiones",
+      "Planificar más a largo plazo al gestionar proyectos",
+      "Equilibrar atención a las tareas con atención a las personas",
+      "Mejorar la gestión de su tiempo"
+    ]
+  },
+  ESTJ: {
+    title: "Supervisor",
+    subtitle: "Extrovertido / Sensitivo / Reflexivo / Juicio",
+    description: "Práctico, realista, con habilidad natural para los negocios. Le gusta organizar y dirigir actividades. Puede ser un buen administrador. Es rápido tomando decisiones. Respeta las jerarquías. Son lógicos, analíticos, con capacidad de decisión, resistentes y capaces de organizar hechos y operaciones con antelación.",
+    contributions: [
+      "Prevén los fallos con anticipación",
+      "Critican los planes de forma lógica",
+      "Buenos organizadores de trabajos y personas",
+      "Comprueban si los trabajos son realizados",
+      "Llevan a cabo los trabajos paso a paso"
+    ],
+    leadershipStyle: [
+      "Gustan de mandar y se responsabilizan con rapidez",
+      "Aplican experiencias pasadas a la resolución de problemas",
+      "Van directamente al núcleo del tema",
+      "Actúan como jefes tradicionales, respetando la jerarquía"
+    ],
+    preferredEnvironment: [
+      "Personas muy trabajadoras",
+      "Orientado hacia las tareas y organizado",
+      "Estructurado con estabilidad y planificación",
+      "Recompensa la consecución de metas"
+    ],
+    potentialDangers: [
+      "Decidir precipitadamente",
+      "Olvidar la necesidad de cambiar",
+      "Ser algo chapuceros",
+      "Verse sorprendidos por sus sentimientos después de ignorarlos"
+    ],
+    developmentSuggestions: [
+      "Sopesar todos los aspectos antes de decidir, incluido el factor humano",
+      "Precisar de estímulos para ver los beneficios del cambio",
+      "Hacer esfuerzo especial para mostrar aprecio por los demás",
+      "Necesitan tiempo para reflexionar e identificar sentimientos y valores"
+    ]
+  },
+  ESFJ: {
+    title: "Proveedor",
+    subtitle: "Extrovertido / Sensitivo / Emotivo / Juicio",
+    description: "Bondadoso, hablador, popular, concienzudo, colaborador nato. Necesita armonía y puede ser bueno a la hora de crearla. Siempre está haciendo algo bueno por alguien. Su principal interés reside en las cosas que afectan de forma directa a la vida de las personas. Son útiles, delicados, compasivos, ordenados y valoran en alto grado las relaciones humanas.",
+    contributions: [
+      "Trabajan bien con otros, principalmente en equipo",
+      "Atienden a las necesidades y deseos de las personas",
+      "Terminan las tareas con precisión y oportunidad",
+      "Respetan las normas y la autoridad",
+      "Manejan eficazmente las tareas del día a día"
+    ],
+    leadershipStyle: [
+      "Dirigen mediante la atención personal a los demás",
+      "Consiguen buena voluntad mediante buenas relaciones",
+      "Mantienen a la gente informada",
+      "Dan ejemplo en el trabajo y mantienen tradiciones"
+    ],
+    preferredEnvironment: [
+      "Personas concienzudas y colaboradoras",
+      "Sistemas orientados a la consecución de metas",
+      "Bien organizado y amistoso",
+      "Personas agradecidas y sensibles"
+    ],
+    potentialDangers: [
+      "Evitar conflictos y esconder los problemas",
+      "Dejarse llevar por su afán de agradar",
+      "Pensar que saben lo que es bueno para todos",
+      "Perder de vista el conjunto"
+    ],
+    developmentSuggestions: [
+      "Aprender a manejar y gestionar los conflictos",
+      "Tener en cuenta sus propias necesidades",
+      "Escuchar lo que realmente los demás quieren o necesitan",
+      "Tener en cuenta las implicaciones globales y lógicas"
+    ]
+  },
+  ENFP: {
+    title: "Campeón",
+    subtitle: "Extrovertido / Intuitivo / Emotivo / Percepción",
+    description: "Cálidamente entusiasta, animoso, ingenioso, imaginativo. Capaz de hacer casi cualquier cosa que le interese. Encuentra con rapidez soluciones a las dificultades. Son entusiastas, perspicaces, innovadores, versátiles e incansables en la búsqueda de nuevas posibilidades.",
+    contributions: [
+      "Promueven cambios",
+      "Piensan en diversas posibilidades",
+      "Transmiten energía mediante su entusiasmo contagioso",
+      "Conciben proyectos",
+      "Valoran a los demás"
+    ],
+    leadershipStyle: [
+      "Dirigen con energía y entusiasmo",
+      "Les gusta llevar la fase inicial",
+      "Son portavoces de los valores referentes a las personas",
+      "Intentan integrar y apoyar a los demás"
+    ],
+    preferredEnvironment: [
+      "Personas imaginativas atentas a posibilidades humanas",
+      "Variado y participativo",
+      "Ofrece variedad y estímulos",
+      "Creativo, sin limitaciones, animado"
+    ],
+    potentialDangers: [
+      "Cambiar de proyectos sin completar los anteriores",
+      "Olvidar detalles relevantes",
+      "Intentar abarcar demasiado",
+      "Puede incurrir en dilaciones"
+    ],
+    developmentSuggestions: [
+      "Fijar prioridades y establecer sistemas de seguimiento",
+      "Atender a los detalles importantes",
+      "Evaluar proyectos antes de lanzarse a todo lo atractivo",
+      "Aplicar técnicas de organización del propio tiempo"
+    ]
+  },
+  ENTP: {
+    title: "Inventor",
+    subtitle: "Extrovertido / Intuitivo / Reflexivo / Percepción",
+    description: "Rápido, ingenioso, con habilidad para muchas cosas. Resulta una compañía estimulante, abierta y franca. Tiene recursos para resolver problemas nuevos y difíciles. Valora a quienes asumen riesgos. Son innovadores, individualistas, versátiles, analíticos y emprendedores.",
+    contributions: [
+      "Ven las limitaciones como retos a superar",
+      "Indican nuevas formas de hacer las cosas",
+      "Dan esquemas conceptuales para resolver problemas",
+      "Toman iniciativas y estimulan a los demás",
+      "Disfrutan con retos difíciles"
+    ],
+    leadershipStyle: [
+      "Planean sistemas teóricos de organización",
+      "Animan a los demás a actuar con independencia",
+      "Aplican sistemas de pensamiento lógico",
+      "Actúan como catalizadores entre personas y sistemas"
+    ],
+    preferredEnvironment: [
+      "Personas independientes que resuelven problemas complejos",
+      "Flexible y estimulante",
+      "Orientado al cambio con personas competentes",
+      "Recompensa la asunción de riesgos, fomenta la autonomía"
+    ],
+    potentialDangers: [
+      "Perderse en el modelo, olvidando la realidad",
+      "Ser muy competitivos y olvidar las aportaciones de los demás",
+      "Pueden ser egocéntricos",
+      "Adaptarse con dificultad a normas y procedimientos"
+    ],
+    developmentSuggestions: [
+      "Prestar atención al aquí y ahora",
+      "Reconocer la valía y aportaciones de los otros",
+      "Fijar prioridades y plazos realistas",
+      "Aprender a trabajar dentro del sistema"
+    ]
+  },
+  ENFJ: {
+    title: "Profesor",
+    subtitle: "Extrovertido / Intuitivo / Emotivo / Juicio",
+    description: "Necesita las relaciones interpersonales, tiene empatía y favorece la comunicación en el grupo. Sabe establecer relaciones cordiales. Es animador y mediador. Sociable, popular, compasivo. Innovador, fomenta el cambio. Gustan de las relaciones interpersonales, son comprensivos, tolerantes y favorecedores de la comunicación.",
+    contributions: [
+      "Introducen ideales sobre cómo tratar a las personas",
+      "Les gusta dirigir y animar equipos",
+      "Fomentan la cooperación",
+      "Transmiten los valores de la organización",
+      "Conducen los temas hacia conclusiones fructíferas"
+    ],
+    leadershipStyle: [
+      "Dirigen mediante su personal entusiasmo",
+      "Toman una postura participativa",
+      "Responden a las necesidades de los subordinados",
+      "Retan a la organización a ser consecuente con sus valores"
+    ],
+    preferredEnvironment: [
+      "Individuos abiertos al cambio para mejora de los demás",
+      "Orientado hacia las personas",
+      "Fomenta actividades sociales y expresión personal",
+      "Espíritu de armonía, ordenado y asentado"
+    ],
+    potentialDangers: [
+      "Idealizar a los demás y sufrir por lealtad ciega",
+      "Esconder la cabeza ante los conflictos",
+      "Desatender las tareas en beneficio de las relaciones",
+      "Tomar la crítica como algo personal"
+    ],
+    developmentSuggestions: [
+      "Reconocer las limitaciones de los demás",
+      "Aprender a gestionar los conflictos eficazmente",
+      "Prestar tanta atención a las tareas como a las personas",
+      "Limitar la autocrítica y atender a información objetiva"
+    ]
+  },
+  ENTJ: {
+    title: "Mariscal de Campo",
+    subtitle: "Extrovertido / Intuitivo / Reflexivo / Juicio",
+    description: "Cordial, franco, tajante, líder en actividades. Diestro en cualquier cosa que requiera razonamiento o conversación inteligente. Suele estar bien informado. Organizado, objetivo y resolutivo. Desarrolla planes lógicos y diseña estrategias para conseguir los objetivos. Son lógicos, organizados, estructurados, objetivos y resolutivos.",
+    contributions: [
+      "Desarrollan planes bien concebidos",
+      "Ayudan a estructurar la organización",
+      "Diseñan estrategias dirigidas a objetivos globales",
+      "Se responsabilizan con rapidez",
+      "Atacan directamente problemas causados por confusión o ineficacia"
+    ],
+    leadershipStyle: [
+      "Postura enérgica y orientada a la acción",
+      "Dan perspectivas de largo alcance",
+      "Gestionan directamente y son duros cuando es necesario",
+      "Sacan el máximo partido de la organización"
+    ],
+    preferredEnvironment: [
+      "Personas independientes y capaces de resolver problemas complejos",
+      "Orientado hacia las metas",
+      "Sistemas y personas eficientes",
+      "Recompensa la capacidad de decisión"
+    ],
+    potentialDangers: [
+      "Descuidar las necesidades de la gente",
+      "Olvidar consideraciones prácticas y limitaciones",
+      "Decidir demasiado rápido y parecer impacientes",
+      "Ignorar y suprimir sus propios sentimientos"
+    ],
+    developmentSuggestions: [
+      "Atender más al factor humano",
+      "Comprobar recursos disponibles y aspectos prácticos antes de lanzarse",
+      "Tomar tiempo para reflexionar y considerar todas las facetas",
+      "Aprender a identificar y valorar los sentimientos"
+    ]
   }
 };
