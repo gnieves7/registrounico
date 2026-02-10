@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { FileText, Download, DollarSign } from "lucide-react";
+import { FileText, Download, DollarSign, AlertTriangle, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -15,6 +16,7 @@ import {
   calculateRawScore, calculateTScore,
   analyzeValidityPattern, analyzeClinicalPatterns,
   getTScoreLevel, getScaleInterpretation,
+  isProtocolValid,
 } from "@/data/mmpi2ScoringData";
 
 interface Mmpi2Response {
@@ -63,8 +65,10 @@ export const Mmpi2ReportGenerator = ({
 
     const kScale = VALIDITY_SCALES.find(s => s.code === 'K')!;
     const kRaw = calculateRawScore(responseMap, kScale);
+    const omissions = 567 - totalAnswered;
 
     const scores: ScoreEntry[] = [];
+    const tScores: Record<string, number> = {};
 
     for (const scale of VALIDITY_SCALES) {
       const raw = calculateRawScore(responseMap, scale);
@@ -72,6 +76,7 @@ export const Mmpi2ReportGenerator = ({
       const { level } = getTScoreLevel(t);
       const interp = getScaleInterpretation(scale.code, t) || "";
       scores.push({ code: scale.code, name: scale.name, type: "Validez", raw, tScore: t, level, interpretation: interp });
+      tScores[scale.code] = t;
     }
 
     for (const scale of CLINICAL_SCALES) {
@@ -80,6 +85,7 @@ export const Mmpi2ReportGenerator = ({
       const { level } = getTScoreLevel(t);
       const interp = getScaleInterpretation(scale.code, t) || "";
       scores.push({ code: scale.code, name: scale.name, type: "Clínica", raw, tScore: t, level, interpretation: interp });
+      tScores[scale.code] = t;
     }
 
     for (const scale of CONTENT_SCALES) {
@@ -88,76 +94,15 @@ export const Mmpi2ReportGenerator = ({
       const { level } = getTScoreLevel(t);
       const interp = getScaleInterpretation(scale.code, t) || "";
       scores.push({ code: scale.code, name: scale.name, type: "Contenido", raw, tScore: t, level, interpretation: interp });
+      tScores[scale.code] = t;
     }
 
-    const tScores: Record<string, number> = {};
-    scores.forEach(s => { tScores[s.code] = s.tScore; });
-
+    const validity = isProtocolValid(tScores, omissions);
     const validityFindings = analyzeValidityPattern(tScores);
     const clinicalFindings = analyzeClinicalPatterns(tScores);
 
-    return { scores, validityFindings, clinicalFindings, omissions: 567 - totalAnswered };
+    return { scores, tScores, validityFindings, clinicalFindings, omissions, validity };
   }, [responses, gender, totalAnswered]);
-
-  const generateReportText = () => {
-    if (!reportContent) return "";
-    const lines: string[] = [];
-    lines.push("INFORME DE RESULTADOS - MMPI-2");
-    lines.push("Inventario Multifásico de Personalidad de Minnesota - 2");
-    lines.push(`Fecha del test: ${testDate}`);
-    lines.push(`Baremos: ${gender === 'male' ? 'Hombres' : 'Mujeres'}`);
-    lines.push(`Respuestas: ${totalAnswered}/567 | Omisiones: ${reportContent.omissions}`);
-    lines.push(`Estado: ${isComplete ? 'Completado' : 'Incompleto'}`);
-    lines.push("");
-    lines.push("═══════════════════════════════════════");
-    lines.push("ESCALAS DE VALIDEZ");
-    lines.push("═══════════════════════════════════════");
-    reportContent.scores.filter(s => s.type === "Validez").forEach(s => {
-      lines.push(`${s.code} (${s.name}): PD=${s.raw} | T=${s.tScore} | ${s.level}`);
-      if (s.interpretation) lines.push(`  → ${s.interpretation}`);
-    });
-    lines.push("");
-    lines.push("Análisis de Validez:");
-    reportContent.validityFindings.forEach(f => lines.push(`  • ${f}`));
-    lines.push("");
-    lines.push("═══════════════════════════════════════");
-    lines.push("ESCALAS CLÍNICAS BÁSICAS");
-    lines.push("═══════════════════════════════════════");
-    reportContent.scores.filter(s => s.type === "Clínica").forEach(s => {
-      lines.push(`${s.code} (${s.name}): PD=${s.raw} | T=${s.tScore} | ${s.level}`);
-      if (s.tScore >= 65 && s.interpretation) lines.push(`  → ${s.interpretation}`);
-    });
-    lines.push("");
-    lines.push("═══════════════════════════════════════");
-    lines.push("ESCALAS DE CONTENIDO");
-    lines.push("═══════════════════════════════════════");
-    reportContent.scores.filter(s => s.type === "Contenido").forEach(s => {
-      lines.push(`${s.code} (${s.name}): PD=${s.raw} | T=${s.tScore} | ${s.level}`);
-      if (s.tScore >= 65 && s.interpretation) lines.push(`  → ${s.interpretation}`);
-    });
-    lines.push("");
-    lines.push("═══════════════════════════════════════");
-    lines.push("HALLAZGOS CLÍNICOS");
-    lines.push("═══════════════════════════════════════");
-    reportContent.clinicalFindings.forEach(f => lines.push(`• ${f}`));
-    if (additionalNotes) {
-      lines.push("");
-      lines.push("═══════════════════════════════════════");
-      lines.push("INTERPRETACIÓN DEL PROFESIONAL");
-      lines.push("═══════════════════════════════════════");
-      lines.push(additionalNotes);
-    }
-    if (clinicalNotes) {
-      lines.push("");
-      lines.push("NOTAS ADICIONALES:");
-      lines.push(clinicalNotes);
-    }
-    lines.push("");
-    lines.push("─────────────────────────────────────");
-    lines.push("Este informe ha sido generado como herramienta de apoyo.");
-    lines.push("La interpretación final corresponde al profesional tratante.");
-    return lines.join("\n");
-  };
 
   const handleDownloadPdf = () => {
     if (!reportContent) return;
@@ -165,149 +110,202 @@ export const Mmpi2ReportGenerator = ({
     const validityScores = reportContent.scores.filter(s => s.type === "Validez");
     const clinicalScores = reportContent.scores.filter(s => s.type === "Clínica");
     const contentScores = reportContent.scores.filter(s => s.type === "Contenido");
+    const omissions = reportContent.omissions;
 
-    const buildScaleRows = (scores: ScoreEntry[]) => scores.map(s => {
-      const color = s.tScore >= 76 ? '#dc2626' : s.tScore >= 65 ? '#d97706' : '#16a34a';
-      return `<tr>
-        <td style="padding:6px 10px;border-bottom:1px solid #e5e5e5;font-weight:600;">${s.code}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #e5e5e5;">${s.name}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #e5e5e5;text-align:center;font-family:monospace;">${s.raw}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #e5e5e5;text-align:center;font-family:monospace;font-weight:bold;color:${color};">${s.tScore}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #e5e5e5;"><span style="background:${color}15;color:${color};padding:2px 8px;border-radius:10px;font-size:11px;">${s.level}</span></td>
-      </tr>`;
-    }).join('');
+    // Clinical scale names with numbers for page 1 table
+    const clinicalNames: Record<string, string> = {
+      Hs: "1. Hs Hipocondría", D: "2. D Depresión", Hy: "3. Hy Histeria de conversión",
+      Pd: "4. Pd Desviación psicopática", Mf: "5. Mf Masculinidad-Feminidad",
+      Pa: "6. Pa Paranoia", Pt: "7. Pt Psicastenia", Sc: "8. Sc Esquizofrenia",
+      Ma: "9. Ma Hipomanía", Si: "10. Si Introversión social",
+    };
 
-    // Build SVG chart for clinical scales
-    const chartScales = [...validityScores, ...clinicalScores];
-    const chartWidth = 700;
-    const chartHeight = 260;
-    const marginLeft = 40;
-    const marginRight = 20;
-    const marginTop = 20;
-    const marginBottom = 40;
-    const plotW = chartWidth - marginLeft - marginRight;
-    const plotH = chartHeight - marginTop - marginBottom;
-    const xStep = plotW / (chartScales.length - 1);
-    const yMin = 30, yMax = 120;
-    const toY = (t: number) => marginTop + plotH - ((t - yMin) / (yMax - yMin)) * plotH;
-    const toX = (i: number) => marginLeft + i * xStep;
+    // Build validity interpretation labels
+    const getValidityLabel = (code: string, t: number): string => {
+      const interp = getScaleInterpretation(code, t);
+      return interp ? interp.split('.')[0] : "";
+    };
 
-    const points = chartScales.map((s, i) => `${toX(i)},${toY(s.tScore)}`).join(' ');
-    const dots = chartScales.map((s, i) => 
-      `<circle cx="${toX(i)}" cy="${toY(s.tScore)}" r="4" fill="#8b6914" stroke="#fff" stroke-width="2"/>
-       <text x="${toX(i)}" y="${toY(s.tScore) - 10}" text-anchor="middle" font-size="10" fill="#333" font-weight="bold">${s.tScore}</text>`
-    ).join('');
-    const xLabels = chartScales.map((s, i) =>
-      `<text x="${toX(i)}" y="${chartHeight - 5}" text-anchor="middle" font-size="10" fill="#666">${s.code}</text>`
-    ).join('');
-    const yTicks = [30, 50, 65, 76, 90, 120];
-    const yLabelsAndGrid = yTicks.map(t =>
-      `<line x1="${marginLeft}" y1="${toY(t)}" x2="${chartWidth - marginRight}" y2="${toY(t)}" stroke="#ddd" stroke-dasharray="${t === 65 || t === 76 ? '4,4' : '2,6'}"/>
-       <text x="${marginLeft - 5}" y="${toY(t) + 4}" text-anchor="end" font-size="9" fill="#999">${t}</text>`
-    ).join('');
+    // PAGE 1: Data tables
+    const page1 = `
+      <div class="page">
+        <div class="page1-header">
+          <h1 class="mmpi-title">MMPI®-2</h1>
+          <p class="mmpi-subtitle">Inventario Multifásico de Personalidad de Minnesota®-2</p>
+        </div>
 
-    const svgChart = `
-      <svg width="${chartWidth}" height="${chartHeight}" xmlns="http://www.w3.org/2000/svg" style="font-family:Arial,sans-serif;">
-        <rect x="${marginLeft}" y="${toY(120)}" width="${plotW}" height="${toY(76) - toY(120)}" fill="#dc262610"/>
-        <rect x="${marginLeft}" y="${toY(76)}" width="${plotW}" height="${toY(65) - toY(76)}" fill="#d9770610"/>
-        <rect x="${marginLeft}" y="${toY(65)}" width="${plotW}" height="${toY(50) - toY(65)}" fill="#16a34a08"/>
-        <rect x="${marginLeft}" y="${toY(50)}" width="${plotW}" height="${toY(30) - toY(50)}" fill="#16a34a04"/>
-        ${yLabelsAndGrid}
-        <polyline points="${points}" fill="none" stroke="#8b6914" stroke-width="2.5"/>
-        ${dots}
-        ${xLabels}
-        <text x="${chartWidth - 10}" y="${toY(76) - 4}" text-anchor="end" font-size="9" fill="#d97706">T=76 Muy elevado</text>
-        <text x="${chartWidth - 10}" y="${toY(65) - 4}" text-anchor="end" font-size="9" fill="#d97706">T=65 Elevado</text>
-      </svg>`;
+        <h2 class="section-title underlined">VALIDEZ DEL PROTOCOLO</h2>
+        <table class="data-table">
+          <tbody>
+            <tr><td class="label-col">Escala interrogante (?)</td><td class="val-col">${omissions}</td><td>${omissions <= 30 ? 'Válido' : 'Inválido - excesivas omisiones'}</td></tr>
+            ${validityScores.map(s => `<tr><td class="label-col">Escala ${s.code} (${s.name.toLowerCase()})</td><td class="val-col">${s.tScore}</td><td>${getValidityLabel(s.code, s.tScore)}</td></tr>`).join('')}
+          </tbody>
+        </table>
 
-    const logoSvg = `<svg viewBox="0 0 100 100" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="35" cy="45" r="25" fill="none" stroke="hsl(45,93%,58%)" stroke-width="4"/>
-      <circle cx="50" cy="35" r="25" fill="none" stroke="hsl(40,30%,96%)" stroke-width="4"/>
-      <circle cx="65" cy="45" r="25" fill="none" stroke="hsl(199,89%,60%)" stroke-width="4"/>
-      <circle cx="35" cy="45" r="12" fill="hsl(45,93%,58%)" opacity="0.15"/>
-      <circle cx="50" cy="35" r="12" fill="hsl(40,30%,96%)" opacity="0.15"/>
-      <circle cx="65" cy="45" r="12" fill="hsl(199,89%,60%)" opacity="0.15"/>
-    </svg>`;
+        <h2 class="section-title">ESCALAS CLÍNICAS</h2>
+        <p class="note">Valores que excedan los 70pts se considera clínicamente significativo</p>
+        <table class="data-table">
+          <thead><tr><th></th><th>PD+K</th><th>T</th></tr></thead>
+          <tbody>
+            ${clinicalScores.map(s => {
+              const bold = s.tScore >= 70 ? 'font-weight:bold;' : '';
+              return `<tr style="${bold}"><td>${clinicalNames[s.code] || s.code}</td><td class="val-col">${s.raw}</td><td class="val-col">${s.tScore}</td></tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+
+        <div class="two-col">
+          <div>
+            <h2 class="section-title small">ESCALAS TRADICIONALES</h2>
+            <table class="data-table compact">
+              <thead><tr><th></th><th>PD</th><th>T</th></tr></thead>
+              <tbody>
+                ${contentScores.slice(0, Math.ceil(contentScores.length / 2)).map(s => `<tr><td>${s.name}</td><td class="val-col">${s.raw}</td><td class="val-col">${s.tScore}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <h2 class="section-title small">ESCALAS DE CONTENIDO</h2>
+            <table class="data-table compact">
+              <thead><tr><th></th><th>PD</th><th>T</th></tr></thead>
+              <tbody>
+                ${contentScores.slice(Math.ceil(contentScores.length / 2)).map(s => `<tr><td>${s.name}</td><td class="val-col">${s.raw}</td><td class="val-col">${s.tScore}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h2 class="section-title underlined">ÍNDICES CRÍTICOS</h2>
+        <div class="two-col">
+          <div>
+            <p class="subsection-title">Lachar – Wrobel</p>
+            <table class="data-table compact">
+              <tbody>
+                <tr><td>Agresividad</td><td>No hay indicadores relevantes</td></tr>
+                <tr><td>Creencias erróneas</td><td>No hay indicadores relevantes</td></tr>
+                <tr><td>Actitud antisocial</td><td>No hay indicadores relevantes</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <p class="subsection-title">Koss - Butcher</p>
+            <table class="data-table compact">
+              <tbody>
+                <tr><td>Estado de ansiedad aguda</td><td>No hay indicadores relevantes</td></tr>
+                <tr><td>Ideación suicida depresiva</td><td>No hay indicadores relevantes</td></tr>
+                <tr><td>Amenazas de ataque</td><td>No hay indicadores relevantes</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="page-footer">Página | 1</div>
+      </div>`;
+
+    // PAGE 2: Validity + Clinical narrative
+    const elevatedClinical = clinicalScores.filter(s => s.tScore >= 57);
+    const nonElevatedClinical = clinicalScores.filter(s => s.tScore < 57).map(s => s.code);
+
+    const page2 = `
+      <div class="page">
+        <h2 class="numbered-title">1. VALIDEZ Y ESTILO DE RESPUESTA</h2>
+        <p>${reportContent.validity.valid ? 'El protocolo resulta <b>válido e interpretable</b>, sin indicadores de invalidez o distorsión grave.' : `<b>Protocolo inválido:</b> ${reportContent.validity.reason}`}</p>
+        <ul class="interpretation-list">
+          <li><b>Escala ? = ${omissions}</b><br>${omissions === 0 ? 'Indica adecuada comprensión de los ítems y colaboración plena.' : `${omissions} ítems sin responder.`}</li>
+          ${validityScores.map(s => `<li><b>Escala ${s.code} = ${s.tScore} (${s.level.toLowerCase()})</b><br>${s.interpretation}</li>`).join('')}
+        </ul>
+        <p class="conclusion"><b>Conclusión sobre validez:</b><br>${reportContent.validityFindings.join(' ')}</p>
+
+        <hr class="section-divider"/>
+
+        <h2 class="numbered-title">2. PERFIL DE ESCALAS CLÍNICAS</h2>
+        <p>${elevatedClinical.length > 0
+          ? `Se observan las siguientes configuraciones clínicas relevantes:`
+          : 'No se observan elevaciones clínicamente significativas en las escalas clínicas básicas.'}</p>
+        <ul class="interpretation-list">
+          ${elevatedClinical.map(s => `<li><b>${s.code} – ${s.name} = T ${s.tScore} (${s.level.toLowerCase()})</b><br>${s.interpretation}</li>`).join('')}
+        </ul>
+        ${nonElevatedClinical.length > 0 ? `<p>El resto de las escalas clínicas (${nonElevatedClinical.join(', ')}) se mantienen en rangos bajos o medios.</p>` : ''}
+
+        <div class="page-footer">Página | 2</div>
+      </div>`;
+
+    // PAGE 3: Content scales + findings
+    const elevatedContent = contentScores.filter(s => s.tScore >= 60);
+
+    const page3 = `
+      <div class="page">
+        <h2 class="numbered-title">3. ESCALAS DE CONTENIDO</h2>
+        ${elevatedContent.length > 0 ? `<p>Se destacan las siguientes elevaciones:</p>
+        <ul class="interpretation-list">
+          ${elevatedContent.map(s => `<li><b>${s.name} = T ${s.tScore}${s.tScore >= 76 ? ' (muy elevada)' : s.tScore >= 65 ? '' : ' (subclínico)'}</b><br>${s.interpretation}</li>`).join('')}
+        </ul>` : '<p>No se observan elevaciones significativas en las escalas de contenido.</p>'}
+
+        <hr class="section-divider"/>
+
+        <h2 class="numbered-title">4. HALLAZGOS CLÍNICOS</h2>
+        <ul class="interpretation-list">
+          ${reportContent.clinicalFindings.map(f => `<li>${f}</li>`).join('')}
+        </ul>
+
+        <div class="page-footer">Página | 3</div>
+      </div>`;
+
+    // PAGE 4: Professional interpretation
+    const page4 = additionalNotes ? `
+      <div class="page">
+        <h2 class="numbered-title">5. INTEGRACIÓN CLÍNICA</h2>
+        <div class="interpretation-text">${additionalNotes.replace(/\n/g, '<br>')}</div>
+
+        ${clinicalNotes ? `
+        <hr class="section-divider"/>
+        <h2 class="numbered-title">6. CONSIDERACIONES CLÍNICAS Y ORIENTACIÓN</h2>
+        <div class="interpretation-text">${clinicalNotes.replace(/\n/g, '<br>')}</div>` : ''}
+
+        <div class="page-footer">Página | 4</div>
+      </div>` : '';
 
     const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>Informe MMPI-2</title>
 <style>
-  @media print { @page { margin: 15mm 20mm; size: A4; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-  body { font-family: 'Segoe UI', Arial, sans-serif; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; font-size: 12px; line-height: 1.5; }
-  .header { display: flex; align-items: center; gap: 16px; border-bottom: 3px solid #8b6914; padding-bottom: 16px; margin-bottom: 20px; }
-  .header-text h1 { margin: 0; font-size: 20px; color: #8b6914; }
-  .header-text p { margin: 2px 0; color: #666; font-size: 11px; }
-  .meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; background: #faf8f2; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
-  .meta-item { text-align: center; }
-  .meta-item .label { font-size: 10px; color: #999; text-transform: uppercase; }
-  .meta-item .value { font-weight: 600; color: #333; }
-  .section-title { font-size: 14px; font-weight: 700; color: #8b6914; border-bottom: 1px solid #e5d9b8; padding-bottom: 4px; margin: 20px 0 10px; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  th { background: #f5f0e0; padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #8b6914; border-bottom: 2px solid #d4c48a; }
-  .findings { background: #faf8f2; padding: 12px; border-radius: 8px; border-left: 3px solid #8b6914; }
-  .findings li { margin-bottom: 4px; }
-  .interpretation-box { background: #f0f7ff; padding: 14px; border-radius: 8px; border-left: 3px solid #3b82f6; white-space: pre-wrap; }
-  .chart-container { text-align: center; margin: 10px 0; page-break-inside: avoid; }
-  .footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 10px; color: #999; text-align: center; }
+  @media print {
+    @page { margin: 20mm 25mm; size: A4; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; color: #222; font-size: 11pt; line-height: 1.5; }
+  .page { max-width: 210mm; margin: 0 auto; padding: 20mm 25mm; min-height: 297mm; position: relative; }
+  .mmpi-title { font-size: 36pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 2px; }
+  .mmpi-subtitle { font-size: 11pt; color: #444; margin-bottom: 24px; }
+  .section-title { font-size: 11pt; font-weight: 700; margin: 20px 0 8px; text-transform: uppercase; }
+  .section-title.underlined { border-bottom: 1px solid #333; padding-bottom: 4px; }
+  .section-title.small { font-size: 10pt; }
+  .numbered-title { font-size: 14pt; font-weight: 700; margin: 0 0 14px; border-bottom: 2px solid #333; padding-bottom: 6px; }
+  .note { font-size: 9pt; color: #666; margin-bottom: 6px; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin-bottom: 16px; }
+  .data-table th { text-align: left; font-weight: 700; border-bottom: 1px solid #333; padding: 4px 8px; font-size: 9pt; }
+  .data-table td { padding: 3px 8px; border-bottom: 1px solid #eee; }
+  .data-table .val-col { text-align: center; width: 50px; }
+  .data-table .label-col { width: 220px; }
+  .data-table.compact { font-size: 9pt; }
+  .data-table.compact td { padding: 2px 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 10px 0; }
+  .subsection-title { font-weight: 700; font-size: 10pt; margin-bottom: 4px; }
+  .interpretation-list { list-style: none; padding: 0; margin: 10px 0; }
+  .interpretation-list li { margin-bottom: 12px; padding-left: 16px; position: relative; }
+  .interpretation-list li::before { content: "•"; position: absolute; left: 0; font-weight: 700; }
+  .conclusion { margin: 16px 0; padding: 10px 14px; background: #f5f5f5; border-left: 3px solid #333; }
+  .interpretation-text { white-space: pre-wrap; line-height: 1.7; }
+  .section-divider { border: none; border-top: 2px solid #333; margin: 28px 0; }
+  .page-footer { position: absolute; bottom: 20mm; left: 25mm; right: 25mm; font-size: 8pt; color: #999; display: flex; justify-content: flex-end; }
+  .page1-header { margin-bottom: 24px; }
 </style></head><body>
-<div class="header">
-  ${logoSvg}
-  <div class="header-text">
-    <h1>INFORME DE RESULTADOS MMPI-2</h1>
-    <p>Inventario Multifásico de Personalidad de Minnesota - 2</p>
-    <p>Fecha de generación: ${new Date().toLocaleDateString('es-AR')}</p>
-  </div>
-</div>
-
-<div class="meta-grid">
-  <div class="meta-item"><div class="label">Fecha del Test</div><div class="value">${new Date(testDate).toLocaleDateString('es-AR')}</div></div>
-  <div class="meta-item"><div class="label">Baremos</div><div class="value">${gender === 'male' ? 'Hombres' : 'Mujeres'}</div></div>
-  <div class="meta-item"><div class="label">Respuestas</div><div class="value">${totalAnswered}/567 (Omisiones: ${reportContent.omissions})</div></div>
-</div>
-
-<div class="section-title">Perfil Gráfico - Escalas de Validez y Clínicas</div>
-<div class="chart-container">${svgChart}</div>
-
-<div class="section-title">Escalas de Validez</div>
-<table><thead><tr><th>Código</th><th>Escala</th><th style="text-align:center;">PD</th><th style="text-align:center;">T</th><th>Nivel</th></tr></thead>
-<tbody>${buildScaleRows(validityScores)}</tbody></table>
-
-<div class="findings" style="margin-top:10px;">
-  <strong>Análisis de Validez:</strong>
-  <ul>${reportContent.validityFindings.map(f => `<li>${f}</li>`).join('')}</ul>
-</div>
-
-<div class="section-title" style="page-break-before:auto;">Escalas Clínicas Básicas</div>
-<table><thead><tr><th>Código</th><th>Escala</th><th style="text-align:center;">PD</th><th style="text-align:center;">T</th><th>Nivel</th></tr></thead>
-<tbody>${buildScaleRows(clinicalScores)}</tbody></table>
-
-${clinicalScores.filter(s => s.tScore >= 65 && s.interpretation).length > 0 ? `
-<div class="findings" style="margin-top:10px;">
-  <strong>Interpretación de Escalas Elevadas:</strong>
-  <ul>${clinicalScores.filter(s => s.tScore >= 65 && s.interpretation).map(s => `<li><strong>${s.code} (${s.name}, T=${s.tScore}):</strong> ${s.interpretation}</li>`).join('')}</ul>
-</div>` : ''}
-
-<div class="section-title">Escalas de Contenido</div>
-<table><thead><tr><th>Código</th><th>Escala</th><th style="text-align:center;">PD</th><th style="text-align:center;">T</th><th>Nivel</th></tr></thead>
-<tbody>${buildScaleRows(contentScores)}</tbody></table>
-
-<div class="section-title">Hallazgos Clínicos</div>
-<div class="findings">
-  <ul>${reportContent.clinicalFindings.map(f => `<li>${f}</li>`).join('')}</ul>
-</div>
-
-${additionalNotes ? `
-<div class="section-title">Interpretación del Profesional</div>
-<div class="interpretation-box">${additionalNotes.replace(/\n/g, '<br>')}</div>` : ''}
-
-${clinicalNotes ? `
-<div class="section-title">Notas Adicionales</div>
-<div class="interpretation-box">${clinicalNotes.replace(/\n/g, '<br>')}</div>` : ''}
-
-<div class="footer">
-  <p>Este informe ha sido generado como herramienta de apoyo clínico.</p>
-  <p>La interpretación final corresponde al profesional tratante.</p>
-</div>
+${page1}
+${page2}
+${page3}
+${page4}
 </body></html>`;
 
     const printWindow = window.open('', '_blank');
@@ -321,13 +319,12 @@ ${clinicalNotes ? `
   const handleGenerateReport = async () => {
     setIsGenerating(true);
     try {
-      const reportText = generateReportText();
       const priceNum = parseFloat(price) || 0;
 
       const { error } = await supabase.from("documents").insert({
         patient_id: patientId,
         title: `Informe MMPI-2 - ${new Date(testDate).toLocaleDateString('es-AR')}`,
-        description: reportText,
+        description: `Informe MMPI-2 generado automáticamente. Baremos: ${gender === 'male' ? 'Hombres' : 'Mujeres'}. Respuestas: ${totalAnswered}/567.`,
         document_type: "informe",
         price: priceNum,
         is_paid: priceNum === 0,
@@ -348,18 +345,43 @@ ${clinicalNotes ? `
 
   if (!reportContent) return null;
 
+  const { validity } = reportContent;
+
   return (
     <>
-      <div className="flex gap-2">
-        <Button variant="outline" className="gap-2" onClick={() => setShowDialog(true)}>
-          <FileText className="h-4 w-4" />
-          Generar Informe
-        </Button>
+      <div className="flex gap-2 flex-wrap items-center">
+        {validity.valid ? (
+          <Badge variant="outline" className="gap-1 text-xs">
+            <ShieldCheck className="h-3 w-3" />
+            Protocolo válido
+          </Badge>
+        ) : (
+          <Badge variant="destructive" className="gap-1 text-xs">
+            <AlertTriangle className="h-3 w-3" />
+            Protocolo inválido
+          </Badge>
+        )}
+
+        {validity.valid && (
+          <Button variant="outline" className="gap-2" onClick={() => setShowDialog(true)}>
+            <FileText className="h-4 w-4" />
+            Generar Informe
+          </Button>
+        )}
         <Button variant="outline" className="gap-2" onClick={handleDownloadPdf}>
           <Download className="h-4 w-4" />
           Descargar PDF
         </Button>
       </div>
+
+      {!validity.valid && (
+        <Alert variant="destructive" className="mt-2">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription className="text-xs">
+            {validity.reason} No se puede generar un informe pendiente de pago con un protocolo inválido.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-lg">
@@ -418,11 +440,11 @@ ${clinicalNotes ? `
             <div className="p-3 bg-muted/50 rounded-lg text-xs text-muted-foreground">
               <p className="font-medium mb-1">El informe incluirá:</p>
               <ul className="list-disc list-inside space-y-0.5">
-                <li>Gráfico de perfil con zonas normativas</li>
-                <li>Escalas de Validez con interpretación</li>
-                <li>Escalas Clínicas Básicas con puntajes T</li>
-                <li>Escalas de Contenido</li>
-                <li>Hallazgos clínicos y patrones detectados</li>
+                <li>Tabla de validez del protocolo</li>
+                <li>Tabla de escalas clínicas con PD+K y T</li>
+                <li>Escalas de contenido</li>
+                <li>Índices críticos</li>
+                <li>Interpretación narrativa por secciones</li>
                 <li>Su interpretación profesional</li>
               </ul>
             </div>

@@ -606,6 +606,17 @@ export const SCALE_INTERPRETATIONS: ScaleInterpretation[] = [
 ];
 
 // ==================== VALIDITY PATTERN ANALYSIS ====================
+export function isProtocolValid(tScores: Record<string, number>, omissions: number): { valid: boolean; reason: string } {
+  const F = tScores.F || 50;
+  const L = tScores.L || 50;
+
+  if (omissions > 30) return { valid: false, reason: `Excesivas omisiones (${omissions}). Se requieren al menos 537 respuestas para un protocolo válido.` };
+  if (F >= 110) return { valid: false, reason: `Escala F extremadamente elevada (T=${F}). Protocolo claramente inválido: posible exageración, respuestas al azar o desorientación.` };
+  if (L >= 80) return { valid: false, reason: `Escala L extremadamente elevada (T=${L}). Protocolo probablemente inválido: imagen demasiado favorable, falta de cooperación.` };
+
+  return { valid: true, reason: "El protocolo resulta válido e interpretable." };
+}
+
 export function analyzeValidityPattern(tScores: Record<string, number>): string[] {
   const findings: string[] = [];
   const L = tScores.L || 50;
