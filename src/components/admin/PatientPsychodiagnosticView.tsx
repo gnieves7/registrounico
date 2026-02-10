@@ -28,6 +28,7 @@ import { es } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 import { mbtiDescriptions } from "@/data/mbtiQuestions";
 import { Mmpi2ProfileAnalysis } from "./Mmpi2ProfileAnalysis";
+import { Mmpi2ReportGenerator } from "./Mmpi2ReportGenerator";
 import type { Json } from "@/integrations/supabase/types";
 
 interface PatientPsychodiagnosticViewProps {
@@ -543,20 +544,34 @@ export const PatientPsychodiagnosticView = ({ patientId }: PatientPsychodiagnost
             </ScrollArea>
           )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedMmpi2(null)}>
-              Cancelar
-            </Button>
-            <Button 
-              onClick={() => selectedMmpi2 && updateMmpi2Interpretation.mutate({ 
-                id: selectedMmpi2.id, 
-                interpretation,
-                notes: clinicalNotes
-              })}
-              disabled={updateMmpi2Interpretation.isPending}
-            >
-              Guardar Interpretación
-            </Button>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {selectedMmpi2 && (
+              <Mmpi2ReportGenerator
+                testId={selectedMmpi2.id}
+                patientId={patientId}
+                responses={selectedMmpi2.responses}
+                totalAnswered={selectedMmpi2.total_questions_answered}
+                isComplete={selectedMmpi2.is_complete}
+                testDate={selectedMmpi2.test_date}
+                clinicalInterpretation={selectedMmpi2.clinical_interpretation}
+                clinicalNotes={selectedMmpi2.clinical_notes}
+              />
+            )}
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSelectedMmpi2(null)}>
+                Cancelar
+              </Button>
+              <Button 
+                onClick={() => selectedMmpi2 && updateMmpi2Interpretation.mutate({ 
+                  id: selectedMmpi2.id, 
+                  interpretation,
+                  notes: clinicalNotes
+                })}
+                disabled={updateMmpi2Interpretation.isPending}
+              >
+                Guardar Interpretación
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

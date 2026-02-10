@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -14,13 +14,14 @@ interface Mmpi2TestProps {
 }
 
 const TOTAL_QUESTIONS = 567;
-const QUESTIONS_PER_PAGE = 30;
+const QUESTIONS_PER_PAGE = 60;
 
 export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
   const { createMmpi2Test, updateMmpi2Test } = usePsychodiagnostic();
   const [currentTest, setCurrentTest] = useState<Mmpi2TestType | null>(existingTest || null);
   const [responses, setResponses] = useState<Map<number, 'V' | 'F'>>(new Map());
   const [currentPage, setCurrentPage] = useState(0);
+  const [visitedPages, setVisitedPages] = useState<Set<number>>(new Set([0]));
 
   useEffect(() => {
     if (existingTest?.responses) {
@@ -30,17 +31,36 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
     }
   }, [existingTest]);
 
+  // Track visited pages
+  useEffect(() => {
+    setVisitedPages(prev => new Set(prev).add(currentPage));
+  }, [currentPage]);
+
   const totalPages = Math.ceil(TOTAL_QUESTIONS / QUESTIONS_PER_PAGE);
   const startQuestion = currentPage * QUESTIONS_PER_PAGE + 1;
   const endQuestion = Math.min((currentPage + 1) * QUESTIONS_PER_PAGE, TOTAL_QUESTIONS);
 
   const progress = (responses.size / TOTAL_QUESTIONS) * 100;
 
+  // Count omissions on visited pages
+  const omittedCount = useMemo(() => {
+    let count = 0;
+    visitedPages.forEach(page => {
+      const start = page * QUESTIONS_PER_PAGE + 1;
+      const end = Math.min((page + 1) * QUESTIONS_PER_PAGE, TOTAL_QUESTIONS);
+      for (let q = start; q <= end; q++) {
+        if (!responses.has(q)) count++;
+      }
+    });
+    return count;
+  }, [responses, visitedPages]);
+
   const handleStartTest = async () => {
     const result = await createMmpi2Test.mutateAsync();
     setCurrentTest(result as unknown as Mmpi2TestType);
     setResponses(new Map());
     setCurrentPage(0);
+    setVisitedPages(new Set([0]));
   };
 
   const setAnswer = (questionNumber: number, answer: 'V' | 'F') => {
@@ -106,6 +126,7 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
                 <li>Marca V (Verdadero) si la afirmación se aplica a ti</li>
                 <li>Marca F (Falso) si la afirmación no se aplica a ti</li>
                 <li>Responde a todas las afirmaciones de manera honesta</li>
+                <li>Las preguntas sin responder aparecerán en rojo al cambiar de página</li>
                 <li>Puedes guardar tu progreso y continuar después</li>
               </ul>
             </div>
@@ -137,31 +158,45 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
             <span>{Math.round(progress)}%</span>
           </div>
           <Progress value={progress} />
+          {omittedCount > 0 && (
+            <p className="text-xs text-destructive">
+              ⚠ {omittedCount} pregunta(s) sin responder en páginas visitadas
+            </p>
+          )}
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[450px] pr-4">
-          <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-9 lg:grid-cols-10 gap-2">
+        <ScrollArea className="h-[500px] pr-4">
+          <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-1.5">
             {Array.from({ length: endQuestion - startQuestion + 1 }, (_, i) => {
               const questionNumber = startQuestion + i;
               const answer = responses.get(questionNumber);
+              const isOmitted = !answer && visitedPages.has(currentPage) && currentPage < Math.ceil(questionNumber / QUESTIONS_PER_PAGE);
+              // Show as omitted (red) only if this page was previously visited and user left without answering
+              const showOmission = !answer && visitedPages.size > 1 && visitedPages.has(currentPage);
               
               return (
                 <div key={questionNumber} className="text-center">
-                  <div className="text-xs text-muted-foreground mb-1">{questionNumber}</div>
-                  <div className="flex gap-1 justify-center">
+                  <div className={`text-[10px] mb-0.5 font-mono ${showOmission ? 'text-destructive font-bold' : 'text-muted-foreground'}`}>
+                    {questionNumber}
+                  </div>
+                  <div className="flex gap-0.5 justify-center">
                     <Button
-                      variant={answer === 'V' ? "default" : "outline"}
+                      variant={answer === 'V' ? "default" : showOmission ? "destructive" : "outline"}
                       size="sm"
-                      className="h-8 w-8 p-0 text-xs"
+                      className={`h-7 w-7 p-0 text-[10px] ${
+                        answer === 'V' ? '' : showOmission ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''
+                      }`}
                       onClick={() => setAnswer(questionNumber, 'V')}
                     >
                       V
                     </Button>
                     <Button
-                      variant={answer === 'F' ? "default" : "outline"}
+                      variant={answer === 'F' ? "default" : showOmission ? "destructive" : "outline"}
                       size="sm"
-                      className="h-8 w-8 p-0 text-xs"
+                      className={`h-7 w-7 p-0 text-[10px] ${
+                        answer === 'F' ? '' : showOmission ? 'border-destructive/50 text-destructive hover:bg-destructive/10' : ''
+                      }`}
                       onClick={() => setAnswer(questionNumber, 'F')}
                     >
                       F
@@ -173,7 +208,32 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
           </div>
         </ScrollArea>
 
-        <div className="flex flex-wrap justify-between gap-2 mt-6 pt-4 border-t">
+        {/* Page navigation buttons */}
+        <div className="flex flex-wrap gap-1 mt-4 pt-3 border-t justify-center">
+          {Array.from({ length: totalPages }, (_, i) => {
+            const pageStart = i * QUESTIONS_PER_PAGE + 1;
+            const pageEnd = Math.min((i + 1) * QUESTIONS_PER_PAGE, TOTAL_QUESTIONS);
+            const answeredOnPage = Array.from({ length: pageEnd - pageStart + 1 }, (_, j) => pageStart + j)
+              .filter(q => responses.has(q)).length;
+            const totalOnPage = pageEnd - pageStart + 1;
+            const isComplete = answeredOnPage === totalOnPage;
+            const hasOmissions = visitedPages.has(i) && !isComplete;
+
+            return (
+              <Button
+                key={i}
+                variant={i === currentPage ? "default" : isComplete ? "secondary" : hasOmissions ? "destructive" : "outline"}
+                size="sm"
+                className="h-7 w-7 p-0 text-[10px]"
+                onClick={() => setCurrentPage(i)}
+              >
+                {i + 1}
+              </Button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap justify-between gap-2 mt-4 pt-3 border-t">
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -199,7 +259,7 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
               disabled={updateMmpi2Test.isPending}
             >
               <Save className="mr-2 h-4 w-4" />
-              Guardar Progreso
+              Guardar
             </Button>
 
             {currentPage === totalPages - 1 && (
