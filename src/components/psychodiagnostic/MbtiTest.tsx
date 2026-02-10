@@ -5,8 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain, CheckCircle2, ArrowRight, ArrowLeft, RotateCcw } from "lucide-react";
-import { mbtiQuestions, mbtiDescriptions, type MbtiQuestion } from "@/data/mbtiQuestions";
+import { Brain, CheckCircle2, ArrowRight, ArrowLeft, RotateCcw, Target, Shield, AlertTriangle, Lightbulb, Users, Briefcase, Building2 } from "lucide-react";
+import { mbtiQuestions, mbtiDescriptions, mbtiPreferences, getPreferenceStrength, type MbtiQuestion } from "@/data/mbtiQuestions";
 import { usePsychodiagnostic, type MbtiTest as MbtiTestType } from "@/hooks/usePsychodiagnostic";
 
 interface MbtiTestProps {
@@ -94,79 +94,225 @@ export const MbtiTest = ({ existingTest, onComplete }: MbtiTestProps) => {
 
   if (showResults && currentTest?.personality_type) {
     const { scores, type } = calculateResults();
-    const typeInfo = mbtiDescriptions[type] || { title: type, description: "" };
+    const typeInfo = mbtiDescriptions[type];
+
+    if (!typeInfo) {
+      return (
+        <Card className="border-primary/20">
+          <CardHeader className="text-center">
+            <CardTitle>Tipo: {type}</CardTitle>
+          </CardHeader>
+        </Card>
+      );
+    }
+
+    const dimensions = [
+      { left: 'E', right: 'I', leftLabel: 'Extroversión', rightLabel: 'Introversión', leftScore: scores.E, rightScore: scores.I },
+      { left: 'S', right: 'N', leftLabel: 'Sensación', rightLabel: 'Intuición', leftScore: scores.S, rightScore: scores.N },
+      { left: 'T', right: 'F', leftLabel: 'Pensamiento', rightLabel: 'Sentimiento', leftScore: scores.T, rightScore: scores.F },
+      { left: 'J', right: 'P', leftLabel: 'Juicio', rightLabel: 'Percepción', leftScore: scores.J, rightScore: scores.P },
+    ];
 
     return (
-      <Card className="border-primary/20">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Brain className="h-8 w-8 text-primary" />
+      <div className="space-y-6">
+        {/* Header Card */}
+        <Card className="border-primary/20 overflow-hidden">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 text-center">
+            <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary/20">
+              <Brain className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground">Tu tipo de personalidad</h2>
+            <Badge variant="secondary" className="mt-2 text-2xl px-6 py-1.5 font-bold">
+              {type}
+            </Badge>
+            <p className="text-xl font-semibold text-primary mt-2">{typeInfo.title}</p>
+            <p className="text-sm text-muted-foreground mt-1">{typeInfo.subtitle}</p>
           </div>
-          <CardTitle className="text-2xl">Tu tipo de personalidad</CardTitle>
-          <Badge variant="secondary" className="mx-auto mt-2 text-xl px-4 py-1">
-            {type}
-          </Badge>
-          <CardDescription className="text-lg mt-2">{typeInfo.title}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <p className="text-center text-muted-foreground">{typeInfo.description}</p>
+          <CardContent className="pt-4">
+            <p className="text-muted-foreground leading-relaxed">{typeInfo.description}</p>
+          </CardContent>
+        </Card>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Extroversión (E)</span>
-                <span>{scores.E}</span>
-              </div>
-              <Progress value={(scores.E / (scores.E + scores.I)) * 100} />
-              <div className="flex justify-between text-sm">
-                <span>Introversión (I)</span>
-                <span>{scores.I}</span>
-              </div>
+        {/* Scores Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Target className="h-5 w-5 text-primary" />
+              Perfil de Preferencias
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {dimensions.map((dim) => {
+              const total = dim.leftScore + dim.rightScore;
+              const leftPercent = total > 0 ? (dim.leftScore / total) * 100 : 50;
+              const diff = Math.abs(dim.leftScore - dim.rightScore);
+              const strength = getPreferenceStrength(diff);
+
+              return (
+                <div key={dim.left} className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className={`font-medium ${dim.leftScore >= dim.rightScore ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {dim.leftLabel} ({dim.left}): {dim.leftScore}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      <span className={strength.color}>{strength.label}</span>
+                    </Badge>
+                    <span className={`font-medium ${dim.rightScore > dim.leftScore ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {dim.rightLabel} ({dim.right}): {dim.rightScore}
+                    </span>
+                  </div>
+                  <div className="relative h-3 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-full bg-primary/70 transition-all"
+                      style={{ width: `${leftPercent}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Preference Details */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Users className="h-5 w-5 text-primary" />
+              Tus Preferencias Dominantes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              {type.split('').map((letter) => {
+                const pref = mbtiPreferences[letter as keyof typeof mbtiPreferences];
+                if (!pref) return null;
+                return (
+                  <div key={letter} className="rounded-lg border p-4 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Badge className="text-sm">{pref.letter}</Badge>
+                      <span className="font-semibold">{pref.name}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{pref.description}</p>
+                    <ul className="text-xs text-muted-foreground space-y-1 mt-2">
+                      {pref.characteristics.slice(0, 4).map((c, i) => (
+                        <li key={i} className="flex items-start gap-1.5">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Sensación (S)</span>
-                <span>{scores.S}</span>
-              </div>
-              <Progress value={(scores.S / (scores.S + scores.N)) * 100} />
-              <div className="flex justify-between text-sm">
-                <span>Intuición (N)</span>
-                <span>{scores.N}</span>
-              </div>
-            </div>
+        {/* Contributions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Briefcase className="h-5 w-5 text-primary" />
+              Contribución a la Organización
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {typeInfo.contributions.map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <span className="text-muted-foreground">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Pensamiento (T)</span>
-                <span>{scores.T}</span>
-              </div>
-              <Progress value={(scores.T / (scores.T + scores.F)) * 100} />
-              <div className="flex justify-between text-sm">
-                <span>Sentimiento (F)</span>
-                <span>{scores.F}</span>
-              </div>
-            </div>
+        {/* Leadership & Environment */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Shield className="h-4 w-4 text-primary" />
+                Estilo de Mando
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {typeInfo.leadershipStyle.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span className="text-primary">▸</span>
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Building2 className="h-4 w-4 text-primary" />
+                Entorno de Trabajo Preferido
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {typeInfo.preferredEnvironment.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span className="text-primary">▸</span>
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Juicio (J)</span>
-                <span>{scores.J}</span>
-              </div>
-              <Progress value={(scores.J / (scores.J + scores.P)) * 100} />
-              <div className="flex justify-between text-sm">
-                <span>Percepción (P)</span>
-                <span>{scores.P}</span>
-              </div>
-            </div>
-          </div>
+        {/* Dangers & Suggestions */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="border-destructive/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base text-destructive">
+                <AlertTriangle className="h-4 w-4" />
+                Peligros Potenciales
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {typeInfo.potentialDangers.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span className="text-destructive">⚠</span>
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+          <Card className="border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base text-primary">
+                <Lightbulb className="h-4 w-4" />
+                Sugerencias de Desarrollo
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {typeInfo.developmentSuggestions.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm">
+                    <span className="text-primary">💡</span>
+                    <span className="text-muted-foreground">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
 
-          <Button onClick={handleStartTest} variant="outline" className="w-full">
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Realizar test nuevamente
-          </Button>
-        </CardContent>
-      </Card>
+        <Button onClick={handleStartTest} variant="outline" className="w-full">
+          <RotateCcw className="mr-2 h-4 w-4" />
+          Realizar test nuevamente
+        </Button>
+      </div>
     );
   }
 
@@ -190,6 +336,15 @@ export const MbtiTest = ({ existingTest, onComplete }: MbtiTestProps) => {
                 Marca con una X las frases que reflejen algún aspecto de tu personalidad o se identifiquen 
                 con tus preferencias ante las situaciones que se plantean. No hay respuestas correctas o incorrectas.
               </p>
+            </div>
+            <div className="rounded-lg bg-primary/5 p-4 border border-primary/10">
+              <h4 className="font-medium mb-2 text-sm">Dimensiones que se evalúan</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div>• <strong>E/I</strong> – Extroversión vs Introversión</div>
+                <div>• <strong>S/N</strong> – Sensación vs Intuición</div>
+                <div>• <strong>T/F</strong> – Pensamiento vs Sentimiento</div>
+                <div>• <strong>J/P</strong> – Juicio vs Percepción</div>
+              </div>
             </div>
             <Button onClick={handleStartTest} className="w-full" disabled={createMbtiTest.isPending}>
               Comenzar Test
