@@ -33,6 +33,7 @@ import type { Json } from "@/integrations/supabase/types";
 
 interface PatientPsychodiagnosticViewProps {
   patientId: string;
+  patientName?: string;
 }
 
 interface MbtiTest {
@@ -80,7 +81,7 @@ interface ForensicCase {
   created_at: string;
 }
 
-export const PatientPsychodiagnosticView = ({ patientId }: PatientPsychodiagnosticViewProps) => {
+export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientPsychodiagnosticViewProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedMbti, setSelectedMbti] = useState<MbtiTest | null>(null);
@@ -549,6 +550,7 @@ export const PatientPsychodiagnosticView = ({ patientId }: PatientPsychodiagnost
               <Mmpi2ReportGenerator
                 testId={selectedMmpi2.id}
                 patientId={patientId}
+                patientName={patientName}
                 responses={selectedMmpi2.responses}
                 totalAnswered={selectedMmpi2.total_questions_answered}
                 isComplete={selectedMmpi2.is_complete}

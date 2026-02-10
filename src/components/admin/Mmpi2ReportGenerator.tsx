@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import {
   calculateRawScore, calculateTScore,
   analyzeValidityPattern, analyzeClinicalPatterns,
   getTScoreLevel, getScaleInterpretation,
-  isProtocolValid,
+  isProtocolValid, calculateHarrisLingoesScores,
 } from "@/data/mmpi2ScoringData";
 
 interface Mmpi2Response {
@@ -27,6 +27,7 @@ interface Mmpi2Response {
 interface Mmpi2ReportGeneratorProps {
   testId: string;
   patientId: string;
+  patientName?: string;
   responses: Mmpi2Response[];
   totalAnswered: number;
   isComplete: boolean;
@@ -46,7 +47,7 @@ interface ScoreEntry {
 }
 
 export const Mmpi2ReportGenerator = ({
-  testId, patientId, responses, totalAnswered, isComplete,
+  testId, patientId, patientName, responses, totalAnswered, isComplete,
   testDate, clinicalInterpretation, clinicalNotes,
 }: Mmpi2ReportGeneratorProps) => {
   const { toast } = useToast();
@@ -55,6 +56,12 @@ export const Mmpi2ReportGenerator = ({
   const [price, setPrice] = useState("0");
   const [additionalNotes, setAdditionalNotes] = useState(clinicalInterpretation || "");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [patientBirthDate, setPatientBirthDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from("psychobiographies").select("birth_date").eq("user_id", patientId).maybeSingle()
+      .then(({ data }) => { if (data?.birth_date) setPatientBirthDate(data.birth_date); });
+  }, [patientId]);
 
   const reportContent = useMemo(() => {
     if (responses.length < 100) return null;
@@ -100,8 +107,9 @@ export const Mmpi2ReportGenerator = ({
     const validity = isProtocolValid(tScores, omissions);
     const validityFindings = analyzeValidityPattern(tScores);
     const clinicalFindings = analyzeClinicalPatterns(tScores);
+    const harrisLingoes = calculateHarrisLingoesScores(responseMap, gender);
 
-    return { scores, tScores, validityFindings, clinicalFindings, omissions, validity };
+    return { scores, tScores, validityFindings, clinicalFindings, omissions, validity, harrisLingoes };
   }, [responses, gender, totalAnswered]);
 
   const handleDownloadPdf = () => {
@@ -111,8 +119,8 @@ export const Mmpi2ReportGenerator = ({
     const clinicalScores = reportContent.scores.filter(s => s.type === "Clínica");
     const contentScores = reportContent.scores.filter(s => s.type === "Contenido");
     const omissions = reportContent.omissions;
+    const hlScores = reportContent.harrisLingoes;
 
-    // Clinical scale names with numbers for page 1 table
     const clinicalNames: Record<string, string> = {
       Hs: "1. Hs Hipocondría", D: "2. D Depresión", Hy: "3. Hy Histeria de conversión",
       Pd: "4. Pd Desviación psicopática", Mf: "5. Mf Masculinidad-Feminidad",
@@ -120,11 +128,33 @@ export const Mmpi2ReportGenerator = ({
       Ma: "9. Ma Hipomanía", Si: "10. Si Introversión social",
     };
 
-    // Build validity interpretation labels
     const getValidityLabel = (code: string, t: number): string => {
       const interp = getScaleInterpretation(code, t);
       return interp ? interp.split('.')[0] : "";
     };
+
+    // Calculate patient age
+    const calcAge = (): string => {
+      if (!patientBirthDate) return "No disponible";
+      const birth = new Date(patientBirthDate);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      return `${age} años`;
+    };
+
+    // Patient header
+    const patientHeader = `
+      <div class="patient-header">
+        <table class="patient-info-table">
+          <tbody>
+            <tr><td class="info-label">Nombre:</td><td class="info-value">${patientName || 'No disponible'}</td><td class="info-label">Fecha del test:</td><td class="info-value">${new Date(testDate).toLocaleDateString('es-AR')}</td></tr>
+            <tr><td class="info-label">Fecha de nacimiento:</td><td class="info-value">${patientBirthDate ? new Date(patientBirthDate).toLocaleDateString('es-AR') : 'No disponible'}</td><td class="info-label">Edad:</td><td class="info-value">${calcAge()}</td></tr>
+            <tr><td class="info-label">Baremos aplicados:</td><td class="info-value">${gender === 'male' ? 'Masculino' : 'Femenino'}</td><td class="info-label">Ítems respondidos:</td><td class="info-value">${totalAnswered}/567</td></tr>
+          </tbody>
+        </table>
+      </div>`;
 
     // PAGE 1: Data tables
     const page1 = `
@@ -133,6 +163,7 @@ export const Mmpi2ReportGenerator = ({
           <h1 class="mmpi-title">MMPI®-2</h1>
           <p class="mmpi-subtitle">Inventario Multifásico de Personalidad de Minnesota®-2</p>
         </div>
+        ${patientHeader}
 
         <h2 class="section-title underlined">VALIDEZ DEL PROTOCOLO</h2>
         <table class="data-table">
@@ -230,12 +261,48 @@ export const Mmpi2ReportGenerator = ({
         <div class="page-footer">Página | 2</div>
       </div>`;
 
-    // PAGE 3: Content scales + findings
-    const elevatedContent = contentScores.filter(s => s.tScore >= 60);
+    // PAGE 3: Harris-Lingoes Subscales
+    const areaLabels: Record<string, string> = {
+      'depresiva': 'Área Depresiva',
+      'somática-histeriforme': 'Área Somática-Histeriforme',
+      'control del yo': 'Control del Yo',
+      'interpersonal': 'Área Interpersonal',
+    };
+
+    const areas = ['depresiva', 'somática-histeriforme', 'control del yo', 'interpersonal'];
+    const hlByArea = areas.map(area => ({
+      area,
+      label: areaLabels[area],
+      scales: hlScores.filter(s => s.area === area),
+    }));
 
     const page3 = `
       <div class="page">
-        <h2 class="numbered-title">3. ESCALAS DE CONTENIDO</h2>
+        <h2 class="numbered-title">3. SUB-ESCALAS DE HARRIS-LINGOES</h2>
+        <p class="note">Las sub-escalas de Harris-Lingoes permiten desglosar las escalas clínicas en componentes específicos. T≥65 indica elevación significativa.</p>
+        ${hlByArea.map(({ label, scales }) => `
+          <h3 class="hl-area-title">${label}</h3>
+          <table class="data-table compact">
+            <thead><tr><th>Sub-escala</th><th>Escala</th><th class="val-col">PD</th><th class="val-col">T</th><th>Interpretación</th></tr></thead>
+            <tbody>
+              ${scales.map(s => {
+                const bold = s.tScore >= 65 ? 'font-weight:bold;' : '';
+                const highlight = s.tScore >= 65 ? 'background:#fff3cd;' : '';
+                return `<tr style="${bold}${highlight}"><td>${s.code} ${s.name}</td><td>${s.parentScale}</td><td class="val-col">${s.raw}</td><td class="val-col">${s.tScore}</td><td style="font-size:8pt;">${s.interpretation}</td></tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        `).join('')}
+
+        <div class="page-footer">Página | 3</div>
+      </div>`;
+
+    // PAGE 4: Content scales + findings
+    const elevatedContent = contentScores.filter(s => s.tScore >= 60);
+
+    const page4 = `
+      <div class="page">
+        <h2 class="numbered-title">4. ESCALAS DE CONTENIDO</h2>
         ${elevatedContent.length > 0 ? `<p>Se destacan las siguientes elevaciones:</p>
         <ul class="interpretation-list">
           ${elevatedContent.map(s => `<li><b>${s.name} = T ${s.tScore}${s.tScore >= 76 ? ' (muy elevada)' : s.tScore >= 65 ? '' : ' (subclínico)'}</b><br>${s.interpretation}</li>`).join('')}
@@ -243,26 +310,26 @@ export const Mmpi2ReportGenerator = ({
 
         <hr class="section-divider"/>
 
-        <h2 class="numbered-title">4. HALLAZGOS CLÍNICOS</h2>
+        <h2 class="numbered-title">5. HALLAZGOS CLÍNICOS</h2>
         <ul class="interpretation-list">
           ${reportContent.clinicalFindings.map(f => `<li>${f}</li>`).join('')}
         </ul>
 
-        <div class="page-footer">Página | 3</div>
+        <div class="page-footer">Página | 4</div>
       </div>`;
 
-    // PAGE 4: Professional interpretation
-    const page4 = additionalNotes ? `
+    // PAGE 5: Professional interpretation
+    const page5 = additionalNotes ? `
       <div class="page">
-        <h2 class="numbered-title">5. INTEGRACIÓN CLÍNICA</h2>
+        <h2 class="numbered-title">6. INTEGRACIÓN CLÍNICA</h2>
         <div class="interpretation-text">${additionalNotes.replace(/\n/g, '<br>')}</div>
 
         ${clinicalNotes ? `
         <hr class="section-divider"/>
-        <h2 class="numbered-title">6. CONSIDERACIONES CLÍNICAS Y ORIENTACIÓN</h2>
+        <h2 class="numbered-title">7. CONSIDERACIONES CLÍNICAS Y ORIENTACIÓN</h2>
         <div class="interpretation-text">${clinicalNotes.replace(/\n/g, '<br>')}</div>` : ''}
 
-        <div class="page-footer">Página | 4</div>
+        <div class="page-footer">Página | 5</div>
       </div>` : '';
 
     const html = `<!DOCTYPE html>
@@ -278,7 +345,12 @@ export const Mmpi2ReportGenerator = ({
   body { font-family: 'Calibri', 'Segoe UI', Arial, sans-serif; color: #222; font-size: 11pt; line-height: 1.5; }
   .page { max-width: 210mm; margin: 0 auto; padding: 20mm 25mm; min-height: 297mm; position: relative; }
   .mmpi-title { font-size: 36pt; font-weight: 900; letter-spacing: -1px; margin-bottom: 2px; }
-  .mmpi-subtitle { font-size: 11pt; color: #444; margin-bottom: 24px; }
+  .mmpi-subtitle { font-size: 11pt; color: #444; margin-bottom: 16px; }
+  .patient-header { margin-bottom: 20px; padding: 12px 16px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; }
+  .patient-info-table { width: 100%; border-collapse: collapse; font-size: 10pt; }
+  .patient-info-table td { padding: 3px 8px; }
+  .info-label { font-weight: 700; color: #555; width: 140px; }
+  .info-value { color: #222; }
   .section-title { font-size: 11pt; font-weight: 700; margin: 20px 0 8px; text-transform: uppercase; }
   .section-title.underlined { border-bottom: 1px solid #333; padding-bottom: 4px; }
   .section-title.small { font-size: 10pt; }
@@ -300,12 +372,14 @@ export const Mmpi2ReportGenerator = ({
   .interpretation-text { white-space: pre-wrap; line-height: 1.7; }
   .section-divider { border: none; border-top: 2px solid #333; margin: 28px 0; }
   .page-footer { position: absolute; bottom: 20mm; left: 25mm; right: 25mm; font-size: 8pt; color: #999; display: flex; justify-content: flex-end; }
-  .page1-header { margin-bottom: 24px; }
+  .page1-header { margin-bottom: 16px; }
+  .hl-area-title { font-size: 11pt; font-weight: 700; margin: 14px 0 6px; color: #444; border-left: 3px solid #333; padding-left: 8px; }
 </style></head><body>
 ${page1}
 ${page2}
 ${page3}
 ${page4}
+${page5}
 </body></html>`;
 
     const printWindow = window.open('', '_blank');

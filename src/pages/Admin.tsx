@@ -405,7 +405,7 @@ export default function Admin() {
                 </TabsContent>
 
                 <TabsContent value="psychodiagnostic">
-                  <PatientPsychodiagnosticView patientId={selectedPatient.user_id} />
+                  <PatientPsychodiagnosticView patientId={selectedPatient.user_id} patientName={selectedPatient.full_name || undefined} />
                 </TabsContent>
 
                 <TabsContent value="psychobiography">
