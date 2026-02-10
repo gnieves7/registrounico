@@ -704,6 +704,298 @@ export function analyzeClinicalPatterns(tScores: Record<string, number>): string
   return findings;
 }
 
+// ==================== HARRIS-LINGOES SUBSCALES ====================
+export interface HarrisLingoesSubscale {
+  code: string;
+  name: string;
+  parentScale: string;
+  area: string;
+  trueItems: number[];
+  falseItems: number[];
+  interpretation: { elevated: string; low: string };
+}
+
+export const HARRIS_LINGOES_SUBSCALES: HarrisLingoesSubscale[] = [
+  // Depression (D) subscales
+  {
+    code: "D1", name: "Depresión Subjetiva", parentScale: "D", area: "depresiva",
+    trueItems: [31, 38, 39, 46, 56, 73, 92, 127, 130, 146, 147, 170, 175, 215, 233],
+    falseItems: [2, 9, 43, 49, 75, 95, 109, 118, 140, 148, 178, 188, 189, 223, 260, 267],
+    interpretation: {
+      elevated: "Infelicidad, desánimo. Se siente nervioso, con dificultad de concentración. Falta de energía e interés vital.",
+      low: "Bienestar subjetivo. Se siente feliz y con energía.",
+    },
+  },
+  {
+    code: "D2", name: "Retardo Psicomotor", parentScale: "D", area: "depresiva",
+    trueItems: [38, 233],
+    falseItems: [3, 9, 29, 37, 49, 55, 76, 134, 188, 189, 212],
+    interpretation: {
+      elevated: "Inmovilidad, retirada, evitación de las personas. Falta de energía para manejar los problemas cotidianos. Niega la hostilidad.",
+      low: "Persona activa, con energía y participación social.",
+    },
+  },
+  {
+    code: "D3", name: "Disfunción Física", parentScale: "D", area: "somática-histeriforme",
+    trueItems: [18, 28, 39, 53, 175],
+    falseItems: [2, 3, 20, 45, 141, 142, 143, 152, 164, 173, 176],
+    interpretation: {
+      elevated: "Preocupaciones por el funcionamiento corporal. Niega la buena salud. Reporta síntomas somáticos variados.",
+      low: "Sin preocupaciones somáticas significativas. Buena salud percibida.",
+    },
+  },
+  {
+    code: "D4", name: "Embotamiento Mental", parentScale: "D", area: "depresiva",
+    trueItems: [15, 22, 31, 38, 56, 73, 82, 92, 127, 130, 146, 147, 170],
+    falseItems: [9, 10, 43, 75, 109, 165, 245],
+    interpretation: {
+      elevated: "Falta de energía, tensión, problemas de concentración. Falta de confianza. Siente que la vida no tiene sentido.",
+      low: "Buena capacidad de concentración y confianza en sí mismo.",
+    },
+  },
+  {
+    code: "D5", name: "Cavilación", parentScale: "D", area: "depresiva",
+    trueItems: [38, 56, 92, 127, 130, 146, 170, 215],
+    falseItems: [75, 95],
+    interpretation: {
+      elevated: "Rumia, llanto, sentirse inútil. Niega que sea feliz y fácil de agradar. Deseos de estar muerto.",
+      low: "Persona satisfecha consigo misma, sin tendencia a la rumia.",
+    },
+  },
+  // Hysteria (Hy) subscales
+  {
+    code: "Hy1", name: "Negación de Ansiedad Social", parentScale: "Hy", area: "interpersonal",
+    trueItems: [],
+    falseItems: [129, 135, 158, 167, 185, 243],
+    interpretation: {
+      elevated: "Persona socialmente participativa. Encuentra fácil hablar con desconocidos. Niega dificultad social.",
+      low: "Ansiedad social. Dificultad en las relaciones interpersonales, timidez.",
+    },
+  },
+  {
+    code: "Hy2", name: "Necesidad de Afecto", parentScale: "Hy", area: "interpersonal",
+    trueItems: [253],
+    falseItems: [26, 58, 69, 76, 93, 98, 110, 116, 124, 148, 157],
+    interpretation: {
+      elevated: "Fuerte necesidad de atención y afecto. Optimismo. Confía en las personas. No admite sentimientos negativos hacia otros.",
+      low: "Independencia emocional. Puede ser desconfiado o cínico.",
+    },
+  },
+  {
+    code: "Hy3", name: "Lasitud-Malestar", parentScale: "Hy", area: "somática-histeriforme",
+    trueItems: [28, 39, 53, 59, 111, 175, 247],
+    falseItems: [2, 3, 9, 45, 95, 141, 148, 152, 164, 176, 179],
+    interpretation: {
+      elevated: "Sentimiento de malestar e incomodidad. Salud pobre, fatiga, problemas de sueño y concentración. Infelicidad.",
+      low: "Buena salud percibida y bienestar general.",
+    },
+  },
+  {
+    code: "Hy4", name: "Quejas Somáticas", parentScale: "Hy", area: "somática-histeriforme",
+    trueItems: [11, 18, 40, 44, 97, 101, 149, 247],
+    falseItems: [8, 47, 91, 117, 164, 173, 176, 179, 208, 224, 249],
+    interpretation: {
+      elevated: "Quejas de dolor y malestar físico múltiple. Utiliza las quejas somáticas para obtener atención.",
+      low: "Pocas quejas somáticas.",
+    },
+  },
+  {
+    code: "Hy5", name: "Inhibición de la Agresión", parentScale: "Hy", area: "control del yo",
+    trueItems: [],
+    falseItems: [6, 7, 14, 29, 69, 115, 116, 135, 157],
+    interpretation: {
+      elevated: "Niega impulsos hostiles y agresivos. No se siente cómodo con sentimientos de enojo. Sensible ante los demás.",
+      low: "Reconoce impulsos agresivos. Puede ser explosivo o impaciente.",
+    },
+  },
+  // Psychopathic Deviate (Pd) subscales
+  {
+    code: "Pd1", name: "Discordia Familiar", parentScale: "Pd", area: "interpersonal",
+    trueItems: [21, 42, 54, 195, 202, 219, 288],
+    falseItems: [83, 125, 214, 217],
+    interpretation: {
+      elevated: "Percibe la situación familiar como desagradable. Sentimientos de haber sido víctima de la familia. Pocos lazos afectivos.",
+      low: "Relaciones familiares percibidas como positivas y de apoyo.",
+    },
+  },
+  {
+    code: "Pd2", name: "Problemas con la Autoridad", parentScale: "Pd", area: "control del yo",
+    trueItems: [35, 105],
+    falseItems: [34, 70, 129, 160, 263, 266],
+    interpretation: {
+      elevated: "Resentimiento social. Opiniones definidas sobre el bien y el mal. Puede tener problemas con la ley. Considera excesivas las exigencias.",
+      low: "Respeto por las normas y la autoridad.",
+    },
+  },
+  {
+    code: "Pd3", name: "Imperturbabilidad Social", parentScale: "Pd", area: "interpersonal",
+    trueItems: [],
+    falseItems: [70, 129, 158, 167, 185, 243],
+    interpretation: {
+      elevated: "Niega la ansiedad social. Exhibe opiniones sobre los demás. Autoconfianza social. No le preocupan las opiniones ajenas.",
+      low: "Sensibilidad social. Puede sentirse incómodo en situaciones sociales.",
+    },
+  },
+  {
+    code: "Pd4", name: "Alienación Social", parentScale: "Pd", area: "interpersonal",
+    trueItems: [17, 22, 42, 56, 82, 99, 113, 219, 225, 259],
+    falseItems: [12, 79, 209],
+    interpretation: {
+      elevated: "Aislamiento y alienación. Se siente incomprendido y tratado injustamente. Soledad, infelicidad. Usa proyección.",
+      low: "Sentimiento de pertenencia y buena integración social.",
+    },
+  },
+  {
+    code: "Pd5", name: "Autoalienación", parentScale: "Pd", area: "control del yo",
+    trueItems: [31, 32, 52, 56, 71, 82, 89, 94, 113, 264],
+    falseItems: [9],
+    interpretation: {
+      elevated: "Incomodidad, infelicidad. Se siente culpable, arrepentido. Encuentra la vida difícil y poco interesante. Problemas de concentración.",
+      low: "Bienestar personal. Ausencia de sentimientos de culpa o arrepentimiento excesivo.",
+    },
+  },
+  // Paranoia (Pa) subscales
+  {
+    code: "Pa1", name: "Ideas Persecutorias", parentScale: "Pa", area: "interpersonal",
+    trueItems: [16, 17, 22, 23, 24, 42, 99, 113, 138, 144, 145, 146, 162, 234, 259, 277, 285, 305, 307, 333, 334, 336, 355, 361],
+    falseItems: [255, 266, 283, 314, 315],
+    interpretation: {
+      elevated: "Siente que es tratado injustamente, que conspiran contra él. Culpa a otros de sus problemas. Ideas de referencia y persecución.",
+      low: "Sin ideación persecutoria.",
+    },
+  },
+  {
+    code: "Pa2", name: "Susceptibilidad", parentScale: "Pa", area: "interpersonal",
+    trueItems: [22, 146, 271, 277, 285, 305, 307],
+    falseItems: [100, 244],
+    interpretation: {
+      elevated: "Persona muy sensitiva, se siente herida fácilmente. Siente que otros la tratan injustamente. Busca riesgos y emociones.",
+      low: "Piel gruesa emocional. No se ofende fácilmente.",
+    },
+  },
+  {
+    code: "Pa3", name: "Ingenuidad", parentScale: "Pa", area: "interpersonal",
+    trueItems: [],
+    falseItems: [81, 98, 104, 110, 283, 284, 286, 297, 314, 315],
+    interpretation: {
+      elevated: "Actitudes ingenuas y optimistas. Confía en las personas, alta moralidad. Niega hostilidad y actitudes negativas.",
+      low: "Desconfianza, suspicacia, cinismo.",
+    },
+  },
+  // Schizophrenia (Sc) subscales
+  {
+    code: "Sc1", name: "Alienación Social", parentScale: "Sc", area: "interpersonal",
+    trueItems: [17, 21, 22, 42, 46, 138, 145, 190, 221, 256, 277, 281, 291, 292, 320, 333],
+    falseItems: [90, 276, 278, 280],
+    interpretation: {
+      elevated: "Se siente incomprendido, maltratado, objeto de hostilidad y castigo. Soledad, vacío emocional. Nunca experimentó relación de amor.",
+      low: "Buena integración social y sentimiento de pertenencia.",
+    },
+  },
+  {
+    code: "Sc2", name: "Alienación Emocional", parentScale: "Sc", area: "control del yo",
+    trueItems: [65, 92, 234, 273, 303, 323, 329, 332],
+    falseItems: [9, 210, 290],
+    interpretation: {
+      elevated: "Sentimientos de depresión y desesperación. Deseos de estar muerto. Miedo a perder el juicio. Apatía y retirada.",
+      low: "Bienestar emocional y esperanza.",
+    },
+  },
+  {
+    code: "Sc3", name: "Falta de Control del Yo, Cognitivo", parentScale: "Sc", area: "control del yo",
+    trueItems: [31, 32, 147, 170, 180, 299, 311, 316, 325],
+    falseItems: [165],
+    interpretation: {
+      elevated: "Sentimiento de perder el juicio. Procesos de pensamiento peculiares. Sentimientos de irrealidad. Dificultad de concentración.",
+      low: "Buen control cognitivo. Pensamiento claro y organizado.",
+    },
+  },
+  {
+    code: "Sc4", name: "Falta de Control del Yo, Conativo", parentScale: "Sc", area: "control del yo",
+    trueItems: [31, 38, 48, 65, 92, 233, 234, 273, 303, 309, 316],
+    falseItems: [9, 210, 290],
+    interpretation: {
+      elevated: "Depresión, desesperación. No desea enfrentar las dificultades cotidianas. Deseos de muerte. La vida no vale la pena.",
+      low: "Capacidad de afrontamiento adecuada.",
+    },
+  },
+  {
+    code: "Sc5", name: "Falta de Control del Yo, Inhibición Deficiente", parentScale: "Sc", area: "control del yo",
+    trueItems: [23, 85, 168, 182, 218, 242, 274, 320, 322, 329, 355],
+    falseItems: [],
+    interpretation: {
+      elevated: "Inquietud, hiperactividad, irritabilidad. Puede sentir que hay períodos en blanco, episodios disociativos. Risa o llanto sin razón.",
+      low: "Buen autocontrol e inhibición.",
+    },
+  },
+  {
+    code: "Sc6", name: "Experiencias Sensoriales Inusuales", parentScale: "Sc", area: "control del yo",
+    trueItems: [22, 32, 44, 168, 182, 229, 247, 252, 256, 268, 274, 287, 291, 296, 298, 307, 311, 319, 355],
+    falseItems: [91, 106, 177, 179, 255, 295],
+    interpretation: {
+      elevated: "Cambios en percepciones corporales. Experiencias sensoriales peculiares. Alucinaciones, contenido de pensamiento inusual. Despersonalización.",
+      low: "Percepción sensorial normal.",
+    },
+  },
+  // Hypomania (Ma) subscales
+  {
+    code: "Ma1", name: "Amoralidad", parentScale: "Ma", area: "control del yo",
+    trueItems: [131, 227, 248, 250, 269],
+    falseItems: [263],
+    interpretation: {
+      elevated: "Percibe a los otros como egoístas y oportunistas. Disfruta ver manipular a otros. Experimenta poca culpa.",
+      low: "Sentido moral convencional. Respeto por las normas sociales.",
+    },
+  },
+  {
+    code: "Ma2", name: "Aceleración Psicomotora", parentScale: "Ma", area: "control del yo",
+    trueItems: [13, 15, 85, 87, 122, 169, 206, 218, 242, 244],
+    falseItems: [100, 106],
+    interpretation: {
+      elevated: "Aceleración del habla, pensamiento y actividad motora. Busca emociones y riesgos. Se aburre fácilmente. Inquietud.",
+      low: "Ritmo normal de actividad.",
+    },
+  },
+  {
+    code: "Ma3", name: "Imperturbabilidad", parentScale: "Ma", area: "interpersonal",
+    trueItems: [155, 200, 220],
+    falseItems: [93, 136, 158, 167, 243],
+    interpretation: {
+      elevated: "Niega ansiedad social. No tiene en cuenta los sentimientos de los demás. No se siente incómodo ante nada. Impaciencia con los otros.",
+      low: "Sensibilidad social, preocupación por los sentimientos de otros.",
+    },
+  },
+  {
+    code: "Ma4", name: "Inflación del Yo", parentScale: "Ma", area: "control del yo",
+    trueItems: [13, 50, 55, 61, 98, 145, 190, 211, 212],
+    falseItems: [],
+    interpretation: {
+      elevated: "Resentimiento ante las demandas. No tiene reparo en decir lo que piensa. Se siente importante. Ideas grandiosas.",
+      low: "Humildad, autocrítica realista.",
+    },
+  },
+];
+
+export function calculateHarrisLingoesScores(
+  responseMap: Map<number, 'V' | 'F'>,
+  gender: 'male' | 'female'
+): { code: string; name: string; parentScale: string; area: string; raw: number; tScore: number; interpretation: string }[] {
+  return HARRIS_LINGOES_SUBSCALES.map(sub => {
+    let score = 0;
+    for (const item of sub.trueItems) {
+      if (responseMap.get(item) === 'V') score++;
+    }
+    for (const item of sub.falseItems) {
+      if (responseMap.get(item) === 'F') score++;
+    }
+    const totalItems = sub.trueItems.length + sub.falseItems.length;
+    const tScore = totalItems > 0 ? Math.round(50 + 10 * ((score - totalItems * 0.4) / (totalItems * 0.25))) : 50;
+    const clampedT = Math.max(30, Math.min(120, tScore));
+    const interp = clampedT >= 65 ? sub.interpretation.elevated : sub.interpretation.low;
+    return { code: sub.code, name: sub.name, parentScale: sub.parentScale, area: sub.area, raw: score, tScore: clampedT, interpretation: interp };
+  });
+}
+
 export function getScaleInterpretation(scaleCode: string, tScore: number): string | null {
   const scale = SCALE_INTERPRETATIONS.find(s => s.scaleCode === scaleCode);
   if (!scale) return null;
