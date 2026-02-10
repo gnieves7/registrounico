@@ -10,7 +10,7 @@ import {
   Activity, AlertTriangle, Brain, Heart, Shield, TrendingUp, User, Zap
 } from "lucide-react";
 import {
-  VALIDITY_SCALES, CLINICAL_SCALES, CONTENT_SCALES,
+  VALIDITY_SCALES, CLINICAL_SCALES, CONTENT_SCALES, SUPPLEMENTARY_SCALES,
   SCALE_INTERPRETATIONS, SCALE_NORMS,
   calculateRawScore, calculateTScore,
   analyzeValidityPattern, analyzeClinicalPatterns,
@@ -70,6 +70,12 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
 
     // Content scales
     for (const scale of CONTENT_SCALES) {
+      rawScores[scale.code] = calculateRawScore(responseMap, scale);
+      tScores[scale.code] = calculateTScore(rawScores[scale.code], scale.code, gender);
+    }
+
+    // Supplementary scales
+    for (const scale of SUPPLEMENTARY_SCALES) {
       rawScores[scale.code] = calculateRawScore(responseMap, scale);
       tScores[scale.code] = calculateTScore(rawScores[scale.code], scale.code, gender);
     }
@@ -164,11 +170,12 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
       </div>
 
       <Tabs defaultValue="chart" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="chart" className="text-xs">Gráfico</TabsTrigger>
           <TabsTrigger value="validity" className="text-xs">Validez</TabsTrigger>
           <TabsTrigger value="clinical" className="text-xs">Clínicas</TabsTrigger>
           <TabsTrigger value="content" className="text-xs">Contenido</TabsTrigger>
+          <TabsTrigger value="supplementary" className="text-xs">Suplem.</TabsTrigger>
           <TabsTrigger value="findings" className="text-xs">Hallazgos</TabsTrigger>
         </TabsList>
 
@@ -240,6 +247,23 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
             </CardHeader>
             <CardContent className="space-y-3">
               {CONTENT_SCALES.map(scale => renderScaleBar(scale.code, `${scale.code} - ${scale.name}`))}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="supplementary">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Escalas Suplementarias
+              </CardTitle>
+              <CardDescription className="text-xs">
+                A, R, Es, MAC-R, O-H, Do, Re
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {SUPPLEMENTARY_SCALES.map(scale => renderScaleBar(scale.code, `${scale.code} - ${scale.name}`))}
             </CardContent>
           </Card>
         </TabsContent>
