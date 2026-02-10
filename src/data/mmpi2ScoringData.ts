@@ -225,6 +225,60 @@ export const CONTENT_SCALES: ScaleKey[] = [
   },
 ];
 
+// ==================== SUPPLEMENTARY SCALES ====================
+export const SUPPLEMENTARY_SCALES: ScaleKey[] = [
+  {
+    name: "Ansiedad",
+    code: "A",
+    description: "Ansiedad generalizada y malestar emocional",
+    trueItems: [31, 38, 56, 65, 82, 127, 130, 215, 233, 243, 251, 273, 277, 289, 301, 309, 310, 311, 325, 328, 338, 339, 341, 347, 390, 391, 394, 400, 408, 411, 415, 421, 428, 442, 451, 464, 469, 482, 505, 517],
+    falseItems: [388],
+  },
+  {
+    name: "Represión",
+    code: "R",
+    description: "Represión emocional y convencionalismo",
+    trueItems: [],
+    falseItems: [1, 7, 10, 14, 37, 45, 69, 87, 105, 112, 131, 155, 158, 169, 171, 212, 227, 243, 263, 267, 284, 330, 334, 362, 373, 374, 382, 389, 410, 414, 419, 426, 431, 437, 533],
+  },
+  {
+    name: "Fuerza del Yo",
+    code: "Es",
+    description: "Capacidad de adaptación y recursos personales",
+    trueItems: [2, 33, 45, 98, 141, 159, 169, 177, 179, 189, 199, 209, 213, 230, 245, 323, 385, 406, 413, 425],
+    falseItems: [31, 36, 39, 53, 62, 82, 92, 130, 178, 233, 241, 260, 303, 336, 339, 357, 361, 371, 375, 389, 391, 394, 400, 420, 431, 458, 464, 554],
+    kCorrection: 0,
+  },
+  {
+    name: "Alcoholismo MacAndrew-R",
+    code: "MAC-R",
+    description: "Predisposición al abuso de sustancias",
+    trueItems: [7, 24, 36, 49, 52, 69, 72, 82, 84, 105, 113, 115, 128, 168, 169, 205, 214, 224, 229, 238, 257, 280, 342, 344, 407, 412, 414, 422, 434, 439, 445, 456, 473, 502, 506, 549],
+    falseItems: [73, 107, 117, 137, 160, 166, 251, 266, 287, 299, 325, 387],
+  },
+  {
+    name: "Hostilidad Sobrecontrolada",
+    code: "O-H",
+    description: "Control excesivo de la hostilidad",
+    trueItems: [67, 79, 98, 116, 117, 141, 145, 162, 166, 179, 185, 208, 213, 230, 267, 387, 461],
+    falseItems: [1, 7, 29, 58, 71, 81, 110, 239, 254, 284, 374, 383, 406, 440, 471],
+  },
+  {
+    name: "Dominancia",
+    code: "Do",
+    description: "Capacidad de liderazgo y seguridad social",
+    trueItems: [55, 207, 232, 245, 386, 406],
+    falseItems: [31, 52, 70, 73, 82, 172, 201, 202, 220, 227, 243, 244, 275, 309, 325, 399, 412, 470, 473],
+  },
+  {
+    name: "Responsabilidad Social",
+    code: "Re",
+    description: "Sentido de responsabilidad y compromiso social",
+    trueItems: [100, 160, 199, 266, 440, 467],
+    falseItems: [7, 27, 29, 32, 84, 103, 105, 145, 164, 169, 201, 202, 235, 275, 358, 412, 417, 418, 430, 431, 432, 456, 468, 470],
+  },
+];
+
 // ==================== T-SCORE CONVERSION TABLES ====================
 // Simplified T-score conversion using linear interpolation based on standard norms
 // In production, use full conversion tables from the manual
@@ -266,6 +320,14 @@ export const SCALE_NORMS: Record<string, { maleMean: number; maleSD: number; fem
   FAM: { maleMean: 4.5, maleSD: 3.5, femaleMean: 5.0, femaleSD: 3.8 },
   DTR: { maleMean: 7.0, maleSD: 5.0, femaleMean: 7.5, femaleSD: 5.2 },
   RTR: { maleMean: 8.5, maleSD: 4.0, femaleMean: 7.5, femaleSD: 3.8 },
+  // Supplementary scales
+  A:     { maleMean: 10.5, maleSD: 7.5, femaleMean: 12.0, femaleSD: 8.0 },
+  R:     { maleMean: 14.8, maleSD: 5.2, femaleMean: 16.5, femaleSD: 5.5 },
+  Es:    { maleMean: 33.0, maleSD: 6.5, femaleMean: 31.0, femaleSD: 6.8 },
+  'MAC-R': { maleMean: 24.0, maleSD: 4.5, femaleMean: 21.5, femaleSD: 4.2 },
+  'O-H': { maleMean: 13.5, maleSD: 4.2, femaleMean: 14.8, femaleSD: 4.5 },
+  Do:    { maleMean: 15.5, maleSD: 4.0, femaleMean: 14.8, femaleSD: 4.2 },
+  Re:    { maleMean: 20.5, maleSD: 4.5, femaleMean: 21.0, femaleSD: 4.8 },
 };
 
 export function calculateRawScore(
@@ -601,6 +663,70 @@ export const SCALE_INTERPRETATIONS: ScaleInterpretation[] = [
     interpretations: [
       { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Actitudes negativas hacia la salud mental. No creen que alguien pueda entenderlos. Resistencia a asumir responsabilidad sobre sus problemas." },
       { range: "≤40", minT: 0, maxT: 40, level: "Bajo", interpretation: "Apertura al tratamiento psicológico." },
+    ],
+  },
+  // SUPPLEMENTARY SCALES
+  {
+    scaleCode: "A", scaleName: "Ansiedad (A)", scaleType: "content" as const,
+    description: "Ansiedad generalizada y malestar emocional",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Malestar emocional generalizado. Ansiedad, tensión, inhibición. Persona con poca confianza, lenta, pesimista, sumisa y conformista." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Nivel de ansiedad dentro de límites normales." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona extrovertida, enérgica, competitiva, socialmente dominante. Puede ser impulsiva." },
+    ],
+  },
+  {
+    scaleCode: "R", scaleName: "Represión (R)", scaleType: "content" as const,
+    description: "Represión emocional y convencionalismo",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Represión emocional marcada. Persona convencional, sumisa, que evita situaciones desagradables. Internaliza conflictos. Clara, formal, cautelosa." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Nivel de represión dentro de límites normales." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona espontánea, excitable, entusiasta, desinhibida. Expresiva emocionalmente." },
+    ],
+  },
+  {
+    scaleCode: "Es", scaleName: "Fuerza del Yo (Es)", scaleType: "content" as const,
+    description: "Capacidad de adaptación y recursos personales",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Buenos recursos de personalidad. Capacidad de recuperarse del estrés. Persona estable, confiable, con buen sentido de la realidad. Buen pronóstico terapéutico." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Recursos de personalidad dentro de límites normales." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Pocos recursos personales. Dificultad para enfrentar estrés. Persona inhibida, con mala salud, quejas crónicas. Peor pronóstico terapéutico." },
+    ],
+  },
+  {
+    scaleCode: "MAC-R", scaleName: "Alcoholismo MacAndrew-R", scaleType: "content" as const,
+    description: "Predisposición al abuso de sustancias",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Alto riesgo de problemas con sustancias. Persona socialmente extrovertida, exhibicionista, con poca tolerancia al dolor y propensa a correr riesgos. Puede tener antecedentes de abuso de alcohol u otras sustancias." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Sin indicadores significativos de riesgo de abuso de sustancias." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona introvertida, tímida, poco interesada en actividades competitivas. Bajo riesgo de abuso de sustancias." },
+    ],
+  },
+  {
+    scaleCode: "O-H", scaleName: "Hostilidad Sobrecontrolada (O-H)", scaleType: "content" as const,
+    description: "Control excesivo de la hostilidad",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Sobrecontrol de la hostilidad. Persona que no expresa la ira abiertamente, acumula resentimiento. Puede tener explosiones agresivas repentinas y desproporcionadas. Sociable y dependiente." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Control adecuado de la hostilidad." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona que expresa abiertamente la agresión. Puede ser hostil, competitiva y dominante." },
+    ],
+  },
+  {
+    scaleCode: "Do", scaleName: "Dominancia (Do)", scaleType: "content" as const,
+    description: "Capacidad de liderazgo y seguridad social",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Persona con iniciativa, seguridad, confianza en sí misma. Capacidad de liderazgo. Aplomo social, optimismo, orientación a tareas." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Nivel de dominancia dentro de límites normales." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona sumisa, dependiente, con poca iniciativa. Falta de autoconfianza y dificultad para tomar decisiones." },
+    ],
+  },
+  {
+    scaleCode: "Re", scaleName: "Responsabilidad Social (Re)", scaleType: "content" as const,
+    description: "Sentido de responsabilidad y compromiso social",
+    interpretations: [
+      { range: "65+", minT: 65, maxT: 120, level: "Alto", interpretation: "Fuerte sentido de responsabilidad y justicia. Persona confiable, íntegra, acepta las consecuencias de su conducta. Comprometida con valores sociales." },
+      { range: "40-64", minT: 40, maxT: 64, level: "Normal", interpretation: "Nivel de responsabilidad social dentro de límites normales." },
+      { range: "≤39", minT: 0, maxT: 39, level: "Bajo", interpretation: "Persona con poco sentido de responsabilidad. Puede ser irresponsable, poco confiable, con dificultad para aceptar reglas sociales." },
     ],
   },
 ];
