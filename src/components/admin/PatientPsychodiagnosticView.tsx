@@ -26,9 +26,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
-import { mbtiDescriptions } from "@/data/mbtiQuestions";
+import { mbtiDescriptions, mbtiPreferences, getPreferenceStrength } from "@/data/mbtiQuestions";
 import { Mmpi2ProfileAnalysis } from "./Mmpi2ProfileAnalysis";
 import { Mmpi2ReportGenerator } from "./Mmpi2ReportGenerator";
+import { MbtiReportGenerator } from "./MbtiReportGenerator";
 import type { Json } from "@/integrations/supabase/types";
 
 interface PatientPsychodiagnosticViewProps {
@@ -396,7 +397,7 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
 
       {/* MBTI Dialog */}
       <Dialog open={!!selectedMbti} onOpenChange={() => setSelectedMbti(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl max-h-[90vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Brain className="h-5 w-5" />
@@ -405,77 +406,207 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
           </DialogHeader>
           
           {selectedMbti && (
-            <div className="space-y-4">
-              {selectedMbti.is_complete && selectedMbti.personality_type && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Extroversión (E) vs Introversión (I)</Label>
-                    <Progress 
-                      value={(selectedMbti.extraversion_score / (selectedMbti.extraversion_score + selectedMbti.introversion_score)) * 100} 
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>E: {selectedMbti.extraversion_score}</span>
-                      <span>I: {selectedMbti.introversion_score}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Sensación (S) vs Intuición (N)</Label>
-                    <Progress 
-                      value={(selectedMbti.sensing_score / (selectedMbti.sensing_score + selectedMbti.intuition_score)) * 100} 
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>S: {selectedMbti.sensing_score}</span>
-                      <span>N: {selectedMbti.intuition_score}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Pensamiento (T) vs Sentimiento (F)</Label>
-                    <Progress 
-                      value={(selectedMbti.thinking_score / (selectedMbti.thinking_score + selectedMbti.feeling_score)) * 100} 
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>T: {selectedMbti.thinking_score}</span>
-                      <span>F: {selectedMbti.feeling_score}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Juicio (J) vs Percepción (P)</Label>
-                    <Progress 
-                      value={(selectedMbti.judging_score / (selectedMbti.judging_score + selectedMbti.perceiving_score)) * 100} 
-                    />
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>J: {selectedMbti.judging_score}</span>
-                      <span>P: {selectedMbti.perceiving_score}</span>
-                    </div>
-                  </div>
-                </div>
-              )}
+            <ScrollArea className="max-h-[70vh]">
+              <div className="space-y-4 pr-4">
+                {selectedMbti.is_complete && selectedMbti.personality_type && (() => {
+                  const typeInfo = mbtiDescriptions[selectedMbti.personality_type];
+                  const dims = [
+                    { left: 'E', right: 'I', leftLabel: 'Extroversión', rightLabel: 'Introversión', leftScore: selectedMbti.extraversion_score, rightScore: selectedMbti.introversion_score },
+                    { left: 'S', right: 'N', leftLabel: 'Sensación', rightLabel: 'Intuición', leftScore: selectedMbti.sensing_score, rightScore: selectedMbti.intuition_score },
+                    { left: 'T', right: 'F', leftLabel: 'Pensamiento', rightLabel: 'Sentimiento', leftScore: selectedMbti.thinking_score, rightScore: selectedMbti.feeling_score },
+                    { left: 'J', right: 'P', leftLabel: 'Juicio', rightLabel: 'Percepción', leftScore: selectedMbti.judging_score, rightScore: selectedMbti.perceiving_score },
+                  ];
 
-              <div>
-                <Label>Notas Clínicas</Label>
-                <Textarea
-                  value={clinicalNotes}
-                  onChange={(e) => setClinicalNotes(e.target.value)}
-                  placeholder="Escriba sus observaciones clínicas sobre este resultado..."
-                  rows={4}
-                />
+                  return (
+                    <Tabs defaultValue="profile" className="w-full">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="profile" className="gap-2">
+                          <BarChart3 className="h-4 w-4" />
+                          Perfil Completo
+                        </TabsTrigger>
+                        <TabsTrigger value="notes" className="gap-2">
+                          <Edit className="h-4 w-4" />
+                          Notas Clínicas
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="profile" className="mt-4 space-y-4">
+                        {/* Type header */}
+                        {typeInfo && (
+                          <div className="rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 p-4 text-center">
+                            <Badge variant="secondary" className="text-xl px-5 py-1 font-bold">{selectedMbti.personality_type}</Badge>
+                            <p className="text-lg font-semibold text-primary mt-2">{typeInfo.title}</p>
+                            <p className="text-xs text-muted-foreground">{typeInfo.subtitle}</p>
+                          </div>
+                        )}
+
+                        {/* Preference bars */}
+                        <div className="space-y-3">
+                          {dims.map((dim) => {
+                            const total = dim.leftScore + dim.rightScore;
+                            const leftPct = total > 0 ? (dim.leftScore / total) * 100 : 50;
+                            const diff = Math.abs(dim.leftScore - dim.rightScore);
+                            const strength = getPreferenceStrength(diff);
+                            return (
+                              <div key={dim.left} className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                  <span className={dim.leftScore >= dim.rightScore ? 'font-bold text-foreground' : 'text-muted-foreground'}>
+                                    {dim.leftLabel} ({dim.left}): {dim.leftScore}
+                                  </span>
+                                  <Badge variant="outline" className="text-[10px] h-5">{strength.label}</Badge>
+                                  <span className={dim.rightScore > dim.leftScore ? 'font-bold text-foreground' : 'text-muted-foreground'}>
+                                    {dim.rightLabel} ({dim.right}): {dim.rightScore}
+                                  </span>
+                                </div>
+                                <div className="relative h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                                  <div className="absolute left-0 top-0 h-full rounded-full bg-primary/70" style={{ width: `${leftPct}%` }} />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Description */}
+                        {typeInfo && (
+                          <>
+                            <div className="rounded-lg border p-3">
+                              <p className="text-sm text-muted-foreground leading-relaxed">{typeInfo.description}</p>
+                            </div>
+
+                            {/* Dominant preferences */}
+                            <div>
+                              <h4 className="text-sm font-semibold mb-2 flex items-center gap-1"><Brain className="h-4 w-4 text-primary" /> Preferencias Dominantes</h4>
+                              <div className="grid grid-cols-2 gap-2">
+                                {selectedMbti.personality_type.split('').map((letter) => {
+                                  const pref = mbtiPreferences[letter as keyof typeof mbtiPreferences];
+                                  if (!pref) return null;
+                                  return (
+                                    <div key={letter} className="rounded-lg border p-3 space-y-1">
+                                      <div className="flex items-center gap-2">
+                                        <Badge className="text-xs">{pref.letter}</Badge>
+                                        <span className="font-semibold text-xs">{pref.name}</span>
+                                      </div>
+                                      <ul className="text-[10px] text-muted-foreground space-y-0.5">
+                                        {pref.characteristics.slice(0, 3).map((c, i) => (
+                                          <li key={i}>• {c}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Contributions */}
+                            <div>
+                              <h4 className="text-sm font-semibold mb-2 flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-primary" /> Contribución a la Organización</h4>
+                              <ul className="space-y-1">
+                                {typeInfo.contributions.map((item, i) => (
+                                  <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                                    <span className="text-primary mt-0.5">✓</span>{item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            {/* Leadership & Environment */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <h4 className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-primary" /> Estilo de Mando</h4>
+                                <ul className="space-y-0.5">
+                                  {typeInfo.leadershipStyle.map((item, i) => (
+                                    <li key={i} className="text-[10px] text-muted-foreground">▸ {item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <h4 className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Building2 className="h-3.5 w-3.5 text-primary" /> Entorno Preferido</h4>
+                                <ul className="space-y-0.5">
+                                  {typeInfo.preferredEnvironment.map((item, i) => (
+                                    <li key={i} className="text-[10px] text-muted-foreground">▸ {item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+
+                            {/* Dangers & Suggestions */}
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="rounded-lg border border-destructive/20 p-3">
+                                <h4 className="text-xs font-semibold mb-1.5 text-destructive">⚠ Peligros Potenciales</h4>
+                                <ul className="space-y-0.5">
+                                  {typeInfo.potentialDangers.map((item, i) => (
+                                    <li key={i} className="text-[10px] text-muted-foreground">• {item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div className="rounded-lg border border-primary/20 p-3">
+                                <h4 className="text-xs font-semibold mb-1.5 text-primary">💡 Sugerencias de Desarrollo</h4>
+                                <ul className="space-y-0.5">
+                                  {typeInfo.developmentSuggestions.map((item, i) => (
+                                    <li key={i} className="text-[10px] text-muted-foreground">• {item}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </TabsContent>
+
+                      <TabsContent value="notes" className="mt-4 space-y-4">
+                        <div>
+                          <Label>Notas Clínicas</Label>
+                          <Textarea
+                            value={clinicalNotes}
+                            onChange={(e) => setClinicalNotes(e.target.value)}
+                            placeholder="Escriba sus observaciones clínicas sobre este resultado..."
+                            rows={6}
+                          />
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  );
+                })()}
+
+                {(!selectedMbti.is_complete || !selectedMbti.personality_type) && (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>Este test aún no ha sido completado por el paciente.</p>
+                  </div>
+                )}
               </div>
-            </div>
+            </ScrollArea>
           )}
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedMbti(null)}>
-              Cancelar
-            </Button>
-            <Button 
-              onClick={() => selectedMbti && updateMbtiNotes.mutate({ 
-                id: selectedMbti.id, 
-                notes: clinicalNotes 
-              })}
-              disabled={updateMbtiNotes.isPending}
-            >
-              Guardar Notas
-            </Button>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {selectedMbti?.is_complete && selectedMbti.personality_type && (
+              <MbtiReportGenerator
+                testId={selectedMbti.id}
+                patientId={patientId}
+                patientName={patientName}
+                testDate={selectedMbti.test_date}
+                personalityType={selectedMbti.personality_type}
+                scores={{
+                  E: selectedMbti.extraversion_score,
+                  I: selectedMbti.introversion_score,
+                  S: selectedMbti.sensing_score,
+                  N: selectedMbti.intuition_score,
+                  T: selectedMbti.thinking_score,
+                  F: selectedMbti.feeling_score,
+                  J: selectedMbti.judging_score,
+                  P: selectedMbti.perceiving_score,
+                }}
+                clinicalNotes={selectedMbti.clinical_notes}
+              />
+            )}
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSelectedMbti(null)}>Cancelar</Button>
+              <Button 
+                onClick={() => selectedMbti && updateMbtiNotes.mutate({ id: selectedMbti.id, notes: clinicalNotes })}
+                disabled={updateMbtiNotes.isPending}
+              >
+                Guardar Notas
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
