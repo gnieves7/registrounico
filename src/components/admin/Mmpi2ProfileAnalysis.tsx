@@ -16,6 +16,7 @@ import {
   analyzeValidityPattern, analyzeClinicalPatterns,
   getTScoreLevel, getScaleInterpretation,
 } from "@/data/mmpi2ScoringData";
+import { Mmpi2ProfileChart } from "./Mmpi2ProfileChart";
 
 interface Mmpi2Response {
   question_number: number;
@@ -162,13 +163,23 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
         )}
       </div>
 
-      <Tabs defaultValue="validity" className="space-y-3">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="chart" className="space-y-3">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="chart" className="text-xs">Gráfico</TabsTrigger>
           <TabsTrigger value="validity" className="text-xs">Validez</TabsTrigger>
           <TabsTrigger value="clinical" className="text-xs">Clínicas</TabsTrigger>
           <TabsTrigger value="content" className="text-xs">Contenido</TabsTrigger>
           <TabsTrigger value="findings" className="text-xs">Hallazgos</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="chart">
+          <Mmpi2ProfileChart
+            responses={responses}
+            totalAnswered={totalAnswered}
+            gender={gender}
+            onGenderChange={setGender}
+          />
+        </TabsContent>
 
         <TabsContent value="validity">
           <Card>
