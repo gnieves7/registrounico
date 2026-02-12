@@ -15,6 +15,7 @@ import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
 import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
+import ProfessionalProfile from "./pages/ProfessionalProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/sessions" element={<Sessions />} />
               <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<Documents />} />
+              <Route path="/professional-profile" element={<ProfessionalProfile />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
             </Route>

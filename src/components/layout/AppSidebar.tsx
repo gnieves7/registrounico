@@ -8,7 +8,8 @@ import {
   Settings,
   LogOut,
   Moon,
-  Brain
+  Brain,
+  UserCheck
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -39,6 +40,7 @@ const patientMenuItems = [
   { title: "Mis Sesiones", url: "/sessions", icon: Calendar },
   { title: "Laura", url: "/laura", icon: MessageCircle },
   { title: "Documentos", url: "/documents", icon: FileText },
+  { title: "Profesional", url: "/professional-profile", icon: UserCheck },
 ];
 
 const adminMenuItems = [
