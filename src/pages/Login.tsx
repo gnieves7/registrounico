@@ -101,28 +101,25 @@ const Login = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 flex-col lg:flex-row">
-        {/* Left: Photo */}
+        {/* Left: Photo – 50% */}
         <div
-          className="relative hidden lg:flex lg:w-[320px] xl:w-[380px] items-center justify-center bg-cover bg-center"
+          className="relative flex min-h-[30vh] flex-1 items-center justify-center bg-cover bg-center lg:min-h-0"
           style={{ backgroundImage: `url(${danteBg})` }}
         >
-          <div className="absolute inset-0 bg-background/40" />
-          <div className="relative z-10 max-w-xs px-6 text-center">
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px]" />
+          <div className="relative z-10 max-w-md px-6 text-center">
             <Flame className="mx-auto mb-3 h-10 w-10 text-primary" />
-            <p className="rounded-lg bg-background/60 px-4 py-3 font-serif text-sm italic text-foreground/90 backdrop-blur-sm">
-              "Los senderos del inconsciente son sinuosos y enigmáticos… Recorrerlo es la única manera de descubrirte y poder lograr la paz mental."
+            <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+              Registro Clínico Personalizado
+            </h1>
+            <p className="mt-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-sm italic text-foreground/80 backdrop-blur-sm md:text-base">
+              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
             </p>
           </div>
         </div>
 
-        {/* Right: Title + Sections */}
+        {/* Right: Sections – 50% */}
         <div className="flex flex-1 flex-col justify-center bg-background px-6 py-8 lg:px-10 lg:py-10">
-          <h1 className="mb-2 font-serif text-2xl font-bold text-foreground md:text-3xl">
-            Registro Clínico Personalizado
-          </h1>
-          <p className="mb-6 hidden font-serif text-sm italic text-muted-foreground md:block">
-            ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
-          </p>
 
           <div className="flex flex-col gap-4">
             {sections.map((section) => (
