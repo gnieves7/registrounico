@@ -139,11 +139,8 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
         if (uploadError) throw uploadError;
 
-        const { data: urlData } = supabase.storage
-          .from("documents")
-          .getPublicUrl(fileName);
-
-        fileUrl = urlData.publicUrl;
+        // Store the storage path, not a public URL (bucket is private)
+        fileUrl = fileName;
       }
 
       // Create document record
@@ -532,7 +529,16 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
                       <Button
                         size="icon"
                         variant="ghost"
-                        onClick={() => window.open(doc.file_url!, "_blank")}
+                        onClick={async () => {
+                          const { data, error } = await supabase.storage
+                            .from("documents")
+                            .createSignedUrl(doc.file_url!, 3600);
+                          if (data?.signedUrl) {
+                            window.open(data.signedUrl, "_blank");
+                          } else {
+                            toast({ title: "Error", description: "No se pudo obtener el archivo", variant: "destructive" });
+                          }
+                        }}
                         title="Descargar"
                       >
                         <Download className="h-4 w-4" />

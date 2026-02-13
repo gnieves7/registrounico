@@ -54,7 +54,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email notification
     const emailResponse = await resend.emails.send({
-      from: "Clínica Psicológica <noreply@psicologiaclinica.app>",
+      from: "Clínica Psicológica <onboarding@resend.dev>",
       to: [profile.email],
       subject: `Tu documento "${documentTitle}" está listo para descargar`,
       html: `
