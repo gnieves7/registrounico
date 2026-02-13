@@ -112,7 +112,7 @@ const Login = () => {
               Registro Clínico Personalizado
             </h1>
             <p className="mt-4 rounded-lg bg-background/40 px-4 py-3 font-serif text-base italic text-card drop-shadow-md backdrop-blur-sm md:text-lg">
-              "Los senderos del inconsciente son misteriosos… qué mejor un compañero para transitarlos"
+              "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ const Login = () => {
               Registro Clínico Personalizado
             </h1>
             <p className="mt-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-base italic text-foreground/80 xl:text-lg">
-              ✨ "Los senderos del inconsciente son misteriosos… qué mejor un compañero para transitarlos"
+              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
             </p>
           </div>
 
