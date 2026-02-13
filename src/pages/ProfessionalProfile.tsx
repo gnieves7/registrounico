@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   GraduationCap, 
   Briefcase, 
@@ -13,14 +15,32 @@ import {
   HeartPulse, 
   BookOpen,
   ExternalLink,
-  Star
+  Star,
+  Pencil,
+  Plus,
+  Trash2,
+  Save,
+  X
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import professionalPhoto from "@/assets/professional-photo.jpg";
 
-const services = [
+interface EducationItem {
+  title: string;
+  institution: string;
+  type: string;
+}
+
+const initialServices = [
   {
     title: "Pericias Psicológicas",
     subtitle: "Civil & Penal",
@@ -66,7 +86,7 @@ const services = [
   },
 ];
 
-const education = [
+const initialEducation: EducationItem[] = [
   { title: "Licenciado en Psicología", institution: "Universidad Católica de Santa Fe", type: "Título de Grado" },
   { title: "Especialista en Psicología Forense", institution: "Universidad Nacional de Rosario", type: "Posgrado" },
   { title: "Diplomatura en Psicodiagnóstico Rorschach", institution: "Universidad Católica de Santa Fe", type: "Formación Especializada" },
@@ -91,13 +111,54 @@ const affiliations = [
 ];
 
 const ProfessionalProfile = () => {
+  const { isAdmin } = useAuth();
+  const [education, setEducation] = useState<EducationItem[]>(initialEducation);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingEdu, setEditingEdu] = useState<EducationItem | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [newEdu, setNewEdu] = useState<EducationItem>({ title: "", institution: "", type: "" });
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+
+  const handleEditEdu = (item: EducationItem, index: number) => {
+    setEditingEdu({ ...item });
+    setEditingIndex(index);
+    setEditDialogOpen(true);
+  };
+
+  const handleSaveEdu = () => {
+    if (editingEdu && editingIndex !== null) {
+      const updated = [...education];
+      updated[editingIndex] = editingEdu;
+      setEducation(updated);
+      setEditDialogOpen(false);
+      toast.success("Formación actualizada");
+    }
+  };
+
+  const handleDeleteEdu = (index: number) => {
+    setEducation(education.filter((_, i) => i !== index));
+    toast.success("Formación eliminada");
+  };
+
+  const handleAddEdu = () => {
+    if (!newEdu.title || !newEdu.institution || !newEdu.type) {
+      toast.error("Completá todos los campos");
+      return;
+    }
+    setEducation([...education, newEdu]);
+    setNewEdu({ title: "", institution: "", type: "" });
+    setAddDialogOpen(false);
+    toast.success("Formación agregada");
+  };
+
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-8 pb-8 p-4 md:p-6">
       {/* Hero Section */}
       <Card className="overflow-hidden">
         <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 md:p-8">
           <div className="flex flex-col md:flex-row items-start gap-6">
-            <Avatar className="h-24 w-24 md:h-28 md:w-28 border-4 border-background shadow-lg">
+            <Avatar className="h-28 w-28 md:h-32 md:w-32 border-4 border-background shadow-lg">
+              <AvatarImage src={professionalPhoto} alt="Lic. Esp. Germán Nieves" className="object-cover" />
               <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
                 GN
               </AvatarFallback>
@@ -123,6 +184,11 @@ const ProfessionalProfile = () => {
                 <Badge variant="outline" className="gap-1.5">
                   <MapPin className="h-3 w-3" /> Santa Fe, Argentina
                 </Badge>
+                {isAdmin && (
+                  <Badge variant="secondary" className="gap-1.5">
+                    <Pencil className="h-3 w-3" /> Modo Edición
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
@@ -198,16 +264,35 @@ const ProfessionalProfile = () => {
       {/* Education */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <GraduationCap className="h-5 w-5 text-primary" />
-            Formación Académica
-          </CardTitle>
-          <CardDescription>Trayectoria de formación continua y especialización</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                Formación Académica
+              </CardTitle>
+              <CardDescription>Trayectoria de formación continua y especialización</CardDescription>
+            </div>
+            {isAdmin && (
+              <Button variant="outline" size="sm" onClick={() => setAddDialogOpen(true)} className="gap-1.5">
+                <Plus className="h-4 w-4" /> Agregar
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {education.map((item) => (
-              <div key={item.title} className="rounded-lg border bg-muted/30 p-4 space-y-2">
+            {education.map((item, index) => (
+              <div key={item.title + index} className="rounded-lg border bg-muted/30 p-4 space-y-2 relative group">
+                {isAdmin && (
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditEdu(item, index)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDeleteEdu(index)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                )}
                 <Badge variant="secondary" className="text-xs">{item.type}</Badge>
                 <h4 className="font-medium text-sm text-foreground">{item.title}</h4>
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -232,7 +317,7 @@ const ProfessionalProfile = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map((service) => (
+          {initialServices.map((service) => (
             <Card key={service.title} className="relative overflow-hidden">
               {service.popular && (
                 <Badge className="absolute top-3 right-3 text-xs">Más Solicitado</Badge>
@@ -311,6 +396,62 @@ const ProfessionalProfile = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Education Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Formación</DialogTitle>
+          </DialogHeader>
+          {editingEdu && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Título</Label>
+                <Input value={editingEdu.title} onChange={(e) => setEditingEdu({ ...editingEdu, title: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Institución</Label>
+                <Input value={editingEdu.institution} onChange={(e) => setEditingEdu({ ...editingEdu, institution: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Tipo</Label>
+                <Input value={editingEdu.type} onChange={(e) => setEditingEdu({ ...editingEdu, type: e.target.value })} />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveEdu}>Guardar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Education Dialog */}
+      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Agregar Formación</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Título</Label>
+              <Input value={newEdu.title} onChange={(e) => setNewEdu({ ...newEdu, title: e.target.value })} placeholder="Ej: Diplomatura en..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Institución</Label>
+              <Input value={newEdu.institution} onChange={(e) => setNewEdu({ ...newEdu, institution: e.target.value })} placeholder="Ej: Universidad Nacional de..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Tipo</Label>
+              <Input value={newEdu.type} onChange={(e) => setNewEdu({ ...newEdu, type: e.target.value })} placeholder="Ej: Posgrado, Especialización..." />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleAddEdu}>Agregar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
