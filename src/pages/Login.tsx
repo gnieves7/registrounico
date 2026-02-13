@@ -101,25 +101,21 @@ const Login = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 flex-col lg:flex-row">
-        {/* Left: Photo – 50% */}
+        {/* Left: Photo – clean, no overlay text */}
         <div
-          className="relative flex min-h-[30vh] flex-1 items-center justify-center bg-cover bg-center lg:min-h-0"
+          className="relative min-h-[30vh] flex-1 bg-cover bg-center lg:min-h-0"
           style={{ backgroundImage: `url(${danteBg})` }}
-        >
-          <div className="absolute inset-0 bg-background/50 backdrop-blur-[2px]" />
-          <div className="relative z-10 max-w-md px-6 text-center">
-            <Flame className="mx-auto mb-3 h-10 w-10 text-primary" />
-            <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
-              Registro Clínico Personalizado
-            </h1>
-            <p className="mt-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-sm italic text-foreground/80 backdrop-blur-sm md:text-base">
-              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
-            </p>
-          </div>
-        </div>
+        />
 
-        {/* Right: Sections – 50% */}
+        {/* Right: Title + Quote + Sections */}
         <div className="flex flex-1 flex-col justify-center bg-background px-6 py-8 lg:px-10 lg:py-10">
+          <Flame className="mb-3 h-10 w-10 text-primary" />
+          <h1 className="mb-2 font-serif text-2xl font-bold text-foreground md:text-3xl">
+            Registro Clínico Personalizado
+          </h1>
+          <p className="mb-6 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-sm italic text-foreground/80 md:text-base">
+            ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
+          </p>
 
           <div className="flex flex-col gap-4">
             {sections.map((section) => (
