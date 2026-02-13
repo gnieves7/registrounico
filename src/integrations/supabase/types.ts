@@ -382,6 +382,51 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_profile_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: Json | null
+          icon_name: string | null
+          id: string
+          institution: string | null
+          is_popular: boolean | null
+          item_type: string
+          sort_order: number | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          icon_name?: string | null
+          id?: string
+          institution?: string | null
+          is_popular?: boolean | null
+          item_type: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          icon_name?: string | null
+          id?: string
+          institution?: string | null
+          is_popular?: boolean | null
+          item_type?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
