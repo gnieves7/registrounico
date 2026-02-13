@@ -49,9 +49,11 @@ const Login = () => {
 
   useEffect(() => {
     if (user && !isLoading) {
-      const redirectTo = sessionStorage.getItem("login_redirect") || "/dashboard";
-      sessionStorage.removeItem("login_redirect");
-      navigate(redirectTo);
+      const redirectTo = sessionStorage.getItem("login_redirect");
+      if (redirectTo) {
+        sessionStorage.removeItem("login_redirect");
+        navigate(redirectTo);
+      }
     }
   }, [user, isLoading, navigate]);
 
@@ -68,6 +70,24 @@ const Login = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="animate-pulse text-primary">Cargando...</div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+          <div className="mb-6 rounded-full bg-primary/10 p-5">
+            <Shield className="h-14 w-14 text-primary" />
+          </div>
+          <h1 className="mb-2 font-serif text-3xl font-bold text-foreground">¡Hola de nuevo!</h1>
+          <p className="mb-8 text-muted-foreground">Ya tenés una sesión activa.</p>
+          <Button size="lg" onClick={() => navigate("/dashboard")}>
+            Ir al Dashboard
+          </Button>
+        </main>
+        <Footer />
       </div>
     );
   }
