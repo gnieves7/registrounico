@@ -5,10 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Download, Clock, FileCheck, Key, CreditCard, Loader2 } from "lucide-react";
+import { FileText, Download, Clock, FileCheck, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { DownloadCodeInput } from "@/components/documents/DownloadCodeInput";
 
 interface Document {
   id: string;
@@ -17,14 +16,6 @@ interface Document {
   document_type: string;
   file_url: string | null;
   created_at: string;
-  price: number;
-  is_paid: boolean;
-  download_code: string | null;
-}
-
-interface PaymentInfo {
-  alias: string;
-  cvu: string;
 }
 
 const Documents = () => {
@@ -32,33 +23,13 @@ const Documents = () => {
   const { toast } = useToast();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [codeDialogDoc, setCodeDialogDoc] = useState<Document | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
 
   useEffect(() => {
     if (user) {
       fetchDocuments();
-      fetchPaymentInfo();
     }
   }, [user]);
-
-  const fetchPaymentInfo = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("professional_profile_content")
-        .select("content")
-        .eq("section_key", "payment_info")
-        .maybeSingle();
-
-      if (error) throw error;
-      if (data?.content) {
-        setPaymentInfo(data.content as unknown as PaymentInfo);
-      }
-    } catch (error) {
-      console.error("Error fetching payment info:", error);
-    }
-  };
 
   const fetchDocuments = async () => {
     if (!user) return;
@@ -66,7 +37,7 @@ const Documents = () => {
     try {
       const { data, error } = await supabase
         .from("documents")
-        .select("id, title, description, document_type, file_url, created_at, price, is_paid, download_code")
+        .select("id, title, description, document_type, file_url, created_at")
         .eq("patient_id", user.id)
         .order("created_at", { ascending: false });
 
@@ -84,13 +55,13 @@ const Documents = () => {
     }
   };
 
-  const handleDownload = async (document: Document) => {
-    if (!document.file_url) return;
-    setDownloadingId(document.id);
+  const handleDownload = async (doc: Document) => {
+    if (!doc.file_url) return;
+    setDownloadingId(doc.id);
     try {
       const { data, error } = await supabase.storage
         .from("documents")
-        .createSignedUrl(document.file_url, 3600);
+        .createSignedUrl(doc.file_url, 3600);
 
       if (error) throw error;
       if (data?.signedUrl) {
@@ -143,97 +114,55 @@ const Documents = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {documents.map(doc => {
-            const needsPayment = doc.price > 0 && !doc.is_paid;
-            const canDownload = doc.file_url && (doc.price === 0 || doc.is_paid);
-
-            return (
-              <Card key={doc.id}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div className="rounded-lg bg-primary/10 p-2 text-primary">
-                        <FileCheck className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-base">{doc.title}</CardTitle>
-                        {doc.description && (
-                          <CardDescription className="mt-1">
-                            {doc.description}
-                          </CardDescription>
-                        )}
-                      </div>
-                    </div>
+          {documents.map(doc => (
+            <Card key={doc.id}>
+              <CardHeader className="pb-3">
+                <div className="flex items-start gap-3">
+                  <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                    <FileCheck className="h-5 w-5" />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      <span>
-                        {format(new Date(doc.created_at), "d 'de' MMMM, yyyy", { locale: es })}
-                      </span>
-                      {doc.price > 0 && (
-                        <span className="font-medium text-foreground ml-2">
-                          ${doc.price.toLocaleString("es-AR")}
-                        </span>
+                  <div>
+                    <CardTitle className="text-base">{doc.title}</CardTitle>
+                    {doc.description && (
+                      <CardDescription className="mt-1">
+                        {doc.description}
+                      </CardDescription>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    <span>
+                      {format(new Date(doc.created_at), "d 'de' MMMM, yyyy", { locale: es })}
+                    </span>
+                  </div>
+
+                  {doc.file_url ? (
+                    <Button
+                      onClick={() => handleDownload(doc)}
+                      variant="outline"
+                      className="shrink-0 self-start"
+                      disabled={downloadingId === doc.id}
+                    >
+                      {downloadingId === doc.id ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Download className="mr-2 h-4 w-4" />
                       )}
-                    </div>
-
-                    {/* Payment info for unpaid documents */}
-                    {needsPayment && (
-                      <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
-                        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                          <CreditCard className="h-4 w-4 text-primary" />
-                          Datos para abonar
-                        </div>
-                        <div className="text-sm text-muted-foreground space-y-1">
-                          <p><strong>Alias:</strong> {paymentInfo?.alias || "No disponible"}</p>
-                          <p><strong>CVU:</strong> {paymentInfo?.cvu || "No disponible"}</p>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          Una vez confirmado el pago, tu terapeuta te enviará el código de descarga.
-                        </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCodeDialogDoc(doc)}
-                          className="gap-2"
-                        >
-                          <Key className="h-4 w-4" />
-                          Tengo el código de descarga
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Download button for paid/free documents */}
-                    {canDownload && (
-                      <Button
-                        onClick={() => handleDownload(doc)}
-                        variant="outline"
-                        className="shrink-0 self-start"
-                        disabled={downloadingId === doc.id}
-                      >
-                        {downloadingId === doc.id ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <Download className="mr-2 h-4 w-4" />
-                        )}
-                        Descargar PDF
-                      </Button>
-                    )}
-
-                    {/* Waiting for file upload */}
-                    {!doc.file_url && (
-                      <p className="text-sm text-muted-foreground italic">
-                        Documento pendiente de carga por tu terapeuta.
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                      Descargar PDF
+                    </Button>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic">
+                      Documento pendiente de carga por tu terapeuta.
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
@@ -244,16 +173,6 @@ const Documents = () => {
           </p>
         </CardContent>
       </Card>
-
-      {/* Download Code Dialog */}
-      {codeDialogDoc && (
-        <DownloadCodeInput
-          open={!!codeDialogDoc}
-          onOpenChange={(open) => !open && setCodeDialogDoc(null)}
-          document={codeDialogDoc}
-          onSuccess={fetchDocuments}
-        />
-      )}
     </div>
   );
 };
