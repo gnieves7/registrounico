@@ -110,7 +110,7 @@ const Login = () => {
             <h1 className="font-serif text-2xl font-bold text-card md:text-3xl drop-shadow-lg">
               Registro Clínico Personalizado
             </h1>
-            <p className="mt-3 font-serif text-sm italic text-card/90 drop-shadow-md md:text-base">
+            <p className="mt-4 rounded-lg bg-background/40 px-4 py-3 font-serif text-base italic text-card drop-shadow-md backdrop-blur-sm md:text-lg">
               "Los senderos del inconsciente son misteriosos… qué mejor un compañero para transitarlos"
             </p>
           </div>
@@ -122,8 +122,8 @@ const Login = () => {
             <h1 className="font-serif text-3xl font-bold text-foreground xl:text-4xl">
               Registro Clínico Personalizado
             </h1>
-            <p className="mt-3 font-serif text-base italic text-muted-foreground">
-              "Los senderos del inconsciente son misteriosos… qué mejor un compañero para transitarlos"
+            <p className="mt-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-base italic text-foreground/80 xl:text-lg">
+              ✨ "Los senderos del inconsciente son misteriosos… qué mejor un compañero para transitarlos"
             </p>
           </div>
 
