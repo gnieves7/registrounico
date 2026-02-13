@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Footer from "@/components/layout/Footer";
-import { Heart, Brain, Scale, Shield } from "lucide-react";
+import { Heart, Brain, Scale, Flame } from "lucide-react";
 
 const sections = [
   {
@@ -79,7 +79,7 @@ const Login = () => {
       <div className="flex min-h-screen flex-col bg-background">
         <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
           <div className="mb-6 rounded-full bg-primary/10 p-5">
-            <Shield className="h-14 w-14 text-primary" />
+            <Flame className="h-14 w-14 text-primary" />
           </div>
           <h1 className="mb-2 font-serif text-3xl font-bold text-foreground">¡Hola de nuevo!</h1>
           <p className="mb-8 text-muted-foreground">Ya tenés una sesión activa.</p>
@@ -99,7 +99,7 @@ const Login = () => {
         <div className="mb-12 max-w-3xl text-center">
           <div className="mb-6 flex justify-center">
             <div className="rounded-full bg-primary/10 p-5">
-              <Shield className="h-14 w-14 text-primary" />
+              <Flame className="h-14 w-14 text-primary" />
             </div>
           </div>
           <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
@@ -163,7 +163,7 @@ const Login = () => {
 
         {/* Privacy Notice */}
         <div className="mt-12 flex max-w-2xl items-center justify-center gap-2 rounded-lg bg-muted/50 p-4 text-center">
-          <Shield className="h-4 w-4 shrink-0 text-primary" />
+          <Flame className="h-4 w-4 shrink-0 text-primary" />
           <p className="text-sm text-muted-foreground">
             Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
           </p>
