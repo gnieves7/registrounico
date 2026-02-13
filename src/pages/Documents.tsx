@@ -22,6 +22,11 @@ interface Document {
   download_code: string | null;
 }
 
+interface PaymentInfo {
+  alias: string;
+  cvu: string;
+}
+
 const Documents = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -29,12 +34,31 @@ const Documents = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [codeDialogDoc, setCodeDialogDoc] = useState<Document | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
 
   useEffect(() => {
     if (user) {
       fetchDocuments();
+      fetchPaymentInfo();
     }
   }, [user]);
+
+  const fetchPaymentInfo = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("professional_profile_content")
+        .select("content")
+        .eq("section_key", "payment_info")
+        .maybeSingle();
+
+      if (error) throw error;
+      if (data?.content) {
+        setPaymentInfo(data.content as unknown as PaymentInfo);
+      }
+    } catch (error) {
+      console.error("Error fetching payment info:", error);
+    }
+  };
 
   const fetchDocuments = async () => {
     if (!user) return;
@@ -164,8 +188,8 @@ const Documents = () => {
                           Datos para abonar
                         </div>
                         <div className="text-sm text-muted-foreground space-y-1">
-                          <p><strong>Alias:</strong> psi.german.nieves</p>
-                          <p><strong>CVU:</strong> 0000003100037023075926</p>
+                          <p><strong>Alias:</strong> {paymentInfo?.alias || "No disponible"}</p>
+                          <p><strong>CVU:</strong> {paymentInfo?.cvu || "No disponible"}</p>
                         </div>
                         <p className="text-xs text-muted-foreground">
                           Una vez confirmado el pago, tu terapeuta te enviará el código de descarga.
