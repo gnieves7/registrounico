@@ -73,6 +73,10 @@ const Documents = () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        toast({
+          title: "Descarga exitosa",
+          description: `"${doc.title}" se descargó correctamente`,
+        });
       }
     } catch (error) {
       console.error("Error downloading document:", error);
