@@ -542,47 +542,28 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
                       )}
                     </div>
                     
-                    {/* Download Code Section */}
-                    {doc.price > 0 && (
+                    {/* Download Code Display (auto-generated when marked as paid) */}
+                    {doc.download_code && (
                       <div className="flex items-center gap-2 mt-2 p-2 bg-muted/50 rounded-lg">
                         <Key className="h-4 w-4 text-muted-foreground" />
-                        {doc.download_code ? (
-                          <div className="flex items-center gap-2">
-                            <code className="px-2 py-1 bg-background rounded text-sm font-mono font-bold tracking-wider">
-                              {doc.download_code}
-                            </code>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-7 w-7"
-                              onClick={() => copyToClipboard(doc.download_code!, doc.id)}
-                            >
-                              {copiedCode === doc.id ? (
-                                <Check className="h-3 w-3 text-primary" />
-                              ) : (
-                                <Copy className="h-3 w-3" />
-                              )}
-                            </Button>
-                            <span className="text-xs text-muted-foreground">
-                              Generado: {format(new Date(doc.code_generated_at!), "dd/MM/yy", { locale: es })}
-                            </span>
-                          </div>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => generateDownloadCode(doc.id, doc.title)}
-                            disabled={generatingCode === doc.id}
-                            className="h-7 text-xs"
-                          >
-                            {generatingCode === doc.id ? (
-                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                            ) : (
-                              <Key className="h-3 w-3 mr-1" />
-                            )}
-                            Generar Código
-                          </Button>
-                        )}
+                        <code className="px-2 py-1 bg-background rounded text-sm font-mono font-bold tracking-wider">
+                          {doc.download_code}
+                        </code>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={() => copyToClipboard(doc.download_code!, doc.id)}
+                        >
+                          {copiedCode === doc.id ? (
+                            <Check className="h-3 w-3 text-primary" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                        <span className="text-xs text-muted-foreground">
+                          Generado: {format(new Date(doc.code_generated_at!), "dd/MM/yy", { locale: es })}
+                        </span>
                       </div>
                     )}
                   </div>
