@@ -30,6 +30,7 @@ import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
 import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodiagnosticView";
+import { PaymentSettingsEditor } from "@/components/admin/PaymentSettingsEditor";
 
 interface Patient {
   id: string;
@@ -253,6 +254,9 @@ export default function Admin() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Payment Settings */}
+      <PaymentSettingsEditor />
 
       {/* Search */}
       <Card className="mb-6">
