@@ -214,6 +214,53 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
     }
   };
 
+  // Mark document as paid, generate code, and send email in one step
+  const markAsPaidAndSendCode = async (documentId: string, documentTitle: string) => {
+    setGeneratingCode(documentId);
+    try {
+      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 8; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+
+      const { error } = await supabase
+        .from("documents")
+        .update({
+          is_paid: true,
+          payment_date: new Date().toISOString(),
+          download_code: code,
+          code_generated_at: new Date().toISOString(),
+        })
+        .eq("id", documentId);
+
+      if (error) throw error;
+
+      // Send email notification
+      try {
+        await supabase.functions.invoke('send-download-code', {
+          body: { patientId: userId, documentId, documentTitle, downloadCode: code },
+        });
+        toast({
+          title: "Pago registrado y código enviado",
+          description: `Código: ${code} — Se notificó al paciente por email`,
+        });
+      } catch {
+        toast({
+          title: "Pago registrado",
+          description: `Código: ${code} — No se pudo enviar el email`,
+        });
+      }
+
+      fetchDocuments();
+    } catch (error) {
+      console.error("Error:", error);
+      toast({ title: "Error", description: "No se pudo procesar", variant: "destructive" });
+    } finally {
+      setGeneratingCode(null);
+    }
+  };
+
   // Generate a unique download code and send email notification
   const generateDownloadCode = async (documentId: string, documentTitle: string) => {
     setGeneratingCode(documentId);
@@ -472,6 +519,21 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
                           <CheckCircle className="h-3 w-3" />
                           Pagado
                         </Badge>
+                      ) : doc.price > 0 ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 text-xs gap-1"
+                          disabled={generatingCode === doc.id}
+                          onClick={() => markAsPaidAndSendCode(doc.id, doc.title)}
+                        >
+                          {generatingCode === doc.id ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <CheckCircle className="h-3 w-3" />
+                          )}
+                          Marcar como pagado
+                        </Button>
                       ) : (
                         <Badge variant="secondary" className="gap-1">
                           <Clock className="h-3 w-3" />
