@@ -61,11 +61,18 @@ const Documents = () => {
     try {
       const { data, error } = await supabase.storage
         .from("documents")
-        .createSignedUrl(doc.file_url, 3600);
+        .download(doc.file_url);
 
       if (error) throw error;
-      if (data?.signedUrl) {
-        window.open(data.signedUrl, "_blank");
+      if (data) {
+        const url = URL.createObjectURL(data);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = doc.title + ".pdf";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       }
     } catch (error) {
       console.error("Error downloading document:", error);
