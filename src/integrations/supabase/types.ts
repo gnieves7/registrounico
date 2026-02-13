@@ -486,6 +486,7 @@ export type Database = {
           address: string | null
           birth_date: string | null
           birth_place: string | null
+          consultation_reason: string | null
           created_at: string
           education_level: string | null
           family_data: Json | null
@@ -499,6 +500,7 @@ export type Database = {
           occupation: string | null
           personal_values: Json | null
           psychological_history: Json | null
+          referred_by: string | null
           sessions_absent: number | null
           sessions_attended: number | null
           social_data: Json | null
@@ -512,6 +514,7 @@ export type Database = {
           address?: string | null
           birth_date?: string | null
           birth_place?: string | null
+          consultation_reason?: string | null
           created_at?: string
           education_level?: string | null
           family_data?: Json | null
@@ -525,6 +528,7 @@ export type Database = {
           occupation?: string | null
           personal_values?: Json | null
           psychological_history?: Json | null
+          referred_by?: string | null
           sessions_absent?: number | null
           sessions_attended?: number | null
           social_data?: Json | null
@@ -538,6 +542,7 @@ export type Database = {
           address?: string | null
           birth_date?: string | null
           birth_place?: string | null
+          consultation_reason?: string | null
           created_at?: string
           education_level?: string | null
           family_data?: Json | null
@@ -551,6 +556,7 @@ export type Database = {
           occupation?: string | null
           personal_values?: Json | null
           psychological_history?: Json | null
+          referred_by?: string | null
           sessions_absent?: number | null
           sessions_attended?: number | null
           social_data?: Json | null

@@ -43,8 +43,8 @@ const LauraChat = () => {
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">Laura</CardTitle>
-                <p className="text-sm text-muted-foreground">Tu acompañante terapéutica</p>
+                <CardTitle className="text-lg">Asistente Virtual</CardTitle>
+                <p className="text-sm text-muted-foreground">Laura, tu acompañante terapéutica</p>
               </div>
             </div>
             {messages.length > 0 && (
