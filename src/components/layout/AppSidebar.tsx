@@ -32,7 +32,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const patientMenuItems = [
+const allPatientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Registro Psicodiagnóstico", url: "/psychodiagnostic", icon: Brain },
@@ -44,6 +44,19 @@ const patientMenuItems = [
   { title: "Documentos", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
 ];
+
+// URLs to hide per area
+const hiddenByArea: Record<string, string[]> = {
+  clinica: ["/psychodiagnostic", "/forensic"],
+  psicodiagnostico: ["/forensic", "/emotional-record", "/dream-record"],
+  forense: ["/psychodiagnostic", "/emotional-record", "/dream-record"],
+};
+
+const getFilteredMenuItems = () => {
+  const area = sessionStorage.getItem("user_area") || "";
+  const hidden = hiddenByArea[area] || [];
+  return allPatientMenuItems.filter((item) => !hidden.includes(item.url));
+};
 
 const adminMenuItems = [
   { title: "Panel Admin", url: "/admin", icon: Settings },
@@ -100,7 +113,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navegación</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {patientMenuItems.map((item) => (
+              {getFilteredMenuItems().map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton 
                     asChild 

@@ -58,9 +58,10 @@ const Login = () => {
     }
   }, [user, isLoading, navigate]);
 
-  const handleGoogleLogin = async (redirectPath: string) => {
+  const handleGoogleLogin = async (redirectPath: string, area: string) => {
     try {
       sessionStorage.setItem("login_redirect", redirectPath);
+      sessionStorage.setItem("user_area", area);
       await signInWithGoogle();
     } catch (error) {
       console.error("Login error:", error);
@@ -149,7 +150,7 @@ const Login = () => {
                     {section.description}
                   </CardDescription>
                   <Button
-                    onClick={() => handleGoogleLogin(section.redirect)}
+                    onClick={() => handleGoogleLogin(section.redirect, section.id)}
                     className="w-full"
                     size="sm"
                     variant="outline"
