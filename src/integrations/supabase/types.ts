@@ -382,6 +382,27 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_profile_content: {
+        Row: {
+          content: Json
+          id: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          id?: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          id?: string
+          section_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       professional_profile_items: {
         Row: {
           created_at: string
