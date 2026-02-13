@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Brain, Scale, FileText, Clock, CheckCircle2 } from "lucide-react";
+import { Brain, FileText, Clock, CheckCircle2 } from "lucide-react";
 import { MbtiTest } from "@/components/psychodiagnostic/MbtiTest";
 import { Mmpi2Test } from "@/components/psychodiagnostic/Mmpi2Test";
-import { ForensicSection } from "@/components/psychodiagnostic/ForensicSection";
 import { InformedConsent } from "@/components/psychodiagnostic/InformedConsent";
 import { usePsychodiagnostic } from "@/hooks/usePsychodiagnostic";
 import { supabase } from "@/integrations/supabase/client";
@@ -151,23 +149,11 @@ const Psychodiagnostic = () => {
       <div>
         <h1 className="text-3xl font-bold">Registro Psicodiagnóstico</h1>
         <p className="text-muted-foreground">
-          Evaluaciones psicológicas y registro de casos forenses
+          Evaluaciones psicológicas estandarizadas
         </p>
       </div>
 
-      <Tabs defaultValue="clinical" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="clinical" className="gap-2">
-            <Brain className="h-4 w-4" />
-            Sección Clínica
-          </TabsTrigger>
-          <TabsTrigger value="forensic" className="gap-2">
-            <Scale className="h-4 w-4" />
-            Sección Forense
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="clinical" className="space-y-6">
+      <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             {/* MBTI Summary Card */}
             <Card>
@@ -316,12 +302,7 @@ const Psychodiagnostic = () => {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
-
-        <TabsContent value="forensic">
-          <ForensicSection />
-        </TabsContent>
-      </Tabs>
+      </div>
 
       {/* Informed Consent Dialogs */}
       <InformedConsent

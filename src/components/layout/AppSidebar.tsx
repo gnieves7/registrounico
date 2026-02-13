@@ -9,7 +9,8 @@ import {
   LogOut,
   Moon,
   Brain,
-  UserCheck
+  UserCheck,
+  Scale
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -35,12 +36,13 @@ const patientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Registro Psicodiagnóstico", url: "/psychodiagnostic", icon: Brain },
+  { title: "Expediente Forense", url: "/forensic", icon: Scale },
   { title: "Registro Emocional", url: "/emotional-record", icon: Smile },
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
-  { title: "Mis Sesiones", url: "/sessions", icon: Calendar },
-  { title: "Laura", url: "/laura", icon: MessageCircle },
+  { title: "Mis Turnos", url: "/sessions", icon: Calendar },
+  { title: "Asistente Virtual", url: "/laura", icon: MessageCircle },
   { title: "Documentos", url: "/documents", icon: FileText },
-  { title: "Profesional", url: "/professional-profile", icon: UserCheck },
+  { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
 ];
 
 const adminMenuItems = [

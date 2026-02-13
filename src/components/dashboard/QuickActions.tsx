@@ -18,8 +18,8 @@ const actions = [
     color: "bg-accent text-accent-foreground",
   },
   {
-    title: "Hablar con Laura",
-    description: "Tu acompañante IA",
+    title: "Asistente Virtual",
+    description: "Laura, tu acompañante IA",
     icon: MessageCircle,
     href: "/laura",
     color: "bg-secondary text-secondary-foreground",
