@@ -119,24 +119,25 @@ const Login = () => {
             ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
           </p>
 
-          <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-8">
-            {sections.map((section) => (
+          <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10">
+            {sections.map((section, index) => (
               <button
                 key={section.id}
                 onClick={() => handleGoogleLogin(section.redirect, section.id)}
-                className={`group flex w-48 flex-col items-center gap-3 rounded-2xl border-2 border-transparent p-6 transition-all ${section.hoverBorder} hover:shadow-md`}
+                className={`group flex w-52 flex-col items-center gap-4 rounded-2xl border-2 border-transparent p-6 transition-all duration-300 ${section.hoverBorder} hover:shadow-lg`}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
-                  className={`flex h-24 w-24 items-center justify-center rounded-full ${section.bgColor} shadow-sm transition-transform group-hover:scale-105`}
+                  className={`flex h-32 w-32 items-center justify-center rounded-full ${section.bgColor} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}
                 >
                   <div
-                    className={`flex h-16 w-16 items-center justify-center rounded-full ${section.iconBg}`}
+                    className={`flex h-20 w-20 items-center justify-center rounded-full ${section.iconBg} transition-transform duration-300 group-hover:scale-105`}
                   >
-                    <section.icon className={`h-7 w-7 ${section.iconColor}`} />
+                    <section.icon className={`h-9 w-9 ${section.iconColor} transition-transform duration-300 group-hover:scale-110`} />
                   </div>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-base font-semibold text-foreground">{section.title}</h3>
+                  <h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
                   <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     {section.subtitle}
                   </p>
@@ -144,7 +145,7 @@ const Login = () => {
                     {section.description}
                   </p>
                 </div>
-                <span className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground group-hover:text-foreground">
+                <span className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors duration-200 group-hover:text-foreground">
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                     <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
