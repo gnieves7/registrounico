@@ -5,14 +5,15 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
 import { Flame, BookOpen, Scale } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
+import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import danteBg from "@/assets/dante-bg.jpg";
 
 const sections = [
   {
     id: "clinica",
-    title: "Terapia",
+    title: "¿Buscás terapia?",
     subtitle: "Área Clínica",
-    description: "Acompañamiento terapéutico personalizado",
+    description: "Acompañamiento terapéutico personalizado para tu bienestar emocional",
     icon: Flame,
     redirect: "/psychobiography",
     bgColor: "bg-[hsl(30,30%,95%)]",
@@ -22,7 +23,7 @@ const sections = [
   },
   {
     id: "psicodiagnostico",
-    title: "Evaluación",
+    title: "¿Necesitás una evaluación?",
     subtitle: "Área Psicodiagnóstica",
     description: "Tests y evaluaciones psicológicas profesionales",
     icon: BookOpen,
@@ -34,7 +35,7 @@ const sections = [
   },
   {
     id: "forense",
-    title: "Judicial",
+    title: "¿Buscás un psicólogo experto en temas judiciales?",
     subtitle: "Área Forense",
     description: "Pericias y documentación para procesos judiciales",
     icon: Scale,
@@ -102,48 +103,59 @@ const Login = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <main className="flex flex-1 flex-col lg:flex-row">
-        {/* Left: Photo – clean, no overlay text */}
-        <div
-          className="relative min-h-[30vh] flex-1 bg-cover bg-center lg:min-h-0"
-          style={{ backgroundImage: `url(${danteBg})` }}
-        />
-
-        {/* Right: Title + Quote + Sections */}
-        <div className="flex flex-1 flex-col justify-center bg-background px-6 py-8 lg:px-10 lg:py-10">
-          <Flame className="mb-3 h-10 w-10 text-primary" />
-          <h1 className="mb-2 font-serif text-2xl font-bold text-foreground md:text-3xl">
-            Registro Clínico Personalizado
-          </h1>
-          <p className="mb-6 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-sm italic text-foreground/80 md:text-base">
-            ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
-          </p>
-
-          {/* Professional Stats */}
-          <div className="mb-6 rounded-lg border border-border/50 bg-muted/30 px-4 py-4">
-            <ProfessionalStats />
+    <div className="flex min-h-screen flex-col bg-background">
+      <main className="flex flex-1 flex-col">
+        {/* Header: Logo + Title + Tagline */}
+        <header className="border-b border-border/50 bg-card/50 px-6 py-5 lg:px-10">
+          <div className="mx-auto flex max-w-6xl items-start gap-4">
+            <ClinicLogo size="lg" className="mt-1 shrink-0" />
+            <div>
+              <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                Registro Clínico Personalizado
+              </h1>
+              <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                Plataforma única, privada e interactiva para tu salud mental. Un espacio personalizado en donde puedes registrar tus avances en la terapia, solicitar turnos, intervenciones, informes y demás prácticas. Un lugar totalmente confidencial, exclusivo para vos.
+              </p>
+            </div>
           </div>
+        </header>
 
+        {/* Photo + Quote */}
+        <section className="mx-auto w-full max-w-6xl px-6 pt-6 lg:px-10">
+          <div className="overflow-hidden rounded-xl">
+            <div
+              className="h-56 w-full bg-cover bg-center sm:h-64 md:h-72 lg:h-80"
+              style={{ backgroundImage: `url(${danteBg})` }}
+            />
+            <div className="rounded-b-xl border border-t-0 border-border/50 bg-card px-5 py-4">
+              <p className="font-serif text-sm italic leading-relaxed text-foreground/80 md:text-base">
+                ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 3 Service Sections – center */}
+        <section className="mx-auto w-full max-w-6xl px-6 py-8 lg:px-10">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10">
             {sections.map((section, index) => (
               <button
                 key={section.id}
                 onClick={() => handleGoogleLogin(section.redirect, section.id)}
-                className={`group flex w-52 flex-col items-center gap-4 rounded-2xl border-2 border-transparent p-6 transition-all duration-300 ${section.hoverBorder} hover:shadow-lg`}
+                className={`group flex w-56 flex-col items-center gap-4 rounded-2xl border-2 border-transparent p-6 transition-all duration-300 ${section.hoverBorder} hover:shadow-lg`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
-                  className={`flex h-32 w-32 items-center justify-center rounded-full ${section.bgColor} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}
+                  className={`flex h-28 w-28 items-center justify-center rounded-full ${section.bgColor} shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}
                 >
                   <div
-                    className={`flex h-20 w-20 items-center justify-center rounded-full ${section.iconBg} transition-transform duration-300 group-hover:scale-105`}
+                    className={`flex h-16 w-16 items-center justify-center rounded-full ${section.iconBg} transition-transform duration-300 group-hover:scale-105`}
                   >
-                    <section.icon className={`h-9 w-9 ${section.iconColor} transition-transform duration-300 group-hover:scale-110`} />
+                    <section.icon className={`h-8 w-8 ${section.iconColor} transition-transform duration-300 group-hover:scale-110`} />
                   </div>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-lg font-semibold text-foreground">{section.title}</h3>
+                  <h3 className="text-base font-semibold leading-snug text-foreground">{section.title}</h3>
                   <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                     {section.subtitle}
                   </p>
@@ -163,14 +175,21 @@ const Login = () => {
               </button>
             ))}
           </div>
+        </section>
 
-          {/* Privacy Notice */}
-          <div className="mt-6 flex items-center gap-2 rounded-lg bg-muted/50 p-3">
-            <Flame className="h-4 w-4 shrink-0 text-primary" />
-            <p className="text-xs text-muted-foreground">
-              Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
-            </p>
+        {/* Professional Stats – bottom */}
+        <section className="mx-auto w-full max-w-6xl px-6 pb-8 lg:px-10">
+          <div className="rounded-xl border border-border/50 bg-muted/30 px-6 py-6">
+            <ProfessionalStats />
           </div>
+        </section>
+
+        {/* Privacy Notice */}
+        <div className="mx-auto mb-6 flex max-w-6xl items-center gap-2 rounded-lg bg-muted/50 px-6 py-3 lg:mx-10">
+          <Flame className="h-4 w-4 shrink-0 text-primary" />
+          <p className="text-xs text-muted-foreground">
+            Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
+          </p>
         </div>
       </main>
 
