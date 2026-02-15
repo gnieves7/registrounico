@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { Flame, BookOpen, Scale } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import logoImg from "@/assets/Logo_ReflexionAr.png";
-import danteBg from "@/assets/dante-bg.jpg";
+import bgPainting from "@/assets/bg-painting.jpg";
 
 const sections = [
   {
@@ -85,7 +85,7 @@ const Login = () => {
       <div className="flex min-h-screen flex-col">
         <main
           className="relative flex flex-1 items-center justify-center bg-cover bg-center"
-          style={{ backgroundImage: `url(${danteBg})` }}
+          style={{ backgroundImage: `url(${bgPainting})` }}
         >
           <div className="absolute inset-0 bg-background/70 backdrop-blur-sm" />
           <div className="relative z-10 flex flex-col items-center rounded-xl bg-card/80 p-10 shadow-lg backdrop-blur-md">
@@ -107,9 +107,9 @@ const Login = () => {
       {/* Subtle full-page background */}
       <div
         className="fixed inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${danteBg})` }}
+        style={{ backgroundImage: `url(${bgPainting})` }}
       />
-      <div className="fixed inset-0 bg-background/85 backdrop-blur-[2px]" />
+      <div className="fixed inset-0 bg-background/70 backdrop-blur-[1px]" />
 
       <main className="relative z-10 flex flex-1 flex-col">
         {/* Header: Logo + Title + Tagline */}
