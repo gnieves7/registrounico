@@ -103,10 +103,17 @@ const Login = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <main className="flex flex-1 flex-col">
+    <div className="relative flex min-h-screen flex-col">
+      {/* Subtle full-page background */}
+      <div
+        className="fixed inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${danteBg})` }}
+      />
+      <div className="fixed inset-0 bg-background/85 backdrop-blur-[2px]" />
+
+      <main className="relative z-10 flex flex-1 flex-col">
         {/* Header: Logo + Title + Tagline */}
-        <header className="border-b border-border/50 bg-card/50 px-6 py-5 lg:px-10">
+        <header className="border-b border-border/50 bg-card/60 backdrop-blur-sm px-6 py-5 lg:px-10">
           <div className="mx-auto flex max-w-6xl items-start gap-4">
             <img src={logoImg} alt="Logo ReflexionAr" className="mt-1 h-14 w-14 shrink-0 object-contain md:h-20 md:w-20" />
             <div>
@@ -120,18 +127,12 @@ const Login = () => {
           </div>
         </header>
 
-        {/* Photo + Quote */}
-        <section className="mx-auto w-full max-w-6xl px-6 pt-4 lg:px-10">
-          <div className="overflow-hidden rounded-xl">
-            <div
-              className="h-48 w-full bg-cover bg-center sm:h-56 md:h-64"
-              style={{ backgroundImage: `url(${danteBg})` }}
-            />
-            <div className="rounded-b-xl border border-t-0 border-border/50 bg-card px-5 py-4">
-              <p className="font-serif text-sm italic leading-relaxed text-foreground/80 md:text-base">
-                ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
-              </p>
-            </div>
+        {/* Quote */}
+        <section className="mx-auto w-full max-w-6xl px-6 pt-5 lg:px-10">
+          <div className="rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm px-5 py-4">
+            <p className="font-serif text-sm italic leading-relaxed text-foreground/80 md:text-base">
+              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
+            </p>
           </div>
         </section>
 
@@ -142,7 +143,7 @@ const Login = () => {
               <button
                 key={section.id}
                 onClick={() => handleGoogleLogin(section.redirect, section.id)}
-                className={`group flex w-56 flex-col items-center gap-4 rounded-2xl border-2 border-transparent p-6 transition-all duration-300 ${section.hoverBorder} hover:shadow-lg`}
+                className={`group flex w-56 flex-col items-center gap-4 rounded-2xl border-2 border-transparent bg-card/60 backdrop-blur-sm p-6 transition-all duration-300 ${section.hoverBorder} hover:shadow-lg`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
@@ -179,13 +180,13 @@ const Login = () => {
 
         {/* Professional Stats – bottom */}
         <section className="mx-auto w-full max-w-6xl px-6 pb-8 lg:px-10">
-          <div className="rounded-xl border border-border/50 bg-muted/30 px-6 py-6">
+          <div className="rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm px-6 py-6">
             <ProfessionalStats />
           </div>
         </section>
 
         {/* Privacy Notice */}
-        <div className="mx-auto mb-6 flex max-w-6xl items-center gap-2 rounded-lg bg-muted/50 px-6 py-3 lg:mx-10">
+        <div className="mx-auto mb-6 flex max-w-6xl items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-6 py-3 lg:mx-10">
           <Flame className="h-4 w-4 shrink-0 text-primary" />
           <p className="text-xs text-muted-foreground">
             Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
@@ -193,7 +194,9 @@ const Login = () => {
         </div>
       </main>
 
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };
