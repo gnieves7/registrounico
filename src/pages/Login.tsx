@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
 import { Flame, BookOpen, Scale } from "lucide-react";
+import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import danteBg from "@/assets/dante-bg.jpg";
 
 const sections = [
@@ -118,6 +119,11 @@ const Login = () => {
           <p className="mb-6 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 font-serif text-sm italic text-foreground/80 md:text-base">
             ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
           </p>
+
+          {/* Professional Stats */}
+          <div className="mb-6 rounded-lg border border-border/50 bg-muted/30 px-4 py-4">
+            <ProfessionalStats />
+          </div>
 
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10">
             {sections.map((section, index) => (

@@ -31,6 +31,7 @@ import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
 import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodiagnosticView";
 import { PaymentSettingsEditor } from "@/components/admin/PaymentSettingsEditor";
+import ProfessionalStatsEditor from "@/components/admin/ProfessionalStatsEditor";
 
 interface Patient {
   id: string;
@@ -255,8 +256,19 @@ export default function Admin() {
         </Card>
       </div>
 
-      {/* Payment Settings */}
-      <PaymentSettingsEditor />
+      {/* Payment Settings & Stats Editor */}
+      <div className="grid gap-6 mb-6 lg:grid-cols-2">
+        <Card>
+          <CardContent className="py-4">
+            <PaymentSettingsEditor />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="py-4">
+            <ProfessionalStatsEditor />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Search */}
       <Card className="mb-6">
