@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
 import { Flame, BookOpen, Scale } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
-import { ClinicLogo } from "@/components/ui/ClinicLogo";
+import logoImg from "@/assets/Logo_ReflexionAr.png";
 import danteBg from "@/assets/dante-bg.jpg";
 
 const sections = [
@@ -108,7 +108,7 @@ const Login = () => {
         {/* Header: Logo + Title + Tagline */}
         <header className="border-b border-border/50 bg-card/50 px-6 py-5 lg:px-10">
           <div className="mx-auto flex max-w-6xl items-start gap-4">
-            <ClinicLogo size="lg" className="mt-1 shrink-0" />
+            <img src={logoImg} alt="Logo ReflexionAr" className="mt-1 h-14 w-14 shrink-0 object-contain" />
             <div>
               <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
                 Registro Clínico Personalizado
@@ -121,10 +121,10 @@ const Login = () => {
         </header>
 
         {/* Photo + Quote */}
-        <section className="mx-auto w-full max-w-6xl px-6 pt-6 lg:px-10">
+        <section className="mx-auto w-full max-w-6xl px-6 pt-4 lg:px-10">
           <div className="overflow-hidden rounded-xl">
             <div
-              className="h-56 w-full bg-cover bg-center sm:h-64 md:h-72 lg:h-80"
+              className="h-48 w-full bg-cover bg-center sm:h-56 md:h-64"
               style={{ backgroundImage: `url(${danteBg})` }}
             />
             <div className="rounded-b-xl border border-t-0 border-border/50 bg-card px-5 py-4">
@@ -136,7 +136,7 @@ const Login = () => {
         </section>
 
         {/* 3 Service Sections – center */}
-        <section className="mx-auto w-full max-w-6xl px-6 py-8 lg:px-10">
+        <section className="mx-auto w-full max-w-6xl px-6 py-6 lg:px-10">
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-center sm:gap-10">
             {sections.map((section, index) => (
               <button
