@@ -62,10 +62,12 @@ const AnimatedStat = ({ stat, index }: { stat: Stat; index: number }) => {
       className="flex flex-col items-center animate-fade-in"
       style={{ animationDelay: `${index * 150}ms` }}
     >
-      <span className="text-3xl font-bold text-primary md:text-4xl tabular-nums">
-        {count}
-      </span>
-      <span className="mt-1 text-center text-xs font-medium text-muted-foreground md:text-sm">
+      <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-primary/30 bg-primary/5 md:h-28 md:w-28">
+        <span className="text-2xl font-bold text-primary md:text-3xl tabular-nums">
+          {count}
+        </span>
+      </div>
+      <span className="mt-2 text-center text-xs font-medium text-muted-foreground md:text-sm max-w-[120px]">
         {stat.stat_label}
       </span>
     </div>
@@ -89,10 +91,20 @@ const ProfessionalStats = () => {
   if (stats.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-8 py-4">
-      {stats.map((stat, index) => (
-        <AnimatedStat key={stat.id} stat={stat} index={index} />
-      ))}
+    <div className="space-y-4 py-4">
+      <h3 className="text-center text-lg font-semibold text-foreground md:text-xl">
+        Intervenciones hasta el momento
+      </h3>
+      <div className="flex flex-wrap items-start justify-center gap-6 md:gap-0">
+        {stats.map((stat, index) => (
+          <div key={stat.id} className="flex items-start">
+            <AnimatedStat stat={stat} index={index} />
+            {index < stats.length - 1 && (
+              <div className="mx-4 mt-4 hidden h-20 w-px bg-border md:block" />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
