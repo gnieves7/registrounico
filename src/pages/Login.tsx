@@ -108,12 +108,12 @@ const Login = () => {
         {/* Header: Logo + Title + Tagline */}
         <header className="border-b border-border/50 bg-card/50 px-6 py-5 lg:px-10">
           <div className="mx-auto flex max-w-6xl items-start gap-4">
-            <img src={logoImg} alt="Logo ReflexionAr" className="mt-1 h-14 w-14 shrink-0 object-contain" />
+            <img src={logoImg} alt="Logo ReflexionAr" className="mt-1 h-14 w-14 shrink-0 object-contain md:h-20 md:w-20" />
             <div>
               <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
                 Registro Clínico Personalizado
               </h1>
-              <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-foreground/70">
                 Plataforma única, privada e interactiva para tu salud mental. Un espacio personalizado en donde puedes registrar tus avances en la terapia, solicitar turnos, intervenciones, informes y demás prácticas. Un lugar totalmente confidencial, exclusivo para vos.
               </p>
             </div>
