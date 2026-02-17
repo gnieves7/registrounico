@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
 import { Flame, BookOpen, Scale } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
+import { toast } from "@/hooks/use-toast";
 import logoImg from "@/assets/Logo_ReflexionAr.png";
 import bgPainting from "@/assets/bg-painting.jpg";
 
@@ -57,7 +58,10 @@ const Login = () => {
       const redirectTo = sessionStorage.getItem("login_redirect");
       if (redirectTo) {
         sessionStorage.removeItem("login_redirect");
-        navigate(redirectTo);
+        navigate(redirectTo, { replace: true });
+      } else {
+        // Fallback: si ya está logueado y no hay redirect, ir al dashboard
+        navigate("/dashboard", { replace: true });
       }
     }
   }, [user, isLoading, navigate]);
@@ -69,6 +73,11 @@ const Login = () => {
       await signInWithGoogle();
     } catch (error) {
       console.error("Login error:", error);
+      toast({
+        title: "Error al iniciar sesión",
+        description: "No se pudo conectar con Google. Intentá de nuevo o habilitá las ventanas emergentes.",
+        variant: "destructive",
+      });
     }
   };
 
