@@ -7,6 +7,47 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+async function verifyWebhookSignature(
+  xSignature: string,
+  xRequestId: string,
+  dataId: string,
+  secret: string
+): Promise<boolean> {
+  // MercadoPago signature format: ts=TIMESTAMP,v1=HASH
+  const parts: Record<string, string> = {};
+  for (const part of xSignature.split(",")) {
+    const [key, value] = part.split("=");
+    if (key && value) parts[key.trim()] = value.trim();
+  }
+
+  const ts = parts["ts"];
+  const v1 = parts["v1"];
+  if (!ts || !v1) return false;
+
+  // Build the manifest string per MercadoPago docs
+  const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(manifest)
+  );
+
+  const expectedHash = Array.from(new Uint8Array(signature))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return expectedHash === v1;
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -31,8 +72,36 @@ serve(async (req) => {
     const body = await req.json();
     console.log("Webhook received:", JSON.stringify(body));
 
+    // Verify webhook signature
+    const WEBHOOK_SECRET = Deno.env.get("MERCADOPAGO_WEBHOOK_SECRET");
+    if (WEBHOOK_SECRET) {
+      const xSignature = req.headers.get("x-signature");
+      const xRequestId = req.headers.get("x-request-id");
+      const dataId = body.data?.id?.toString() || "";
+
+      if (!xSignature || !xRequestId) {
+        console.error("Missing signature headers");
+        return new Response(JSON.stringify({ error: "Missing signature" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const isValid = await verifyWebhookSignature(xSignature, xRequestId, dataId, WEBHOOK_SECRET);
+      if (!isValid) {
+        console.error("Invalid webhook signature");
+        return new Response(JSON.stringify({ error: "Invalid signature" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      console.log("Webhook signature verified successfully");
+    } else {
+      console.warn("MERCADOPAGO_WEBHOOK_SECRET not configured - skipping signature verification");
+    }
+
     // MercadoPago sends different notification types
-    // We're interested in "payment" notifications
     if (body.type === "payment" || body.action === "payment.updated" || body.action === "payment.created") {
       const paymentId = body.data?.id || body.id;
       
@@ -96,7 +165,6 @@ serve(async (req) => {
   } catch (error: unknown) {
     console.error("Webhook error:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    // Still return 200 to prevent MercadoPago from retrying
     return new Response(
       JSON.stringify({ error: errorMessage, received: true }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
