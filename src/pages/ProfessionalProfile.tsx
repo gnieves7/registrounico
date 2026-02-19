@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DOMPurify from "dompurify";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfessionalProfile, ProfileItem } from "@/hooks/useProfessionalProfile";
 import {
@@ -191,7 +192,7 @@ const ProfessionalProfile = () => {
           ) : (
             <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
               {content.biography.paragraphs.map((p, i) => (
-                <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
+                <p key={i} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(p) }} />
               ))}
             </div>
           )}
