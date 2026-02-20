@@ -33,6 +33,9 @@ Frases útiles:
 - "Para esa pregunta específica, te recomiendo hablar directamente con tu terapeuta..."
 - "¿Te gustaría que te comparta algunos ejercicios de respiración mientras tanto?"`;
 
+const MAX_MESSAGES = 50;
+const MAX_MESSAGE_LENGTH = 10000;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -63,9 +66,81 @@ serve(async (req) => {
       );
     }
 
-    const { messages } = await req.json();
+    // Parse and validate input
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Cuerpo de solicitud inválido" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { messages } = body as { messages: unknown };
+
+    // Validate messages is an array
+    if (!Array.isArray(messages)) {
+      return new Response(
+        JSON.stringify({ error: "Los mensajes deben ser un array" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Limit number of messages
+    if (messages.length > MAX_MESSAGES) {
+      return new Response(
+        JSON.stringify({ error: `Demasiados mensajes (máximo ${MAX_MESSAGES})` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Se requiere al menos un mensaje" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate and sanitize each message
+    const validatedMessages: { role: string; content: string }[] = [];
+    for (const msg of messages) {
+      if (!msg || typeof msg !== "object") {
+        return new Response(
+          JSON.stringify({ error: "Formato de mensaje inválido" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Only allow user/assistant roles (block system role injection)
+      if (msg.role !== "user" && msg.role !== "assistant") {
+        return new Response(
+          JSON.stringify({ error: "Rol de mensaje inválido. Solo se permiten 'user' y 'assistant'" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      if (typeof msg.content !== "string") {
+        return new Response(
+          JSON.stringify({ error: "El contenido del mensaje debe ser texto" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      if (msg.content.length > MAX_MESSAGE_LENGTH) {
+        return new Response(
+          JSON.stringify({ error: `Mensaje demasiado largo (máximo ${MAX_MESSAGE_LENGTH} caracteres)` }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      validatedMessages.push({
+        role: msg.role,
+        content: msg.content.trim(),
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
@@ -80,7 +155,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: LAURA_SYSTEM_PROMPT },
-          ...messages,
+          ...validatedMessages,
         ],
         stream: true,
       }),
@@ -89,21 +164,18 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Estamos recibiendo muchas consultas. Por favor, intenta de nuevo en unos segundos." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "Servicio temporalmente no disponible. Por favor, intenta más tarde." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const errorText = await response.text();
       console.error("AI gateway error:", response.status, errorText);
       return new Response(JSON.stringify({ error: "Error al procesar tu mensaje" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -113,8 +185,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("Laura chat error:", e);
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Error desconocido" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
