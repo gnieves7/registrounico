@@ -34,31 +34,19 @@ export function DownloadCodeInput({ open, onOpenChange, document, onSuccess }: D
     setError(null);
 
     try {
-      // Verify the code matches the document
-      const { data, error: queryError } = await supabase
-        .from("documents")
-        .select("id, file_url, download_code")
-        .eq("id", document.id)
-        .eq("download_code", code.trim().toUpperCase())
-        .maybeSingle();
+      // Server-side verification via edge function (secure)
+      const { data, error: fnError } = await supabase.functions.invoke("verify-download-code", {
+        body: { document_id: document.id, code: code.trim().toUpperCase() },
+      });
 
-      if (queryError) throw queryError;
+      if (fnError) throw fnError;
 
-      if (!data) {
-        setError("Código incorrecto. Verifica con tu terapeuta.");
+      if (data?.error) {
+        setError(data.error === "Código incorrecto" 
+          ? "Código incorrecto. Verifica con tu terapeuta." 
+          : data.error);
         return;
       }
-
-      // Code is correct - mark as paid and allow download
-      const { error: updateError } = await supabase
-        .from("documents")
-        .update({ 
-          is_paid: true, 
-          payment_date: new Date().toISOString() 
-        })
-        .eq("id", document.id);
-
-      if (updateError) throw updateError;
 
       toast({
         title: "¡Código verificado!",
