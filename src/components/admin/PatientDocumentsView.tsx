@@ -219,10 +219,9 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
     setGeneratingCode(documentId);
     try {
       const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
-      for (let i = 0; i < 8; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
+      const array = new Uint8Array(8);
+      crypto.getRandomValues(array);
+      const code = Array.from(array, (byte) => characters[byte % characters.length]).join('');
 
       const { error } = await supabase
         .from("documents")
@@ -266,11 +265,10 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
     setGeneratingCode(documentId);
     try {
       // Generate a random 8-character alphanumeric code
-      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars
-      let code = '';
-      for (let i = 0; i < 8; i++) {
-        code += characters.charAt(Math.floor(Math.random() * characters.length));
-      }
+      const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const array = new Uint8Array(8);
+      crypto.getRandomValues(array);
+      const code = Array.from(array, (byte) => characters[byte % characters.length]).join('');
 
       const { error } = await supabase
         .from("documents")
