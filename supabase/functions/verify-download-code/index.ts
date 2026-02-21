@@ -10,18 +10,20 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      await logAuditEvent(adminClient, "download_code_attempt_no_auth", null, { reason: "No authorization header" });
       return new Response(JSON.stringify({ error: "No autorizado" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     // Verify user identity
     const userClient = createClient(supabaseUrl, supabaseKey, {
@@ -29,6 +31,7 @@ Deno.serve(async (req) => {
     });
     const { data: { user }, error: userError } = await userClient.auth.getUser();
     if (userError || !user) {
+      await logAuditEvent(adminClient, "download_code_attempt_invalid_token", null, { reason: "Invalid JWT" });
       return new Response(JSON.stringify({ error: "No autorizado" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -43,9 +46,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Use service role to verify and update (bypasses RLS)
-    const adminClient = createClient(supabaseUrl, serviceRoleKey);
-
     // Verify the code matches and document belongs to user
     const { data: doc, error: docError } = await adminClient
       .from("documents")
@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (docError || !doc) {
+      await logAuditEvent(adminClient, "download_code_doc_not_found", user.id, { document_id });
       return new Response(JSON.stringify({ error: "Documento no encontrado" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -62,6 +63,10 @@ Deno.serve(async (req) => {
 
     // Verify ownership
     if (doc.patient_id !== user.id) {
+      await logAuditEvent(adminClient, "download_code_ownership_violation", user.id, {
+        document_id,
+        actual_owner: doc.patient_id,
+      });
       return new Response(JSON.stringify({ error: "No autorizado" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -70,6 +75,10 @@ Deno.serve(async (req) => {
 
     // Verify code
     if (!doc.download_code || doc.download_code !== code.trim().toUpperCase()) {
+      await logAuditEvent(adminClient, "download_code_wrong_code", user.id, {
+        document_id,
+        attempted_code: code.trim().toUpperCase(),
+      });
       return new Response(JSON.stringify({ error: "Código incorrecto" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -90,6 +99,9 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Log successful verification
+    await logAuditEvent(adminClient, "download_code_success", user.id, { document_id });
+
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -101,3 +113,20 @@ Deno.serve(async (req) => {
     });
   }
 });
+
+async function logAuditEvent(
+  client: ReturnType<typeof createClient>,
+  eventType: string,
+  userId: string | null,
+  details: Record<string, unknown>
+) {
+  try {
+    await client.from("audit_logs").insert({
+      event_type: eventType,
+      user_id: userId,
+      details,
+    });
+  } catch (e) {
+    console.error("Failed to write audit log:", e);
+  }
+}
