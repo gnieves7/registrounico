@@ -28,44 +28,44 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Authentication: validate caller via Authorization header or shared cron secret
-    const authHeader = req.headers.get("Authorization");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const cronSecret = Deno.env.get("CRON_SECRET");
-
-    // Option 1: Cron job calls with the anon key via pg_net (Authorization: Bearer <anon_key>)
-    // Option 2: Validate a custom cron secret header
-    const providedCronSecret = req.headers.get("x-cron-secret");
 
     let isAuthorized = false;
 
-    // Check cron secret first (for direct HTTP invocations)
-    if (cronSecret && providedCronSecret === cronSecret) {
+    // Method 1: Cron secret header
+    const providedCronSecret = req.headers.get("x-cron-secret");
+    if (cronSecret && providedCronSecret && providedCronSecret === cronSecret) {
       isAuthorized = true;
     }
 
-    // If no cron secret match, validate JWT to ensure it's at least an authenticated caller
+    // Method 2: pg_net cron calls with anon key - validate it matches our anon key
+    const authHeader = req.headers.get("Authorization");
     if (!isAuthorized && authHeader?.startsWith("Bearer ")) {
-      const supabaseAuth = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_ANON_KEY")!,
-        { global: { headers: { Authorization: authHeader } } }
-      );
       const token = authHeader.replace("Bearer ", "");
-      const { data, error } = await supabaseAuth.auth.getClaims(token);
-      if (!error && data?.claims) {
-        // Verify caller is admin
-        const supabaseService = createClient(
-          Deno.env.get("SUPABASE_URL")!,
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-        );
-        const { data: roleData } = await supabaseService
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", data.claims.sub)
-          .eq("role", "admin")
-          .maybeSingle();
-        if (roleData) {
-          isAuthorized = true;
+
+      // If token matches the anon key exactly, it's a pg_net cron call
+      if (token === supabaseAnonKey) {
+        isAuthorized = true;
+      } else {
+        // Otherwise validate as a user JWT and check admin role
+        const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+          global: { headers: { Authorization: authHeader } },
+        });
+        const { data: { user }, error } = await supabaseAuth.auth.getUser();
+        if (!error && user) {
+          const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
+          const { data: roleData } = await supabaseService
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", user.id)
+            .eq("role", "admin")
+            .maybeSingle();
+          if (roleData) {
+            isAuthorized = true;
+          }
         }
       }
     }
@@ -78,8 +78,6 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Calculate the time window: 12 hours from now (with a 30-minute buffer)
