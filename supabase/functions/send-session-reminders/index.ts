@@ -35,36 +35,34 @@ const handler = async (req: Request): Promise<Response> => {
 
     let isAuthorized = false;
 
-    // Method 1: Cron secret header
+    // Method 1: Cron secret header (for scheduled cron jobs)
     const providedCronSecret = req.headers.get("x-cron-secret");
     if (cronSecret && providedCronSecret && providedCronSecret === cronSecret) {
       isAuthorized = true;
     }
 
-    // Method 2: pg_net cron calls with anon key - validate it matches our anon key
-    const authHeader = req.headers.get("Authorization");
-    if (!isAuthorized && authHeader?.startsWith("Bearer ")) {
-      const token = authHeader.replace("Bearer ", "");
-
-      // If token matches the anon key exactly, it's a pg_net cron call
-      if (token === supabaseAnonKey) {
-        isAuthorized = true;
-      } else {
-        // Otherwise validate as a user JWT and check admin role
-        const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-          global: { headers: { Authorization: authHeader } },
-        });
-        const { data: { user }, error } = await supabaseAuth.auth.getUser();
-        if (!error && user) {
-          const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
-          const { data: roleData } = await supabaseService
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", user.id)
-            .eq("role", "admin")
-            .maybeSingle();
-          if (roleData) {
-            isAuthorized = true;
+    // Method 2: Admin JWT only (no anon key accepted)
+    if (!isAuthorized) {
+      const authHeader = req.headers.get("Authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        const token = authHeader.replace("Bearer ", "");
+        // Reject anon key - only accept real user JWTs
+        if (token !== supabaseAnonKey) {
+          const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+            global: { headers: { Authorization: authHeader } },
+          });
+          const { data: { user }, error } = await supabaseAuth.auth.getUser();
+          if (!error && user) {
+            const supabaseService = createClient(supabaseUrl, supabaseServiceKey);
+            const { data: roleData } = await supabaseService
+              .from("user_roles")
+              .select("role")
+              .eq("user_id", user.id)
+              .eq("role", "admin")
+              .maybeSingle();
+            if (roleData) {
+              isAuthorized = true;
+            }
           }
         }
       }
