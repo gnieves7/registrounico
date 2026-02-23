@@ -17,6 +17,8 @@ import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import ProfessionalProfile from "./pages/ProfessionalProfile";
 import Forensic from "./pages/Forensic";
+import AnxietyRecord from "./pages/AnxietyRecord";
+import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +40,8 @@ const App = () => (
               <Route path="/psychobiography" element={<Psychobiography />} />
               <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
               <Route path="/forensic" element={<Forensic />} />
+              <Route path="/anxiety-record" element={<AnxietyRecord />} />
+              <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
               <Route path="/emotional-record" element={<EmotionalRecord />} />
               <Route path="/dream-record" element={<DreamRecord />} />
               <Route path="/sessions" element={<Sessions />} />

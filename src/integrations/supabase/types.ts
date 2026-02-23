@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      anxiety_abcde_records: {
+        Row: {
+          created_at: string
+          debate: string | null
+          emotion_conduct: string | null
+          id: string
+          record_date: string
+          result: string | null
+          situation: string | null
+          thought: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          debate?: string | null
+          emotion_conduct?: string | null
+          id?: string
+          record_date?: string
+          result?: string | null
+          situation?: string | null
+          thought?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          debate?: string | null
+          emotion_conduct?: string | null
+          id?: string
+          record_date?: string
+          result?: string | null
+          situation?: string | null
+          thought?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           created_at: string

@@ -10,7 +10,8 @@ import {
   Moon,
   Brain,
   UserCheck,
-  Scale
+  Scale,
+  Briefcase
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -37,8 +38,10 @@ const allPatientMenuItems = [
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Registro Psicodiagnóstico", url: "/psychodiagnostic", icon: Brain },
   { title: "Expediente Forense", url: "/forensic", icon: Scale },
+  { title: "Registro de la Ansiedad", url: "/anxiety-record", icon: Brain },
   { title: "Registro Emocional", url: "/emotional-record", icon: Smile },
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
+  { title: "Junta Médica Laboral", url: "/junta-medica", icon: Briefcase },
   { title: "Mis Turnos", url: "/sessions", icon: Calendar },
   { title: "Asistente Virtual", url: "/laura", icon: MessageCircle },
   { title: "Documentos", url: "/documents", icon: FileText },
@@ -47,9 +50,9 @@ const allPatientMenuItems = [
 
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
-  clinica: ["/psychodiagnostic", "/forensic"],
-  psicodiagnostico: ["/forensic", "/emotional-record", "/dream-record"],
-  forense: ["/psychodiagnostic", "/emotional-record", "/dream-record"],
+  clinica: ["/psychodiagnostic", "/forensic", "/junta-medica"],
+  psicodiagnostico: ["/forensic", "/emotional-record", "/dream-record", "/anxiety-record"],
+  forense: ["/psychodiagnostic", "/emotional-record", "/dream-record", "/anxiety-record"],
 };
 
 const getFilteredMenuItems = () => {

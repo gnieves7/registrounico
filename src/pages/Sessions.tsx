@@ -12,7 +12,7 @@ import { Calendar, ExternalLink, Clock, MessageSquare, Target, Lightbulb, Save, 
 import { format, isPast, isFuture, isToday } from "date-fns";
 import { es } from "date-fns/locale";
 
-const GOOGLE_CALENDAR_BOOKING_URL = "https://calendar.app.google/6NNrsduq25F2hCeV9";
+const GOOGLE_CALENDAR_BOOKING_URL = "https://calendar.app.google/TQwA5vrL9LV93wE5A";
 
 interface Session {
   id: string;
