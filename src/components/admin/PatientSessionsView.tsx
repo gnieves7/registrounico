@@ -42,7 +42,7 @@ interface PatientSessionsViewProps {
   patientName: string;
 }
 
-const CALENDAR_LINK = "https://calendar.app.google/6NNrsduq25F2hCeV9";
+const CALENDAR_LINK = "https://calendar.app.google/TQwA5vrL9LV93wE5A";
 
 export function PatientSessionsView({ userId, patientName }: PatientSessionsViewProps) {
   const [sessions, setSessions] = useState<Session[]>([]);
