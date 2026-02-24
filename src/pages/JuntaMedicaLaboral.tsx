@@ -3,9 +3,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, Download, FileText, Clock, FileCheck, Loader2 } from "lucide-react";
+import { Briefcase, Download, FileText, Clock, FileCheck, Loader2, User } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -19,15 +21,27 @@ interface Document {
 }
 
 const JuntaMedicaLaboral = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { toast } = useToast();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
+  // Personal data fields for the certificate
+  const [personalData, setPersonalData] = useState({
+    fullName: "",
+    dni: "",
+    workplace: "",
+    juntaDate: "",
+    licenseStartDate: "",
+  });
+
   useEffect(() => {
     if (user) fetchDocuments();
-  }, [user]);
+    if (profile?.full_name) {
+      setPersonalData((prev) => ({ ...prev, fullName: profile.full_name || "" }));
+    }
+  }, [user, profile]);
 
   const fetchDocuments = async () => {
     if (!user) return;
@@ -99,22 +113,86 @@ const JuntaMedicaLaboral = () => {
         </p>
       </div>
 
-      {/* Planilla descargable fija */}
+      {/* Datos personales del paciente */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <User className="h-4 w-4 text-primary" />
+            Datos personales para la junta
+          </CardTitle>
+          <CardDescription>
+            Completá tus datos antes de descargar el certificado
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="fullName">Nombre y Apellido</Label>
+              <Input
+                id="fullName"
+                value={personalData.fullName}
+                onChange={(e) => setPersonalData((p) => ({ ...p, fullName: e.target.value }))}
+                placeholder="Nombre completo"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="dni">DNI / LE / LC / CI</Label>
+              <Input
+                id="dni"
+                value={personalData.dni}
+                onChange={(e) => setPersonalData((p) => ({ ...p, dni: e.target.value }))}
+                placeholder="Nº de documento"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="workplace">Lugar de trabajo</Label>
+            <Input
+              id="workplace"
+              value={personalData.workplace}
+              onChange={(e) => setPersonalData((p) => ({ ...p, workplace: e.target.value }))}
+              placeholder="Empresa / Institución"
+            />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="juntaDate">Fecha de junta médica</Label>
+              <Input
+                id="juntaDate"
+                type="date"
+                value={personalData.juntaDate}
+                onChange={(e) => setPersonalData((p) => ({ ...p, juntaDate: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="licenseStartDate">Fecha de inicio de licencia médica</Label>
+              <Input
+                id="licenseStartDate"
+                type="date"
+                value={personalData.licenseStartDate}
+                onChange={(e) => setPersonalData((p) => ({ ...p, licenseStartDate: e.target.value }))}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Certificado descargable */}
       <Card className="mb-6 border-primary/20 bg-primary/5">
         <CardContent className="flex flex-col items-center gap-4 p-6 sm:flex-row sm:justify-between">
           <div className="text-center sm:text-left">
             <h3 className="font-medium text-foreground flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" />
-              Planilla Registro ABCDE
+              Certificado Exclusivo Junta Médica
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Descargá la planilla en blanco para completar tu registro
+              Descargá el certificado médico con carácter de declaración jurada
             </p>
           </div>
           <Button variant="outline" asChild>
-            <a href="/documents/registro-abcde-planilla.pdf" download>
+            <a href="/documents/certificado-junta-medica.pdf" download>
               <Download className="mr-2 h-4 w-4" />
-              Descargar planilla
+              Descargar certificado
             </a>
           </Button>
         </CardContent>
