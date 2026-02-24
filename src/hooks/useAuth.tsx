@@ -8,11 +8,13 @@ interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   isAdmin: boolean;
+  isApproved: boolean;
   profile: {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
     email: string | null;
+    is_approved: boolean;
   } | null;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
   const [profile, setProfile] = useState<AuthContextType["profile"]>(null);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } else {
           setProfile(null);
           setIsAdmin(false);
+          setIsApproved(false);
         }
       }
     );
@@ -79,12 +83,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Fetch profile
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("id, full_name, avatar_url, email")
+        .select("id, full_name, avatar_url, email, is_approved")
         .eq("user_id", userId)
         .maybeSingle();
 
       if (profileData) {
         setProfile(profileData);
+        setIsApproved(profileData.is_approved === true);
       }
 
       // Check admin role
@@ -120,6 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setSession(null);
     setProfile(null);
     setIsAdmin(false);
+    setIsApproved(false);
   };
 
   return (
@@ -129,6 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         session,
         isLoading,
         isAdmin,
+        isApproved,
         profile,
         signInWithGoogle,
         signOut,

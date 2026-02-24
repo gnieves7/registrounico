@@ -6,14 +6,14 @@ import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
 
 export function AppLayout() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isApproved } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user && !isLoading) {
+    if (!isLoading && (!user || !isApproved)) {
       navigate("/login");
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, isApproved, navigate]);
 
   if (isLoading) {
     return (

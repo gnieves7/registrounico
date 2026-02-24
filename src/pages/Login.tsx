@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { Flame, BookOpen, Scale, ShieldCheck } from "lucide-react";
+import { Flame, BookOpen, Scale, ShieldCheck, LogOut } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoImg from "@/assets/Logo_ReflexionAr.png";
@@ -51,12 +51,13 @@ const sections = [
 ];
 
 const Login = () => {
-  const { user, isLoading, signInWithGoogle } = useAuth();
+  const { user, isLoading, isApproved, signInWithGoogle, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (user && !isLoading) {
+      if (!isApproved) return; // Stay on login page showing pending message
       const redirectTo = sessionStorage.getItem("login_redirect");
       if (redirectTo) {
         sessionStorage.removeItem("login_redirect");
@@ -65,7 +66,7 @@ const Login = () => {
         navigate("/dashboard", { replace: true });
       }
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, isApproved, navigate]);
 
   const handleGoogleLogin = async (redirectPath: string, area: string) => {
     try {
@@ -90,7 +91,31 @@ const Login = () => {
     );
   }
 
-  if (user) {
+  if (user && !isApproved) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <main className="flex flex-1 items-center justify-center px-4">
+          <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50 max-w-md text-center">
+            <ShieldCheck className="mb-4 h-14 w-14 text-primary" />
+            <h1 className="mb-2 text-2xl font-bold text-foreground">Acceso pendiente de autorización</h1>
+            <p className="mb-4 text-muted-foreground">
+              Esta plataforma es exclusiva para pacientes registrados. Tu solicitud de acceso fue recibida y será revisada por el profesional.
+            </p>
+            <p className="mb-6 text-sm text-muted-foreground">
+              Una vez autorizado, podrás acceder a todas las funciones de tu registro clínico personalizado.
+            </p>
+            <Button variant="outline" onClick={() => signOut()}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Cerrar sesión
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (user && isApproved) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <main className="flex flex-1 items-center justify-center">
