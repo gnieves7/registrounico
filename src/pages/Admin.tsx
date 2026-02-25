@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -181,17 +182,26 @@ export default function Admin() {
       .slice(0, 2);
   };
 
+  const { toast } = useToast();
+
   const updatePatientStatus = async (patientId: string, userId: string, approve: boolean) => {
     try {
       setUpdatingStatus(userId);
-      const { error } = await supabase
-        .from("profiles")
-        .update({ is_approved: approve })
-        .eq("user_id", userId);
+      
+      const { data, error } = await supabase.functions.invoke("notify-patient-status", {
+        body: { patientUserId: userId, approved: approve },
+      });
+
       if (error) throw error;
+
       setPatients(prev => prev.map(p => p.user_id === userId ? { ...p, is_approved: approve } : p));
+      toast({
+        title: approve ? "Paciente aprobado" : "Paciente suspendido",
+        description: `Se envió una notificación por email al paciente.`,
+      });
     } catch (error) {
       console.error("Error updating patient status:", error);
+      toast({ title: "Error", description: "No se pudo actualizar el estado del paciente.", variant: "destructive" });
     } finally {
       setUpdatingStatus(null);
     }
