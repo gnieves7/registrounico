@@ -20,7 +20,10 @@ import {
   Clock,
   FolderOpen,
   Moon,
-  Brain
+  Brain,
+  CheckCircle2,
+  XCircle,
+  ShieldAlert
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -39,6 +42,7 @@ interface Patient {
   full_name: string | null;
   email: string | null;
   avatar_url: string | null;
+  is_approved: boolean;
   created_at: string;
 }
 
@@ -50,13 +54,14 @@ interface PatientStats {
 }
 
 export default function Admin() {
-  const { isAdmin, isLoading: authLoading } = useAuth();
+  const { isAdmin, isLoading: authLoading, user } = useAuth();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [patientStats, setPatientStats] = useState<Record<string, PatientStats>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [activeTab, setActiveTab] = useState("emotional");
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAdmin) {
@@ -176,7 +181,25 @@ export default function Admin() {
       .slice(0, 2);
   };
 
+  const updatePatientStatus = async (patientId: string, userId: string, approve: boolean) => {
+    try {
+      setUpdatingStatus(userId);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_approved: approve })
+        .eq("user_id", userId);
+      if (error) throw error;
+      setPatients(prev => prev.map(p => p.user_id === userId ? { ...p, is_approved: approve } : p));
+    } catch (error) {
+      console.error("Error updating patient status:", error);
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
+
   const filteredPatients = patients.filter((patient) => {
+    // Exclude the admin's own profile from the patient list
+    if (patient.user_id === user?.id) return false;
     const query = searchQuery.toLowerCase();
     return (
       patient.full_name?.toLowerCase().includes(query) ||
@@ -308,19 +331,19 @@ export default function Admin() {
             <div className="space-y-3">
               {filteredPatients.map((patient) => {
                 const stats = patientStats[patient.user_id];
+                const isUpdating = updatingStatus === patient.user_id;
                 return (
                   <div
                     key={patient.id}
-                    onClick={() => setSelectedPatient(patient)}
-                    className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-muted/50 cursor-pointer transition-colors"
+                    className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                   >
-                    <Avatar className="h-12 w-12">
+                    <Avatar className="h-12 w-12 cursor-pointer" onClick={() => setSelectedPatient(patient)}>
                       <AvatarImage src={patient.avatar_url || undefined} />
                       <AvatarFallback className="bg-primary text-primary-foreground">
                         {getInitials(patient.full_name)}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setSelectedPatient(patient)}>
                       <p className="font-medium text-foreground truncate">
                         {patient.full_name || "Sin nombre"}
                       </p>
@@ -328,27 +351,65 @@ export default function Admin() {
                         {patient.email}
                       </p>
                     </div>
+
+                    {/* Status Badge */}
+                    <Badge
+                      variant={patient.is_approved ? "default" : "secondary"}
+                      className={patient.is_approved 
+                        ? "bg-green-600 hover:bg-green-700 text-white" 
+                        : "bg-yellow-500 hover:bg-yellow-600 text-white"}
+                    >
+                      {patient.is_approved ? "Aprobado" : "Pendiente"}
+                    </Badge>
+
+                    {/* Stats (desktop) */}
                     <div className="hidden sm:flex items-center gap-6 text-sm">
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{stats?.emotionalRecords || 0}</p>
-                        <p className="text-xs text-muted-foreground">Registros</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{stats?.psychobiographyProgress || 0}%</p>
-                        <p className="text-xs text-muted-foreground">Psicobiografía</p>
-                      </div>
                       <div className="text-center">
                         <p className="font-semibold text-foreground">{stats?.sessionsCount || 0}</p>
                         <p className="text-xs text-muted-foreground">Sesiones</p>
                       </div>
                     </div>
+
                     {stats?.lastActivity && (
                       <Badge variant="outline" className="hidden md:flex gap-1">
                         <Clock className="h-3 w-3" />
                         {format(new Date(stats.lastActivity), "dd MMM", { locale: es })}
                       </Badge>
                     )}
-                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-1">
+                      {!patient.is_approved ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={isUpdating}
+                          onClick={(e) => { e.stopPropagation(); updatePatientStatus(patient.id, patient.user_id, true); }}
+                          className="gap-1 text-green-600 border-green-600 hover:bg-green-50"
+                        >
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span className="hidden lg:inline">Aprobar</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={isUpdating}
+                          onClick={(e) => { e.stopPropagation(); updatePatientStatus(patient.id, patient.user_id, false); }}
+                          className="gap-1 text-destructive border-destructive hover:bg-destructive/10"
+                        >
+                          <XCircle className="h-4 w-4" />
+                          <span className="hidden lg:inline">Suspender</span>
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setSelectedPatient(patient)}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
