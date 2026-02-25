@@ -20,6 +20,7 @@ import Forensic from "./pages/Forensic";
 import AnxietyRecord from "./pages/AnxietyRecord";
 import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="/professional-profile" element={<ProfessionalProfile />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Route>
             
             {/* Catch-all */}
