@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="w-full border-t border-border bg-card py-6 mt-auto">
@@ -18,6 +20,11 @@ const Footer = () => {
           >
             www.psicodiagnostico-forense.com.ar
           </a>
+        </p>
+        <p className="text-xs text-muted-foreground mt-2">
+          <Link to="/privacy-policy" className="text-primary hover:underline">
+            Política de Privacidad
+          </Link>
         </p>
         <p className="text-xs text-muted-foreground mt-3 italic">
           Esta plataforma acompaña la práctica profesional, no la sustituye.
