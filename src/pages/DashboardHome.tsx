@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { EmotionalRecordWidget } from "@/components/emotional/EmotionalRecordWidget";
 import { UpcomingSession } from "@/components/dashboard/UpcomingSession";
 import { QuickActions } from "@/components/dashboard/QuickActions";
+import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
 
 interface TodayRecord {
   id: string;
@@ -81,13 +82,16 @@ const DashboardHome = () => {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       {/* Welcome Section */}
-      <div className="mb-8">
-        <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
-          {getGreeting()}, {profile?.full_name?.split(" ")[0] || "bienvenido"}
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Este es tu espacio de reflexión y acompañamiento terapéutico
-        </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+            {getGreeting()}, {profile?.full_name?.split(" ")[0] || "bienvenido"}
+          </h1>
+          <p className="mt-1 text-muted-foreground">
+            Este es tu espacio de reflexión y acompañamiento terapéutico
+          </p>
+        </div>
+        <AvatarUpload />
       </div>
 
       <div className="space-y-6">
