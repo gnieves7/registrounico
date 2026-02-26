@@ -732,7 +732,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      documents_patient_view: {
+        Row: {
+          code_generated_at: string | null
+          created_at: string | null
+          description: string | null
+          document_type: string | null
+          file_url: string | null
+          id: string | null
+          is_paid: boolean | null
+          patient_id: string | null
+          payment_date: string | null
+          payment_id: string | null
+          price: number | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          code_generated_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          document_type?: string | null
+          file_url?: string | null
+          id?: string | null
+          is_paid?: boolean | null
+          patient_id?: string | null
+          payment_date?: string | null
+          payment_id?: string | null
+          price?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          code_generated_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          document_type?: string | null
+          file_url?: string | null
+          id?: string | null
+          is_paid?: boolean | null
+          patient_id?: string | null
+          payment_date?: string | null
+          payment_id?: string | null
+          price?: number | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
