@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAvatarFile } from "@/lib/validateAvatar";
@@ -12,7 +12,25 @@ export function AvatarUpload() {
   const { toast } = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile?.avatar_url ?? null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  // Resolve signed URL from stored file path on mount
+  useEffect(() => {
+    const resolveAvatar = async () => {
+      const storedPath = profile?.avatar_url;
+      if (!storedPath) return;
+      // If it's already a full URL (legacy), use as-is
+      if (storedPath.startsWith("http")) {
+        setAvatarUrl(storedPath);
+        return;
+      }
+      const { data } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(storedPath, 3600);
+      if (data?.signedUrl) setAvatarUrl(data.signedUrl);
+    };
+    resolveAvatar();
+  }, [profile?.avatar_url]);
 
   const initials = profile?.full_name
     ?.split(" ")
@@ -42,19 +60,20 @@ export function AvatarUpload() {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL (bucket is private, but we store path and use it via signed URL or profile)
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(filePath);
-
-      const publicUrl = urlData.publicUrl;
-
+      // Store file path (not public URL) since bucket is private
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: filePath })
         .eq("user_id", user.id);
 
       if (updateError) throw updateError;
 
-      setAvatarUrl(publicUrl + "?t=" + Date.now());
+      // Get signed URL for display
+      const { data: signedData } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(filePath, 3600);
+
+      setAvatarUrl(signedData?.signedUrl || null);
       toast({ title: "Foto actualizada", description: "Tu foto de perfil se actualizó correctamente." });
     } catch (err: any) {
       console.error("Error uploading avatar:", err);

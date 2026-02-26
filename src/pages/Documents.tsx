@@ -36,13 +36,13 @@ const Documents = () => {
 
     try {
       const { data, error } = await supabase
-        .from("documents")
+        .from("documents_patient_view" as any)
         .select("id, title, description, document_type, file_url, created_at")
         .eq("patient_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setDocuments(data || []);
+      setDocuments((data as unknown as Document[]) || []);
     } catch (error) {
       console.error("Error fetching documents:", error);
       toast({
