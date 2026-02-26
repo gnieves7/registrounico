@@ -78,6 +78,33 @@ const handler = async (req: Request): Promise<Response> => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Rate limiting: check last cron execution from audit_logs
+    const { data: lastExec } = await supabase
+      .from("audit_logs")
+      .select("created_at")
+      .eq("event_type", "cron_session_reminders")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (lastExec) {
+      const lastTime = new Date(lastExec.created_at).getTime();
+      const minInterval = 30 * 60 * 1000; // 30 minutes
+      if (Date.now() - lastTime < minInterval) {
+        console.warn("Rate limited: cron executed too recently");
+        return new Response(
+          JSON.stringify({ error: "Too many requests" }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // Log this cron execution
+    await supabase.from("audit_logs").insert({
+      event_type: "cron_session_reminders",
+      details: { triggered_by: isAuthorized ? "cron_or_admin" : "unknown" },
+    });
+
     // Calculate the time window: 12 hours from now (with a 30-minute buffer)
     const now = new Date();
     const twelveHoursFromNow = new Date(now.getTime() + 12 * 60 * 60 * 1000);

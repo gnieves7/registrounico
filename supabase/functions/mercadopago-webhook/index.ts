@@ -150,7 +150,7 @@ serve(async (req) => {
 
           if (updateError) {
             console.error("Error updating document:", updateError);
-            throw new Error(`Error updating document: ${updateError.message}`);
+            throw new Error("Error al procesar el pago");
           }
 
           console.log(`Document ${documentId} marked as paid`);
@@ -164,9 +164,8 @@ serve(async (req) => {
     });
   } catch (error: unknown) {
     console.error("Webhook error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(
-      JSON.stringify({ error: errorMessage, received: true }),
+      JSON.stringify({ received: true }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
