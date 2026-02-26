@@ -789,6 +789,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      patient_update_session: {
+        Args: {
+          _patient_notes?: string
+          _patient_questions?: string
+          _session_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "patient"

@@ -94,13 +94,11 @@ const Sessions = () => {
     setSavingIds(prev => new Set(prev).add(sessionId));
 
     try {
-      const { error } = await supabase
-        .from("sessions")
-        .update({
-          patient_notes: editData.notes || null,
-          patient_questions: editData.questions || null,
-        })
-        .eq("id", sessionId);
+      const { error } = await supabase.rpc("patient_update_session", {
+        _session_id: sessionId,
+        _patient_notes: editData.notes || null,
+        _patient_questions: editData.questions || null,
+      });
 
       if (error) throw error;
 
