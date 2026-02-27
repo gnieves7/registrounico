@@ -122,19 +122,19 @@ export function EmotionalRecordWidget({
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Emoji Grid */}
-        <div className="grid grid-cols-4 gap-2 sm:grid-cols-8">
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-2 sm:grid-cols-8">
           {MOODS.map((mood) => (
             <button
               key={mood.emoji}
               onClick={() => setSelectedMood(mood.emoji)}
-              className={`flex flex-col items-center gap-1 rounded-lg p-3 transition-all hover:bg-accent ${
+              className={`flex flex-col items-center gap-0.5 rounded-lg p-2 transition-all hover:bg-accent sm:gap-1 sm:p-3 ${
                 selectedMood === mood.emoji
                   ? "bg-primary/10 ring-2 ring-primary"
                   : "bg-muted/50"
               }`}
             >
-              <span className="text-2xl">{mood.emoji}</span>
-              <span className="text-xs text-muted-foreground">{mood.label}</span>
+              <span className="text-xl sm:text-2xl">{mood.emoji}</span>
+              <span className="text-[10px] leading-tight sm:text-xs text-muted-foreground">{mood.label}</span>
             </button>
           ))}
         </div>

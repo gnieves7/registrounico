@@ -31,7 +31,7 @@ export function AppLayout() {
         <AppSidebar />
         <SidebarInset className="flex flex-col">
           {/* Header with trigger */}
-          <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b border-border bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-14 md:gap-4 md:px-4">
             <SidebarTrigger className="-ml-1" />
             <div className="flex-1" />
           </header>

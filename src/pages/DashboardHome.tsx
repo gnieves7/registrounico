@@ -80,21 +80,21 @@ const DashboardHome = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
+    <div className="container mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-8">
       {/* Welcome Section */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="font-serif text-xl font-bold text-foreground sm:text-2xl md:text-3xl">
             {getGreeting()}, {profile?.full_name?.split(" ")[0] || "bienvenido"}
           </h1>
-          <p className="mt-1 text-muted-foreground">
-            Este es tu espacio de reflexión y acompañamiento terapéutico
+          <p className="mt-1 text-sm text-muted-foreground sm:text-base">
+            Tu espacio de reflexión y acompañamiento terapéutico
           </p>
         </div>
         <AvatarUpload />
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Emotional Record Section */}
         <section>
           <EmotionalRecordWidget
@@ -105,7 +105,7 @@ const DashboardHome = () => {
         </section>
 
         {/* Two Column Layout */}
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
           {/* Upcoming Session */}
           <section>
             <UpcomingSession session={upcomingSession} />

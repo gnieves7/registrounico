@@ -230,20 +230,20 @@ export default function Admin() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-6xl">
+    <div className="container mx-auto px-3 py-4 max-w-6xl md:px-4 md:py-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Users className="h-8 w-8 text-primary" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">Panel de Administración</h1>
+      <div className="mb-6 md:mb-8">
+        <div className="flex items-center gap-2 mb-1 md:gap-3 md:mb-2">
+          <Users className="h-6 w-6 text-primary md:h-8 md:w-8" />
+          <h1 className="font-serif text-xl font-bold text-foreground sm:text-2xl md:text-3xl">Panel de Administración</h1>
         </div>
-        <p className="text-muted-foreground">
-          Gestiona tus pacientes y revisa sus registros emocionales y psicobiografías
+        <p className="text-sm text-muted-foreground md:text-base">
+          Gestiona tus pacientes y revisa sus registros
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 sm:grid-cols-3 mb-8">
+      <div className="grid grid-cols-3 gap-2 mb-6 sm:gap-4 md:mb-8">
         <Card>
           <CardContent className="py-4">
             <div className="flex items-center gap-3">
@@ -290,7 +290,7 @@ export default function Admin() {
       </div>
 
       {/* Payment Settings & Stats Editor */}
-      <div className="grid gap-6 mb-6 lg:grid-cols-2">
+      <div className="grid gap-4 mb-4 md:gap-6 md:mb-6 lg:grid-cols-2">
         <Card>
           <CardContent className="py-4">
             <PaymentSettingsEditor />
@@ -345,7 +345,7 @@ export default function Admin() {
                 return (
                   <div
                     key={patient.id}
-                    className="flex items-center gap-4 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
+                    className="flex flex-wrap items-center gap-2 p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors sm:flex-nowrap sm:gap-4 sm:p-4"
                   >
                     <Avatar className="h-12 w-12 cursor-pointer" onClick={() => setSelectedPatient(patient)}>
                       <AvatarImage src={patient.avatar_url || undefined} />
@@ -430,7 +430,7 @@ export default function Admin() {
 
       {/* Patient Detail Sheet */}
       <Sheet open={!!selectedPatient} onOpenChange={(open) => !open && setSelectedPatient(null)}>
-        <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
+        <SheetContent className="w-[95vw] max-w-2xl overflow-y-auto p-4 sm:p-6"  side="right">
           {selectedPatient && (
             <>
               <SheetHeader className="mb-6">
@@ -453,30 +453,30 @@ export default function Admin() {
               </SheetHeader>
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full mb-6 flex-wrap h-auto gap-1">
-                  <TabsTrigger value="emotional" className="flex-1 gap-1">
-                    <Smile className="h-4 w-4" />
-                    <span className="hidden sm:inline">Emocional</span>
+                <TabsList className="w-full mb-4 grid grid-cols-3 h-auto gap-1 sm:flex sm:mb-6">
+                  <TabsTrigger value="emotional" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <Smile className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Emocional
                   </TabsTrigger>
-                  <TabsTrigger value="dreams" className="flex-1 gap-1">
-                    <Moon className="h-4 w-4" />
-                    <span className="hidden sm:inline">Sueños</span>
+                  <TabsTrigger value="dreams" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Sueños
                   </TabsTrigger>
-                  <TabsTrigger value="psychodiagnostic" className="flex-1 gap-1">
-                    <Brain className="h-4 w-4" />
-                    <span className="hidden sm:inline">Tests</span>
+                  <TabsTrigger value="psychodiagnostic" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Tests
                   </TabsTrigger>
-                  <TabsTrigger value="psychobiography" className="flex-1 gap-1">
-                    <FileText className="h-4 w-4" />
-                    <span className="hidden sm:inline">Psicobio</span>
+                  <TabsTrigger value="psychobiography" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Psicobio
                   </TabsTrigger>
-                  <TabsTrigger value="sessions" className="flex-1 gap-1">
-                    <Calendar className="h-4 w-4" />
-                    <span className="hidden sm:inline">Sesiones</span>
+                  <TabsTrigger value="sessions" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Sesiones
                   </TabsTrigger>
-                  <TabsTrigger value="documents" className="flex-1 gap-1">
-                    <FolderOpen className="h-4 w-4" />
-                    <span className="hidden sm:inline">Docs</span>
+                  <TabsTrigger value="documents" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                    <FolderOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Docs
                   </TabsTrigger>
                 </TabsList>
 
