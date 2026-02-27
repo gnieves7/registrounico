@@ -127,8 +127,8 @@ export function AppSidebar() {
                   >
                     <NavLink 
                       to={item.url} 
-                      className="flex items-center gap-2"
-                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
+                      className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-sidebar-accent/70"
+                      activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-accent"
                     >
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -153,10 +153,10 @@ export function AppSidebar() {
                       isActive={isActive(item.url)}
                       tooltip={item.title}
                     >
-                      <NavLink 
+                    <NavLink 
                         to={item.url} 
-                        className="flex items-center gap-2"
-                        activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
+                        className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-sidebar-accent/70"
+                        activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-accent"
                       >
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
