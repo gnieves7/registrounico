@@ -1,14 +1,45 @@
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useMemo } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
-import { Menu, ChevronRight } from "lucide-react";
+import { ChevronRight, Home } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+const routeLabels: Record<string, string> = {
+  "/dashboard": "Inicio",
+  "/psychobiography": "Mi Psicobiografía",
+  "/psychodiagnostic": "Registro Psicodiagnóstico",
+  "/forensic": "Expediente Forense",
+  "/anxiety-record": "Registro de la Ansiedad",
+  "/emotional-record": "Registro Emocional",
+  "/dream-record": "Registro Inconsciente",
+  "/junta-medica": "Junta Médica Laboral",
+  "/apto-psicologico": "Apto Psicológico",
+  "/sessions": "Mis Turnos",
+  "/laura": "Asistente Virtual",
+  "/documents": "Documentos",
+  "/professional-profile": "Perfil del Profesional",
+  "/admin": "Panel Admin",
+  "/privacy-policy": "Política de Privacidad",
+};
 
 export function AppLayout() {
   const { user, isLoading, isApproved, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentLabel = useMemo(() => {
+    return routeLabels[location.pathname] || "Página";
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isLoading && (!user || (!isApproved && !isAdmin))) {
@@ -39,6 +70,32 @@ export function AppLayout() {
               </span>
             </SidebarTrigger>
             <span className="text-xs text-muted-foreground md:hidden">Menú</span>
+
+            {/* Breadcrumbs */}
+            <Breadcrumb className="hidden md:flex">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/dashboard" className="flex items-center gap-1">
+                    <Home className="h-3.5 w-3.5" />
+                    <span className="sr-only">Inicio</span>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                {location.pathname !== "/dashboard" && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+
+            {/* Mobile: show current section name */}
+            <span className="text-sm font-medium text-foreground md:hidden truncate max-w-[180px]">
+              {currentLabel}
+            </span>
+
             <div className="flex-1" />
           </header>
           
