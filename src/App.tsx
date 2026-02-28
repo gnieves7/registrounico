@@ -21,6 +21,7 @@ import AnxietyRecord from "./pages/AnxietyRecord";
 import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import PendingApproval from "./pages/PendingApproval";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/pending-approval" element={<PendingApproval />} />
             
             {/* Protected routes with sidebar layout */}
             <Route element={<AppLayout />}>
