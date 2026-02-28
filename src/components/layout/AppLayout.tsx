@@ -42,8 +42,10 @@ export function AppLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!isLoading && (!user || (!isApproved && !isAdmin))) {
+    if (!isLoading && !user) {
       navigate("/login");
+    } else if (!isLoading && user && !isAdmin && !isApproved) {
+      navigate("/pending-approval");
     }
   }, [user, isLoading, isApproved, isAdmin, navigate]);
 
