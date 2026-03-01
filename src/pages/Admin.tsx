@@ -85,10 +85,29 @@ export default function Admin() {
             if (newProfile.user_id === user?.id) return;
             
             setPatients(prev => {
-              // Avoid duplicates
               if (prev.some(p => p.user_id === newProfile.user_id)) return prev;
               return [newProfile, ...prev];
             });
+
+            // Play notification sound via Web Audio API
+            try {
+              const audioCtx = new AudioContext();
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.frequency.value = 880;
+              osc.type = "sine";
+              gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+              gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+              osc.start(audioCtx.currentTime);
+              osc.stop(audioCtx.currentTime + 0.5);
+            } catch (e) { /* audio not available */ }
+
+            // Vibrate if supported
+            if (navigator.vibrate) {
+              navigator.vibrate([200, 100, 200]);
+            }
 
             toast({
               title: "🆕 Nuevo paciente registrado",

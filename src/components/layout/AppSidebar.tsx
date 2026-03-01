@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { 
   Home, 
   User, 
@@ -17,6 +18,8 @@ import {
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -73,10 +76,36 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, isAdmin, signOut } = useAuth();
+  const [pendingCount, setPendingCount] = useState(0);
 
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
+
+  // Fetch pending patients count for admin
+  useEffect(() => {
+    if (!isAdmin) return;
+    
+    const fetchPending = async () => {
+      const { count } = await supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("is_approved", false);
+      setPendingCount(count || 0);
+    };
+
+    fetchPending();
+
+    // Listen for profile changes (new registrations or status updates)
+    const channel = supabase
+      .channel('sidebar-pending-count')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
+        fetchPending();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [isAdmin]);
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -159,7 +188,12 @@ export function AppSidebar() {
                         activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-accent"
                       >
                         <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
+                        <span className="flex-1">{item.title}</span>
+                        {pendingCount > 0 && (
+                          <Badge variant="destructive" className="ml-auto h-5 min-w-5 px-1 text-[10px] font-bold">
+                            {pendingCount}
+                          </Badge>
+                        )}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
