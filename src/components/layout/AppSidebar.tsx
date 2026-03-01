@@ -71,7 +71,7 @@ const adminMenuItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, setOpenMobile, isMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const navigate = useNavigate();
@@ -79,6 +79,13 @@ export function AppSidebar() {
   const [pendingCount, setPendingCount] = useState(0);
 
   const currentPath = location.pathname;
+
+  // Auto-close sidebar on mobile when route changes
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [currentPath, isMobile, setOpenMobile]);
 
   const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
 
@@ -125,15 +132,15 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       {/* Header with Logo */}
-      <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
+      <SidebarHeader className="border-b border-sidebar-border p-3 md:p-4">
+        <div className="flex items-center gap-2 md:gap-3">
           <ClinicLogo size="sm" />
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-serif text-sm font-semibold text-sidebar-foreground">
+              <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
                 Registro Clínico
               </span>
-              <span className="text-xs text-sidebar-foreground/60">
+              <span className="text-[10px] text-sidebar-foreground/60 md:text-xs">
                 Personalizado
               </span>
             </div>
@@ -156,11 +163,11 @@ export function AppSidebar() {
                   >
                     <NavLink 
                       to={item.url} 
-                      className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-sidebar-accent/70"
+                      className="flex items-center gap-2 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-sidebar-accent/70 md:py-1.5 md:text-sm"
                       activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-accent"
                     >
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -184,13 +191,13 @@ export function AppSidebar() {
                     >
                     <NavLink 
                         to={item.url} 
-                        className="flex items-center gap-2 rounded-md px-2 py-1.5 transition-colors hover:bg-sidebar-accent/70"
+                        className="flex items-center gap-2 rounded-md px-2 py-2 text-[13px] transition-colors hover:bg-sidebar-accent/70 md:py-1.5 md:text-sm"
                         activeClassName="bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-accent"
                       >
-                        <item.icon className="h-4 w-4" />
-                        <span className="flex-1">{item.title}</span>
+                        <item.icon className="h-4 w-4 shrink-0" />
+                        <span className="flex-1 truncate">{item.title}</span>
                         {pendingCount > 0 && (
-                          <Badge variant="destructive" className="ml-auto h-5 min-w-5 px-1 text-[10px] font-bold">
+                          <Badge variant="destructive" className="ml-auto h-5 min-w-5 shrink-0 px-1 text-[10px] font-bold">
                             {pendingCount}
                           </Badge>
                         )}
@@ -205,20 +212,20 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer with User Info */}
-      <SidebarFooter className="border-t border-sidebar-border p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-8 w-8">
+      <SidebarFooter className="border-t border-sidebar-border p-3 md:p-4">
+        <div className="flex items-center gap-2 md:gap-3">
+          <Avatar className="h-7 w-7 md:h-8 md:w-8">
             <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+            <AvatarFallback className="bg-primary text-primary-foreground text-[10px] md:text-xs">
               {getInitials(profile?.full_name)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="flex flex-1 flex-col overflow-hidden">
-              <span className="truncate text-sm font-medium text-sidebar-foreground">
+              <span className="truncate text-xs font-medium text-sidebar-foreground md:text-sm">
                 {profile?.full_name || "Usuario"}
               </span>
-              <span className="truncate text-xs text-sidebar-foreground/60">
+              <span className="truncate text-[10px] text-sidebar-foreground/60 md:text-xs">
                 {profile?.email || ""}
               </span>
             </div>
@@ -227,9 +234,9 @@ export function AppSidebar() {
             variant="ghost" 
             size="icon" 
             onClick={handleSignOut}
-            className="h-8 w-8 shrink-0"
+            className="h-7 w-7 shrink-0 md:h-8 md:w-8"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-3.5 w-3.5 md:h-4 md:w-4" />
           </Button>
         </div>
       </SidebarFooter>
