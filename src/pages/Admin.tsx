@@ -63,10 +63,44 @@ export default function Admin() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [activeTab, setActiveTab] = useState("emotional");
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isAdmin) {
       fetchPatients();
+
+      // Real-time subscription for new patient registrations
+      const channel = supabase
+        .channel('admin-new-patients')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'profiles',
+          },
+          (payload) => {
+            const newProfile = payload.new as Patient;
+            // Don't notify for admin's own profile
+            if (newProfile.user_id === user?.id) return;
+            
+            setPatients(prev => {
+              // Avoid duplicates
+              if (prev.some(p => p.user_id === newProfile.user_id)) return prev;
+              return [newProfile, ...prev];
+            });
+
+            toast({
+              title: "🆕 Nuevo paciente registrado",
+              description: `${newProfile.full_name || newProfile.email || "Usuario nuevo"} se ha registrado y está pendiente de aprobación.`,
+            });
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [isAdmin]);
 
@@ -182,7 +216,6 @@ export default function Admin() {
       .slice(0, 2);
   };
 
-  const { toast } = useToast();
 
   const updatePatientStatus = async (patientId: string, userId: string, approve: boolean) => {
     try {
