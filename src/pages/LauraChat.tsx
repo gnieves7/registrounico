@@ -34,8 +34,8 @@ const LauraChat = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-6">
-      <Card className="flex h-[calc(100vh-12rem)] flex-col">
+    <div className="mx-auto max-w-3xl px-2 py-2 md:px-4 md:py-6">
+      <Card className="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-12rem)] flex-col">
         <CardHeader className="flex-none border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

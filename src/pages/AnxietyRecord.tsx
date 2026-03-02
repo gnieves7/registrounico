@@ -97,15 +97,15 @@ const AnxietyRecord = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <Brain className="h-8 w-8 text-primary" />
-          <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-8">
+      <div className="mb-4 md:mb-6">
+        <div className="flex items-center gap-2 mb-2 md:gap-3">
+          <Brain className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+          <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">
             Registro de la Ansiedad
           </h1>
         </div>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground md:text-base">
           Herramientas cognitivas para comprender y gestionar la ansiedad
         </p>
       </div>

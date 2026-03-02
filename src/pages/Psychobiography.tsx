@@ -44,7 +44,7 @@ export default function Psychobiography() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6">
         <div className="space-y-6">
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-4 w-full max-w-md" />
@@ -57,14 +57,14 @@ export default function Psychobiography() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <FileText className="h-8 w-8 text-primary" />
-          <h1 className="font-serif text-3xl font-bold text-foreground">Mi Psicobiografía</h1>
+      <div className="mb-4 md:mb-8">
+        <div className="flex items-center gap-2 mb-2 md:gap-3">
+          <FileText className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+          <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">Mi Psicobiografía</h1>
         </div>
-        <p className="text-muted-foreground mb-4">
+        <p className="text-sm text-muted-foreground mb-3 md:text-base md:mb-4">
           Tu historia personal es única. Completa esta información a tu propio ritmo. 
           Todo lo que compartas es confidencial y nos ayudará a brindarte mejor atención.
         </p>
@@ -86,7 +86,7 @@ export default function Psychobiography() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6 flex-wrap h-auto gap-2 bg-transparent p-0">
+        <TabsList className="mb-4 md:mb-6 flex-wrap h-auto gap-1.5 md:gap-2 bg-transparent p-0">
           {sections.map((section) => {
             const Icon = section.icon;
             return (

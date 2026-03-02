@@ -93,18 +93,18 @@ const DreamRecord = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl py-6 px-4">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Moon className="h-6 w-6 text-primary" />
+      <div className="mb-4 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-primary/10">
+            <Moon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-serif font-bold text-foreground">
+            <h1 className="text-xl font-serif font-bold text-foreground md:text-2xl">
               Registro del Inconsciente
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground md:text-base">
               Explora tu mundo interior a través de tus sueños
             </p>
           </div>
@@ -112,12 +112,12 @@ const DreamRecord = () => {
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button size="sm" className="w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-2" />
               Registrar Sueño
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Moon className="h-5 w-5" />
@@ -129,7 +129,7 @@ const DreamRecord = () => {
             </DialogHeader>
 
             <div className="space-y-6 py-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="dream-date">Fecha del sueño</Label>
                   <Input
