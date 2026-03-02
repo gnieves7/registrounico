@@ -92,7 +92,7 @@ const Documents = () => {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-3xl px-4 py-8">
+      <div className="mx-auto max-w-3xl px-3 py-4 md:px-4 md:py-8">
         <div className="space-y-4">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-24 w-full" />
@@ -103,12 +103,12 @@ const Documents = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+    <div className="mx-auto max-w-3xl px-3 py-4 md:px-4 md:py-8">
+      <div className="mb-4 md:mb-6">
+        <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">
           Mis Documentos
         </h1>
-        <p className="mt-1 text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground md:text-base">
           Constancias e informes disponibles para descarga
         </p>
       </div>

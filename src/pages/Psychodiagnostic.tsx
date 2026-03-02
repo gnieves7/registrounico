@@ -145,10 +145,10 @@ const Psychodiagnostic = () => {
   };
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6 space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Registro Psicodiagnóstico</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-xl font-bold md:text-3xl">Registro Psicodiagnóstico</h1>
+        <p className="text-sm text-muted-foreground md:text-base">
           Evaluaciones psicológicas estandarizadas
         </p>
       </div>
