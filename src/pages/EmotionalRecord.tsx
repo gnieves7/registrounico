@@ -86,9 +86,9 @@ const EmotionalRecord = () => {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-8">
       <div className="mb-8">
-        <h1 className="font-serif text-2xl font-bold text-foreground md:text-3xl">
+        <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">
           Registro Emocional
         </h1>
         <p className="mt-1 text-muted-foreground">
@@ -106,21 +106,21 @@ const EmotionalRecord = () => {
         {/* Calendar View */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <CardTitle>Calendario Emocional</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base md:text-lg">Calendario Emocional</CardTitle>
+                <CardDescription className="text-xs md:text-sm">
                   Visualiza tu estado emocional a lo largo del mes
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={previousMonth}>
+                <Button variant="outline" size="icon" className="h-8 w-8" onClick={previousMonth}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="min-w-[140px] text-center font-medium capitalize">
+                <span className="min-w-[120px] text-center text-sm font-medium capitalize md:min-w-[140px] md:text-base">
                   {format(currentMonth, "MMMM yyyy", { locale: es })}
                 </span>
-                <Button variant="outline" size="icon" onClick={nextMonth}>
+                <Button variant="outline" size="icon" className="h-8 w-8" onClick={nextMonth}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
