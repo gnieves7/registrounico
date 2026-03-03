@@ -24,8 +24,19 @@ import {
   Brain,
   CheckCircle2,
   XCircle,
-  ShieldAlert
+  ShieldAlert,
+  Trash2
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { PatientEmotionalView } from "@/components/admin/PatientEmotionalView";
@@ -63,6 +74,8 @@ export default function Admin() {
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [activeTab, setActiveTab] = useState("emotional");
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [deletingPatient, setDeletingPatient] = useState<Patient | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -256,6 +269,29 @@ export default function Admin() {
       toast({ title: "Error", description: "No se pudo actualizar el estado del paciente.", variant: "destructive" });
     } finally {
       setUpdatingStatus(null);
+    }
+  };
+
+  const deletePatient = async () => {
+    if (!deletingPatient) return;
+    try {
+      setIsDeleting(true);
+      const { error } = await supabase.functions.invoke("delete-patient", {
+        body: { patientUserId: deletingPatient.user_id },
+      });
+      if (error) throw error;
+      
+      setPatients(prev => prev.filter(p => p.user_id !== deletingPatient.user_id));
+      setDeletingPatient(null);
+      if (selectedPatient?.user_id === deletingPatient.user_id) {
+        setSelectedPatient(null);
+      }
+      toast({ title: "Paciente eliminado", description: "Se eliminaron todos los datos del paciente." });
+    } catch (error: any) {
+      console.error("Error deleting patient:", error);
+      toast({ title: "Error", description: error.message || "No se pudo eliminar al paciente.", variant: "destructive" });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -466,6 +502,15 @@ export default function Admin() {
                       )}
                       <Button
                         size="sm"
+                        variant="outline"
+                        onClick={(e) => { e.stopPropagation(); setDeletingPatient(patient); }}
+                        className="gap-1 text-destructive border-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="hidden lg:inline">Eliminar</span>
+                      </Button>
+                      <Button
+                        size="sm"
                         variant="ghost"
                         onClick={() => setSelectedPatient(patient)}
                       >
@@ -569,6 +614,32 @@ export default function Admin() {
           )}
         </SheetContent>
       </Sheet>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deletingPatient} onOpenChange={(open) => !open && setDeletingPatient(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar paciente definitivamente?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminarán <strong>todos los datos</strong> de{" "}
+              <strong>{deletingPatient?.full_name || deletingPatient?.email || "este paciente"}</strong>: 
+              registros emocionales, sueños, psicobiografía, sesiones, documentos, tests y cuenta de usuario. 
+              <br /><br />
+              <span className="text-destructive font-semibold">Esta acción es irreversible.</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deletePatient}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Eliminando..." : "Sí, eliminar paciente"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
