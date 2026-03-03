@@ -138,7 +138,31 @@ const AnxietyRecord = () => {
               <CardTitle className="text-base">Ejemplo de Registro A-B-C-D-E</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
+              {/* Mobile: card layout */}
+              <div className="space-y-2 md:hidden">
+                <div className="rounded border border-border p-2">
+                  <span className="text-xs font-semibold text-foreground">A – Situación</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">Saliendo de una entrevista de trabajo</p>
+                </div>
+                <div className="rounded border border-border p-2">
+                  <span className="text-xs font-semibold text-foreground">B – Pensamiento</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">No me lo van a dar. Seguro que no soy el candidato ideal. Soy un fracasado.</p>
+                </div>
+                <div className="rounded border border-border p-2">
+                  <span className="text-xs font-semibold text-foreground">C – Emoción y conducta</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">Angustia o abatimiento. Me desmoralizo y dejo de buscar trabajo.</p>
+                </div>
+                <div className="rounded border border-border p-2">
+                  <span className="text-xs font-semibold text-foreground">D – Debate</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">¿Cómo sé que no me lo van a dar? ¿Puedo estar seguro? En caso de que no, ¿eso me convierte en fracasado?</p>
+                </div>
+                <div className="rounded border border-border p-2">
+                  <span className="text-xs font-semibold text-foreground">E – Resultado</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">No puedo estar seguro, lo mejor es dejar pasar tiempo. Me siento menos angustiado.</p>
+                </div>
+              </div>
+              {/* Desktop: table layout */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm border-collapse">
                   <thead>
                     <tr className="border-b border-border">
@@ -226,8 +250,24 @@ const AnxietyRecord = () => {
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="overflow-x-auto">
+                    <CardContent>
+                    {/* Mobile: card layout for records */}
+                    <div className="space-y-2 md:hidden">
+                      {[
+                        { label: "A – Situación", value: record.situation },
+                        { label: "B – Pensamiento", value: record.thought },
+                        { label: "C – Emoción", value: record.emotion_conduct },
+                        { label: "D – Debate", value: record.debate },
+                        { label: "E – Resultado", value: record.result },
+                      ].map((item) => (
+                        <div key={item.label} className="rounded border border-border p-2">
+                          <span className="text-xs font-medium text-muted-foreground">{item.label}</span>
+                          <p className="text-sm text-foreground mt-0.5">{item.value || "—"}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Desktop: table layout for records */}
+                    <div className="hidden md:block overflow-x-auto">
                       <table className="w-full text-sm border-collapse">
                         <thead>
                           <tr className="border-b border-border">
