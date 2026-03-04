@@ -80,6 +80,42 @@ export type Database = {
         }
         Relationships: []
       }
+      case_formulations: {
+        Row: {
+          created_at: string
+          edges: Json
+          id: string
+          nodes: Json
+          notes: string | null
+          patient_id: string
+          title: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          edges?: Json
+          id?: string
+          nodes?: Json
+          notes?: string | null
+          patient_id: string
+          title?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          edges?: Json
+          id?: string
+          nodes?: Json
+          notes?: string | null
+          patient_id?: string
+          title?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           code_generated_at: string | null
@@ -167,6 +203,60 @@ export type Database = {
           title?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      ema_configs: {
+        Row: {
+          access_token: string
+          created_at: string
+          id: string
+          is_active: boolean
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          patient_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ema_responses: {
+        Row: {
+          emotion: string
+          id: string
+          mood_score: number
+          note: string | null
+          patient_id: string
+          responded_at: string
+        }
+        Insert: {
+          emotion: string
+          id?: string
+          mood_score: number
+          note?: string | null
+          patient_id: string
+          responded_at?: string
+        }
+        Update: {
+          emotion?: string
+          id?: string
+          mood_score?: number
+          note?: string | null
+          patient_id?: string
+          responded_at?: string
         }
         Relationships: []
       }
@@ -448,6 +538,56 @@ export type Database = {
         }
         Relationships: []
       }
+      narrative_analyses: {
+        Row: {
+          created_at: string
+          distortions: Json
+          emotional_vocabulary: Json
+          id: string
+          language_ratio: Json
+          patient_id: string
+          session_date: string | null
+          session_id: string | null
+          source_text: string | null
+          summary: string | null
+          themes: Json
+        }
+        Insert: {
+          created_at?: string
+          distortions?: Json
+          emotional_vocabulary?: Json
+          id?: string
+          language_ratio?: Json
+          patient_id: string
+          session_date?: string | null
+          session_id?: string | null
+          source_text?: string | null
+          summary?: string | null
+          themes?: Json
+        }
+        Update: {
+          created_at?: string
+          distortions?: Json
+          emotional_vocabulary?: Json
+          id?: string
+          language_ratio?: Json
+          patient_id?: string
+          session_date?: string | null
+          session_id?: string | null
+          source_text?: string | null
+          summary?: string | null
+          themes?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "narrative_analyses_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       professional_profile_content: {
         Row: {
           content: Json
@@ -705,6 +845,36 @@ export type Database = {
           patient_questions?: string | null
           session_date?: string
           topic?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      symptom_networks: {
+        Row: {
+          bridge_symptom: string | null
+          created_at: string
+          edges: Json
+          id: string
+          nodes: Json
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          bridge_symptom?: string | null
+          created_at?: string
+          edges?: Json
+          id?: string
+          nodes?: Json
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          bridge_symptom?: string | null
+          created_at?: string
+          edges?: Json
+          id?: string
+          nodes?: Json
+          patient_id?: string
           updated_at?: string
         }
         Relationships: []

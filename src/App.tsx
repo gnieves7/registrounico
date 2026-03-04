@@ -23,6 +23,10 @@ import AptoPsicologico from "./pages/AptoPsicologico";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PendingApproval from "./pages/PendingApproval";
 import NotFound from "./pages/NotFound";
+import CaseFormulation from "./pages/CaseFormulation";
+import EmotionalThermometer from "./pages/EmotionalThermometer";
+import NarrativeAnalysis from "./pages/NarrativeAnalysis";
+import SymptomNetwork from "./pages/SymptomNetwork";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +59,10 @@ const App = () => (
               <Route path="/professional-profile" element={<ProfessionalProfile />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
+              <Route path="/case-formulation" element={<CaseFormulation />} />
+              <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
+              <Route path="/narrative-analysis" element={<NarrativeAnalysis />} />
+              <Route path="/symptom-network" element={<SymptomNetwork />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Route>
             
