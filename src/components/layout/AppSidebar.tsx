@@ -13,7 +13,11 @@ import {
   UserCheck,
   Scale,
   Briefcase,
-  ShieldCheck
+  ShieldCheck,
+  Map,
+  Thermometer,
+  BookOpen,
+  Network,
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -44,6 +48,7 @@ const allPatientMenuItems = [
   { title: "Expediente Forense", url: "/forensic", icon: Scale },
   { title: "Registro de la Ansiedad", url: "/anxiety-record", icon: Brain },
   { title: "Registro Emocional", url: "/emotional-record", icon: Smile },
+  { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
   { title: "Junta Médica Laboral", url: "/junta-medica", icon: Briefcase },
   { title: "Apto Psicológico", url: "/apto-psicologico", icon: ShieldCheck },
@@ -68,6 +73,10 @@ const getFilteredMenuItems = () => {
 
 const adminMenuItems = [
   { title: "Panel Admin", url: "/admin", icon: Settings },
+  { title: "Formulación de Caso", url: "/case-formulation", icon: Map },
+  { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
+  { title: "Análisis Narrativo", url: "/narrative-analysis", icon: BookOpen },
+  { title: "Red de Síntomas", url: "/symptom-network", icon: Network },
 ];
 
 export function AppSidebar() {
