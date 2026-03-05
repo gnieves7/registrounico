@@ -27,6 +27,10 @@ import CaseFormulation from "./pages/CaseFormulation";
 import EmotionalThermometer from "./pages/EmotionalThermometer";
 import NarrativeAnalysis from "./pages/NarrativeAnalysis";
 import SymptomNetwork from "./pages/SymptomNetwork";
+import TherapeuticAlliance from "./pages/TherapeuticAlliance";
+import LifeTimeline from "./pages/LifeTimeline";
+import MicroTasks from "./pages/MicroTasks";
+import OutcomeMonitoring from "./pages/OutcomeMonitoring";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +67,10 @@ const App = () => (
               <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
               <Route path="/narrative-analysis" element={<NarrativeAnalysis />} />
               <Route path="/symptom-network" element={<SymptomNetwork />} />
+              <Route path="/therapeutic-alliance" element={<TherapeuticAlliance />} />
+              <Route path="/life-timeline" element={<LifeTimeline />} />
+              <Route path="/micro-tasks" element={<MicroTasks />} />
+              <Route path="/outcome-monitoring" element={<OutcomeMonitoring />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             </Route>
             
