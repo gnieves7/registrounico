@@ -18,6 +18,10 @@ import {
   Thermometer,
   BookOpen,
   Network,
+  Handshake,
+  Clock,
+  ClipboardList,
+  BarChart3,
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -52,6 +56,10 @@ const allPatientMenuItems = [
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
   { title: "Junta Médica Laboral", url: "/junta-medica", icon: Briefcase },
   { title: "Apto Psicológico", url: "/apto-psicologico", icon: ShieldCheck },
+  { title: "Alianza Terapéutica", url: "/therapeutic-alliance", icon: Handshake },
+  { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
+  { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
+  { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
   { title: "Mis Turnos", url: "/sessions", icon: Calendar },
   { title: "Asistente Virtual", url: "/laura", icon: MessageCircle },
   { title: "Documentos", url: "/documents", icon: FileText },
@@ -77,6 +85,10 @@ const adminMenuItems = [
   { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
   { title: "Análisis Narrativo", url: "/narrative-analysis", icon: BookOpen },
   { title: "Red de Síntomas", url: "/symptom-network", icon: Network },
+  { title: "Alianza Terapéutica", url: "/therapeutic-alliance", icon: Handshake },
+  { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
+  { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
+  { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
 ];
 
 export function AppSidebar() {

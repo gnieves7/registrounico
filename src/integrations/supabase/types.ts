@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      alliance_ratings: {
+        Row: {
+          access_token: string | null
+          bond_quality: number
+          created_at: string
+          goal_agreement: number
+          id: string
+          patient_id: string
+          rater_type: string
+          session_id: string
+          task_agreement: number
+        }
+        Insert: {
+          access_token?: string | null
+          bond_quality: number
+          created_at?: string
+          goal_agreement: number
+          id?: string
+          patient_id: string
+          rater_type: string
+          session_id: string
+          task_agreement: number
+        }
+        Update: {
+          access_token?: string | null
+          bond_quality?: number
+          created_at?: string
+          goal_agreement?: number
+          id?: string
+          patient_id?: string
+          rater_type?: string
+          session_id?: string
+          task_agreement?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alliance_ratings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       anxiety_abcde_records: {
         Row: {
           created_at: string
@@ -424,6 +468,45 @@ export type Database = {
         }
         Relationships: []
       }
+      life_events: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string
+          event_date: string
+          event_type: string
+          id: string
+          patient_annotation: string | null
+          patient_id: string
+          updated_at: string
+          valence: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          description: string
+          event_date: string
+          event_type: string
+          id?: string
+          patient_annotation?: string | null
+          patient_id: string
+          updated_at?: string
+          valence?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          patient_annotation?: string | null
+          patient_id?: string
+          updated_at?: string
+          valence?: string
+        }
+        Relationships: []
+      }
       mbti_tests: {
         Row: {
           clinical_notes: string | null
@@ -489,6 +572,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      micro_tasks: {
+        Row: {
+          access_token: string | null
+          category: string
+          completed_at: string | null
+          created_at: string
+          due_date: string | null
+          id: string
+          instructions: string | null
+          patient_id: string
+          response: string | null
+          session_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          category: string
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          patient_id: string
+          response?: string | null
+          session_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          category?: string
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          patient_id?: string
+          response?: string | null
+          session_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "micro_tasks_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mmpi2_tests: {
         Row: {
@@ -581,6 +720,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "narrative_analyses_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outcome_measures: {
+        Row: {
+          created_at: string
+          id: string
+          patient_id: string
+          responses: Json
+          scale_type: string
+          session_date: string | null
+          session_id: string | null
+          total_score: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          patient_id: string
+          responses?: Json
+          scale_type: string
+          session_date?: string | null
+          session_id?: string | null
+          total_score?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          patient_id?: string
+          responses?: Json
+          scale_type?: string
+          session_date?: string | null
+          session_id?: string | null
+          total_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outcome_measures_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions"
