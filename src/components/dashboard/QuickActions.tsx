@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { User, MessageCircle, FileText, Smile } from "lucide-react";
+import { User, MessageCircle, FileText, Thermometer, BookOpen } from "lucide-react";
 
 const actions = [
   {
@@ -11,21 +11,28 @@ const actions = [
     color: "bg-primary/10 text-primary",
   },
   {
-    title: "Registro Emocional",
-    description: "Historial de estados",
-    icon: Smile,
-    href: "/emotional-record",
+    title: "Termómetro Emocional",
+    description: "Registrá cómo te sentís",
+    icon: Thermometer,
+    href: "/emotional-thermometer",
     color: "bg-accent text-accent-foreground",
   },
   {
-    title: "Asistente Virtual",
-    description: "Laura, tu acompañante IA",
-    icon: MessageCircle,
-    href: "/laura",
+    title: "Mi Cuaderno",
+    description: "Tu espacio privado",
+    icon: BookOpen,
+    href: "/notebook",
     color: "bg-secondary text-secondary-foreground",
   },
   {
-    title: "Mis Documentos",
+    title: "Acompañante Virtual",
+    description: "Laura, tu acompañante IA",
+    icon: MessageCircle,
+    href: "/laura",
+    color: "bg-primary/10 text-primary",
+  },
+  {
+    title: "Mis Informes",
     description: "Constancias e informes",
     icon: FileText,
     href: "/documents",

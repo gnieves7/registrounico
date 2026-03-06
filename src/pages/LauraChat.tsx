@@ -43,7 +43,7 @@ const LauraChat = () => {
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-lg">Asistente Virtual</CardTitle>
+                <CardTitle className="text-lg">Acompañante Virtual</CardTitle>
                 <p className="text-sm text-muted-foreground">Laura, tu acompañante terapéutica</p>
               </div>
             </div>

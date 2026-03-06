@@ -102,7 +102,7 @@ const AnxietyRecord = () => {
         <div className="flex items-center gap-2 mb-2 md:gap-3">
           <Brain className="h-6 w-6 md:h-8 md:w-8 text-primary" />
           <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">
-            Registro de la Ansiedad
+            Entrenamiento Cognitivo
           </h1>
         </div>
         <p className="text-sm text-muted-foreground md:text-base">

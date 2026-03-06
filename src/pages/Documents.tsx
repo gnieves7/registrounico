@@ -106,7 +106,7 @@ const Documents = () => {
     <div className="mx-auto max-w-3xl px-3 py-4 md:px-4 md:py-8">
       <div className="mb-4 md:mb-6">
         <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">
-          Mis Documentos
+          Mis Informes
         </h1>
         <p className="mt-1 text-sm text-muted-foreground md:text-base">
           Constancias e informes disponibles para descarga

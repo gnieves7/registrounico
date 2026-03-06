@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { 
   Home, 
   User, 
-  Smile, 
+   
   Calendar, 
   MessageCircle, 
   FileText, 
@@ -50,8 +50,7 @@ const allPatientMenuItems = [
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Registro Psicodiagnóstico", url: "/psychodiagnostic", icon: Brain },
   { title: "Expediente Forense", url: "/forensic", icon: Scale },
-  { title: "Registro de la Ansiedad", url: "/anxiety-record", icon: Brain },
-  { title: "Registro Emocional", url: "/emotional-record", icon: Smile },
+  { title: "Entrenamiento Cognitivo", url: "/anxiety-record", icon: Brain },
   { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
   { title: "Junta Médica Laboral", url: "/junta-medica", icon: Briefcase },
@@ -61,16 +60,17 @@ const allPatientMenuItems = [
   { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
   { title: "Mis Turnos", url: "/sessions", icon: Calendar },
-  { title: "Asistente Virtual", url: "/laura", icon: MessageCircle },
-  { title: "Documentos", url: "/documents", icon: FileText },
+  { title: "Mi Cuaderno", url: "/notebook", icon: BookOpen },
+  { title: "Acompañante Virtual", url: "/laura", icon: MessageCircle },
+  { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
 ];
 
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
   clinica: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico"],
-  psicodiagnostico: ["/forensic", "/emotional-record", "/dream-record", "/anxiety-record"],
-  forense: ["/psychodiagnostic", "/emotional-record", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico"],
+  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record"],
+  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico"],
 };
 
 const getFilteredMenuItems = () => {
@@ -82,7 +82,7 @@ const getFilteredMenuItems = () => {
 const adminMenuItems = [
   { title: "Panel Admin", url: "/admin", icon: Settings },
   { title: "Formulación de Caso", url: "/case-formulation", icon: Map },
-  { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
+  { title: "Termómetro Emocional (Admin)", url: "/emotional-thermometer", icon: Thermometer },
   { title: "Análisis Narrativo", url: "/narrative-analysis", icon: BookOpen },
   { title: "Red de Síntomas", url: "/symptom-network", icon: Network },
   { title: "Alianza Terapéutica", url: "/therapeutic-alliance", icon: Handshake },

@@ -7,7 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "./pages/Login";
 import DashboardHome from "./pages/DashboardHome";
-import EmotionalRecord from "./pages/EmotionalRecord";
+import Notebook from "./pages/Notebook";
 import DreamRecord from "./pages/DreamRecord";
 import Psychobiography from "./pages/Psychobiography";
 import Psychodiagnostic from "./pages/Psychodiagnostic";
@@ -55,7 +55,7 @@ const App = () => (
               <Route path="/anxiety-record" element={<AnxietyRecord />} />
               <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
               <Route path="/apto-psicologico" element={<AptoPsicologico />} />
-              <Route path="/emotional-record" element={<EmotionalRecord />} />
+              <Route path="/notebook" element={<Notebook />} />
               <Route path="/dream-record" element={<DreamRecord />} />
               <Route path="/sessions" element={<Sessions />} />
               <Route path="/laura" element={<LauraChat />} />
