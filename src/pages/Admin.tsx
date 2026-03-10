@@ -45,6 +45,8 @@ import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
 import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodiagnosticView";
+import { PatientAbcdeView } from "@/components/admin/PatientAbcdeView";
+import { PatientNotebookView } from "@/components/admin/PatientNotebookView";
 import { PaymentSettingsEditor } from "@/components/admin/PaymentSettingsEditor";
 import ProfessionalStatsEditor from "@/components/admin/ProfessionalStatsEditor";
 
