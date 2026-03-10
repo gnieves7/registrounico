@@ -42,6 +42,7 @@ export default function MicroTasks() {
   const [showAdd, setShowAdd] = useState(false);
   const [respondingTask, setRespondingTask] = useState<any>(null);
   const [response, setResponse] = useState("");
+  const [editingTask, setEditingTask] = useState<any>(null);
 
   // Form
   const [category, setCategory] = useState("behavioral_activation");
