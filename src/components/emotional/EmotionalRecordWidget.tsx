@@ -8,33 +8,33 @@ import { toast } from "sonner";
 import { Check } from "lucide-react";
 
 const AFFECTIVE_CATEGORIES = [
-  { emoji: "🤩", label: "Admiración", labelEn: "Admiration", score: 8 },
-  { emoji: "🥰", label: "Adoración", labelEn: "Adoration", score: 8 },
-  { emoji: "😍", label: "Apreciación estética", labelEn: "Aesthetic appreciation", score: 7 },
-  { emoji: "😄", label: "Diversión", labelEn: "Amusement", score: 7 },
-  { emoji: "😡", label: "Ira", labelEn: "Anger", score: 2 },
-  { emoji: "😰", label: "Ansiedad", labelEn: "Anxiety", score: 2 },
-  { emoji: "😲", label: "Asombro reverencial", labelEn: "Awe", score: 6 },
-  { emoji: "😬", label: "Incomodidad social", labelEn: "Awkwardness", score: 3 },
-  { emoji: "😑", label: "Aburrimiento", labelEn: "Boredom", score: 3 },
-  { emoji: "😌", label: "Calma", labelEn: "Calmness", score: 7 },
-  { emoji: "🤔", label: "Confusión", labelEn: "Confusion", score: 4 },
-  { emoji: "🤤", label: "Anhelo", labelEn: "Craving", score: 5 },
-  { emoji: "🤢", label: "Asco", labelEn: "Disgust", score: 1 },
-  { emoji: "😢", label: "Dolor empático", labelEn: "Empathic pain", score: 3 },
-  { emoji: "🫠", label: "Fascinación", labelEn: "Entrancement", score: 6 },
-  { emoji: "🥳", label: "Entusiasmo", labelEn: "Excitement", score: 9 },
-  { emoji: "😨", label: "Miedo", labelEn: "Fear", score: 2 },
-  { emoji: "😱", label: "Horror", labelEn: "Horror", score: 1 },
-  { emoji: "🧐", label: "Interés", labelEn: "Interest", score: 6 },
-  { emoji: "😊", label: "Alegría", labelEn: "Joy", score: 9 },
-  { emoji: "🥹", label: "Nostalgia", labelEn: "Nostalgia", score: 5 },
-  { emoji: "😮‍💨", label: "Alivio", labelEn: "Relief", score: 7 },
-  { emoji: "🥰", label: "Enamoramiento", labelEn: "Romance", score: 8 },
-  { emoji: "😔", label: "Tristeza", labelEn: "Sadness", score: 2 },
-  { emoji: "😌", label: "Satisfacción", labelEn: "Satisfaction", score: 8 },
-  { emoji: "😏", label: "Deseo sexual", labelEn: "Sexual desire", score: 5 },
-  { emoji: "🤗", label: "Compasión", labelEn: "Sympathy", score: 7 },
+  { emoji: "🤩", label: "Admiración", labelEn: "Admiration", score: 8, description: "Valoración positiva de una cualidad en otro" },
+  { emoji: "🥰", label: "Adoración", labelEn: "Adoration", score: 8, description: "Afecto intenso, casi reverencial, hacia algo o alguien" },
+  { emoji: "😍", label: "Apreciación estética", labelEn: "Aesthetic appreciation", score: 7, description: "Placer ante la belleza o excelencia formal" },
+  { emoji: "😄", label: "Diversión", labelEn: "Amusement", score: 7, description: "Humor positivo" },
+  { emoji: "😡", label: "Enojo", labelEn: "Anger", score: 2, description: "Respuesta ante obstáculo o injusticia percibida" },
+  { emoji: "😰", label: "Ansiedad", labelEn: "Anxiety", score: 2, description: "Anticipación amenazante, difusa o específica" },
+  { emoji: "😲", label: "Asombro reverencial", labelEn: "Awe", score: 6, description: "Asombro ante algo vasto o que supera las expectativas previas" },
+  { emoji: "😬", label: "Incomodidad social", labelEn: "Awkwardness", score: 3, description: "Torpeza situacional" },
+  { emoji: "😑", label: "Aburrimiento", labelEn: "Boredom", score: 3, description: "Baja activación, ausencia de estímulo significativo" },
+  { emoji: "😌", label: "Calma", labelEn: "Calmness", score: 7, description: "Relajación, cierta estabilidad" },
+  { emoji: "🤔", label: "Confusión", labelEn: "Confusion", score: 4, description: "Disonancia cognitiva, falta de comprensión" },
+  { emoji: "🤤", label: "Anhelo", labelEn: "Craving", score: 5, description: "Deseo intenso, apetito hacia un objeto/situación" },
+  { emoji: "🤢", label: "Asco", labelEn: "Disgust", score: 1, description: "Rechazo ante algo percibido como sucio, contaminante o violatorio" },
+  { emoji: "😢", label: "Dolor empático", labelEn: "Empathic pain", score: 3, description: "Percibir el dolor y sentir ante el sufrimiento ajeno" },
+  { emoji: "😎", label: "Fascinación", labelEn: "Entrancement", score: 6, description: "Atracción irresistible, deslumbramiento intenso hacia alguien o algo" },
+  { emoji: "🥳", label: "Entusiasmo", labelEn: "Excitement", score: 9, description: "Exaltación del ánimo y fervor apasionado ante algo que admira" },
+  { emoji: "😨", label: "Miedo", labelEn: "Fear", score: 2, description: "Respuesta ante amenaza concreta o percibida" },
+  { emoji: "😱", label: "Horror", labelEn: "Horror", score: 1, description: "Miedo combinado con asco o perturbación moral" },
+  { emoji: "🧐", label: "Interés", labelEn: "Interest", score: 6, description: "Orientación atencional hacia algo novedoso o complejo" },
+  { emoji: "😊", label: "Alegría", labelEn: "Joy", score: 9, description: "Bienestar, satisfacción positiva" },
+  { emoji: "🕰️", label: "Nostalgia", labelEn: "Nostalgia", score: 5, description: "Añoranza afectiva por el pasado" },
+  { emoji: "😮‍💨", label: "Alivio", labelEn: "Relief", score: 7, description: "Reducción de tensión tras superar una amenaza real o percibida" },
+  { emoji: "🥰", label: "Enamoramiento", labelEn: "Romance", score: 8, description: "Atracción afectivo-sexual con respeto y calidez" },
+  { emoji: "😔", label: "Tristeza", labelEn: "Sadness", score: 2, description: "Respuesta ante la pérdida o la privación" },
+  { emoji: "😌", label: "Satisfacción", labelEn: "Satisfaction", score: 8, description: "Cierre positivo de una meta o necesidad" },
+  { emoji: "😘", label: "Deseo sexual", labelEn: "Sexual desire", score: 5, description: "Activación erótica dirigida" },
+  { emoji: "🤗", label: "Compasión", labelEn: "Sympathy", score: 7, description: "Preocupación orientada hacia el bienestar ajeno" },
 ];
 
 interface EmotionalRecordWidgetProps {
@@ -156,6 +156,20 @@ export function EmotionalRecordWidget({
             </button>
           ))}
         </div>
+
+        {/* Selected emotion description */}
+        {selectedMood && (() => {
+          const selected = AFFECTIVE_CATEGORIES.find(m => m.emoji === selectedMood);
+          return selected ? (
+            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+              <span className="text-3xl">{selected.emoji}</span>
+              <div>
+                <p className="font-medium text-foreground">{selected.label}</p>
+                <p className="text-sm text-muted-foreground">{selected.description}</p>
+              </div>
+            </div>
+          ) : null;
+        })()}
 
         {/* Reference */}
         <p className="text-[10px] text-muted-foreground text-center italic">
