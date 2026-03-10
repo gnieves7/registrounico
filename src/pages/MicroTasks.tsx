@@ -75,16 +75,34 @@ export default function MicroTasks() {
     if (!selectedPatient || !title.trim()) return;
     setIsSaving(true);
     try {
-      const { error } = await supabase.from("micro_tasks").insert({
-        patient_id: selectedPatient,
-        category,
-        title: title.trim(),
-        instructions: instructions.trim() || null,
-        due_date: dueDate || null,
-      });
-      if (error) throw error;
-      toast({ title: "Tarea asignada" });
+      if (editingTask) {
+        // Update existing task
+        const { error } = await supabase.from("micro_tasks")
+          .update({
+            category,
+            title: title.trim(),
+            instructions: instructions.trim() || null,
+            due_date: dueDate || null,
+            status: "pending",
+            response: null,
+            completed_at: null,
+          })
+          .eq("id", editingTask.id);
+        if (error) throw error;
+        toast({ title: "Tarea actualizada y reenviada" });
+      } else {
+        const { error } = await supabase.from("micro_tasks").insert({
+          patient_id: selectedPatient,
+          category,
+          title: title.trim(),
+          instructions: instructions.trim() || null,
+          due_date: dueDate || null,
+        });
+        if (error) throw error;
+        toast({ title: "Tarea asignada" });
+      }
       setShowAdd(false);
+      setEditingTask(null);
       setTitle("");
       setInstructions("");
       setDueDate("");
@@ -94,6 +112,15 @@ export default function MicroTasks() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const openEditTask = (task: any) => {
+    setEditingTask(task);
+    setCategory(task.category);
+    setTitle(task.title);
+    setInstructions(task.instructions || "");
+    setDueDate(task.due_date || "");
+    setShowAdd(true);
   };
 
   const submitResponse = async () => {
