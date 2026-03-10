@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send } from "lucide-react";
+import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
