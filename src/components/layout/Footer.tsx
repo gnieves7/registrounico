@@ -23,7 +23,7 @@ const Footer = () => {
         </p>
         <p className="text-xs text-muted-foreground mt-2">
           <Link to="/privacy-policy" className="text-primary hover:underline">
-            Política de Privacidad
+            Aviso Legal, Términos y Privacidad
           </Link>
         </p>
         <p className="text-xs text-muted-foreground mt-3 italic">
