@@ -25,7 +25,9 @@ import {
   CheckCircle2,
   XCircle,
   ShieldAlert,
-  Trash2
+  Trash2,
+  BookOpen,
+  ClipboardList
 } from "lucide-react";
 import {
   AlertDialog,
