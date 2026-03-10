@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Plus, Save, Trash2, Lock, ChevronDown, ChevronUp } from "lucide-react";
+import { BookOpen, Plus, Save, Trash2, Lock, ChevronDown, ChevronUp, Share2, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -16,6 +17,7 @@ interface NotebookEntry {
   content: string;
   created_at: string;
   updated_at: string;
+  shared_with_therapist?: boolean;
 }
 
 const Notebook = () => {
@@ -97,6 +99,25 @@ const Notebook = () => {
     }
   };
 
+  const toggleShare = async (entry: NotebookEntry) => {
+    const newValue = !entry.shared_with_therapist;
+    try {
+      const { error } = await (supabase.from("notebook_entries" as any) as any)
+        .update({ shared_with_therapist: newValue })
+        .eq("id", entry.id);
+      if (error) throw error;
+      toast({
+        title: newValue ? "Compartido con el psicólogo" : "Dejó de compartirse",
+        description: newValue
+          ? "Tu psicólogo ahora puede leer esta entrada."
+          : "Esta entrada volvió a ser privada.",
+      });
+      fetchEntries();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
+  };
+
   const startEdit = (entry: NotebookEntry) => {
     setEditingId(entry.id);
     setEditTitle(entry.title || "");
@@ -131,7 +152,8 @@ const Notebook = () => {
         <CardContent className="flex items-center gap-3 py-3">
           <Lock className="h-5 w-5 text-primary shrink-0" />
           <p className="text-sm text-muted-foreground">
-            Este espacio es completamente privado. Solo vos podés ver lo que escribís aquí.
+            Este espacio es completamente privado. Solo vos podés ver lo que escribís aquí. 
+            Podés elegir compartir entradas individuales con tu psicólogo usando el botón <Share2 className="inline h-3.5 w-3.5" />.
           </p>
         </CardContent>
       </Card>
@@ -194,10 +216,16 @@ const Notebook = () => {
                     onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
                     className="flex-1 text-left"
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-medium text-foreground">
                         {entry.title || "Sin título"}
                       </p>
+                      {entry.shared_with_therapist && (
+                        <Badge variant="outline" className="gap-1 text-xs text-primary border-primary/30">
+                          <ShieldCheck className="h-3 w-3" />
+                          Compartido
+                        </Badge>
+                      )}
                       {expandedId === entry.id ? (
                         <ChevronUp className="h-4 w-4 text-muted-foreground" />
                       ) : (
@@ -214,6 +242,15 @@ const Notebook = () => {
                     )}
                   </button>
                   <div className="flex gap-1 shrink-0">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={`h-8 w-8 ${entry.shared_with_therapist ? "text-primary" : ""}`}
+                      onClick={() => toggleShare(entry)}
+                      title={entry.shared_with_therapist ? "Dejar de compartir" : "Compartir con el psicólogo"}
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                    </Button>
                     <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startEdit(entry)}>
                       <Save className="h-3.5 w-3.5" />
                     </Button>

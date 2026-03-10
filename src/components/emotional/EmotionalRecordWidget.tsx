@@ -7,15 +7,34 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Check } from "lucide-react";
 
-const MOODS = [
-  { emoji: "😊", label: "Feliz", score: 5 },
-  { emoji: "😌", label: "Tranquilo", score: 4 },
-  { emoji: "🥴", label: "Inestable", score: 3 },
-  { emoji: "😔", label: "Triste", score: 2 },
-  { emoji: "😤", label: "Frustrado", score: 2 },
-  { emoji: "😰", label: "Ansioso", score: 1 },
-  { emoji: "😢", label: "Muy triste", score: 1 },
-  { emoji: "😡", label: "Enojado", score: 1 },
+const AFFECTIVE_CATEGORIES = [
+  { emoji: "🤩", label: "Admiración", labelEn: "Admiration", score: 8 },
+  { emoji: "🥰", label: "Adoración", labelEn: "Adoration", score: 8 },
+  { emoji: "😍", label: "Apreciación estética", labelEn: "Aesthetic appreciation", score: 7 },
+  { emoji: "😄", label: "Diversión", labelEn: "Amusement", score: 7 },
+  { emoji: "😡", label: "Ira", labelEn: "Anger", score: 2 },
+  { emoji: "😰", label: "Ansiedad", labelEn: "Anxiety", score: 2 },
+  { emoji: "😲", label: "Asombro", labelEn: "Awe", score: 6 },
+  { emoji: "😬", label: "Incomodidad", labelEn: "Awkwardness", score: 3 },
+  { emoji: "😑", label: "Aburrimiento", labelEn: "Boredom", score: 3 },
+  { emoji: "😌", label: "Calma", labelEn: "Calmness", score: 7 },
+  { emoji: "🤔", label: "Confusión", labelEn: "Confusion", score: 4 },
+  { emoji: "🤤", label: "Deseo intenso", labelEn: "Craving", score: 5 },
+  { emoji: "🤢", label: "Disgusto", labelEn: "Disgust", score: 1 },
+  { emoji: "😢", label: "Dolor empático", labelEn: "Empathic pain", score: 3 },
+  { emoji: "🫠", label: "Fascinación", labelEn: "Entrancement", score: 6 },
+  { emoji: "🥳", label: "Entusiasmo", labelEn: "Excitement", score: 9 },
+  { emoji: "😨", label: "Miedo", labelEn: "Fear", score: 2 },
+  { emoji: "😱", label: "Horror", labelEn: "Horror", score: 1 },
+  { emoji: "🧐", label: "Interés", labelEn: "Interest", score: 6 },
+  { emoji: "😊", label: "Alegría", labelEn: "Joy", score: 9 },
+  { emoji: "🥹", label: "Nostalgia", labelEn: "Nostalgia", score: 5 },
+  { emoji: "😮‍💨", label: "Alivio", labelEn: "Relief", score: 7 },
+  { emoji: "🥰", label: "Romance", labelEn: "Romance", score: 8 },
+  { emoji: "😔", label: "Tristeza", labelEn: "Sadness", score: 2 },
+  { emoji: "😌", label: "Satisfacción", labelEn: "Satisfaction", score: 8 },
+  { emoji: "😏", label: "Deseo sexual", labelEn: "Sexual desire", score: 5 },
+  { emoji: "🤗", label: "Simpatía", labelEn: "Sympathy", score: 7 },
 ];
 
 interface EmotionalRecordWidgetProps {
@@ -41,13 +60,12 @@ export function EmotionalRecordWidget({
   const handleSave = async () => {
     if (!user || !selectedMood) return;
 
-    const moodData = MOODS.find(m => m.emoji === selectedMood);
+    const moodData = AFFECTIVE_CATEGORIES.find(m => m.emoji === selectedMood);
     if (!moodData) return;
 
     setIsSaving(true);
     try {
       if (todayRecord?.id) {
-        // Update existing record
         const { error } = await supabase
           .from("emotional_records")
           .update({
@@ -60,7 +78,6 @@ export function EmotionalRecordWidget({
         if (error) throw error;
         toast.success("Registro actualizado");
       } else {
-        // Create new record
         const { error } = await supabase
           .from("emotional_records")
           .insert({
@@ -84,6 +101,7 @@ export function EmotionalRecordWidget({
   };
 
   if (compact && todayRecord) {
+    const found = AFFECTIVE_CATEGORIES.find(m => m.emoji === todayRecord.emoji);
     return (
       <Card className="border-primary/20 bg-gradient-to-r from-card to-accent/10">
         <CardContent className="flex items-center gap-4 py-4">
@@ -92,7 +110,7 @@ export function EmotionalRecordWidget({
           </div>
           <div className="flex-1">
             <p className="font-medium text-foreground">
-              Hoy te sientes: {MOODS.find(m => m.emoji === todayRecord.emoji)?.label}
+              Hoy te sientes: {found?.label || "Registrado"}
             </p>
             {todayRecord.reflection && (
               <p className="text-sm text-muted-foreground line-clamp-1">
@@ -117,15 +135,15 @@ export function EmotionalRecordWidget({
           ¿Cómo te sientes hoy?
         </CardTitle>
         <CardDescription>
-          Selecciona el emoji que mejor represente tu estado emocional actual
+          Seleccioná la categoría afectiva que mejor represente tu estado emocional actual
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Emoji Grid */}
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2 sm:grid-cols-8">
-          {MOODS.map((mood) => (
+        {/* 27 Affective Categories Grid */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+          {AFFECTIVE_CATEGORIES.map((mood) => (
             <button
-              key={mood.emoji}
+              key={`${mood.labelEn}`}
               onClick={() => setSelectedMood(mood.emoji)}
               className={`flex flex-col items-center gap-0.5 rounded-lg p-2 transition-all hover:bg-accent sm:gap-1 sm:p-3 ${
                 selectedMood === mood.emoji
@@ -134,10 +152,15 @@ export function EmotionalRecordWidget({
               }`}
             >
               <span className="text-xl sm:text-2xl">{mood.emoji}</span>
-              <span className="text-[10px] leading-tight sm:text-xs text-muted-foreground">{mood.label}</span>
+              <span className="text-[9px] leading-tight sm:text-[10px] text-muted-foreground text-center">{mood.label}</span>
             </button>
           ))}
         </div>
+
+        {/* Reference */}
+        <p className="text-[10px] text-muted-foreground text-center italic">
+          Basado en las 27 categorías afectivas de Cowen & Keltner (2017)
+        </p>
 
         {/* Reflection Text */}
         {selectedMood && (
