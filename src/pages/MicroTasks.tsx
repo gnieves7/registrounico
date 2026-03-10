@@ -277,6 +277,15 @@ export default function MicroTasks() {
                         <Send className="h-3.5 w-3.5 mr-1" /> Completar
                       </Button>
                     )}
+                    {isAdmin && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditTask(task)}
+                      >
+                        <Edit className="h-3.5 w-3.5 mr-1" /> Editar
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
