@@ -339,7 +339,7 @@ export default function MicroTasks() {
           </div>
           <DialogFooter>
             <Button onClick={assignTask} disabled={!title.trim() || isSaving}>
-              {isSaving ? "Guardando..." : "Asignar"}
+              {isSaving ? "Guardando..." : editingTask ? "Actualizar y Reenviar" : "Asignar"}
             </Button>
           </DialogFooter>
         </DialogContent>
