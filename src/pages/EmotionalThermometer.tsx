@@ -216,6 +216,19 @@ export default function EmotionalThermometer() {
                 </button>
               ))}
             </div>
+            {/* Selected emotion description */}
+            {selectedEmotion && (() => {
+              const selected = AFFECTIVE_CATEGORIES.find(c => c.value === selectedEmotion);
+              return selected ? (
+                <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <span className="text-3xl">{selected.emoji}</span>
+                  <div>
+                    <p className="font-medium text-foreground">{selected.label}</p>
+                    <p className="text-sm text-muted-foreground">{selected.description}</p>
+                  </div>
+                </div>
+              ) : null;
+            })()}
             <p className="text-[10px] text-muted-foreground text-center italic">
               Basado en las 27 categorías afectivas de Cowen & Keltner (2017)
             </p>
