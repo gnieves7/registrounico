@@ -25,7 +25,9 @@ import {
   CheckCircle2,
   XCircle,
   ShieldAlert,
-  Trash2
+  Trash2,
+  BookOpen,
+  ClipboardList
 } from "lucide-react";
 import {
   AlertDialog,
@@ -45,6 +47,8 @@ import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
 import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodiagnosticView";
+import { PatientAbcdeView } from "@/components/admin/PatientAbcdeView";
+import { PatientNotebookView } from "@/components/admin/PatientNotebookView";
 import { PaymentSettingsEditor } from "@/components/admin/PaymentSettingsEditor";
 import ProfessionalStatsEditor from "@/components/admin/ProfessionalStatsEditor";
 
@@ -550,28 +554,36 @@ export default function Admin() {
               </SheetHeader>
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full mb-4 grid grid-cols-3 h-auto gap-1 sm:flex sm:mb-6">
-                  <TabsTrigger value="emotional" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                <TabsList className="w-full mb-4 flex flex-wrap h-auto gap-1 sm:mb-6">
+                  <TabsTrigger value="emotional" className="gap-1 text-xs sm:text-sm flex-1">
                     <Smile className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Emocional
                   </TabsTrigger>
-                  <TabsTrigger value="dreams" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                  <TabsTrigger value="dreams" className="gap-1 text-xs sm:text-sm flex-1">
                     <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Sueños
                   </TabsTrigger>
-                  <TabsTrigger value="psychodiagnostic" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                  <TabsTrigger value="abcde" className="gap-1 text-xs sm:text-sm flex-1">
+                    <ClipboardList className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    ABCDE
+                  </TabsTrigger>
+                  <TabsTrigger value="notebook" className="gap-1 text-xs sm:text-sm flex-1">
+                    <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Cuaderno
+                  </TabsTrigger>
+                  <TabsTrigger value="psychodiagnostic" className="gap-1 text-xs sm:text-sm flex-1">
                     <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Tests
                   </TabsTrigger>
-                  <TabsTrigger value="psychobiography" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                  <TabsTrigger value="psychobiography" className="gap-1 text-xs sm:text-sm flex-1">
                     <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Psicobio
                   </TabsTrigger>
-                  <TabsTrigger value="sessions" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                  <TabsTrigger value="sessions" className="gap-1 text-xs sm:text-sm flex-1">
                     <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Sesiones
                   </TabsTrigger>
-                  <TabsTrigger value="documents" className="gap-1 text-xs sm:text-sm sm:flex-1">
+                  <TabsTrigger value="documents" className="gap-1 text-xs sm:text-sm flex-1">
                     <FolderOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     Docs
                   </TabsTrigger>
@@ -586,6 +598,14 @@ export default function Admin() {
                     userId={selectedPatient.user_id} 
                     patientName={selectedPatient.full_name || "el paciente"} 
                   />
+                </TabsContent>
+
+                <TabsContent value="abcde">
+                  <PatientAbcdeView userId={selectedPatient.user_id} />
+                </TabsContent>
+
+                <TabsContent value="notebook">
+                  <PatientNotebookView userId={selectedPatient.user_id} />
                 </TabsContent>
 
                 <TabsContent value="psychodiagnostic">

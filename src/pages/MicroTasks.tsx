@@ -13,7 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send } from "lucide-react";
+import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -42,6 +42,7 @@ export default function MicroTasks() {
   const [showAdd, setShowAdd] = useState(false);
   const [respondingTask, setRespondingTask] = useState<any>(null);
   const [response, setResponse] = useState("");
+  const [editingTask, setEditingTask] = useState<any>(null);
 
   // Form
   const [category, setCategory] = useState("behavioral_activation");
@@ -74,16 +75,34 @@ export default function MicroTasks() {
     if (!selectedPatient || !title.trim()) return;
     setIsSaving(true);
     try {
-      const { error } = await supabase.from("micro_tasks").insert({
-        patient_id: selectedPatient,
-        category,
-        title: title.trim(),
-        instructions: instructions.trim() || null,
-        due_date: dueDate || null,
-      });
-      if (error) throw error;
-      toast({ title: "Tarea asignada" });
+      if (editingTask) {
+        // Update existing task
+        const { error } = await supabase.from("micro_tasks")
+          .update({
+            category,
+            title: title.trim(),
+            instructions: instructions.trim() || null,
+            due_date: dueDate || null,
+            status: "pending",
+            response: null,
+            completed_at: null,
+          })
+          .eq("id", editingTask.id);
+        if (error) throw error;
+        toast({ title: "Tarea actualizada y reenviada" });
+      } else {
+        const { error } = await supabase.from("micro_tasks").insert({
+          patient_id: selectedPatient,
+          category,
+          title: title.trim(),
+          instructions: instructions.trim() || null,
+          due_date: dueDate || null,
+        });
+        if (error) throw error;
+        toast({ title: "Tarea asignada" });
+      }
       setShowAdd(false);
+      setEditingTask(null);
       setTitle("");
       setInstructions("");
       setDueDate("");
@@ -93,6 +112,15 @@ export default function MicroTasks() {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const openEditTask = (task: any) => {
+    setEditingTask(task);
+    setCategory(task.category);
+    setTitle(task.title);
+    setInstructions(task.instructions || "");
+    setDueDate(task.due_date || "");
+    setShowAdd(true);
   };
 
   const submitResponse = async () => {
@@ -249,6 +277,15 @@ export default function MicroTasks() {
                         <Send className="h-3.5 w-3.5 mr-1" /> Completar
                       </Button>
                     )}
+                    {isAdmin && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditTask(task)}
+                      >
+                        <Edit className="h-3.5 w-3.5 mr-1" /> Editar
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -270,10 +307,10 @@ export default function MicroTasks() {
       )}
 
       {/* Assign Task Dialog */}
-      <Dialog open={showAdd} onOpenChange={setShowAdd}>
+      <Dialog open={showAdd} onOpenChange={(open) => { setShowAdd(open); if (!open) setEditingTask(null); }}>
         <DialogContent className="max-w-[95vw] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Asignar Tarea Terapéutica</DialogTitle>
+            <DialogTitle>{editingTask ? "Editar y Reenviar Tarea" : "Asignar Tarea Terapéutica"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -302,7 +339,7 @@ export default function MicroTasks() {
           </div>
           <DialogFooter>
             <Button onClick={assignTask} disabled={!title.trim() || isSaving}>
-              {isSaving ? "Guardando..." : "Asignar"}
+              {isSaving ? "Guardando..." : editingTask ? "Actualizar y Reenviar" : "Asignar"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -2,23 +2,46 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { Thermometer, Users, TrendingDown, Copy, Send } from "lucide-react";
+import { Thermometer, Users, TrendingDown, Send } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
-const EMOTIONS = [
-  "Alegría", "Tristeza", "Ira", "Miedo", "Sorpresa", "Asco",
-  "Ansiedad", "Vergüenza", "Culpa", "Esperanza", "Gratitud", "Calma",
+const AFFECTIVE_CATEGORIES = [
+  { emoji: "🤩", label: "Admiración", value: "admiration" },
+  { emoji: "🥰", label: "Adoración", value: "adoration" },
+  { emoji: "😍", label: "Apreciación estética", value: "aesthetic_appreciation" },
+  { emoji: "😄", label: "Diversión", value: "amusement" },
+  { emoji: "😡", label: "Ira", value: "anger" },
+  { emoji: "😰", label: "Ansiedad", value: "anxiety" },
+  { emoji: "😲", label: "Asombro", value: "awe" },
+  { emoji: "😬", label: "Incomodidad", value: "awkwardness" },
+  { emoji: "😑", label: "Aburrimiento", value: "boredom" },
+  { emoji: "😌", label: "Calma", value: "calmness" },
+  { emoji: "🤔", label: "Confusión", value: "confusion" },
+  { emoji: "🤤", label: "Deseo intenso", value: "craving" },
+  { emoji: "🤢", label: "Disgusto", value: "disgust" },
+  { emoji: "😢", label: "Dolor empático", value: "empathic_pain" },
+  { emoji: "🫠", label: "Fascinación", value: "entrancement" },
+  { emoji: "🥳", label: "Entusiasmo", value: "excitement" },
+  { emoji: "😨", label: "Miedo", value: "fear" },
+  { emoji: "😱", label: "Horror", value: "horror" },
+  { emoji: "🧐", label: "Interés", value: "interest" },
+  { emoji: "😊", label: "Alegría", value: "joy" },
+  { emoji: "🥹", label: "Nostalgia", value: "nostalgia" },
+  { emoji: "😮‍💨", label: "Alivio", value: "relief" },
+  { emoji: "💕", label: "Romance", value: "romance" },
+  { emoji: "😔", label: "Tristeza", value: "sadness" },
+  { emoji: "😌", label: "Satisfacción", value: "satisfaction" },
+  { emoji: "😏", label: "Deseo sexual", value: "sexual_desire" },
+  { emoji: "🤗", label: "Simpatía", value: "sympathy" },
 ];
 
 export default function EmotionalThermometer() {
@@ -32,9 +55,8 @@ export default function EmotionalThermometer() {
   const [emaConfig, setEmaConfig] = useState<any>(null);
   const [responses, setResponses] = useState<any[]>([]);
 
-  // Patient state (self-report)
-  const [moodScore, setMoodScore] = useState([5]);
-  const [emotion, setEmotion] = useState("");
+  // Patient state
+  const [selectedEmotion, setSelectedEmotion] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [isSending, setIsSending] = useState(false);
 
@@ -77,19 +99,19 @@ export default function EmotionalThermometer() {
   };
 
   const submitResponse = async () => {
-    if (!user || !emotion) return;
+    if (!user || !selectedEmotion) return;
     setIsSending(true);
+    const cat = AFFECTIVE_CATEGORIES.find(c => c.value === selectedEmotion);
     try {
       const { error } = await supabase.from("ema_responses").insert({
         patient_id: user.id,
-        mood_score: moodScore[0],
-        emotion,
+        mood_score: 5, // neutral default for EMA
+        emotion: cat ? `${cat.emoji} ${cat.label}` : selectedEmotion,
         note: note || null,
       });
       if (error) throw error;
       toast({ title: "Registro guardado", description: "Tu estado emocional fue registrado." });
-      setMoodScore([5]);
-      setEmotion("");
+      setSelectedEmotion(null);
       setNote("");
       loadEmaData(user.id);
     } catch (e: any) {
@@ -99,14 +121,12 @@ export default function EmotionalThermometer() {
     }
   };
 
-  // Chart data
   const chartData = responses.map((r) => ({
     date: format(new Date(r.responded_at), "dd/MM HH:mm", { locale: es }),
     score: r.mood_score,
     emotion: r.emotion,
   }));
 
-  // Pattern detection: find hours/days with consistently low scores
   const lowPatterns = (() => {
     if (responses.length < 3) return null;
     const byHour: Record<number, number[]> = {};
@@ -139,7 +159,7 @@ export default function EmotionalThermometer() {
           <Thermometer className="h-6 w-6 text-primary" />
           <h1 className="font-serif text-xl font-bold text-foreground sm:text-2xl">Termómetro Emocional</h1>
         </div>
-        <p className="text-sm text-muted-foreground">Evaluación Momentánea Ecológica (EMA)</p>
+        <p className="text-sm text-muted-foreground">Evaluación Momentánea Ecológica (EMA) — 27 Categorías Afectivas</p>
       </div>
 
       {/* Admin: Patient selector + config */}
@@ -172,35 +192,40 @@ export default function EmotionalThermometer() {
         </Card>
       )}
 
-      {/* Patient self-report form */}
+      {/* Patient: 27 affective category selector */}
       {isPatient && (
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-lg">¿Cómo te sentís ahora?</CardTitle>
-            <CardDescription>Registrá tu estado emocional actual</CardDescription>
+            <CardDescription>Seleccioná la categoría afectiva que mejor te represente</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <div>
-              <Label className="mb-2 block">Estado de ánimo: <span className="font-bold text-primary">{moodScore[0]}/10</span></Label>
-              <Slider value={moodScore} onValueChange={setMoodScore} min={1} max={10} step={1} className="mt-2" />
-              <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                <span>Muy bajo</span><span>Muy alto</span>
+            <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+              {AFFECTIVE_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.value}
+                  onClick={() => setSelectedEmotion(cat.value)}
+                  className={`flex flex-col items-center gap-0.5 rounded-lg p-2 transition-all hover:bg-accent sm:p-3 ${
+                    selectedEmotion === cat.value
+                      ? "bg-primary/10 ring-2 ring-primary"
+                      : "bg-muted/50"
+                  }`}
+                >
+                  <span className="text-xl sm:text-2xl">{cat.emoji}</span>
+                  <span className="text-[9px] leading-tight sm:text-[10px] text-muted-foreground text-center">{cat.label}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-muted-foreground text-center italic">
+              Basado en las 27 categorías afectivas de Cowen & Keltner (2017)
+            </p>
+            {selectedEmotion && (
+              <div>
+                <Label className="mb-2 block">Nota breve (opcional)</Label>
+                <Textarea placeholder="¿Qué está pasando?" value={note} onChange={(e) => setNote(e.target.value)} rows={2} />
               </div>
-            </div>
-            <div>
-              <Label className="mb-2 block">Emoción predominante</Label>
-              <Select value={emotion} onValueChange={setEmotion}>
-                <SelectTrigger><SelectValue placeholder="Seleccioná una emoción..." /></SelectTrigger>
-                <SelectContent>
-                  {EMOTIONS.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="mb-2 block">Nota breve (opcional)</Label>
-              <Textarea placeholder="¿Qué está pasando?" value={note} onChange={(e) => setNote(e.target.value)} rows={2} />
-            </div>
-            <Button onClick={submitResponse} disabled={!emotion || isSending} className="w-full sm:w-auto">
+            )}
+            <Button onClick={submitResponse} disabled={!selectedEmotion || isSending} className="w-full sm:w-auto">
               <Send className="h-4 w-4 mr-2" /> {isSending ? "Enviando..." : "Registrar"}
             </Button>
           </CardContent>
