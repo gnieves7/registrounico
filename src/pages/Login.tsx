@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
@@ -214,10 +214,19 @@ const Login = () => {
         </section>
 
         {/* Privacy Notice */}
-        <div className="mx-auto mb-8 flex max-w-5xl items-center gap-2.5 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
-          <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+        <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+            <p className="text-xs text-muted-foreground">
+              Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
+            </p>
+          </div>
           <p className="text-xs text-muted-foreground">
-            Tus datos están protegidos y son confidenciales. Acceso exclusivo para pacientes autorizados.
+            Al ingresar, aceptás los{" "}
+            <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
+              Términos de Uso, Condiciones del Servicio y Políticas de Privacidad
+            </Link>
+            .
           </p>
         </div>
       </main>
