@@ -307,10 +307,10 @@ export default function MicroTasks() {
       )}
 
       {/* Assign Task Dialog */}
-      <Dialog open={showAdd} onOpenChange={setShowAdd}>
+      <Dialog open={showAdd} onOpenChange={(open) => { setShowAdd(open); if (!open) setEditingTask(null); }}>
         <DialogContent className="max-w-[95vw] sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Asignar Tarea Terapéutica</DialogTitle>
+            <DialogTitle>{editingTask ? "Editar y Reenviar Tarea" : "Asignar Tarea Terapéutica"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
