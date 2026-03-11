@@ -157,11 +157,11 @@ export function EmotionalRecordWidget({
           ))}
         </div>
 
-        {/* Selected emotion description */}
+        {/* Selected emotion description with animation */}
         {selectedMood && (() => {
           const selected = AFFECTIVE_CATEGORIES.find(m => m.emoji === selectedMood);
           return selected ? (
-            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3 animate-fade-in transition-all duration-300">
               <span className="text-3xl">{selected.emoji}</span>
               <div>
                 <p className="font-medium text-foreground">{selected.label}</p>
