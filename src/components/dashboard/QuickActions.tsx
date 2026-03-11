@@ -45,7 +45,7 @@ export function QuickActions() {
     <div className="grid gap-3 sm:grid-cols-2">
       {actions.map((action) => (
         <Link key={action.href} to={action.href}>
-          <Card className="h-full transition-all hover:shadow-md hover:border-primary/30">
+          <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]">
             <CardContent className="flex items-center gap-4 p-4">
               <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${action.color}`}>
                 <action.icon className="h-5 w-5" />

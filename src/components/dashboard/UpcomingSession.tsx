@@ -27,14 +27,14 @@ export function UpcomingSession({ session }: UpcomingSessionProps) {
           <p className="text-muted-foreground">
             No tienes sesiones programadas por el momento.
           </p>
-          <Button variant="outline" className="mt-4" asChild>
+          <Button variant="outline" className="mt-4 transition-all duration-200 hover:scale-105 active:scale-95" asChild>
             <a 
-              href="https://calendar.google.com" 
+              href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0wlU-Kl3CmfKvwj_3-mO2fKJdqJqRyEa-qeUb9m8We8GOJDny1og1g3-FiCvAU-RdD1eZrHACK" 
               target="_blank" 
               rel="noopener noreferrer"
             >
               <ExternalLink className="mr-2 h-4 w-4" />
-              Agendar cita
+              Solicitar turno
             </a>
           </Button>
         </CardContent>
