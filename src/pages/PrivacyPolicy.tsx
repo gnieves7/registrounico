@@ -171,6 +171,12 @@ const legalFrameworkSections = [
     content:
       "El profesional adhiere a los Principios Éticos para Psicólogos y Código de Conducta de la American Psychological Association (APA), en particular los estándares referidos a: competencia, relaciones humanas, privacidad y confidencialidad, publicidad, mantenimiento de registros, evaluación y terapia.",
   },
+  {
+    icon: BadgeCheck,
+    title: "Código de Ética — APFRA",
+    content:
+      "La práctica profesional forense se rige además por el Código de Ética de la Asociación de Psicólogos Forenses de la República Argentina (APFRA), que establece los principios deontológicos específicos para el ejercicio de la psicología en el ámbito jurídico y forense, incluyendo la objetividad, imparcialidad, competencia técnica, respeto por la dignidad de las personas evaluadas, y el compromiso con la verdad y la justicia en los procesos judiciales.",
+  },
 ];
 
 const PrivacyPolicy = () => {
