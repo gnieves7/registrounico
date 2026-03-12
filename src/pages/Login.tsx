@@ -162,11 +162,11 @@ const Login = () => {
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-4 text-center">
             <img src={logoImg} alt="Logo ReflexionAr" className="h-20 w-20 shrink-0 object-contain md:h-24 md:w-24 drop-shadow-sm" />
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-                DSM - SIE
+            <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+                PSI
               </h1>
               <p className="mt-1 text-base font-medium text-primary md:text-lg">
-                Dinámica de la Salud Mental — Sistemas Integrados Especializados
+                Plataforma Sistemática Interactiva
               </p>
               <p className="mt-3 max-w-xl mx-auto text-sm leading-relaxed text-muted-foreground">
                 Plataforma única, privada e interactiva para tu salud mental. Un espacio personalizado donde registrar tus avances, solicitar turnos e informes.
