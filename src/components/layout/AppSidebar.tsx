@@ -69,8 +69,8 @@ const allPatientMenuItems = [
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
   clinica: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico"],
-  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record"],
-  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico"],
+  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
+  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
 };
 
 const getFilteredMenuItems = () => {

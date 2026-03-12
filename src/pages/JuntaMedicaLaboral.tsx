@@ -192,7 +192,7 @@ const JuntaMedicaLaboral = () => {
           <Button variant="outline" asChild>
             <a href="/documents/certificado-junta-medica.pdf" download>
               <Download className="mr-2 h-4 w-4" />
-              Descargar certificado
+              Descargar Planilla
             </a>
           </Button>
         </CardContent>

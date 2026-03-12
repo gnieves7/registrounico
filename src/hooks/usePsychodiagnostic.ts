@@ -399,6 +399,16 @@ export const usePsychodiagnostic = () => {
     updateMmpi2Test,
     refetchMmpi2: mmpi2Query.refetch,
     
+    // MCMI-III
+    mcmi3Tests: mcmi3Query.data || [],
+    mcmi3Loading: mcmi3Query.isLoading,
+    refetchMcmi3: mcmi3Query.refetch,
+    
+    // SCL-90-R
+    scl90rTests: scl90rQuery.data || [],
+    scl90rLoading: scl90rQuery.isLoading,
+    refetchScl90r: scl90rQuery.refetch,
+    
     // Forensic Cases
     forensicCases: forensicCasesQuery.data || [],
     forensicCasesLoading: forensicCasesQuery.isLoading,
