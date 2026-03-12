@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="w-full border-t border-border bg-card py-6 mt-auto">
       <div className="container mx-auto px-4 text-center">
         <p className="text-sm text-muted-foreground">
-          © 2026 Registro Clínico Personalizado
+          © 2026 PSI — Plataforma Sistemática Interactiva
         </p>
         <p className="text-xs text-muted-foreground mt-1">
           Creado y desarrollado por el Lic. Esp. German Nieves
