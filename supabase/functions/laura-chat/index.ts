@@ -184,7 +184,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("Laura chat error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Error desconocido" }), {
+    return new Response(JSON.stringify({ error: "Error al procesar tu mensaje. Intenta más tarde." }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
