@@ -8,7 +8,7 @@ import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoImg from "@/assets/Logo_ReflexionAr.png";
 
-const CALENDAR_LINK = "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0wlU-Kl3CmfKvwj_3-mO2fKJdqJqRyEa-qeUb9m8We8GOJDny1og1g3-FiCvAU-RdD1eZrHACK";
+const CALENDAR_LINK = "https://calendar.app.google/9do3Ag82RUUN1uNA8";
 
 const sections = [
   {
