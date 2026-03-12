@@ -48,7 +48,7 @@ import {
 const allPatientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
-  { title: "Registro Psicodiagnóstico", url: "/psychodiagnostic", icon: Brain },
+  { title: "Personalidad", url: "/psychodiagnostic", icon: Brain },
   { title: "Expediente Forense", url: "/forensic", icon: Scale },
   { title: "Entrenamiento Cognitivo", url: "/anxiety-record", icon: Brain },
   { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
@@ -69,8 +69,8 @@ const allPatientMenuItems = [
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
   clinica: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico"],
-  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record"],
-  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico"],
+  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
+  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
 };
 
 const getFilteredMenuItems = () => {

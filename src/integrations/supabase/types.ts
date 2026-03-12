@@ -573,6 +573,54 @@ export type Database = {
         }
         Relationships: []
       }
+      mcmi3_tests: {
+        Row: {
+          clinical_interpretation: string | null
+          clinical_notes: string | null
+          consent_accepted: boolean | null
+          consent_date: string | null
+          created_at: string
+          id: string
+          interpretation_date: string | null
+          is_complete: boolean | null
+          responses: Json
+          test_date: string
+          total_questions_answered: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       micro_tasks: {
         Row: {
           access_token: string | null
@@ -1014,6 +1062,54 @@ export type Database = {
           updated_at?: string
           user_id?: string
           work_history?: Json | null
+        }
+        Relationships: []
+      }
+      scl90r_tests: {
+        Row: {
+          clinical_interpretation: string | null
+          clinical_notes: string | null
+          consent_accepted: boolean | null
+          consent_date: string | null
+          created_at: string
+          id: string
+          interpretation_date: string | null
+          is_complete: boolean | null
+          responses: Json
+          test_date: string
+          total_questions_answered: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clinical_interpretation?: string | null
+          clinical_notes?: string | null
+          consent_accepted?: boolean | null
+          consent_date?: string | null
+          created_at?: string
+          id?: string
+          interpretation_date?: string | null
+          is_complete?: boolean | null
+          responses?: Json
+          test_date?: string
+          total_questions_answered?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

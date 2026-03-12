@@ -150,6 +150,44 @@ export const usePsychodiagnostic = () => {
     enabled: !!user?.id,
   });
 
+  // ==================== MCMI-III ====================
+  const mcmi3Query = useQuery({
+    queryKey: ["mcmi3-tests", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data, error } = await supabase
+        .from("mcmi3_tests")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data.map(test => ({
+        ...test,
+        responses: (test.responses as Json) as { question_number: number; answer: 'V' | 'F' }[]
+      }));
+    },
+    enabled: !!user?.id,
+  });
+
+  // ==================== SCL-90-R ====================
+  const scl90rQuery = useQuery({
+    queryKey: ["scl90r-tests", user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const { data, error } = await supabase
+        .from("scl90r_tests")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data.map(test => ({
+        ...test,
+        responses: (test.responses as Json) as { question_number: number; answer: number }[]
+      }));
+    },
+    enabled: !!user?.id,
+  });
+
   const createMmpi2Test = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error("No user");
@@ -360,6 +398,16 @@ export const usePsychodiagnostic = () => {
     createMmpi2Test,
     updateMmpi2Test,
     refetchMmpi2: mmpi2Query.refetch,
+    
+    // MCMI-III
+    mcmi3Tests: mcmi3Query.data || [],
+    mcmi3Loading: mcmi3Query.isLoading,
+    refetchMcmi3: mcmi3Query.refetch,
+    
+    // SCL-90-R
+    scl90rTests: scl90rQuery.data || [],
+    scl90rLoading: scl90rQuery.isLoading,
+    refetchScl90r: scl90rQuery.refetch,
     
     // Forensic Cases
     forensicCases: forensicCasesQuery.data || [],

@@ -8,15 +8,15 @@ import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoImg from "@/assets/Logo_ReflexionAr.png";
 
-const CALENDAR_LINK = "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ0wlU-Kl3CmfKvwj_3-mO2fKJdqJqRyEa-qeUb9m8We8GOJDny1og1g3-FiCvAU-RdD1eZrHACK";
+const CALENDAR_LINK = "https://calendar.app.google/9do3Ag82RUUN1uNA8";
 
 const sections = [
   {
     id: "clinica",
-    title: "¿Buscás terapia?",
-    systemName: "Sistema Reflexionar",
-    subtitle: "Área Clínica",
-    description: "Acompañamiento terapéutico personalizado para tu bienestar emocional",
+    title: "Sistema Reflexionar",
+    systemName: "Área Clínica",
+    subtitle: "",
+    description: "Espacio interactivo para los avances de la psicoterapia con acceso exclusivo para Pacientes",
     icon: Flame,
     redirect: "/psychobiography",
     bgColor: "bg-[hsl(30,30%,95%)]",
@@ -27,10 +27,10 @@ const sections = [
   },
   {
     id: "psicodiagnostico",
-    title: "¿Necesitás una evaluación?",
-    systemName: "Sistema Evaluar",
-    subtitle: "Área Psicodiagnóstica",
-    description: "Tests y evaluaciones psicológicas profesionales",
+    title: "Sistema Evaluar",
+    systemName: "Área Psicodiagnóstica",
+    subtitle: "",
+    description: "Pruebas y tests específicos para acreditar la salud mental. Acceso restringido, previa autorización del psicólogo",
     icon: BookOpen,
     redirect: "/psychodiagnostic",
     bgColor: "bg-[hsl(45,60%,92%)]",
@@ -41,10 +41,10 @@ const sections = [
   },
   {
     id: "forense",
-    title: "¿Te solicitan una pericia psicológica?",
-    systemName: "Sistema Acompañar",
-    subtitle: "Área Forense",
-    description: "Pericias y documentación para procesos judiciales",
+    title: "Sistema Acompañar",
+    systemName: "Área Forense",
+    subtitle: "",
+    description: "Espacio destinado a la problemática judicial, solicitud de pericias, análisis del testimonio en Cámara Gesell, entre otras prácticas psico-forenses. Acceso restringido, previa autorización del psicólogo",
     icon: Scale,
     redirect: "/forensic",
     bgColor: "bg-[hsl(200,50%,92%)]",
