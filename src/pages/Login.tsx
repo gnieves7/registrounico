@@ -24,6 +24,10 @@ const sections = [
     iconColor: "text-[hsl(30,50%,35%)]",
     hoverBorder: "hover:border-[hsl(30,40%,80%)]",
     hoverShadow: "hover:shadow-[0_8px_30px_hsl(30,40%,88%,0.4)]",
+    codes: [
+      { label: "Código Clínico", href: "/psychobiography" },
+      { label: "Código Intervenciones", href: "/dashboard" },
+    ],
   },
   {
     id: "psicodiagnostico",
@@ -38,6 +42,12 @@ const sections = [
     iconColor: "text-[hsl(45,70%,30%)]",
     hoverBorder: "hover:border-[hsl(45,60%,75%)]",
     hoverShadow: "hover:shadow-[0_8px_30px_hsl(45,60%,82%,0.4)]",
+    codes: [
+      { label: "Código Personalidad", href: "/psychodiagnostic" },
+      { label: "Código Rorschach", href: "#", external: true },
+      { label: "Código Aptitud Psíquica", href: "/apto-psicologico" },
+      { label: "Código Junta Médica", href: "/junta-medica" },
+    ],
   },
   {
     id: "forense",
@@ -52,6 +62,12 @@ const sections = [
     iconColor: "text-[hsl(200,60%,30%)]",
     hoverBorder: "hover:border-[hsl(200,50%,75%)]",
     hoverShadow: "hover:shadow-[0_8px_30px_hsl(200,50%,82%,0.4)]",
+    codes: [
+      { label: "Código Pericia", href: "/forensic" },
+      { label: "Código Familia", href: "/forensic" },
+      { label: "Código Cámara Gesell", href: "/forensic" },
+      { label: "Código IPP", href: "/forensic" },
+    ],
   },
 ];
 
