@@ -60,7 +60,7 @@ interface AptoCertificate {
   is_paid: boolean | null;
 }
 
-const BOOKING_URL = "https://calendar.app.google/TQwA5vrL9LV93wE5A";
+const BOOKING_URL = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 const AptoPsicologico = () => {
   const { user } = useAuth();

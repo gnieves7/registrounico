@@ -29,7 +29,7 @@ export function UpcomingSession({ session }: UpcomingSessionProps) {
           </p>
           <Button variant="outline" className="mt-4 transition-all duration-200 hover:scale-105 active:scale-95" asChild>
             <a 
-              href="https://calendar.app.google/9do3Ag82RUUN1uNA8" 
+              href="https://calendar.app.google/4Locar4CbcTB45zv9" 
               target="_blank" 
               rel="noopener noreferrer"
             >
