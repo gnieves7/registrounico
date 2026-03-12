@@ -183,7 +183,7 @@ const JuntaMedicaLaboral = () => {
           <div className="text-center sm:text-left">
             <h3 className="font-medium text-foreground flex items-center gap-2">
               <FileText className="h-4 w-4 text-primary" />
-              Certificado Exclusivo Junta Médica
+              Certificado Junta Médica (Empleados Públicos)
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
               Descargá el certificado médico con carácter de declaración jurada
