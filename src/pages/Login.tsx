@@ -17,43 +17,37 @@ const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
 
 const systemCards = [
-{
-  id: "reflexionar",
-  title: "Sistema Reflexionar",
-  area: "Área Clínica",
-  icon: Flame,
-  redirect: "/psychobiography",
-  description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
-  codes: ["Código Clínico", "Código Intervenciones"],
-  bgColor: "bg-[hsl(30,30%,95%)]",
-  iconBg: "bg-[hsl(30,40%,88%)]",
-  iconColor: "text-[hsl(30,50%,35%)]"
-},
-{
-  id: "evaluar",
-  title: "Sistema Evaluar",
-  area: "Área Psicodiagnóstica",
-  icon: BookOpen,
-  redirect: "/psychodiagnostic",
-  description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
-  codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
-  bgColor: "bg-[hsl(45,60%,92%)]",
-  iconBg: "bg-[hsl(45,65%,82%)]",
-  iconColor: "text-[hsl(45,70%,30%)]"
-},
-{
-  id: "acompanar",
-  title: "Sistema Acompañar",
-  area: "Área Forense",
-  icon: Scale,
-  redirect: "/forensic",
-  description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
-  codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
-  bgColor: "bg-[hsl(200,50%,92%)]",
-  iconBg: "bg-[hsl(200,55%,82%)]",
-  iconColor: "text-[hsl(200,60%,30%)]"
-}];
-
+  {
+    id: "reflexionar",
+    title: "Sistema Reflexionar",
+    area: "Área Clínica",
+    icon: Flame,
+    redirect: "/psychobiography",
+    description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
+    codes: ["Código Clínico", "Código Intervenciones"],
+    accentHue: "30",
+  },
+  {
+    id: "evaluar",
+    title: "Sistema Evaluar",
+    area: "Área Psicodiagnóstica",
+    icon: BookOpen,
+    redirect: "/psychodiagnostic",
+    description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
+    codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
+    accentHue: "45",
+  },
+  {
+    id: "acompanar",
+    title: "Sistema Acompañar",
+    area: "Área Forense",
+    icon: Scale,
+    redirect: "/forensic",
+    description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
+    codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
+    accentHue: "200",
+  },
+];
 
 const Login = () => {
   const { user, isLoading, isApproved, signInWithGoogle, signOut } = useAuth();
@@ -83,7 +77,7 @@ const Login = () => {
       toast({
         title: "Error al iniciar sesión",
         description: "No se pudo conectar con Google. Intentá de nuevo.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -92,8 +86,8 @@ const Login = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="animate-pulse text-primary">Cargando...</div>
-      </div>);
-
+      </div>
+    );
   }
 
   if (user && !isApproved) {
@@ -103,9 +97,7 @@ const Login = () => {
           <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50 max-w-md text-center">
             <ShieldCheck className="mb-4 h-14 w-14 text-primary" />
             <h1 className="mb-2 text-2xl font-bold text-foreground">Acceso pendiente de autorización</h1>
-            <p className="mb-4 text-muted-foreground">
-              Tu solicitud fue recibida y será revisada por el profesional.
-            </p>
+            <p className="mb-4 text-muted-foreground">Tu solicitud fue recibida y será revisada por el profesional.</p>
             <Button variant="outline" onClick={() => signOut()}>
               <LogOut className="mr-2 h-4 w-4" />
               Cerrar sesión
@@ -113,8 +105,8 @@ const Login = () => {
           </div>
         </main>
         <Footer />
-      </div>);
-
+      </div>
+    );
   }
 
   if (user && isApproved) {
@@ -131,327 +123,345 @@ const Login = () => {
           </div>
         </main>
         <Footer />
-      </div>);
-
+      </div>
+    );
   }
 
-  const renderSystemCard = (system: typeof systemCards[0], showLogin = true, showTurno = false) =>
-  <div
-    key={system.id}
-    className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <div className={`flex h-16 w-16 items-center justify-center rounded-full ${system.bgColor} shadow-sm`}>
-        <div className={`flex h-10 w-10 items-center justify-center rounded-full ${system.iconBg}`}>
-          <system.icon className={`h-5 w-5 ${system.iconColor}`} />
+  const renderSystemCard = (system: (typeof systemCards)[0], showLogin = true, showTurno = false) => {
+    const h = system.accentHue;
+    return (
+      <div
+        key={system.id}
+        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+      >
+        {/* Colored top stripe */}
+        <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
+        <div className="flex flex-col items-center gap-3 p-5 flex-1">
+          <div
+            className="flex h-14 w-14 items-center justify-center rounded-full"
+            style={{ background: `hsl(${h}, 40%, 92%)` }}
+          >
+            <system.icon className="h-6 w-6" style={{ color: `hsl(${h}, 55%, 35%)` }} />
+          </div>
+          <div className="text-center flex-1">
+            <h3 className="text-sm font-bold text-foreground">{system.title}</h3>
+            <p className="text-xs font-semibold text-primary tracking-wide mt-0.5">{system.area}</p>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
+          </div>
+          {showLogin && (
+            <button
+              onClick={() => handleGoogleLogin(system.redirect, system.id)}
+              className="mt-auto w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+              Acceder
+            </button>
+          )}
+          {showTurno && (
+            <div className="w-full space-y-2 mt-auto">
+              <a
+                href={CALENDAR_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
+              >
+                <Calendar className="h-4 w-4" />
+                Solicitar Turno
+              </a>
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <a
+                href={EMPRESA_WEB}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+              >
+                <Globe className="h-4 w-4" />
+                Sitio Web
+              </a>
+            </div>
+          )}
         </div>
       </div>
-      <div className="text-center">
-        <h3 className="text-base font-semibold text-foreground">{system.title}</h3>
-        <p className="text-sm font-bold text-primary tracking-wide">{system.area}</p>
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
-      </div>
-      {showLogin &&
-      <button
-        onClick={() => handleGoogleLogin(system.redirect, system.id)}
-        className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]">
-        <svg className="h-4 w-4" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-        </svg>
-        Acceder
-      </button>
-      }
-      {showTurno &&
-      <div className="w-full space-y-2 mt-1">
-        <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
-          <Calendar className="h-4 w-4" />
-          Solicitar Turno
-        </a>
-        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
-          <MessageCircle className="h-4 w-4" />
-          WhatsApp
-        </a>
-        <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
-          <Globe className="h-4 w-4" />
-          Sitio Web
-        </a>
-      </div>
-      }
-    </div>;
+    );
+  };
 
-  const renderBackButton = (backTo: View = "main") =>
-  <button
-    onClick={() => setView(backTo)}
-    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
+  const renderBackButton = (backTo: View = "main") => (
+    <button
+      onClick={() => setView(backTo)}
+      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+    >
       <ArrowLeft className="h-4 w-4" />
       Volver
-    </button>;
+    </button>
+  );
 
-  const renderQuestionView = (
-    questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
+  const renderQuestionView = (questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
     const map = {
       "question-terapia": systemCards[0],
       "question-psicodiagnostico": systemCards[1],
-      "question-forense": systemCards[2]
+      "question-forense": systemCards[2],
     };
     const system = map[questionView];
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
         {renderBackButton("no-paciente")}
         {renderSystemCard(system, false, true)}
-      </div>);
+      </div>
+    );
   };
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-muted/30">
       <main className="flex flex-1 flex-col">
-        {/* Header with logo and welcome */}
-        <header className="px-6 pt-10 pb-6 lg:px-10">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
-            {/* Logo large and prominent */}
-            <div className="relative">
-              <img
-                src={logoPsi}
-                alt="Logo PSI"
-                className="relative h-44 w-44 object-contain md:h-56 md:w-56 drop-shadow-lg" />
-            </div>
-
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                PSI
-              </h1>
-              <p className="mt-1 text-base font-medium text-primary md:text-lg">
-                Plataforma de Sistemas Interactivos
-              </p>
-            </div>
-
-            {/* Professional intro cards */}
-            <div className="max-w-3xl w-full grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-              {/* Card 1: Greeting */}
-              <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-5 shadow-sm flex flex-col gap-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Heart className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="text-sm font-bold text-foreground">¡Un gusto saludarte!</h3>
+        {/* Hero: Logo LEFT (50%) + Cards RIGHT (50%) */}
+        <header className="w-full">
+          <div className="mx-auto max-w-6xl px-6 py-8 lg:px-10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-10">
+              {/* LEFT: Logo — 50% */}
+              <div className="flex flex-col items-center justify-center lg:w-1/2 mb-8 lg:mb-0">
+                <img
+                  src={logoPsi}
+                  alt="Logo PSI — Plataforma de Sistemas Interactivos"
+                  className="w-[70%] max-w-[420px] object-contain drop-shadow-xl"
+                />
+                <div className="mt-4 text-center">
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">PSI</h1>
+                  <p className="mt-1 text-sm font-medium text-primary md:text-base lg:text-lg">
+                    Plataforma de Sistemas Interactivos
+                  </p>
                 </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
-                </p>
               </div>
 
-              {/* Card 2: Practice */}
-              <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-gradient-to-br from-[hsl(45,60%,96%)] to-card p-5 shadow-sm flex flex-col gap-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-8 w-8 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center">
-                    <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
+              {/* RIGHT: Professional cards — 50% */}
+              <div className="lg:w-1/2 flex flex-col gap-4">
+                {/* Card 1 */}
+                <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-5 shadow-sm">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Heart className="h-4 w-4 text-primary" />
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground">¡Un gusto saludarte!</h3>
                   </div>
-                  <h3 className="text-sm font-bold text-foreground">Mi práctica</h3>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
+                  </p>
                 </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
-                </p>
-              </div>
 
-              {/* Card 3: PSI */}
-              <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-gradient-to-br from-[hsl(200,50%,96%)] to-card p-5 shadow-sm flex flex-col gap-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="h-8 w-8 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center">
-                    <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
+                {/* Card 2 */}
+                <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-gradient-to-br from-[hsl(45,60%,96%)] to-card p-5 shadow-sm">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
+                      <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground">Mi práctica</h3>
                   </div>
-                  <h3 className="text-sm font-bold text-foreground">PSI</h3>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
+                  </p>
                 </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado para pacientes, profesionales y empresas orientado al seguimiento dinámico de la salud mental.
-                </p>
+
+                {/* Card 3 */}
+                <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-gradient-to-br from-[hsl(200,50%,96%)] to-card p-5 shadow-sm">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
+                      <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
+                    </div>
+                    <h3 className="text-sm font-bold text-foreground">PSI</h3>
+                  </div>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado para pacientes, profesionales y empresas orientado al seguimiento dinámico de la salud mental.
+                  </p>
+                </div>
               </div>
             </div>
-
-            <p className="font-medium text-foreground text-base md:text-lg mt-3">¿En qué puedo ayudarte?</p>
           </div>
         </header>
 
-        {/* Interactive section */}
+        {/* Profile buttons with reference image */}
         <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
-          {view === "main" &&
-          <div className="flex flex-col items-center gap-6 animate-in fade-in duration-300">
-              {/* Circular profile buttons matching reference image */}
-              <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 w-full max-w-3xl">
-                {/* Soy Paciente - Blue */}
-                <button
-                onClick={() => setView("paciente")}
-                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
-                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
-                    <div className="absolute inset-1 rounded-full bg-[hsl(213,70%,45%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
-                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-                        <path d="M9 12h.01M15 12h.01" />
-                        <rect x="9" y="18" width="6" height="3" rx="1" />
-                      </svg>
-                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>PACIENTE</span>
-                    </div>
-                  </div>
-                </button>
+          <p className="font-medium text-foreground text-base md:text-lg text-center mb-6">¿En qué puedo ayudarte?</p>
 
-                {/* No soy Paciente - Green */}
-                <button
-                onClick={() => setView("no-paciente")}
-                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
-                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
-                    <div className="absolute inset-1 rounded-full bg-[hsl(145,55%,38%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
-                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="10" cy="8" r="4" />
-                        <path d="M4 21v-2a4 4 0 0 1 4-4h4" />
-                        <path d="M16 11l2 2 4-4" />
-                      </svg>
-                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">NO SOY<br/>PACIENTE</span>
-                    </div>
-                  </div>
+          {view === "main" && (
+            <div className="flex flex-col items-center gap-8 animate-in fade-in duration-300">
+              {/* Reference image as background for buttons */}
+              <div className="relative w-full max-w-2xl mx-auto">
+                <img
+                  src={botonesPerfiles}
+                  alt="Perfiles de acceso"
+                  className="w-full rounded-2xl shadow-md"
+                />
+                {/* Overlay clickable buttons */}
+                <div className="absolute inset-0 grid grid-cols-4 gap-2 p-4">
+                  <button
+                    onClick={() => setView("paciente")}
+                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
+                    aria-label="Soy Paciente"
+                  />
+                  <button
+                    onClick={() => setView("no-paciente")}
+                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
+                    aria-label="No soy Paciente"
+                  />
+                  <button
+                    onClick={() => setView("profesional")}
+                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
+                    aria-label="Soy Profesional"
+                  />
+                  <button
+                    onClick={() => setView("empresa")}
+                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
+                    aria-label="Soy una Empresa"
+                  />
+                </div>
+              </div>
+              {/* Labels below */}
+              <div className="grid grid-cols-4 gap-2 w-full max-w-2xl text-center">
+                <button onClick={() => setView("paciente")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
+                  Soy Paciente
                 </button>
-
-                {/* Soy Profesional - Orange/Red */}
-                <button
-                onClick={() => setView("profesional")}
-                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
-                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
-                    <div className="absolute inset-1 rounded-full bg-[hsl(14,70%,52%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
-                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-                        <path d="M12 14v-2" />
-                        <circle cx="12" cy="5" r="1" fill="currentColor" />
-                      </svg>
-                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>PROFESIONAL</span>
-                    </div>
-                  </div>
+                <button onClick={() => setView("no-paciente")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
+                  No soy Paciente
                 </button>
-
-                {/* Soy una Empresa - Dark Gray */}
-                <button
-                onClick={() => setView("empresa")}
-                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
-                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
-                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
-                    <div className="absolute inset-1 rounded-full bg-[hsl(210,10%,35%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
-                      <Building2 className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
-                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>EMPRESA</span>
-                    </div>
-                  </div>
+                <button onClick={() => setView("profesional")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
+                  Soy Profesional
+                </button>
+                <button onClick={() => setView("empresa")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
+                  Soy Empresa
                 </button>
               </div>
             </div>
-          }
+          )}
 
           {/* Soy Paciente → 3 system cards */}
-          {view === "paciente" &&
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+          {view === "paciente" && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
               {renderBackButton()}
               <p className="text-center text-sm text-muted-foreground mb-5">
                 Seleccioná el sistema al que necesitás acceder:
               </p>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 {systemCards.map((s) => renderSystemCard(s))}
               </div>
             </div>
-          }
+          )}
 
           {/* No soy Paciente → 3 questions */}
-          {view === "no-paciente" &&
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+          {view === "no-paciente" && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
               {renderBackButton()}
-              <p className="text-center text-sm text-muted-foreground mb-5">
-                Contame, ¿qué necesitás?
-              </p>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 max-w-3xl mx-auto">
+              <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
                 <button
-                onClick={() => setView("question-terapia")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
-                
+                  onClick={() => setView("question-terapia")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]"
+                >
                   <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
                   <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
                 </button>
                 <button
-                onClick={() => setView("question-psicodiagnostico")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(45,60%,75%)]">
-                
+                  onClick={() => setView("question-psicodiagnostico")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(45,60%,75%)]"
+                >
                   <BookOpen className="h-8 w-8 text-[hsl(45,70%,30%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                   <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                 </button>
                 <button
-                onClick={() => setView("question-forense")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(200,50%,75%)]">
-                
+                  onClick={() => setView("question-forense")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(200,50%,75%)]"
+                >
                   <Scale className="h-8 w-8 text-[hsl(200,60%,30%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                   <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                 </button>
               </div>
             </div>
-          }
+          )}
 
           {/* Question detail views */}
           {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
-          renderQuestionView(view)}
+            renderQuestionView(view)}
 
           {/* Soy Profesional */}
-          {view === "profesional" &&
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+          {view === "profesional" && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
               {renderBackButton()}
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
                 <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
-                  <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                  <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                  </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
                 <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
                 <div className="w-full space-y-3 mt-2">
-                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
+                  >
                     <MessageCircle className="h-4 w-4" />
                     WhatsApp
                   </a>
-                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                  <a
+                    href={EMPRESA_WEB}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+                  >
                     <Globe className="h-4 w-4" />
                     Sitio Web
                   </a>
                 </div>
               </div>
             </div>
-          }
+          )}
 
           {/* Soy una Empresa */}
-          {view === "empresa" &&
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+          {view === "empresa" && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
               {renderBackButton()}
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
                 <Building2 className="h-12 w-12 text-blue-600" />
                 <h3 className="text-lg font-semibold text-foreground">Contacto Empresarial</h3>
                 <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
                 <div className="w-full space-y-3 mt-2">
-                  <a href={EMPRESA_EMAIL}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                  <a
+                    href={EMPRESA_EMAIL}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
+                  >
                     <Mail className="h-4 w-4" />
                     Enviar Email
                   </a>
-                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                  <a
+                    href={EMPRESA_WEB}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+                  >
                     <Globe className="h-4 w-4" />
                     Sitio Web
                   </a>
                 </div>
               </div>
             </div>
-          }
+          )}
         </section>
 
         {/* Professional Stats */}
@@ -465,10 +475,7 @@ const Login = () => {
         <section className="mx-auto w-full max-w-5xl px-6 pb-6 lg:px-10">
           <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 via-card to-primary/5 px-8 py-7 shadow-sm">
             <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
-            <p
-              className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed"
-              style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-              
+            <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
               ✨ <em>"Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"</em>
             </p>
           </div>
@@ -478,9 +485,7 @@ const Login = () => {
         <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
           <div className="flex items-center gap-2.5">
             <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-            <p className="text-xs text-muted-foreground">
-              Tus datos están protegidos y son confidenciales.
-            </p>
+            <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
           </div>
           <p className="text-xs text-muted-foreground">
             Al ingresar, aceptás los{" "}
@@ -493,8 +498,8 @@ const Login = () => {
       </main>
 
       <Footer />
-    </div>);
-
+    </div>
+  );
 };
 
 export default Login;
