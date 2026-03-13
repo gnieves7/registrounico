@@ -259,9 +259,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("paciente")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
-                    <User className="h-7 w-7 text-primary" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110 overflow-hidden">
+                    <img src={iconPaciente} alt="Paciente" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Paciente</span>
                 </button>
@@ -270,9 +269,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("no-paciente")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110 bg-slate-300">
-                    <UserX className="h-7 w-7 text-muted-foreground" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted transition-all duration-300 group-hover:bg-muted/80 group-hover:scale-110 overflow-hidden">
+                    <img src={iconNoPaciente} alt="No soy paciente" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">No soy Paciente</span>
                 </button>
@@ -281,8 +279,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("profesional")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110">
-                    <Briefcase className="h-7 w-7 text-green-600" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110 overflow-hidden">
+                    <img src={iconProfesional} alt="Profesional" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
                 </button>

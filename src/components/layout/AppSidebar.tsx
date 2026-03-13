@@ -166,10 +166,10 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
-                Registro Clínico
+                {areaLabels[sessionStorage.getItem("user_area") || ""] || "PSI"}
               </span>
               <span className="text-[10px] text-sidebar-foreground/60 md:text-xs">
-                Personalizado
+                Plataforma de Sistemas Interactivos
               </span>
             </div>
           )}

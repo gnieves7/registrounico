@@ -27,6 +27,7 @@ const routeLabels: Record<string, string> = {
   "/sessions": "Mis Turnos",
   "/laura": "Acompañante Virtual",
   "/documents": "Informes",
+  "/camara-gesell": "Cámara Gesell",
   "/notebook": "Mi Cuaderno",
   "/professional-profile": "Perfil del Profesional",
   "/admin": "Panel Admin",
