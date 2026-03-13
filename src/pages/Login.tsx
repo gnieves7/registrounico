@@ -279,45 +279,72 @@ const Login = () => {
         <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
           {view === "main" &&
           <div className="flex flex-col items-center gap-6 animate-in fade-in duration-300">
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 w-full max-w-2xl">
-                {/* Soy Paciente */}
+              {/* Circular profile buttons matching reference image */}
+              <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 w-full max-w-3xl">
+                {/* Soy Paciente - Blue */}
                 <button
                 onClick={() => setView("paciente")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110 overflow-hidden">
-                    <img src={iconPaciente} alt="Paciente" className="h-10 w-10 object-contain" />
+                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
+                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
+                    <div className="absolute inset-1 rounded-full bg-[hsl(213,70%,45%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
+                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                        <path d="M9 12h.01M15 12h.01" />
+                        <rect x="9" y="18" width="6" height="3" rx="1" />
+                      </svg>
+                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>PACIENTE</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Paciente</span>
                 </button>
 
-                {/* No soy Paciente */}
+                {/* No soy Paciente - Green */}
                 <button
                 onClick={() => setView("no-paciente")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted transition-all duration-300 group-hover:bg-muted/80 group-hover:scale-110 overflow-hidden">
-                    <img src={iconNoPaciente} alt="No soy paciente" className="h-10 w-10 object-contain" />
+                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
+                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
+                    <div className="absolute inset-1 rounded-full bg-[hsl(145,55%,38%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
+                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="10" cy="8" r="4" />
+                        <path d="M4 21v-2a4 4 0 0 1 4-4h4" />
+                        <path d="M16 11l2 2 4-4" />
+                      </svg>
+                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">NO SOY<br/>PACIENTE</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground text-center leading-tight">No soy Paciente</span>
                 </button>
 
-                {/* Soy Profesional */}
+                {/* Soy Profesional - Orange/Red */}
                 <button
                 onClick={() => setView("profesional")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110 overflow-hidden">
-                    <img src={iconProfesional} alt="Profesional" className="h-10 w-10 object-contain" />
+                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
+                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
+                    <div className="absolute inset-1 rounded-full bg-[hsl(14,70%,52%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
+                      <svg className="h-10 w-10 sm:h-12 sm:w-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                        <path d="M12 14v-2" />
+                        <circle cx="12" cy="5" r="1" fill="currentColor" />
+                      </svg>
+                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>PROFESIONAL</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
                 </button>
 
-                {/* Soy una Empresa */}
+                {/* Soy una Empresa - Dark Gray */}
                 <button
                 onClick={() => setView("empresa")}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-400/40">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-100 group-hover:scale-110">
-                    <Building2 className="h-7 w-7 text-blue-600" />
+                className="group flex flex-col items-center gap-3 transition-all duration-300 hover:-translate-y-2">
+                  <div className="relative h-28 w-28 sm:h-32 sm:w-32 mx-auto">
+                    <div className="absolute inset-0 rounded-full bg-white shadow-lg border-4 border-white" />
+                    <div className="absolute inset-1 rounded-full bg-[hsl(210,10%,35%)] flex flex-col items-center justify-center gap-1 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
+                      <Building2 className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
+                      <span className="text-[10px] sm:text-xs font-bold text-white tracking-wide uppercase leading-tight text-center px-2">SOY<br/>EMPRESA</span>
+                    </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy una Empresa</span>
                 </button>
               </div>
             </div>

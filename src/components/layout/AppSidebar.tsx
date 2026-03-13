@@ -162,7 +162,7 @@ export function AppSidebar() {
       {/* Header with Logo */}
       <SidebarHeader className="border-b border-sidebar-border p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <ClinicLogo size="sm" />
+          <img src={logoPsi} alt="PSI" className="h-8 w-8 object-contain shrink-0" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
