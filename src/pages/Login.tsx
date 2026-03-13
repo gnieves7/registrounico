@@ -222,7 +222,7 @@ const Login = () => {
       <main className="flex flex-1 flex-col">
         {/* Header with logo and welcome */}
         <header className="px-6 pt-10 pb-6 lg:px-10">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center bg-amber-50">
             {/* Logo with blended background */}
             <div className="relative bg-amber-50 text-primary">
               <div className="absolute inset-0 rounded-full bg-gradient-to-b from-background via-background to-background blur-2xl scale-150" />
