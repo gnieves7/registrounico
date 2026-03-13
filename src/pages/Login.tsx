@@ -3,10 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2, MessageCircle, Globe, Mail } from "lucide-react";
+import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
+import iconPaciente from "@/assets/icon-paciente.png";
+import iconProfesional from "@/assets/icon-profesional.png";
+import iconNoPaciente from "@/assets/icon-no-paciente.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
