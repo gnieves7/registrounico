@@ -282,7 +282,7 @@ const Login = () => {
                 onClick={() => setView("no-paciente")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
                 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/60 transition-all duration-300 group-hover:bg-secondary group-hover:scale-110">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110 bg-slate-300">
                     <UserX className="h-7 w-7 text-muted-foreground" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">No soy Paciente</span>
