@@ -349,6 +349,54 @@ const Login = () => {
           {/* Question detail views */}
           {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
           renderQuestionView(view)}
+
+          {/* Soy Profesional */}
+          {view === "profesional" &&
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Briefcase className="h-12 w-12 text-green-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
+                <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
+                <div className="w-full space-y-3 mt-2">
+                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" />
+                    Sitio Web
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+
+          {/* Soy una Empresa */}
+          {view === "empresa" &&
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Building2 className="h-12 w-12 text-blue-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Empresarial</h3>
+                <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
+                <div className="w-full space-y-3 mt-2">
+                  <a href={EMPRESA_EMAIL}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                    <Mail className="h-4 w-4" />
+                    Enviar Email
+                  </a>
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" />
+                    Sitio Web
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
         </section>
 
         {/* Professional Stats */}
