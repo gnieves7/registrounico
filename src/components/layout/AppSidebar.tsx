@@ -50,6 +50,7 @@ const allPatientMenuItems = [
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Personalidad", url: "/psychodiagnostic", icon: Brain },
   { title: "Expediente Forense", url: "/forensic", icon: Scale },
+  { title: "Cámara Gesell", url: "/camara-gesell", icon: Eye },
   { title: "Entrenamiento Cognitivo", url: "/anxiety-record", icon: Brain },
   { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
   { title: "Registro Inconsciente", url: "/dream-record", icon: Moon },
@@ -68,9 +69,15 @@ const allPatientMenuItems = [
 
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
-  clinica: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico"],
-  psicodiagnostico: ["/forensic", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
-  forense: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
+  reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell"],
+  evaluar: ["/forensic", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
+  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record"],
+};
+
+const areaLabels: Record<string, string> = {
+  reflexionar: "Sistema Reflexionar",
+  evaluar: "Sistema Evaluar",
+  acompanar: "Sistema Acompañar",
 };
 
 const getFilteredMenuItems = () => {
