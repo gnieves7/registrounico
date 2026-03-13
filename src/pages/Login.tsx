@@ -356,7 +356,7 @@ const Login = () => {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
               {renderBackButton()}
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                <Briefcase className="h-12 w-12 text-green-600" />
+                <img src={iconProfesional} alt="Profesional" className="h-12 w-12 object-contain" />
                 <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
                 <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
                 <div className="w-full space-y-3 mt-2">
