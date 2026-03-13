@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   Home, 
   User, 
-   
   Calendar, 
   MessageCircle, 
   FileText, 
@@ -22,6 +21,7 @@ import {
   Clock,
   ClipboardList,
   BarChart3,
+  Eye,
 } from "lucide-react";
 import { ClinicLogo } from "@/components/ui/ClinicLogo";
 import { useLocation, useNavigate } from "react-router-dom";
