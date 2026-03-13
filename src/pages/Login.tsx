@@ -134,11 +134,10 @@ const Login = () => {
 
   }
 
-  const renderSystemCard = (system: typeof systemCards[0], showTurno = false) =>
+  const renderSystemCard = (system: typeof systemCards[0], showLogin = true, showTurno = false) =>
   <div
     key={system.id}
     className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-    
       <div className={`flex h-16 w-16 items-center justify-center rounded-full ${system.bgColor} shadow-sm`}>
         <div className={`flex h-10 w-10 items-center justify-center rounded-full ${system.iconBg}`}>
           <system.icon className={`h-5 w-5 ${system.iconColor}`} />
@@ -149,19 +148,10 @@ const Login = () => {
         <p className="text-sm font-bold text-primary tracking-wide">{system.area}</p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
       </div>
-      {/* Códigos as text only */}
-      <div className="w-full space-y-1 mt-1">
-        {system.codes.map((code) =>
-      <div key={code} className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-            {code}
-          </div>
-      )}
-      </div>
+      {showLogin &&
       <button
-      onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]">
-      
+        onClick={() => handleGoogleLogin(system.redirect, system.id)}
+        className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]">
         <svg className="h-4 w-4" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -170,51 +160,49 @@ const Login = () => {
         </svg>
         Acceder
       </button>
+      }
       {showTurno &&
-    <a
-      href={CALENDAR_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
-      
+      <div className="w-full space-y-2 mt-1">
+        <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
           <Calendar className="h-4 w-4" />
           Solicitar Turno
         </a>
-    }
+        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
+          <MessageCircle className="h-4 w-4" />
+          WhatsApp
+        </a>
+        <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+          <Globe className="h-4 w-4" />
+          Sitio Web
+        </a>
+      </div>
+      }
     </div>;
 
-
-  const renderBackButton = () =>
+  const renderBackButton = (backTo: View = "main") =>
   <button
-    onClick={() => setView("main")}
+    onClick={() => setView(backTo)}
     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
-    
       <ArrowLeft className="h-4 w-4" />
       Volver
     </button>;
 
-
   const renderQuestionView = (
-  questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") =>
-  {
+    questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
     const map = {
-      "question-terapia": { system: systemCards[0], showTurno: true },
-      "question-psicodiagnostico": { system: systemCards[1], showTurno: true },
-      "question-forense": { system: systemCards[2], showTurno: true }
+      "question-terapia": systemCards[0],
+      "question-psicodiagnostico": systemCards[1],
+      "question-forense": systemCards[2]
     };
-    const { system, showTurno } = map[questionView];
+    const system = map[questionView];
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <button
-          onClick={() => setView("no-paciente")}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
-          
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </button>
-        {renderSystemCard(system, showTurno)}
+        {renderBackButton("no-paciente")}
+        {renderSystemCard(system, false, true)}
       </div>);
-
   };
 
   return (
