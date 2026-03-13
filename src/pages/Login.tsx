@@ -408,7 +408,9 @@ const Login = () => {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
               {renderBackButton()}
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                <img src={iconProfesional} alt="Profesional" className="h-12 w-12 object-contain" />
+                <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
+                  <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+                </div>
                 <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
                 <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
                 <div className="w-full space-y-3 mt-2">
