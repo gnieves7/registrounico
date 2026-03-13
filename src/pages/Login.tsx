@@ -3,17 +3,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2 } from "lucide-react";
+import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2, MessageCircle, Globe, Mail } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
-const WHATSAPP_LINK = "https://wa.me/5491100000000"; // TODO: set real number
+const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "mailto:pdf.consultas@gmail.com";
 const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
-type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense";
+type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
 
 const systemCards = [
 {
