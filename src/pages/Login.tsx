@@ -3,17 +3,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2 } from "lucide-react";
+import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2, MessageCircle, Globe, Mail } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
-const WHATSAPP_LINK = "https://wa.me/5491100000000"; // TODO: set real number
+const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "mailto:pdf.consultas@gmail.com";
 const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
-type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense";
+type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
 
 const systemCards = [
 {
@@ -134,11 +134,10 @@ const Login = () => {
 
   }
 
-  const renderSystemCard = (system: typeof systemCards[0], showTurno = false) =>
+  const renderSystemCard = (system: typeof systemCards[0], showLogin = true, showTurno = false) =>
   <div
     key={system.id}
     className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-    
       <div className={`flex h-16 w-16 items-center justify-center rounded-full ${system.bgColor} shadow-sm`}>
         <div className={`flex h-10 w-10 items-center justify-center rounded-full ${system.iconBg}`}>
           <system.icon className={`h-5 w-5 ${system.iconColor}`} />
@@ -149,19 +148,10 @@ const Login = () => {
         <p className="text-sm font-bold text-primary tracking-wide">{system.area}</p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
       </div>
-      {/* Códigos as text only */}
-      <div className="w-full space-y-1 mt-1">
-        {system.codes.map((code) =>
-      <div key={code} className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-            {code}
-          </div>
-      )}
-      </div>
+      {showLogin &&
       <button
-      onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]">
-      
+        onClick={() => handleGoogleLogin(system.redirect, system.id)}
+        className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]">
         <svg className="h-4 w-4" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -170,51 +160,49 @@ const Login = () => {
         </svg>
         Acceder
       </button>
+      }
       {showTurno &&
-    <a
-      href={CALENDAR_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
-      
+      <div className="w-full space-y-2 mt-1">
+        <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
           <Calendar className="h-4 w-4" />
           Solicitar Turno
         </a>
-    }
+        <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
+          <MessageCircle className="h-4 w-4" />
+          WhatsApp
+        </a>
+        <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+          <Globe className="h-4 w-4" />
+          Sitio Web
+        </a>
+      </div>
+      }
     </div>;
 
-
-  const renderBackButton = () =>
+  const renderBackButton = (backTo: View = "main") =>
   <button
-    onClick={() => setView("main")}
+    onClick={() => setView(backTo)}
     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
-    
       <ArrowLeft className="h-4 w-4" />
       Volver
     </button>;
 
-
   const renderQuestionView = (
-  questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") =>
-  {
+    questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
     const map = {
-      "question-terapia": { system: systemCards[0], showTurno: true },
-      "question-psicodiagnostico": { system: systemCards[1], showTurno: true },
-      "question-forense": { system: systemCards[2], showTurno: true }
+      "question-terapia": systemCards[0],
+      "question-psicodiagnostico": systemCards[1],
+      "question-forense": systemCards[2]
     };
-    const { system, showTurno } = map[questionView];
+    const system = map[questionView];
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <button
-          onClick={() => setView("no-paciente")}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4">
-          
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </button>
-        {renderSystemCard(system, showTurno)}
+        {renderBackButton("no-paciente")}
+        {renderSystemCard(system, false, true)}
       </div>);
-
   };
 
   return (
@@ -222,15 +210,13 @@ const Login = () => {
       <main className="flex flex-1 flex-col">
         {/* Header with logo and welcome */}
         <header className="px-6 pt-10 pb-6 lg:px-10">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center bg-amber-50">
-            {/* Logo with blended background */}
-            <div className="relative bg-amber-50 text-primary">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-background via-background to-background blur-2xl scale-150" />
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+            {/* Logo large and prominent */}
+            <div className="relative">
               <img
                 src={logoPsi}
                 alt="Logo PSI"
-                className="relative h-28 w-28 object-contain md:h-36 md:w-36 drop-shadow-sm mix-blend-multiply" />
-              
+                className="relative h-44 w-44 object-contain md:h-56 md:w-56 drop-shadow-lg" />
             </div>
 
             <div>
@@ -248,11 +234,11 @@ const Login = () => {
                 ¡Un gusto saludarte! Gracias por visitar mi sitio.
               </p>
               <p>
-                Soy <span className="font-semibold text-foreground">German Nieves</span>, Licenciado en Psicología, diplomado en Psicodiagnóstico y especialista en Psicología Forense.
+                Soy <span className="font-semibold text-foreground">German Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
               </p>
               <p className="font-medium text-foreground">¿En qué puedo ayudarte?</p>
               <p className="text-xs md:text-sm">
-                Mis servicios profesionales se orientan a la Salud Mental desde una perspectiva multiaxial, dinámica, integrando tres prácticas distintas aunque complementarias: la <strong>psico-terapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
+                Mi práctica profesional se orienta al cuidado de la Salud Mental contemplando la intradisciplina como recurso necesario para aportar una perspectiva superadora, integrando la complejidad y dinámica de tres grandes campos, distintos aunque complementarios: la <strong>psicoterapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
               </p>
               <p className="text-xs md:text-sm">
                 Estas disciplinas se reúnen en <strong>PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado y exclusivo para pacientes, profesionales y empresas que ofrece tres sistemas profesionales orientados al análisis, comprensión, interpretación y seguimiento dinámico de la salud mental.
@@ -289,30 +275,24 @@ const Login = () => {
                 </button>
 
                 {/* Soy Profesional */}
-                <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
+                <button
+                onClick={() => setView("profesional")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40">
-                
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110">
                     <Briefcase className="h-7 w-7 text-green-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
-                </a>
+                </button>
 
                 {/* Soy una Empresa */}
-                <a
-                href={EMPRESA_WEB}
-                target="_blank"
-                rel="noopener noreferrer"
+                <button
+                onClick={() => setView("empresa")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-400/40">
-                
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-100 group-hover:scale-110">
                     <Building2 className="h-7 w-7 text-blue-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy una Empresa</span>
-                </a>
+                </button>
               </div>
             </div>
           }
@@ -369,6 +349,54 @@ const Login = () => {
           {/* Question detail views */}
           {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
           renderQuestionView(view)}
+
+          {/* Soy Profesional */}
+          {view === "profesional" &&
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Briefcase className="h-12 w-12 text-green-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
+                <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
+                <div className="w-full space-y-3 mt-2">
+                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]">
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" />
+                    Sitio Web
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+
+          {/* Soy una Empresa */}
+          {view === "empresa" &&
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Building2 className="h-12 w-12 text-blue-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Empresarial</h3>
+                <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
+                <div className="w-full space-y-3 mt-2">
+                  <a href={EMPRESA_EMAIL}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                    <Mail className="h-4 w-4" />
+                    Enviar Email
+                  </a>
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" />
+                    Sitio Web
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
         </section>
 
         {/* Professional Stats */}
