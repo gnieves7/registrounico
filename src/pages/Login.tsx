@@ -3,17 +3,17 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2 } from "lucide-react";
+import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2, MessageCircle, Globe, Mail } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
-const WHATSAPP_LINK = "https://wa.me/5491100000000"; // TODO: set real number
+const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "mailto:pdf.consultas@gmail.com";
 const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
-type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense";
+type View = "main" | "paciente" | "no-paciente" | "profesional" | "empresa" | "question-terapia" | "question-psicodiagnostico" | "question-forense";
 
 const systemCards = [
   {
@@ -23,7 +23,6 @@ const systemCards = [
     icon: Flame,
     redirect: "/psychobiography",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
-    codes: ["Código Clínico", "Código Intervenciones"],
     bgColor: "bg-[hsl(30,30%,95%)]",
     iconBg: "bg-[hsl(30,40%,88%)]",
     iconColor: "text-[hsl(30,50%,35%)]",
@@ -35,7 +34,6 @@ const systemCards = [
     icon: BookOpen,
     redirect: "/psychodiagnostic",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
-    codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
     bgColor: "bg-[hsl(45,60%,92%)]",
     iconBg: "bg-[hsl(45,65%,82%)]",
     iconColor: "text-[hsl(45,70%,30%)]",
@@ -47,7 +45,6 @@ const systemCards = [
     icon: Scale,
     redirect: "/forensic",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
-    codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
     bgColor: "bg-[hsl(200,50%,92%)]",
     iconBg: "bg-[hsl(200,55%,82%)]",
     iconColor: "text-[hsl(200,60%,30%)]",
@@ -149,15 +146,6 @@ const Login = () => {
         <p className="text-sm font-bold text-primary tracking-wide">{system.area}</p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
       </div>
-      {/* Códigos as text only */}
-      <div className="w-full space-y-1 mt-1">
-        {system.codes.map((code) => (
-          <div key={code} className="flex items-center gap-2 px-3 py-1.5 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-            {code}
-          </div>
-        ))}
-      </div>
       <button
         onClick={() => handleGoogleLogin(system.redirect, system.id)}
         className="mt-1 w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]"
@@ -171,22 +159,42 @@ const Login = () => {
         Acceder
       </button>
       {showTurno && (
-        <a
-          href={CALENDAR_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
-        >
-          <Calendar className="h-4 w-4" />
-          Solicitar Turno
-        </a>
+        <div className="w-full space-y-2">
+          <a
+            href={CALENDAR_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
+          >
+            <Calendar className="h-4 w-4" />
+            Solicitar Turno
+          </a>
+          <a
+            href={WHATSAPP_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
+          >
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp
+          </a>
+          <a
+            href={EMPRESA_WEB}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+          >
+            <Globe className="h-4 w-4" />
+            Sitio Web
+          </a>
+        </div>
       )}
     </div>
   );
 
-  const renderBackButton = () => (
+  const renderBackButton = (backTo: View = "main") => (
     <button
-      onClick={() => setView("main")}
+      onClick={() => setView(backTo)}
       className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
     >
       <ArrowLeft className="h-4 w-4" />
@@ -198,21 +206,15 @@ const Login = () => {
     questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense"
   ) => {
     const map = {
-      "question-terapia": { system: systemCards[0], showTurno: true },
-      "question-psicodiagnostico": { system: systemCards[1], showTurno: true },
-      "question-forense": { system: systemCards[2], showTurno: true },
+      "question-terapia": { system: systemCards[0] },
+      "question-psicodiagnostico": { system: systemCards[1] },
+      "question-forense": { system: systemCards[2] },
     };
-    const { system, showTurno } = map[questionView];
+    const { system } = map[questionView];
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <button
-          onClick={() => setView("no-paciente")}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </button>
-        {renderSystemCard(system, showTurno)}
+        {renderBackButton("no-paciente")}
+        {renderSystemCard(system, true)}
       </div>
     );
   };
@@ -223,13 +225,13 @@ const Login = () => {
         {/* Header with logo and welcome */}
         <header className="px-6 pt-10 pb-6 lg:px-10">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
-            {/* Logo with blended background */}
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-background via-background to-background blur-2xl scale-150" />
+            {/* Logo — large, prominent, transparent bg */}
+            <div className="relative flex items-center justify-center">
               <img
                 src={logoPsi}
-                alt="Logo PSI"
-                className="relative h-28 w-28 object-contain md:h-36 md:w-36 drop-shadow-sm mix-blend-multiply"
+                alt="Logo PSI — Plataforma de Sistemas Interactivos"
+                className="relative h-44 w-44 object-contain md:h-56 md:w-56 drop-shadow-lg"
+                style={{ background: "transparent" }}
               />
             </div>
 
@@ -248,11 +250,11 @@ const Login = () => {
                 ¡Un gusto saludarte! Gracias por visitar mi sitio.
               </p>
               <p>
-                Soy <span className="font-semibold text-foreground">German Nieves</span>, Licenciado en Psicología, diplomado en Psicodiagnóstico y especialista en Psicología Forense.
+                Soy <span className="font-semibold text-foreground">German Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
               </p>
               <p className="font-medium text-foreground">¿En qué puedo ayudarte?</p>
               <p className="text-xs md:text-sm">
-                Mis servicios profesionales se orientan a la Salud Mental desde una perspectiva multiaxial, dinámica, integrando tres prácticas distintas aunque complementarias: la <strong>psico-terapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
+                Mi práctica profesional se orienta al cuidado de la Salud Mental contemplando la intradisciplina como recurso necesario para aportar una perspectiva superadora, integrando la complejidad y dinámica de tres grandes campos, distintos aunque complementarios: la <strong>psicoterapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
               </p>
               <p className="text-xs md:text-sm">
                 Estas disciplinas se reúnen en <strong>PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado y exclusivo para pacientes, profesionales y empresas que ofrece tres sistemas profesionales orientados al análisis, comprensión, interpretación y seguimiento dinámico de la salud mental.
@@ -289,35 +291,31 @@ const Login = () => {
                 </button>
 
                 {/* Soy Profesional */}
-                <a
-                  href={WHATSAPP_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => setView("profesional")}
                   className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110">
                     <Briefcase className="h-7 w-7 text-green-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
-                </a>
+                </button>
 
                 {/* Soy una Empresa */}
-                <a
-                  href={EMPRESA_WEB}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => setView("empresa")}
                   className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-400/40"
                 >
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-100 group-hover:scale-110">
                     <Building2 className="h-7 w-7 text-blue-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy una Empresa</span>
-                </a>
+                </button>
               </div>
             </div>
           )}
 
-          {/* Soy Paciente → 3 system cards */}
+          {/* Soy Paciente → 3 system cards (sin códigos) */}
           {view === "paciente" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
               {renderBackButton()}
@@ -362,6 +360,72 @@ const Login = () => {
                   <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                   <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Soy Profesional */}
+          {view === "profesional" && (
+            <div className="mx-auto w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-300">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Briefcase className="h-12 w-12 text-green-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
+                <p className="text-sm text-muted-foreground text-center">
+                  Si sos profesional y querés contactarme, podés hacerlo por los siguientes medios:
+                </p>
+                <div className="w-full space-y-3 mt-2">
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
+                  >
+                    <MessageCircle className="h-5 w-5" />
+                    WhatsApp
+                  </a>
+                  <a
+                    href={EMPRESA_WEB}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+                  >
+                    <Globe className="h-5 w-5" />
+                    Sitio Web
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Soy una Empresa */}
+          {view === "empresa" && (
+            <div className="mx-auto w-full max-w-md animate-in fade-in slide-in-from-bottom-4 duration-300">
+              {renderBackButton()}
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+                <Building2 className="h-12 w-12 text-blue-600" />
+                <h3 className="text-lg font-semibold text-foreground">Contacto Empresarial</h3>
+                <p className="text-sm text-muted-foreground text-center">
+                  Para consultas empresariales, podés contactarnos por los siguientes medios:
+                </p>
+                <div className="w-full space-y-3 mt-2">
+                  <a
+                    href={EMPRESA_EMAIL}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700 transition-all hover:bg-amber-100 active:scale-[0.98]"
+                  >
+                    <Mail className="h-5 w-5" />
+                    pdf.consultas@gmail.com
+                  </a>
+                  <a
+                    href={EMPRESA_WEB}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
+                  >
+                    <Globe className="h-5 w-5" />
+                    Sitio Web
+                  </a>
+                </div>
               </div>
             </div>
           )}
