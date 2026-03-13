@@ -23,7 +23,7 @@ import {
   BarChart3,
   Eye,
 } from "lucide-react";
-import { ClinicLogo } from "@/components/ui/ClinicLogo";
+import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
