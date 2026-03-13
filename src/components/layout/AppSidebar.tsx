@@ -23,7 +23,7 @@ import {
   BarChart3,
   Eye,
 } from "lucide-react";
-import { ClinicLogo } from "@/components/ui/ClinicLogo";
+import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -162,7 +162,7 @@ export function AppSidebar() {
       {/* Header with Logo */}
       <SidebarHeader className="border-b border-sidebar-border p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <ClinicLogo size="sm" />
+          <img src={logoPsi} alt="PSI" className="h-8 w-8 object-contain shrink-0" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
