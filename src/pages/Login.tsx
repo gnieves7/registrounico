@@ -295,12 +295,12 @@ const Login = () => {
 
           {view === "main" && (
             <div className="flex flex-col items-center gap-6 animate-in fade-in duration-300">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-2xl">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-2xl justify-items-center">
                 {[
-                  { label: "Soy Paciente", view: "paciente" as View, icon: iconPaciente, color: "hsl(210, 60%, 50%)" },
-                  { label: "No soy Paciente", view: "no-paciente" as View, icon: iconNoPaciente, color: "hsl(145, 50%, 42%)" },
-                  { label: "Soy Profesional", view: "profesional" as View, icon: iconProfesional, color: "hsl(25, 70%, 50%)" },
-                  { label: "Soy Empresa", view: "empresa" as View, icon: null, color: "hsl(220, 50%, 55%)" },
+                  { label: "Soy Paciente", view: "paciente" as View, Icon: User, bg: "bg-primary/10", border: "border-primary", iconColor: "text-primary" },
+                  { label: "No soy Paciente", view: "no-paciente" as View, Icon: UserX, bg: "bg-accent/50", border: "border-accent-foreground/30", iconColor: "text-accent-foreground" },
+                  { label: "Soy Profesional", view: "profesional" as View, Icon: Briefcase, bg: "bg-secondary", border: "border-secondary-foreground/30", iconColor: "text-secondary-foreground" },
+                  { label: "Soy Empresa", view: "empresa" as View, Icon: Building2, bg: "bg-muted", border: "border-muted-foreground/30", iconColor: "text-muted-foreground" },
                 ].map((item) => (
                   <button
                     key={item.label}
@@ -308,14 +308,9 @@ const Login = () => {
                     className="group flex flex-col items-center gap-3 transition-all duration-200 hover:-translate-y-1"
                   >
                     <div
-                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-full border-4 flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden bg-card"
-                      style={{ borderColor: item.color }}
+                      className={`h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20 rounded-full border-[3px] ${item.border} ${item.bg} flex items-center justify-center shadow-md transition-all duration-200 group-hover:shadow-lg group-hover:scale-105`}
                     >
-                      {item.icon ? (
-                        <img src={item.icon} alt={item.label} className="h-12 w-12 sm:h-14 sm:w-14 object-contain" />
-                      ) : (
-                        <Building2 className="h-10 w-10 sm:h-12 sm:w-12" style={{ color: item.color }} />
-                      )}
+                      <item.Icon className={`h-8 w-8 sm:h-9 sm:w-9 ${item.iconColor}`} strokeWidth={1.8} />
                     </div>
                     <span className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight">{item.label}</span>
                   </button>
