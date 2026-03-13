@@ -222,15 +222,13 @@ const Login = () => {
       <main className="flex flex-1 flex-col">
         {/* Header with logo and welcome */}
         <header className="px-6 pt-10 pb-6 lg:px-10">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center bg-amber-50">
-            {/* Logo with blended background */}
-            <div className="relative bg-amber-50 text-primary">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-background via-background to-background blur-2xl scale-150" />
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center">
+            {/* Logo large and prominent */}
+            <div className="relative">
               <img
                 src={logoPsi}
                 alt="Logo PSI"
-                className="relative h-28 w-28 object-contain md:h-36 md:w-36 drop-shadow-sm mix-blend-multiply" />
-              
+                className="relative h-44 w-44 object-contain md:h-56 md:w-56 drop-shadow-lg" />
             </div>
 
             <div>
@@ -248,11 +246,11 @@ const Login = () => {
                 ¡Un gusto saludarte! Gracias por visitar mi sitio.
               </p>
               <p>
-                Soy <span className="font-semibold text-foreground">German Nieves</span>, Licenciado en Psicología, diplomado en Psicodiagnóstico y especialista en Psicología Forense.
+                Soy <span className="font-semibold text-foreground">German Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
               </p>
               <p className="font-medium text-foreground">¿En qué puedo ayudarte?</p>
               <p className="text-xs md:text-sm">
-                Mis servicios profesionales se orientan a la Salud Mental desde una perspectiva multiaxial, dinámica, integrando tres prácticas distintas aunque complementarias: la <strong>psico-terapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
+                Mi práctica profesional se orienta al cuidado de la Salud Mental contemplando la intradisciplina como recurso necesario para aportar una perspectiva superadora, integrando la complejidad y dinámica de tres grandes campos, distintos aunque complementarios: la <strong>psicoterapia</strong>, el <strong>psicodiagnóstico</strong> y el abordaje <strong>psico-forense</strong>.
               </p>
               <p className="text-xs md:text-sm">
                 Estas disciplinas se reúnen en <strong>PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado y exclusivo para pacientes, profesionales y empresas que ofrece tres sistemas profesionales orientados al análisis, comprensión, interpretación y seguimiento dinámico de la salud mental.
