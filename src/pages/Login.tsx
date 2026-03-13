@@ -275,30 +275,24 @@ const Login = () => {
                 </button>
 
                 {/* Soy Profesional */}
-                <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
+                <button
+                onClick={() => setView("profesional")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40">
-                
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110">
                     <Briefcase className="h-7 w-7 text-green-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
-                </a>
+                </button>
 
                 {/* Soy una Empresa */}
-                <a
-                href={EMPRESA_WEB}
-                target="_blank"
-                rel="noopener noreferrer"
+                <button
+                onClick={() => setView("empresa")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-400/40">
-                
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 transition-all duration-300 group-hover:bg-blue-100 group-hover:scale-110">
                     <Building2 className="h-7 w-7 text-blue-600" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy una Empresa</span>
-                </a>
+                </button>
               </div>
             </div>
           }
