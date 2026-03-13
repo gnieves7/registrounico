@@ -31,6 +31,7 @@ import TherapeuticAlliance from "./pages/TherapeuticAlliance";
 import LifeTimeline from "./pages/LifeTimeline";
 import MicroTasks from "./pages/MicroTasks";
 import OutcomeMonitoring from "./pages/OutcomeMonitoring";
+import CamaraGesell from "./pages/CamaraGesell";
 
 const queryClient = new QueryClient();
 
