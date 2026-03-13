@@ -31,6 +31,7 @@ import TherapeuticAlliance from "./pages/TherapeuticAlliance";
 import LifeTimeline from "./pages/LifeTimeline";
 import MicroTasks from "./pages/MicroTasks";
 import OutcomeMonitoring from "./pages/OutcomeMonitoring";
+import CamaraGesell from "./pages/CamaraGesell";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/anxiety-record" element={<AnxietyRecord />} />
               <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
               <Route path="/apto-psicologico" element={<AptoPsicologico />} />
+              <Route path="/camara-gesell" element={<CamaraGesell />} />
               <Route path="/notebook" element={<Notebook />} />
               <Route path="/dream-record" element={<DreamRecord />} />
               <Route path="/sessions" element={<Sessions />} />

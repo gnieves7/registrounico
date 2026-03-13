@@ -3,10 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, User, UserX, Briefcase, Building2, MessageCircle, Globe, Mail } from "lucide-react";
+import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
+import iconPaciente from "@/assets/icon-paciente.png";
+import iconProfesional from "@/assets/icon-profesional.png";
+import iconNoPaciente from "@/assets/icon-no-paciente.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
@@ -256,9 +259,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("paciente")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110">
-                    <User className="h-7 w-7 text-primary" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 group-hover:bg-primary/20 group-hover:scale-110 overflow-hidden">
+                    <img src={iconPaciente} alt="Paciente" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Paciente</span>
                 </button>
@@ -267,9 +269,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("no-paciente")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
-                
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110 bg-slate-300">
-                    <UserX className="h-7 w-7 text-muted-foreground" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted transition-all duration-300 group-hover:bg-muted/80 group-hover:scale-110 overflow-hidden">
+                    <img src={iconNoPaciente} alt="No soy paciente" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">No soy Paciente</span>
                 </button>
@@ -278,8 +279,8 @@ const Login = () => {
                 <button
                 onClick={() => setView("profesional")}
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-400/40">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110">
-                    <Briefcase className="h-7 w-7 text-green-600" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-50 transition-all duration-300 group-hover:bg-green-100 group-hover:scale-110 overflow-hidden">
+                    <img src={iconProfesional} alt="Profesional" className="h-10 w-10 object-contain" />
                   </div>
                   <span className="text-sm font-semibold text-foreground text-center leading-tight">Soy Profesional</span>
                 </button>
@@ -355,7 +356,7 @@ const Login = () => {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
               {renderBackButton()}
               <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                <Briefcase className="h-12 w-12 text-green-600" />
+                <img src={iconProfesional} alt="Profesional" className="h-12 w-12 object-contain" />
                 <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
                 <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
                 <div className="w-full space-y-3 mt-2">
