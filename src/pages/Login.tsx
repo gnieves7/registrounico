@@ -7,7 +7,9 @@ import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Build
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
-import botonesPerfiles from "@/assets/botones-perfiles.png";
+import iconPaciente from "@/assets/icon-paciente.png";
+import iconNoPaciente from "@/assets/icon-no-paciente.png";
+import iconProfesional from "@/assets/icon-profesional.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
@@ -295,52 +297,32 @@ const Login = () => {
           <p className="font-medium text-foreground text-base md:text-lg text-center mb-6">¿En qué puedo ayudarte?</p>
 
           {view === "main" && (
-            <div className="flex flex-col items-center gap-8 animate-in fade-in duration-300">
-              {/* Reference image as background for buttons */}
-              <div className="relative w-full max-w-2xl mx-auto">
-                <img
-                  src={botonesPerfiles}
-                  alt="Perfiles de acceso"
-                  className="w-full rounded-2xl shadow-md"
-                />
-                {/* Overlay clickable buttons */}
-                <div className="absolute inset-0 grid grid-cols-4 gap-2 p-4">
+            <div className="flex flex-col items-center gap-6 animate-in fade-in duration-300">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 w-full max-w-2xl">
+                {[
+                  { label: "Soy Paciente", view: "paciente" as View, icon: iconPaciente, color: "hsl(210, 60%, 50%)" },
+                  { label: "No soy Paciente", view: "no-paciente" as View, icon: iconNoPaciente, color: "hsl(145, 50%, 42%)" },
+                  { label: "Soy Profesional", view: "profesional" as View, icon: iconProfesional, color: "hsl(25, 70%, 50%)" },
+                  { label: "Soy Empresa", view: "empresa" as View, icon: null, color: "hsl(220, 50%, 55%)" },
+                ].map((item) => (
                   <button
-                    onClick={() => setView("paciente")}
-                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
-                    aria-label="Soy Paciente"
-                  />
-                  <button
-                    onClick={() => setView("no-paciente")}
-                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
-                    aria-label="No soy Paciente"
-                  />
-                  <button
-                    onClick={() => setView("profesional")}
-                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
-                    aria-label="Soy Profesional"
-                  />
-                  <button
-                    onClick={() => setView("empresa")}
-                    className="rounded-xl transition-all duration-200 hover:bg-white/20 hover:backdrop-blur-sm active:scale-95"
-                    aria-label="Soy una Empresa"
-                  />
-                </div>
-              </div>
-              {/* Labels below */}
-              <div className="grid grid-cols-4 gap-2 w-full max-w-2xl text-center">
-                <button onClick={() => setView("paciente")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
-                  Soy Paciente
-                </button>
-                <button onClick={() => setView("no-paciente")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
-                  No soy Paciente
-                </button>
-                <button onClick={() => setView("profesional")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
-                  Soy Profesional
-                </button>
-                <button onClick={() => setView("empresa")} className="text-xs font-semibold text-foreground hover:text-primary transition-colors py-1">
-                  Soy Empresa
-                </button>
+                    key={item.label}
+                    onClick={() => setView(item.view)}
+                    className="group flex flex-col items-center gap-3 transition-all duration-200 hover:-translate-y-1"
+                  >
+                    <div
+                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-full border-4 flex items-center justify-center shadow-lg transition-all duration-200 group-hover:shadow-xl overflow-hidden bg-card"
+                      style={{ borderColor: item.color }}
+                    >
+                      {item.icon ? (
+                        <img src={item.icon} alt={item.label} className="h-12 w-12 sm:h-14 sm:w-14 object-contain" />
+                      ) : (
+                        <Building2 className="h-10 w-10 sm:h-12 sm:w-12" style={{ color: item.color }} />
+                      )}
+                    </div>
+                    <span className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight">{item.label}</span>
+                  </button>
+                ))}
               </div>
             </div>
           )}
