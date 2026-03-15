@@ -331,7 +331,7 @@ export default function SymbolicAwards() {
         return;
       }
 
-      setAwards((data || []) as SymbolicAwardRecord[]);
+      setAwards(((data || []) as unknown) as SymbolicAwardRecord[]);
     };
 
     loadAwards();
