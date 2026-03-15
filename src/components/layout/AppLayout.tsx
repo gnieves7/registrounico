@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
-import { ChevronRight, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +13,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { NotificationCenter } from "./NotificationCenter";
 
 const routeLabels: Record<string, string> = {
   "/dashboard": "Inicio",
@@ -67,11 +68,9 @@ export function AppLayout() {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <SidebarInset className="flex flex-col">
-          {/* Header with trigger */}
           <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-14 md:gap-4 md:px-4">
-            <SidebarTrigger className="-ml-1 md:bg-transparent bg-primary text-primary-foreground hover:bg-primary/90 rounded-md h-8 w-8 md:h-7 md:w-7 md:text-foreground" />
+            <SidebarTrigger className="-ml-1 h-8 w-8 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 md:h-7 md:w-7 md:bg-transparent md:text-foreground" />
 
-            {/* Breadcrumbs */}
             <Breadcrumb className="hidden md:flex">
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -91,19 +90,18 @@ export function AppLayout() {
               </BreadcrumbList>
             </Breadcrumb>
 
-            {/* Mobile: show current section name */}
-            <span className="text-sm font-medium text-foreground md:hidden truncate max-w-[180px]">
+            <span className="max-w-[180px] truncate text-sm font-medium text-foreground md:hidden">
               {currentLabel}
             </span>
 
             <div className="flex-1" />
+            <NotificationCenter />
           </header>
-          
-          {/* Main Content */}
+
           <main className="flex-1 overflow-auto">
             <Outlet />
           </main>
-          
+
           <Footer />
         </SidebarInset>
       </div>
