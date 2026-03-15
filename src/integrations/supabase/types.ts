@@ -97,6 +97,54 @@ export type Database = {
         }
         Relationships: []
       }
+      app_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          metadata: Json
+          notification_type: string
+          read_at: string | null
+          recipient_user_id: string
+          related_record_id: string | null
+          related_table: string | null
+          route: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          metadata?: Json
+          notification_type: string
+          read_at?: string | null
+          recipient_user_id: string
+          related_record_id?: string | null
+          related_table?: string | null
+          route?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          metadata?: Json
+          notification_type?: string
+          read_at?: string | null
+          recipient_user_id?: string
+          related_record_id?: string | null
+          related_table?: string | null
+          route?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           created_at: string
