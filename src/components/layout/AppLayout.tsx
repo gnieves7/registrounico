@@ -30,6 +30,7 @@ const routeLabels: Record<string, string> = {
   "/camara-gesell": "Cámara Gesell",
   "/notebook": "Mi Cuaderno",
   "/professional-profile": "Perfil del Profesional",
+  "/symbolic-awards": "Premios Simbólicos",
   "/admin": "Panel Admin",
   "/privacy-policy": "Política de Privacidad",
 };

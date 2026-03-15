@@ -22,6 +22,7 @@ import {
   ClipboardList,
   BarChart3,
   Eye,
+  Award,
 } from "lucide-react";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -59,6 +60,7 @@ const allPatientMenuItems = [
   { title: "Alianza Terapéutica", url: "/therapeutic-alliance", icon: Handshake },
   { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
   { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
+  { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
   { title: "Mis Turnos", url: "/sessions", icon: Calendar },
   { title: "Mi Cuaderno", url: "/notebook", icon: BookOpen },
@@ -70,8 +72,8 @@ const allPatientMenuItems = [
 // URLs to hide per area
 const hiddenByArea: Record<string, string[]> = {
   reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell"],
-  evaluar: ["/forensic", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/notebook", "/laura"],
-  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record"],
+  evaluar: ["/forensic", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
+  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record"],
 };
 
 const areaLabels: Record<string, string> = {
@@ -95,6 +97,7 @@ const adminMenuItems = [
   { title: "Alianza Terapéutica", url: "/therapeutic-alliance", icon: Handshake },
   { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
   { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
+  { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
 ];
 
