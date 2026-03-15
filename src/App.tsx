@@ -32,6 +32,7 @@ import LifeTimeline from "./pages/LifeTimeline";
 import MicroTasks from "./pages/MicroTasks";
 import OutcomeMonitoring from "./pages/OutcomeMonitoring";
 import CamaraGesell from "./pages/CamaraGesell";
+import SymbolicAwards from "./pages/SymbolicAwards";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/laura" element={<LauraChat />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/professional-profile" element={<ProfessionalProfile />} />
+              <Route path="/symbolic-awards" element={<SymbolicAwards />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
               <Route path="/case-formulation" element={<CaseFormulation />} />
