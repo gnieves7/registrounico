@@ -1155,6 +1155,51 @@ export type Database = {
         }
         Relationships: []
       }
+      symbolic_awards: {
+        Row: {
+          award_description: string | null
+          award_key: string
+          award_title: string
+          awarded_at: string
+          category_key: string
+          clinical_note: string | null
+          created_at: string
+          granted_by: string
+          id: string
+          patient_id: string
+          therapeutic_objective: string | null
+          updated_at: string
+        }
+        Insert: {
+          award_description?: string | null
+          award_key: string
+          award_title: string
+          awarded_at?: string
+          category_key: string
+          clinical_note?: string | null
+          created_at?: string
+          granted_by: string
+          id?: string
+          patient_id: string
+          therapeutic_objective?: string | null
+          updated_at?: string
+        }
+        Update: {
+          award_description?: string | null
+          award_key?: string
+          award_title?: string
+          awarded_at?: string
+          category_key?: string
+          clinical_note?: string | null
+          created_at?: string
+          granted_by?: string
+          id?: string
+          patient_id?: string
+          therapeutic_objective?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       symptom_networks: {
         Row: {
           bridge_symptom: string | null
