@@ -375,7 +375,7 @@ export default function SymbolicAwards() {
 
       if (reloadError) throw reloadError;
 
-      setAwards((data || []) as SymbolicAwardRecord[]);
+      setAwards(((data || []) as unknown) as SymbolicAwardRecord[]);
       setIsGrantOpen(false);
       resetGrantForm();
       toast({ title: "Premio otorgado", description: `${selectedAward.title} quedó registrado en el pasaporte terapéutico.` });
