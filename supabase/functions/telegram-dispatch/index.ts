@@ -196,16 +196,15 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
+    const token = authHeader.replace("Bearer ", "");
     const authClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    const {
-      data: { user },
-      error: authError,
-    } = await authClient.auth.getUser();
+    const { data: claimsData, error: authError } = await authClient.auth.getClaims(token);
+    const userId = claimsData?.claims?.sub;
 
-    if (authError || !user) {
+    if (authError || !userId) {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
@@ -227,8 +226,14 @@ Deno.serve(async (req) => {
       const token = `${crypto.randomUUID().replace(/-/g, "")}${Date.now().toString(36)}`;
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
+      await service
+        .from("telegram_link_tokens")
+        .update({ used_at: new Date().toISOString() })
+        .eq("user_id", userId)
+        .is("used_at", null);
+
       await service.from("telegram_link_tokens").insert({
-        user_id: user.id,
+        user_id: userId,
         token,
         expires_at: expiresAt,
       } as any);
@@ -248,18 +253,18 @@ Deno.serve(async (req) => {
     const { data: roleRow } = await service
       .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("role", "admin")
       .maybeSingle();
 
     const isAdmin = Boolean(roleRow);
-    if (!isAdmin && recipientUserId !== user.id) {
+    if (!isAdmin && recipientUserId !== userId) {
       return jsonResponse({ error: "Admin access required" }, 403);
     }
 
     const { data: contact } = await service
       .from("telegram_contacts")
-      .select("chat_id, notify_sessions, notify_micro_tasks, notify_symbolic_awards")
+      .select("chat_id, notify_sessions, notify_micro_tasks, notify_symbolic_awards, notify_documents")
       .eq("user_id", recipientUserId)
       .eq("is_active", true)
       .order("linked_at", { ascending: false })

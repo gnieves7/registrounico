@@ -193,7 +193,7 @@ export default function TelegramCenter() {
     toast({ title: "Enlace copiado", description: "Podés pegarlo o abrirlo desde Telegram." });
   };
 
-  const updatePreference = async (key: keyof Pick<TelegramContact, "notify_sessions" | "notify_micro_tasks" | "notify_symbolic_awards">, value: boolean) => {
+  const updatePreference = async (key: keyof Pick<TelegramContact, "notify_sessions" | "notify_micro_tasks" | "notify_symbolic_awards" | "notify_documents">, value: boolean) => {
     if (!contact) return;
 
     const previous = contact[key];
