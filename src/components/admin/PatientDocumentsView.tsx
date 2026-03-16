@@ -271,7 +271,6 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
   const generateDownloadCode = async (documentId: string, documentTitle: string) => {
     setGeneratingCode(documentId);
     try {
-      // Generate a random 8-character alphanumeric code
       const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       const array = new Uint8Array(8);
       crypto.getRandomValues(array);
@@ -287,9 +286,8 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
       if (error) throw error;
 
-      // Send email notification to patient
       try {
-        const response = await supabase.functions.invoke('send-download-code', {
+        await supabase.functions.invoke('send-download-code', {
           body: {
             patientId: userId,
             documentId: documentId,
@@ -297,22 +295,21 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
             downloadCode: code,
           },
         });
-        
-        if (response.error) {
-          console.error("Email notification error:", response.error);
-        } else {
-          toast({
-            title: "Código generado y enviado",
-            description: `Código: ${code} - Se envió una notificación por email al paciente`,
-          });
-        }
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
-        toast({
-          title: "Código generado",
-          description: `Código: ${code} - No se pudo enviar el email, compártelo manualmente`,
-        });
       }
+
+      void notifyPatientAndAdmin({
+        patientUserId: userId,
+        adminUserId: user?.id,
+        eventType: "document_ready",
+        data: { title: documentTitle, patientName },
+      });
+
+      toast({
+        title: "Código generado",
+        description: `Código: ${code} — el documento quedó listo para descarga.`,
+      });
 
       fetchDocuments();
     } catch (error) {

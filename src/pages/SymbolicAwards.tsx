@@ -636,6 +636,46 @@ export default function SymbolicAwards() {
         </CardContent>
       </Card>
 
+      {filteredAwards.length > 0 && (
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <Card className="border-border/70 bg-card/95">
+            <CardHeader>
+              <CardTitle className="text-lg">Premios por categoría</CardTitle>
+              <CardDescription>Lectura rápida del peso clínico por eje terapéutico.</CardDescription>
+            </CardHeader>
+            <CardContent className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={categoryChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis allowDecimals={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <RechartsTooltip />
+                  <Bar dataKey="total" fill="hsl(var(--chart-1))" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="border-border/70 bg-card/95">
+            <CardHeader>
+              <CardTitle className="text-lg">Evolución temporal</CardTitle>
+              <CardDescription>Secuencia de reconocimientos otorgados a lo largo del proceso.</CardDescription>
+            </CardHeader>
+            <CardContent className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={timelineChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="label" stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <YAxis allowDecimals={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                  <RechartsTooltip />
+                  <Line type="monotone" dataKey="total" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={{ fill: "hsl(var(--chart-2))", r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       <div className="mt-6 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3">
