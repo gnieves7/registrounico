@@ -132,8 +132,8 @@ export default function TelegramCenter() {
     ]);
 
     const nextMessages = ((messageData ?? []) as TelegramMessageRecord[]).filter(Boolean);
-    setContact((contactData as TelegramContact | null) ?? null);
-    setLatestToken((tokenData as TelegramLinkToken | null) ?? null);
+    setContact(((contactData as unknown) as TelegramContact | null) ?? null);
+    setLatestToken(((tokenData as unknown) as TelegramLinkToken | null) ?? null);
     setMessages(nextMessages);
 
     if (isAdmin) {
