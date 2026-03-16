@@ -103,7 +103,7 @@ export default function TelegramCenter() {
 
     const contactQuery = supabase
       .from(telegramContactsTable)
-      .select("id, user_id, chat_id, telegram_username, telegram_first_name, telegram_last_name, notify_sessions, notify_micro_tasks, notify_symbolic_awards, is_active, linked_at, last_incoming_at")
+      .select("id, user_id, chat_id, telegram_username, telegram_first_name, telegram_last_name, notify_sessions, notify_micro_tasks, notify_symbolic_awards, notify_documents, is_active, linked_at, last_incoming_at")
       .eq("user_id", user.id)
       .eq("is_active", true)
       .order("linked_at", { ascending: false })
