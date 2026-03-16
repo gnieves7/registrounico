@@ -78,16 +78,14 @@ Deno.serve(async (req) => {
     let isAuthorized = token === supabaseAnonKey;
 
     if (!isAuthorized) {
-      const {
-        data: { user },
-        error,
-      } = await authClient.auth.getUser();
+      const { data: claimsData, error } = await authClient.auth.getClaims(token);
+      const userId = claimsData?.claims?.sub;
 
-      if (!error && user) {
+      if (!error && userId) {
         const { data: roleRow } = await service
           .from("user_roles")
           .select("role")
-          .eq("user_id", user.id)
+          .eq("user_id", userId)
           .eq("role", "admin")
           .maybeSingle();
 

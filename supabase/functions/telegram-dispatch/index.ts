@@ -15,6 +15,7 @@ interface TelegramContact {
   notify_sessions: boolean;
   notify_micro_tasks: boolean;
   notify_symbolic_awards: boolean;
+  notify_documents: boolean;
 }
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -35,6 +36,19 @@ const formatDate = (value?: string | null) => {
   }).format(new Date(value));
 };
 
+const escapeHtml = (value: unknown) =>
+  String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const safeText = (value: unknown) => {
+  const normalized = String(value ?? "").trim();
+  return normalized ? escapeHtml(normalized) : null;
+};
+
 const getPreferenceKey = (eventType: EventType): keyof TelegramContact | null => {
   switch (eventType) {
     case "symbolic_award":
@@ -45,6 +59,8 @@ const getPreferenceKey = (eventType: EventType): keyof TelegramContact | null =>
     case "session_updated":
     case "session_cancelled":
       return "notify_sessions";
+    case "document_ready":
+      return "notify_documents";
     default:
       return null;
   }

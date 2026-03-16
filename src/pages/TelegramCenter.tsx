@@ -32,6 +32,7 @@ interface TelegramContact {
   notify_sessions: boolean;
   notify_micro_tasks: boolean;
   notify_symbolic_awards: boolean;
+  notify_documents: boolean;
   is_active: boolean;
   linked_at: string;
   last_incoming_at: string | null;
@@ -71,6 +72,11 @@ const preferenceConfig = [
     key: "notify_symbolic_awards" as const,
     title: "Premios simbólicos",
     description: "Reconocimientos clínicos y actualizaciones del pasaporte terapéutico.",
+  },
+  {
+    key: "notify_documents" as const,
+    title: "Informes y certificados",
+    description: "Avisos cuando un informe o certificado queda listo para su descarga.",
   },
 ];
 
