@@ -238,21 +238,25 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
       if (error) throw error;
 
-      // Send email notification
       try {
         await supabase.functions.invoke('send-download-code', {
           body: { patientId: userId, documentId, documentTitle, downloadCode: code },
         });
-        toast({
-          title: "Pago registrado y código enviado",
-          description: `Código: ${code} — Se notificó al paciente por email`,
-        });
       } catch {
-        toast({
-          title: "Pago registrado",
-          description: `Código: ${code} — No se pudo enviar el email`,
-        });
+        // noop: el aviso por Telegram sigue aunque falle el email
       }
+
+      void notifyPatientAndAdmin({
+        patientUserId: userId,
+        adminUserId: user?.id,
+        eventType: "document_ready",
+        data: { title: documentTitle, patientName },
+      });
+
+      toast({
+        title: "Pago registrado y código generado",
+        description: `Código: ${code} — el documento quedó listo para descarga.`,
+      });
 
       fetchDocuments();
     } catch (error) {
