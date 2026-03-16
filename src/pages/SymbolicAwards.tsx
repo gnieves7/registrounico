@@ -11,8 +11,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Award, Download, Filter, Gift, Plus, Search, Sparkles, Star, Users } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { notifyPatientAndAdmin } from "@/lib/telegramNotifications";
 
 interface SymbolicAwardRecord {
   id: string;
