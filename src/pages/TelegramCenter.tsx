@@ -32,6 +32,7 @@ interface TelegramContact {
   notify_sessions: boolean;
   notify_micro_tasks: boolean;
   notify_symbolic_awards: boolean;
+  notify_documents: boolean;
   is_active: boolean;
   linked_at: string;
   last_incoming_at: string | null;
@@ -72,6 +73,11 @@ const preferenceConfig = [
     title: "Premios simbólicos",
     description: "Reconocimientos clínicos y actualizaciones del pasaporte terapéutico.",
   },
+  {
+    key: "notify_documents" as const,
+    title: "Informes y certificados",
+    description: "Avisos cuando un informe o certificado queda listo para su descarga.",
+  },
 ];
 
 export default function TelegramCenter() {
@@ -97,7 +103,7 @@ export default function TelegramCenter() {
 
     const contactQuery = supabase
       .from(telegramContactsTable)
-      .select("id, user_id, chat_id, telegram_username, telegram_first_name, telegram_last_name, notify_sessions, notify_micro_tasks, notify_symbolic_awards, is_active, linked_at, last_incoming_at")
+      .select("id, user_id, chat_id, telegram_username, telegram_first_name, telegram_last_name, notify_sessions, notify_micro_tasks, notify_symbolic_awards, notify_documents, is_active, linked_at, last_incoming_at")
       .eq("user_id", user.id)
       .eq("is_active", true)
       .order("linked_at", { ascending: false })
@@ -187,7 +193,7 @@ export default function TelegramCenter() {
     toast({ title: "Enlace copiado", description: "Podés pegarlo o abrirlo desde Telegram." });
   };
 
-  const updatePreference = async (key: keyof Pick<TelegramContact, "notify_sessions" | "notify_micro_tasks" | "notify_symbolic_awards">, value: boolean) => {
+  const updatePreference = async (key: keyof Pick<TelegramContact, "notify_sessions" | "notify_micro_tasks" | "notify_symbolic_awards" | "notify_documents">, value: boolean) => {
     if (!contact) return;
 
     const previous = contact[key];

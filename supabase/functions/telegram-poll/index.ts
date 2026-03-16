@@ -78,16 +78,14 @@ Deno.serve(async (req) => {
     let isAuthorized = token === supabaseAnonKey;
 
     if (!isAuthorized) {
-      const {
-        data: { user },
-        error,
-      } = await authClient.auth.getUser();
+      const { data: claimsData, error } = await authClient.auth.getClaims(token);
+      const userId = claimsData?.claims?.sub;
 
-      if (!error && user) {
+      if (!error && userId) {
         const { data: roleRow } = await service
           .from("user_roles")
           .select("role")
-          .eq("user_id", user.id)
+          .eq("user_id", userId)
           .eq("role", "admin")
           .maybeSingle();
 
@@ -126,6 +124,10 @@ Deno.serve(async (req) => {
       if (!message) continue;
 
       const chatId = Number(message.chat?.id);
+      if (!Number.isFinite(chatId)) continue;
+
+      const chatType = message.chat?.type ?? "private";
+      const isPrivateChat = chatType === "private";
       const messageText = typeof message.text === "string" ? message.text : null;
       const telegramUsername = message.from?.username ?? null;
       const telegramFirstName = message.from?.first_name ?? null;
@@ -136,6 +138,14 @@ Deno.serve(async (req) => {
       let linkedUserId: string | null = null;
 
       if (messageText?.startsWith("/start ")) {
+        if (!isPrivateChat) {
+          await sendBotMessage(
+            chatId,
+            "🔒 <b>Vinculación no permitida</b>\nPor seguridad, la cuenta solo puede vincularse desde un chat privado con el bot.",
+          );
+          continue;
+        }
+
         const startToken = messageText.replace("/start ", "").trim();
         const { data: linkToken } = await service
           .from("telegram_link_tokens")
@@ -159,7 +169,7 @@ Deno.serve(async (req) => {
               telegram_first_name: telegramFirstName,
               telegram_last_name: telegramLastName,
               phone_number: phoneNumber,
-              chat_type: message.chat?.type ?? "private",
+              chat_type: chatType,
               is_active: true,
               linked_at: new Date().toISOString(),
               last_incoming_at: receivedAt,
