@@ -55,7 +55,7 @@ export function useNotifications() {
         return;
       }
 
-      setNotifications((((data ?? []) as unknown) as AppNotification[]) ?? []);
+      setNotifications(((data ?? []) as unknown) as AppNotification[]);
       setIsLoading(false);
     };
 
