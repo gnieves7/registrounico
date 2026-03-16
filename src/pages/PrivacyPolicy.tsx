@@ -61,6 +61,12 @@ const privacySections = [
       "Implementamos medidas técnicas y organizativas para proteger sus datos: cifrado en tránsito (HTTPS/TLS), políticas de acceso por filas (RLS) que garantizan que cada paciente solo acceda a sus propios datos, autenticación segura mediante proveedores verificados, URLs firmadas temporales para la descarga de documentos, tokens de acceso únicos para vistas de paciente, y almacenamiento en servidores con certificaciones de seguridad internacionales. No almacenamos datos de tarjetas de crédito ni información financiera sensible.",
   },
   {
+    icon: MessageCircle,
+    title: "Notificaciones por Telegram",
+    content:
+      "Si el usuario decide vincular voluntariamente su cuenta de Telegram, la plataforma podrá enviar avisos exclusivamente operativos vinculados al tratamiento, como recordatorios de turnos, micro-tareas, premios simbólicos e informes o certificados disponibles. La vinculación requiere una acción expresa del usuario, puede revocarse en cualquier momento desde la plataforma o solicitándolo al profesional, y no habilita campañas masivas, publicidad ni mensajería de alta frecuencia. La frecuencia de estos mensajes será limitada, proporcional y estrictamente funcional al acompañamiento clínico y administrativo.",
+  },
+  {
     icon: UserCheck,
     title: "Derechos del titular",
     content: `Conforme a la Ley 25.326, usted tiene derecho a: acceder a sus datos personales almacenados, solicitar la rectificación de datos inexactos, solicitar la supresión de sus datos cuando ya no sean necesarios, oponerse al tratamiento de sus datos, y revocar el consentimiento otorgado. Para ejercer estos derechos, comuníquese a ${professionalInfo.email} o al ${professionalInfo.phone}.`,
