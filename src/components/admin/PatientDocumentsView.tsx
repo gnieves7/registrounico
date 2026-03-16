@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { notifyPatientAndAdmin } from "@/lib/telegramNotifications";
 import { 
   Plus, 
   FileText, 
@@ -54,6 +56,7 @@ const DOCUMENT_TYPES = [
 ];
 
 export function PatientDocumentsView({ userId, patientName }: PatientDocumentsViewProps) {
+  const { user } = useAuth();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -235,21 +238,25 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
       if (error) throw error;
 
-      // Send email notification
       try {
         await supabase.functions.invoke('send-download-code', {
           body: { patientId: userId, documentId, documentTitle, downloadCode: code },
         });
-        toast({
-          title: "Pago registrado y código enviado",
-          description: `Código: ${code} — Se notificó al paciente por email`,
-        });
       } catch {
-        toast({
-          title: "Pago registrado",
-          description: `Código: ${code} — No se pudo enviar el email`,
-        });
+        // noop: el aviso por Telegram sigue aunque falle el email
       }
+
+      void notifyPatientAndAdmin({
+        patientUserId: userId,
+        adminUserId: user?.id,
+        eventType: "document_ready",
+        data: { title: documentTitle, patientName },
+      });
+
+      toast({
+        title: "Pago registrado y código generado",
+        description: `Código: ${code} — el documento quedó listo para descarga.`,
+      });
 
       fetchDocuments();
     } catch (error) {
@@ -264,7 +271,6 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
   const generateDownloadCode = async (documentId: string, documentTitle: string) => {
     setGeneratingCode(documentId);
     try {
-      // Generate a random 8-character alphanumeric code
       const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       const array = new Uint8Array(8);
       crypto.getRandomValues(array);
@@ -280,9 +286,8 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
 
       if (error) throw error;
 
-      // Send email notification to patient
       try {
-        const response = await supabase.functions.invoke('send-download-code', {
+        await supabase.functions.invoke('send-download-code', {
           body: {
             patientId: userId,
             documentId: documentId,
@@ -290,22 +295,21 @@ export function PatientDocumentsView({ userId, patientName }: PatientDocumentsVi
             downloadCode: code,
           },
         });
-        
-        if (response.error) {
-          console.error("Email notification error:", response.error);
-        } else {
-          toast({
-            title: "Código generado y enviado",
-            description: `Código: ${code} - Se envió una notificación por email al paciente`,
-          });
-        }
       } catch (emailError) {
         console.error("Failed to send email:", emailError);
-        toast({
-          title: "Código generado",
-          description: `Código: ${code} - No se pudo enviar el email, compártelo manualmente`,
-        });
       }
+
+      void notifyPatientAndAdmin({
+        patientUserId: userId,
+        adminUserId: user?.id,
+        eventType: "document_ready",
+        data: { title: documentTitle, patientName },
+      });
+
+      toast({
+        title: "Código generado",
+        description: `Código: ${code} — el documento quedó listo para descarga.`,
+      });
 
       fetchDocuments();
     } catch (error) {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
+import { notifyPatientAndAdmin } from "@/lib/telegramNotifications";
 import { 
   Plus, 
   Calendar,
@@ -45,6 +47,7 @@ interface PatientSessionsViewProps {
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 export function PatientSessionsView({ userId, patientName }: PatientSessionsViewProps) {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -125,37 +128,51 @@ export function PatientSessionsView({ userId, patientName }: PatientSessionsView
       setIsSubmitting(true);
 
       const sessionDateTime = `${formData.session_date}T${formData.session_time}:00`;
+      const normalizedTopic = formData.topic.trim() || null;
+      const normalizedClinicalNotes = formData.clinical_notes.trim() || null;
 
       if (editingSession) {
-        // Update existing session
         const { error } = await supabase
           .from("sessions")
           .update({
             session_date: sessionDateTime,
-            topic: formData.topic.trim() || null,
-            clinical_notes: formData.clinical_notes.trim() || null,
+            topic: normalizedTopic,
+            clinical_notes: normalizedClinicalNotes,
             is_editable_by_patient: formData.is_editable_by_patient,
           })
           .eq("id", editingSession.id);
 
         if (error) throw error;
 
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_updated",
+          data: { sessionDate: sessionDateTime, topic: normalizedTopic, patientName },
+        });
+
         toast({
           title: "Sesión actualizada",
           description: "La sesión se ha modificado correctamente",
         });
       } else {
-        // Create new session
         const { error } = await supabase.from("sessions").insert({
           patient_id: userId,
           session_date: sessionDateTime,
-          topic: formData.topic.trim() || null,
-          clinical_notes: formData.clinical_notes.trim() || null,
+          topic: normalizedTopic,
+          clinical_notes: normalizedClinicalNotes,
           is_editable_by_patient: formData.is_editable_by_patient,
           calendar_link: CALENDAR_LINK,
         });
 
         if (error) throw error;
+
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_scheduled",
+          data: { sessionDate: sessionDateTime, topic: normalizedTopic, patientName },
+        });
 
         toast({
           title: "Sesión creada",
@@ -182,12 +199,22 @@ export function PatientSessionsView({ userId, patientName }: PatientSessionsView
     if (!confirm("¿Estás seguro de eliminar esta sesión?")) return;
 
     try {
+      const deletedSession = sessions.find((session) => session.id === sessionId);
       const { error } = await supabase
         .from("sessions")
         .delete()
         .eq("id", sessionId);
 
       if (error) throw error;
+
+      if (deletedSession) {
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_cancelled",
+          data: { sessionDate: deletedSession.session_date, topic: deletedSession.topic, patientName },
+        });
+      }
 
       toast({
         title: "Sesión eliminada",

@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { notifyPatientAndAdmin } from "@/lib/telegramNotifications";
 
 const CATEGORIES: Record<string, { label: string; emoji: string }> = {
   behavioral_activation: { label: "Activación Conductual", emoji: "🏃" },
@@ -75,13 +76,15 @@ export default function MicroTasks() {
     if (!selectedPatient || !title.trim()) return;
     setIsSaving(true);
     try {
+      const normalizedTitle = title.trim();
+      const normalizedInstructions = instructions.trim() || null;
+
       if (editingTask) {
-        // Update existing task
         const { error } = await supabase.from("micro_tasks")
           .update({
             category,
-            title: title.trim(),
-            instructions: instructions.trim() || null,
+            title: normalizedTitle,
+            instructions: normalizedInstructions,
             due_date: dueDate || null,
             status: "pending",
             response: null,
@@ -89,16 +92,38 @@ export default function MicroTasks() {
           })
           .eq("id", editingTask.id);
         if (error) throw error;
+        void notifyPatientAndAdmin({
+          patientUserId: selectedPatient,
+          adminUserId: user?.id,
+          eventType: "micro_task",
+          data: {
+            title: normalizedTitle,
+            categoryLabel: CATEGORIES[category]?.label || category,
+            dueDate: dueDate || null,
+            instructions: normalizedInstructions,
+          },
+        });
         toast({ title: "Tarea actualizada y reenviada" });
       } else {
         const { error } = await supabase.from("micro_tasks").insert({
           patient_id: selectedPatient,
           category,
-          title: title.trim(),
-          instructions: instructions.trim() || null,
+          title: normalizedTitle,
+          instructions: normalizedInstructions,
           due_date: dueDate || null,
         });
         if (error) throw error;
+        void notifyPatientAndAdmin({
+          patientUserId: selectedPatient,
+          adminUserId: user?.id,
+          eventType: "micro_task",
+          data: {
+            title: normalizedTitle,
+            categoryLabel: CATEGORIES[category]?.label || category,
+            dueDate: dueDate || null,
+            instructions: normalizedInstructions,
+          },
+        });
         toast({ title: "Tarea asignada" });
       }
       setShowAdd(false);

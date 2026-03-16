@@ -51,6 +51,7 @@ import { PatientAbcdeView } from "@/components/admin/PatientAbcdeView";
 import { PatientNotebookView } from "@/components/admin/PatientNotebookView";
 import { PaymentSettingsEditor } from "@/components/admin/PaymentSettingsEditor";
 import ProfessionalStatsEditor from "@/components/admin/ProfessionalStatsEditor";
+import { ClinicalHistoryExportButton } from "@/components/admin/ClinicalHistoryExportButton";
 
 interface Patient {
   id: string;
@@ -534,22 +535,28 @@ export default function Admin() {
         <SheetContent className="w-[95vw] max-w-2xl overflow-y-auto p-4 sm:p-6"  side="right">
           {selectedPatient && (
             <>
-              <SheetHeader className="mb-6">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={selectedPatient.avatar_url || undefined} />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-lg">
-                      {getInitials(selectedPatient.full_name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <SheetTitle className="text-xl">
-                      {selectedPatient.full_name || "Sin nombre"}
-                    </SheetTitle>
-                    <SheetDescription>
-                      {selectedPatient.email}
-                    </SheetDescription>
+              <SheetHeader className="mb-6 space-y-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={selectedPatient.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                        {getInitials(selectedPatient.full_name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <SheetTitle className="text-xl">
+                        {selectedPatient.full_name || "Sin nombre"}
+                      </SheetTitle>
+                      <SheetDescription>
+                        {selectedPatient.email}
+                      </SheetDescription>
+                    </div>
                   </div>
+                  <ClinicalHistoryExportButton
+                    userId={selectedPatient.user_id}
+                    patientName={selectedPatient.full_name || "Paciente"}
+                  />
                 </div>
               </SheetHeader>
 
