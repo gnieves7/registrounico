@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   ScrollText,
   BadgeCheck,
+  MessageCircle,
 } from "lucide-react";
 
 const professionalInfo = {
