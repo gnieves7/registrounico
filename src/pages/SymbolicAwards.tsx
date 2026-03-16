@@ -314,6 +314,7 @@ export default function SymbolicAwards() {
 
     setIsSaving(true);
     try {
+      const normalizedClinicalNote = clinicalNote.trim() || null;
       const { error } = await supabase.from(awardsTable).insert({
         patient_id: selectedPatient,
         granted_by: user.id,
@@ -322,10 +323,21 @@ export default function SymbolicAwards() {
         award_title: selectedAward.title,
         award_description: selectedAward.description,
         therapeutic_objective: selectedCategory.title,
-        clinical_note: clinicalNote.trim() || null,
+        clinical_note: normalizedClinicalNote,
       });
 
       if (error) throw error;
+
+      void notifyPatientAndAdmin({
+        patientUserId: selectedPatient,
+        adminUserId: user.id,
+        eventType: "symbolic_award",
+        data: {
+          awardTitle: selectedAward.title,
+          categoryTitle: selectedCategory.title,
+          clinicalNote: normalizedClinicalNote,
+        },
+      });
 
       await loadAwards();
       setIsGrantOpen(false);
