@@ -47,6 +47,7 @@ interface PatientSessionsViewProps {
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 export function PatientSessionsView({ userId, patientName }: PatientSessionsViewProps) {
+  const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
