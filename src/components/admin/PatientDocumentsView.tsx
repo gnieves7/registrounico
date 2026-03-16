@@ -56,6 +56,7 @@ const DOCUMENT_TYPES = [
 ];
 
 export function PatientDocumentsView({ userId, patientName }: PatientDocumentsViewProps) {
+  const { user } = useAuth();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
