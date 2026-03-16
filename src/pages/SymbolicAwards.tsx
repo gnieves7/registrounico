@@ -259,6 +259,31 @@ export default function SymbolicAwards() {
 
   const unlockedCategories = useMemo(() => Object.keys(awardsByCategory).length, [awardsByCategory]);
 
+  const categoryChartData = useMemo(
+    () =>
+      AWARD_CATALOG.map((category) => ({
+        name: category.title.split(" ")[0],
+        total: filteredAwards.filter((award) => award.category_key === category.key).length,
+      })).filter((item) => item.total > 0),
+    [filteredAwards],
+  );
+
+  const timelineChartData = useMemo(() => {
+    const timelineMap = new Map<string, { label: string; total: number }>();
+
+    [...filteredAwards]
+      .sort((a, b) => new Date(a.awarded_at).getTime() - new Date(b.awarded_at).getTime())
+      .forEach((award) => {
+        const key = format(new Date(award.awarded_at), "yyyy-MM");
+        const label = format(new Date(award.awarded_at), "MMM yy", { locale: es });
+        const current = timelineMap.get(key) || { label, total: 0 };
+        current.total += 1;
+        timelineMap.set(key, current);
+      });
+
+    return Array.from(timelineMap.values());
+  }, [filteredAwards]);
+
   const resetGrantForm = () => {
     setSelectedCategoryKey(AWARD_CATALOG[0].key);
     setSelectedAwardKey(AWARD_CATALOG[0].awards[0].key);
