@@ -16,6 +16,7 @@ import {
   AlertTriangle,
   ScrollText,
   BadgeCheck,
+  MessageCircle,
 } from "lucide-react";
 
 const professionalInfo = {
@@ -60,6 +61,12 @@ const privacySections = [
       "Implementamos medidas técnicas y organizativas para proteger sus datos: cifrado en tránsito (HTTPS/TLS), políticas de acceso por filas (RLS) que garantizan que cada paciente solo acceda a sus propios datos, autenticación segura mediante proveedores verificados, URLs firmadas temporales para la descarga de documentos, tokens de acceso únicos para vistas de paciente, y almacenamiento en servidores con certificaciones de seguridad internacionales. No almacenamos datos de tarjetas de crédito ni información financiera sensible.",
   },
   {
+    icon: MessageCircle,
+    title: "Notificaciones por Telegram",
+    content:
+      "Si el usuario decide vincular voluntariamente su cuenta de Telegram, la plataforma podrá enviar avisos exclusivamente operativos vinculados al tratamiento, como recordatorios de turnos, micro-tareas, premios simbólicos e informes o certificados disponibles. La vinculación requiere una acción expresa del usuario, puede revocarse en cualquier momento desde la plataforma o solicitándolo al profesional, y no habilita campañas masivas, publicidad ni mensajería de alta frecuencia. La frecuencia de estos mensajes será limitada, proporcional y estrictamente funcional al acompañamiento clínico y administrativo.",
+  },
+  {
     icon: UserCheck,
     title: "Derechos del titular",
     content: `Conforme a la Ley 25.326, usted tiene derecho a: acceder a sus datos personales almacenados, solicitar la rectificación de datos inexactos, solicitar la supresión de sus datos cuando ya no sean necesarios, oponerse al tratamiento de sus datos, y revocar el consentimiento otorgado. Para ejercer estos derechos, comuníquese a ${professionalInfo.email} o al ${professionalInfo.phone}.`,
@@ -89,6 +96,12 @@ const termsOfUseSections = [
     title: "Registro y cuenta de usuario",
     content:
       "Para acceder a la plataforma, el usuario debe registrarse con un correo electrónico válido y verificar su identidad. Cada cuenta requiere aprobación del profesional tratante antes de activarse. El usuario es responsable de mantener la confidencialidad de sus credenciales de acceso y de toda actividad que ocurra bajo su cuenta. El profesional se reserva el derecho de desactivar cuentas que incumplan estos términos.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Comunicaciones por Telegram",
+    content:
+      "Las notificaciones por Telegram son opcionales y requieren una vinculación expresa del usuario con un chat privado. Su finalidad es exclusivamente operativa y de acompañamiento clínico-administrativo; no constituyen atención de urgencia ni reemplazan la comunicación profesional por los canales habituales. El consentimiento para recibir estos avisos puede revocarse en cualquier momento, y la plataforma limitará su frecuencia a eventos puntuales y necesarios del proceso terapéutico, excluyendo publicidad, promociones o envíos masivos.",
   },
   {
     icon: AlertTriangle,
