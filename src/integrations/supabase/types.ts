@@ -99,6 +99,7 @@ export type Database = {
       }
       app_notifications: {
         Row: {
+          archived_at: string | null
           created_at: string
           id: string
           is_read: boolean
@@ -114,6 +115,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archived_at?: string | null
           created_at?: string
           id?: string
           is_read?: boolean
@@ -129,6 +131,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archived_at?: string | null
           created_at?: string
           id?: string
           is_read?: boolean
@@ -1275,6 +1278,192 @@ export type Database = {
           nodes?: Json
           patient_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_bot_state: {
+        Row: {
+          id: number
+          update_offset: number
+          updated_at: string
+        }
+        Insert: {
+          id: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          update_offset?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      telegram_contacts: {
+        Row: {
+          chat_id: number
+          chat_type: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_incoming_at: string | null
+          linked_at: string
+          notify_documents: boolean
+          notify_micro_tasks: boolean
+          notify_sessions: boolean
+          notify_symbolic_awards: boolean
+          phone_number: string | null
+          telegram_first_name: string | null
+          telegram_last_name: string | null
+          telegram_username: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chat_id: number
+          chat_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_incoming_at?: string | null
+          linked_at?: string
+          notify_documents?: boolean
+          notify_micro_tasks?: boolean
+          notify_sessions?: boolean
+          notify_symbolic_awards?: boolean
+          phone_number?: string | null
+          telegram_first_name?: string | null
+          telegram_last_name?: string | null
+          telegram_username?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chat_id?: number
+          chat_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_incoming_at?: string | null
+          linked_at?: string
+          notify_documents?: boolean
+          notify_micro_tasks?: boolean
+          notify_sessions?: boolean
+          notify_symbolic_awards?: boolean
+          phone_number?: string | null
+          telegram_first_name?: string | null
+          telegram_last_name?: string | null
+          telegram_username?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      telegram_delivery_logs: {
+        Row: {
+          chat_id: number | null
+          created_at: string
+          delivery_status: string
+          error_message: string | null
+          event_type: string
+          id: string
+          message_text: string | null
+          payload: Json
+          sent_at: string | null
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          chat_id?: number | null
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          event_type: string
+          id?: string
+          message_text?: string | null
+          payload?: Json
+          sent_at?: string | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          chat_id?: number | null
+          created_at?: string
+          delivery_status?: string
+          error_message?: string | null
+          event_type?: string
+          id?: string
+          message_text?: string | null
+          payload?: Json
+          sent_at?: string | null
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telegram_link_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+          updated_at: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          token: string
+          updated_at?: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          updated_at?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      telegram_messages: {
+        Row: {
+          chat_id: number
+          created_at: string
+          direction: string
+          message_id: number | null
+          message_text: string | null
+          raw_update: Json
+          received_at: string
+          update_id: number
+          user_id: string | null
+        }
+        Insert: {
+          chat_id: number
+          created_at?: string
+          direction?: string
+          message_id?: number | null
+          message_text?: string | null
+          raw_update?: Json
+          received_at?: string
+          update_id: number
+          user_id?: string | null
+        }
+        Update: {
+          chat_id?: number
+          created_at?: string
+          direction?: string
+          message_id?: number | null
+          message_text?: string | null
+          raw_update?: Json
+          received_at?: string
+          update_id?: number
+          user_id?: string | null
         }
         Relationships: []
       }
