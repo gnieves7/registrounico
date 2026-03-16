@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ClipboardList, Plus, Users, CheckCircle2, Clock, Info, Send, Edit } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { notifyPatientAndAdmin } from "@/lib/telegramNotifications";
 
 const CATEGORIES: Record<string, { label: string; emoji: string }> = {
   behavioral_activation: { label: "Activación Conductual", emoji: "🏃" },
