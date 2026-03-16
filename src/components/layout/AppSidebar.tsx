@@ -23,6 +23,7 @@ import {
   BarChart3,
   Eye,
   Award,
+  Send,
 } from "lucide-react";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -61,6 +62,7 @@ const allPatientMenuItems = [
   { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
   { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
   { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
+  { title: "Telegram", url: "/telegram", icon: Send },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
   { title: "Mis Turnos", url: "/sessions", icon: Calendar },
   { title: "Mi Cuaderno", url: "/notebook", icon: BookOpen },
@@ -98,6 +100,7 @@ const adminMenuItems = [
   { title: "Línea de Vida", url: "/life-timeline", icon: Clock },
   { title: "Micro-Tareas", url: "/micro-tasks", icon: ClipboardList },
   { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
+  { title: "Telegram", url: "/telegram", icon: Send },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
 ];
 
