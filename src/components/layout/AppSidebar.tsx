@@ -23,6 +23,7 @@ import {
   BarChart3,
   Eye,
   Award,
+  Send,
 } from "lucide-react";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { useLocation, useNavigate } from "react-router-dom";

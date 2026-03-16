@@ -33,6 +33,7 @@ import MicroTasks from "./pages/MicroTasks";
 import OutcomeMonitoring from "./pages/OutcomeMonitoring";
 import CamaraGesell from "./pages/CamaraGesell";
 import SymbolicAwards from "./pages/SymbolicAwards";
+import TelegramCenter from "./pages/TelegramCenter";
 
 const queryClient = new QueryClient();
 
