@@ -73,9 +73,9 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "🏆 Nuevo premio simbólico",
         text: [
           "🏆 <b>Nuevo premio simbólico</b>",
-          `Recibiste <b>${String(data.awardTitle || "un reconocimiento")}</b>.`,
-          data.categoryTitle ? `Categoría: ${String(data.categoryTitle)}` : null,
-          data.clinicalNote ? `Validación clínica: ${String(data.clinicalNote)}` : null,
+          `Recibiste <b>${safeText(data.awardTitle) || "un reconocimiento"}</b>.`,
+          safeText(data.categoryTitle) ? `Categoría: ${safeText(data.categoryTitle)}` : null,
+          safeText(data.clinicalNote) ? `Validación clínica: ${safeText(data.clinicalNote)}` : null,
           "Podés verlo en tu pasaporte terapéutico dentro de la app.",
         ]
           .filter(Boolean)
@@ -86,10 +86,10 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "🧩 Nueva micro-tarea",
         text: [
           "🧩 <b>Nueva micro-tarea asignada</b>",
-          `Tarea: <b>${String(data.title || "Micro-tarea")}</b>`,
-          data.categoryLabel ? `Categoría: ${String(data.categoryLabel)}` : null,
-          data.dueDate ? `Fecha límite: ${String(data.dueDate)}` : null,
-          data.instructions ? `Instrucciones: ${String(data.instructions)}` : null,
+          `Tarea: <b>${safeText(data.title) || "Micro-tarea"}</b>`,
+          safeText(data.categoryLabel) ? `Categoría: ${safeText(data.categoryLabel)}` : null,
+          safeText(data.dueDate) ? `Fecha límite: ${safeText(data.dueDate)}` : null,
+          safeText(data.instructions) ? `Instrucciones: ${safeText(data.instructions)}` : null,
           "Podés completarla desde la sección Micro-Tareas de la app.",
         ]
           .filter(Boolean)
@@ -100,8 +100,8 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "📅 Turno agendado",
         text: [
           "📅 <b>Nuevo turno agendado</b>",
-          data.sessionDate ? `Fecha y hora: <b>${String(data.sessionDate)}</b>` : null,
-          data.topic ? `Tema: ${String(data.topic)}` : null,
+          safeText(data.sessionDate) ? `Fecha y hora: <b>${safeText(data.sessionDate)}</b>` : null,
+          safeText(data.topic) ? `Tema: ${safeText(data.topic)}` : null,
           "Revisá la sección Mis Turnos para ver el detalle.",
         ]
           .filter(Boolean)
@@ -112,8 +112,8 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "🗓️ Turno actualizado",
         text: [
           "🗓️ <b>Tu turno fue actualizado</b>",
-          data.sessionDate ? `Nueva fecha y hora: <b>${String(data.sessionDate)}</b>` : null,
-          data.topic ? `Tema: ${String(data.topic)}` : null,
+          safeText(data.sessionDate) ? `Nueva fecha y hora: <b>${safeText(data.sessionDate)}</b>` : null,
+          safeText(data.topic) ? `Tema: ${safeText(data.topic)}` : null,
           "Entrá a Mis Turnos para revisar los cambios.",
         ]
           .filter(Boolean)
@@ -124,8 +124,8 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "❌ Turno cancelado",
         text: [
           "❌ <b>Se canceló un turno</b>",
-          data.sessionDate ? `Turno: ${String(data.sessionDate)}` : null,
-          data.topic ? `Tema: ${String(data.topic)}` : null,
+          safeText(data.sessionDate) ? `Turno: ${safeText(data.sessionDate)}` : null,
+          safeText(data.topic) ? `Tema: ${safeText(data.topic)}` : null,
           "Si necesitás, coordiná un nuevo espacio desde la app.",
         ]
           .filter(Boolean)
@@ -136,7 +136,7 @@ const buildMessage = (eventType: EventType, data: Record<string, unknown> = {}) 
         title: "📄 Documento listo",
         text: [
           "📄 <b>Tu informe está listo</b>",
-          data.title ? `Documento: <b>${String(data.title)}</b>` : null,
+          safeText(data.title) ? `Documento: <b>${safeText(data.title)}</b>` : null,
           "Encontralo en la sección Informes de la app.",
         ]
           .filter(Boolean)
