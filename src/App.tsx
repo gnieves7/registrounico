@@ -66,6 +66,7 @@ const App = () => (
               <Route path="/documents" element={<Documents />} />
               <Route path="/professional-profile" element={<ProfessionalProfile />} />
               <Route path="/symbolic-awards" element={<SymbolicAwards />} />
+              <Route path="/telegram" element={<TelegramCenter />} />
               {/* Admin routes */}
               <Route path="/admin" element={<Admin />} />
               <Route path="/case-formulation" element={<CaseFormulation />} />

@@ -32,6 +32,7 @@ const routeLabels: Record<string, string> = {
   "/notebook": "Mi Cuaderno",
   "/professional-profile": "Perfil del Profesional",
   "/symbolic-awards": "Premios Simbólicos",
+  "/telegram": "Telegram",
   "/admin": "Panel Admin",
   "/privacy-policy": "Política de Privacidad",
 };
