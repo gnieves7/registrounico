@@ -76,13 +76,15 @@ export default function MicroTasks() {
     if (!selectedPatient || !title.trim()) return;
     setIsSaving(true);
     try {
+      const normalizedTitle = title.trim();
+      const normalizedInstructions = instructions.trim() || null;
+
       if (editingTask) {
-        // Update existing task
         const { error } = await supabase.from("micro_tasks")
           .update({
             category,
-            title: title.trim(),
-            instructions: instructions.trim() || null,
+            title: normalizedTitle,
+            instructions: normalizedInstructions,
             due_date: dueDate || null,
             status: "pending",
             response: null,
@@ -90,16 +92,38 @@ export default function MicroTasks() {
           })
           .eq("id", editingTask.id);
         if (error) throw error;
+        void notifyPatientAndAdmin({
+          patientUserId: selectedPatient,
+          adminUserId: user?.id,
+          eventType: "micro_task",
+          data: {
+            title: normalizedTitle,
+            categoryLabel: CATEGORIES[category]?.label || category,
+            dueDate: dueDate || null,
+            instructions: normalizedInstructions,
+          },
+        });
         toast({ title: "Tarea actualizada y reenviada" });
       } else {
         const { error } = await supabase.from("micro_tasks").insert({
           patient_id: selectedPatient,
           category,
-          title: title.trim(),
-          instructions: instructions.trim() || null,
+          title: normalizedTitle,
+          instructions: normalizedInstructions,
           due_date: dueDate || null,
         });
         if (error) throw error;
+        void notifyPatientAndAdmin({
+          patientUserId: selectedPatient,
+          adminUserId: user?.id,
+          eventType: "micro_task",
+          data: {
+            title: normalizedTitle,
+            categoryLabel: CATEGORIES[category]?.label || category,
+            dueDate: dueDate || null,
+            instructions: normalizedInstructions,
+          },
+        });
         toast({ title: "Tarea asignada" });
       }
       setShowAdd(false);

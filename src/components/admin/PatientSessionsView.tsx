@@ -199,12 +199,22 @@ export function PatientSessionsView({ userId, patientName }: PatientSessionsView
     if (!confirm("¿Estás seguro de eliminar esta sesión?")) return;
 
     try {
+      const deletedSession = sessions.find((session) => session.id === sessionId);
       const { error } = await supabase
         .from("sessions")
         .delete()
         .eq("id", sessionId);
 
       if (error) throw error;
+
+      if (deletedSession) {
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_cancelled",
+          data: { sessionDate: deletedSession.session_date, topic: deletedSession.topic, patientName },
+        });
+      }
 
       toast({
         title: "Sesión eliminada",
