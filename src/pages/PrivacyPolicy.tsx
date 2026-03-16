@@ -98,6 +98,12 @@ const termsOfUseSections = [
       "Para acceder a la plataforma, el usuario debe registrarse con un correo electrónico válido y verificar su identidad. Cada cuenta requiere aprobación del profesional tratante antes de activarse. El usuario es responsable de mantener la confidencialidad de sus credenciales de acceso y de toda actividad que ocurra bajo su cuenta. El profesional se reserva el derecho de desactivar cuentas que incumplan estos términos.",
   },
   {
+    icon: MessageCircle,
+    title: "Comunicaciones por Telegram",
+    content:
+      "Las notificaciones por Telegram son opcionales y requieren una vinculación expresa del usuario con un chat privado. Su finalidad es exclusivamente operativa y de acompañamiento clínico-administrativo; no constituyen atención de urgencia ni reemplazan la comunicación profesional por los canales habituales. El consentimiento para recibir estos avisos puede revocarse en cualquier momento, y la plataforma limitará su frecuencia a eventos puntuales y necesarios del proceso terapéutico, excluyendo publicidad, promociones o envíos masivos.",
+  },
+  {
     icon: AlertTriangle,
     title: "Uso aceptable",
     content:
