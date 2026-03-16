@@ -128,37 +128,51 @@ export function PatientSessionsView({ userId, patientName }: PatientSessionsView
       setIsSubmitting(true);
 
       const sessionDateTime = `${formData.session_date}T${formData.session_time}:00`;
+      const normalizedTopic = formData.topic.trim() || null;
+      const normalizedClinicalNotes = formData.clinical_notes.trim() || null;
 
       if (editingSession) {
-        // Update existing session
         const { error } = await supabase
           .from("sessions")
           .update({
             session_date: sessionDateTime,
-            topic: formData.topic.trim() || null,
-            clinical_notes: formData.clinical_notes.trim() || null,
+            topic: normalizedTopic,
+            clinical_notes: normalizedClinicalNotes,
             is_editable_by_patient: formData.is_editable_by_patient,
           })
           .eq("id", editingSession.id);
 
         if (error) throw error;
 
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_updated",
+          data: { sessionDate: sessionDateTime, topic: normalizedTopic, patientName },
+        });
+
         toast({
           title: "Sesión actualizada",
           description: "La sesión se ha modificado correctamente",
         });
       } else {
-        // Create new session
         const { error } = await supabase.from("sessions").insert({
           patient_id: userId,
           session_date: sessionDateTime,
-          topic: formData.topic.trim() || null,
-          clinical_notes: formData.clinical_notes.trim() || null,
+          topic: normalizedTopic,
+          clinical_notes: normalizedClinicalNotes,
           is_editable_by_patient: formData.is_editable_by_patient,
           calendar_link: CALENDAR_LINK,
         });
 
         if (error) throw error;
+
+        void notifyPatientAndAdmin({
+          patientUserId: userId,
+          adminUserId: user?.id,
+          eventType: "session_scheduled",
+          data: { sessionDate: sessionDateTime, topic: normalizedTopic, patientName },
+        });
 
         toast({
           title: "Sesión creada",
