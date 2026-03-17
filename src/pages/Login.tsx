@@ -58,8 +58,8 @@ const Login = () => {
   const [view, setView] = useState<View>("main");
 
   useEffect(() => {
-    if (user && !isLoading) {
-      if (!isApproved) return;
+    if (user && !isLoading && isApproved) {
+      applySystemTheme(getStoredSystemArea());
       const redirectTo = sessionStorage.getItem("login_redirect");
       if (redirectTo) {
         sessionStorage.removeItem("login_redirect");
@@ -67,7 +67,10 @@ const Login = () => {
       } else {
         navigate("/dashboard", { replace: true });
       }
+      return;
     }
+
+    applySystemTheme(null);
   }, [user, isLoading, isApproved, navigate]);
 
   const handleGoogleLogin = async (redirectPath: string, area: string) => {
