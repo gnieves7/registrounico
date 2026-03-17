@@ -7,6 +7,9 @@ import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Build
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
+import sistemaReflexionarIcon from "@/assets/Sistema_Reflexionar.png";
+import sistemaEvaluarIcon from "@/assets/Sistema_Evaluar.png";
+import sistemaAcompanharIcon from "@/assets/Sistema_Acompañar.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
@@ -21,6 +24,7 @@ const systemCards = [
     title: "Sistema Reflexionar",
     area: "Área Clínica",
     icon: Flame,
+    image: sistemaReflexionarIcon,
     redirect: "/psychobiography",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
     codes: ["Código Clínico", "Código Intervenciones"],
@@ -31,6 +35,7 @@ const systemCards = [
     title: "Sistema Evaluar",
     area: "Área Psicodiagnóstica",
     icon: BookOpen,
+    image: sistemaEvaluarIcon,
     redirect: "/psychodiagnostic",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
     codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
@@ -41,6 +46,7 @@ const systemCards = [
     title: "Sistema Acompañar",
     area: "Área Forense",
     icon: Scale,
+    image: sistemaAcompanharIcon,
     redirect: "/forensic",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
     codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
@@ -197,6 +203,30 @@ const Login = () => {
     );
   };
 
+  const renderPatientSystemButton = (system: (typeof systemCards)[0]) => (
+    <button
+      key={system.id}
+      onClick={() => handleGoogleLogin(system.redirect, system.id)}
+      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+    >
+      <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-105 md:h-32 md:w-32">
+        <img
+          src={system.image}
+          alt={system.title}
+          className="h-full w-full rounded-full object-contain"
+          loading="lazy"
+        />
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-sm font-bold text-foreground md:text-base">{system.title}</h3>
+        <p className="text-xs font-medium text-muted-foreground">{system.area}</p>
+      </div>
+      <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+        Ingresar con Google
+      </span>
+    </button>
+  );
+
   const renderBackButton = (backTo: View = "main") => (
     <button
       onClick={() => setView(backTo)}
@@ -280,9 +310,14 @@ const Login = () => {
                     </div>
                     <h3 className="text-sm font-bold text-foreground">PSI</h3>
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado para pacientes, profesionales y empresas orientado al seguimiento dinámico de la salud mental.
-                  </p>
+                  <div className="space-y-2 text-xs leading-relaxed text-muted-foreground">
+                    <p>
+                      Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense en causas judiciales.
+                    </p>
+                    <p>
+                      Una plataforma única que integra tres (3) <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong> para la atención en Salud Mental: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -319,15 +354,15 @@ const Login = () => {
             </div>
           )}
 
-          {/* Soy Paciente → 3 system cards */}
+          {/* Soy Paciente → 3 system buttons */}
           {view === "paciente" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
               {renderBackButton()}
-              <p className="text-center text-sm text-muted-foreground mb-5">
+              <p className="mb-6 text-center text-sm text-muted-foreground">
                 Seleccioná el sistema al que necesitás acceder:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                {systemCards.map((s) => renderSystemCard(s))}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {systemCards.map((system) => renderPatientSystemButton(system))}
               </div>
             </div>
           )}
