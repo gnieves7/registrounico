@@ -143,6 +143,56 @@ All colors MUST be HSL.
 }
 
 @layer base {
+  body[data-system="reflexionar"] {
+    --primary: 18 71% 45%;
+    --primary-foreground: 35 100% 97%;
+    --accent: 18 45% 93%;
+    --accent-foreground: 18 58% 28%;
+    --ring: 18 71% 45%;
+    --card: 34 42% 98%;
+    --popover: 34 42% 98%;
+    --sidebar-background: 28 45% 96%;
+    --sidebar-primary: 18 71% 45%;
+    --sidebar-primary-foreground: 35 100% 97%;
+    --sidebar-accent: 18 38% 88%;
+    --sidebar-accent-foreground: 18 58% 24%;
+    --sidebar-border: 24 32% 82%;
+  }
+
+  body[data-system="evaluar"] {
+    --primary: 42 78% 42%;
+    --primary-foreground: 45 100% 97%;
+    --accent: 45 52% 92%;
+    --accent-foreground: 42 64% 24%;
+    --ring: 42 78% 42%;
+    --card: 45 38% 98%;
+    --popover: 45 38% 98%;
+    --sidebar-background: 45 44% 95%;
+    --sidebar-primary: 42 78% 42%;
+    --sidebar-primary-foreground: 45 100% 97%;
+    --sidebar-accent: 45 40% 86%;
+    --sidebar-accent-foreground: 42 64% 22%;
+    --sidebar-border: 42 30% 80%;
+  }
+
+  body[data-system="acompanar"] {
+    --primary: 201 56% 42%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 199 40% 92%;
+    --accent-foreground: 201 56% 26%;
+    --ring: 201 56% 42%;
+    --card: 198 42% 98%;
+    --popover: 198 42% 98%;
+    --sidebar-background: 198 46% 95%;
+    --sidebar-primary: 201 56% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 199 35% 86%;
+    --sidebar-accent-foreground: 201 56% 22%;
+    --sidebar-border: 199 28% 80%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
