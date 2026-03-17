@@ -203,6 +203,30 @@ const Login = () => {
     );
   };
 
+  const renderPatientSystemButton = (system: (typeof systemCards)[0]) => (
+    <button
+      key={system.id}
+      onClick={() => handleGoogleLogin(system.redirect, system.id)}
+      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+    >
+      <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-105 md:h-32 md:w-32">
+        <img
+          src={system.image}
+          alt={system.title}
+          className="h-full w-full rounded-full object-contain"
+          loading="lazy"
+        />
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-sm font-bold text-foreground md:text-base">{system.title}</h3>
+        <p className="text-xs font-medium text-muted-foreground">{system.area}</p>
+      </div>
+      <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+        Ingresar con Google
+      </span>
+    </button>
+  );
+
   const renderBackButton = (backTo: View = "main") => (
     <button
       onClick={() => setView(backTo)}
