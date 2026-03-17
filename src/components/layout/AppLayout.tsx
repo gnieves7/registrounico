@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { applySystemTheme, getStoredSystemArea } from "@/lib/systemBranding";
+import { applySystemTheme, getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
-import { Home } from "lucide-react";
+import { ChevronRight, Home } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
