@@ -73,10 +73,11 @@ const Login = () => {
     applySystemTheme(null);
   }, [user, isLoading, isApproved, navigate]);
 
-  const handleGoogleLogin = async (redirectPath: string, area: string) => {
+  const handleGoogleLogin = async (redirectPath: string, area: SystemArea) => {
     try {
       sessionStorage.setItem("login_redirect", redirectPath);
-      sessionStorage.setItem("user_area", area);
+      setStoredSystemArea(area);
+      applySystemTheme(area);
       await signInWithGoogle();
     } catch (error) {
       console.error("Login error:", error);
