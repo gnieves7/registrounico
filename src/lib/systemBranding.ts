@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+import { Brain, BookOpen, Scale } from "lucide-react";
 import sistemaReflexionarIcon from "@/assets/Sistema_Reflexionar.png";
 import sistemaEvaluarIcon from "@/assets/Sistema_Evaluar.png";
 import sistemaAcompanharIcon from "@/assets/Sistema_Acompañar.png";
@@ -8,21 +10,25 @@ export const systemBranding: Record<SystemArea, {
   label: string;
   subtitle: string;
   logo: string;
+  icon: LucideIcon;
 }> = {
   reflexionar: {
     label: "Sistema Reflexionar",
     subtitle: "Área Clínica",
     logo: sistemaReflexionarIcon,
+    icon: Brain,
   },
   evaluar: {
     label: "Sistema Evaluar",
     subtitle: "Área Psicodiagnóstica",
     logo: sistemaEvaluarIcon,
+    icon: BookOpen,
   },
   acompanar: {
     label: "Sistema Acompañar",
     subtitle: "Área Forense",
     logo: sistemaAcompanharIcon,
+    icon: Scale,
   },
 };
 

@@ -76,20 +76,34 @@ export function AppLayout() {
       <div className="flex min-h-screen w-full">
         <AppSidebar />
         <SidebarInset className="flex flex-col">
-          <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-14 md:gap-4 md:px-4">
-            <SidebarTrigger className="-ml-1 h-8 w-8 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 md:h-7 md:w-7 md:bg-transparent md:text-foreground" />
+          <header className="system-header sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-16 md:gap-4 md:px-4">
+            <SidebarTrigger className="system-header-trigger -ml-1 h-9 w-9 rounded-xl md:h-10 md:w-10" />
+
+            {currentSystem && (
+              <div className="system-header-badge hidden items-center gap-2 rounded-full px-3 py-1.5 md:flex">
+                <div className="system-header-icon flex h-8 w-8 items-center justify-center rounded-full">
+                  <currentSystem.icon className="h-4 w-4" />
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-xs font-semibold text-foreground">{currentSystem.label}</span>
+                  <span className="text-[10px] text-muted-foreground">{currentSystem.subtitle}</span>
+                </div>
+              </div>
+            )}
 
             <Breadcrumb className="hidden md:flex">
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/dashboard" className="flex items-center gap-1">
+                  <BreadcrumbLink href="/dashboard" className="flex items-center gap-1.5 text-foreground/80 hover:text-foreground">
                     <Home className="h-3.5 w-3.5" />
-                    <span className="sr-only">Inicio</span>
+                    <span>Inicio</span>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 {location.pathname !== "/dashboard" && (
                   <>
-                    <BreadcrumbSeparator />
+                    <BreadcrumbSeparator>
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </BreadcrumbSeparator>
                     <BreadcrumbItem>
                       <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
                     </BreadcrumbItem>
@@ -98,7 +112,7 @@ export function AppLayout() {
               </BreadcrumbList>
             </Breadcrumb>
 
-            <span className="max-w-[180px] truncate text-sm font-medium text-foreground md:hidden">
+            <span className="max-w-[180px] truncate text-sm font-semibold text-foreground md:hidden">
               {currentLabel}
             </span>
 
@@ -106,7 +120,7 @@ export function AppLayout() {
             <NotificationCenter />
           </header>
 
-          <main className="flex-1 overflow-auto">
+          <main className="system-main flex-1 overflow-auto">
             <Outlet />
           </main>
 
