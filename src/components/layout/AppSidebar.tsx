@@ -114,6 +114,8 @@ export function AppSidebar() {
   const [pendingCount, setPendingCount] = useState(0);
 
   const currentPath = location.pathname;
+  const currentArea = getStoredSystemArea();
+  const currentSystem = currentArea ? systemBranding[currentArea] : null;
 
   // Auto-close sidebar on mobile when route changes
   useEffect(() => {
