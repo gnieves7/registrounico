@@ -6,10 +6,8 @@ import Footer from "@/components/layout/Footer";
 import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart, Search, Gavel, User, UserX, Briefcase } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
-import logoPsi from "@/assets/Logo_PSI_mejorado.png";
-import sistemaReflexionarIcon from "@/assets/Sistema_Reflexionar.png";
-import sistemaEvaluarIcon from "@/assets/Sistema_Evaluar.png";
-import sistemaAcompanharIcon from "@/assets/Sistema_Acompañar.png";
+import logoPsi from "@/assets/logo_psi.png";
+import { applySystemTheme, getStoredSystemArea, setStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
