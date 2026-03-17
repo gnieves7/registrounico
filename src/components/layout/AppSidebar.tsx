@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
 import {
   Sidebar,
   SidebarContent,
