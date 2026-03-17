@@ -43,6 +43,8 @@ export function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const currentArea = getStoredSystemArea();
+  const currentSystem = currentArea ? systemBranding[currentArea] : null;
   const currentLabel = useMemo(() => {
     return routeLabels[location.pathname] || "Página";
   }, [location.pathname]);
