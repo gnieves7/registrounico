@@ -7,6 +7,9 @@ import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Build
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_mejorado.png";
+import sistemaReflexionarIcon from "@/assets/Sistema_Reflexionar.png";
+import sistemaEvaluarIcon from "@/assets/Sistema_Evaluar.png";
+import sistemaAcompanharIcon from "@/assets/Sistema_Acompañar.png";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
@@ -21,6 +24,7 @@ const systemCards = [
     title: "Sistema Reflexionar",
     area: "Área Clínica",
     icon: Flame,
+    image: sistemaReflexionarIcon,
     redirect: "/psychobiography",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
     codes: ["Código Clínico", "Código Intervenciones"],
@@ -31,6 +35,7 @@ const systemCards = [
     title: "Sistema Evaluar",
     area: "Área Psicodiagnóstica",
     icon: BookOpen,
+    image: sistemaEvaluarIcon,
     redirect: "/psychodiagnostic",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
     codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
@@ -41,6 +46,7 @@ const systemCards = [
     title: "Sistema Acompañar",
     area: "Área Forense",
     icon: Scale,
+    image: sistemaAcompanharIcon,
     redirect: "/forensic",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
     codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
