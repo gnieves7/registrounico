@@ -86,8 +86,8 @@ const areaLabels: Record<string, string> = {
 };
 
 const getFilteredMenuItems = () => {
-  const area = sessionStorage.getItem("user_area") || "";
-  const hidden = hiddenByArea[area] || [];
+  const area = getStoredSystemArea();
+  const hidden = hiddenByArea[area || ""] || [];
   return allPatientMenuItems.filter((item) => !hidden.includes(item.url));
 };
 
