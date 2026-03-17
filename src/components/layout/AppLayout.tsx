@@ -55,6 +55,10 @@ export function AppLayout() {
     }
   }, [user, isLoading, isApproved, isAdmin, navigate]);
 
+  useEffect(() => {
+    applySystemTheme(getStoredSystemArea());
+  }, [location.pathname]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">

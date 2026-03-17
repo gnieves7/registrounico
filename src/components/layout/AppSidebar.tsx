@@ -169,16 +169,22 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       {/* Header with Logo */}
-      <SidebarHeader className="border-b border-sidebar-border p-3 md:p-4">
+      <SidebarHeader className="border-b border-sidebar-border bg-sidebar/80 p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <img src={logoPsi} alt="PSI" className="h-8 w-8 object-contain shrink-0" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-sidebar-border bg-sidebar-primary/10 p-1.5 shadow-sm">
+            <img
+              src={currentSystem?.logo || logoPsi}
+              alt={currentSystem?.label || "PSI"}
+              className="h-full w-full object-contain shrink-0"
+            />
+          </div>
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
-                {areaLabels[sessionStorage.getItem("user_area") || ""] || "PSI"}
+                {currentSystem?.label || areaLabels[currentArea || ""] || "PSI"}
               </span>
               <span className="text-[10px] text-sidebar-foreground/60 md:text-xs">
-                Plataforma de Sistemas Interactivos
+                {currentSystem?.subtitle || "Plataforma de Sistemas Interactivos"}
               </span>
             </div>
           )}
