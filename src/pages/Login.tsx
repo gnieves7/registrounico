@@ -310,9 +310,14 @@ const Login = () => {
                     </div>
                     <h3 className="text-sm font-bold text-foreground">PSI</h3>
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>. Un espacio virtual privado para pacientes, profesionales y empresas orientado al seguimiento dinámico de la salud mental.
-                  </p>
+                  <div className="space-y-2 text-xs leading-relaxed text-muted-foreground">
+                    <p>
+                      Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense en causas judiciales.
+                    </p>
+                    <p>
+                      Una plataforma única que integra tres (3) <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong> para la atención en Salud Mental: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -349,15 +354,15 @@ const Login = () => {
             </div>
           )}
 
-          {/* Soy Paciente → 3 system cards */}
+          {/* Soy Paciente → 3 system buttons */}
           {view === "paciente" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
               {renderBackButton()}
-              <p className="text-center text-sm text-muted-foreground mb-5">
+              <p className="mb-6 text-center text-sm text-muted-foreground">
                 Seleccioná el sistema al que necesitás acceder:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                {systemCards.map((s) => renderSystemCard(s))}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {systemCards.map((system) => renderPatientSystemButton(system))}
               </div>
             </div>
           )}
