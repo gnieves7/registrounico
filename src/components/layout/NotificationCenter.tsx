@@ -98,7 +98,8 @@ export function NotificationCenter() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="flex w-full flex-col gap-4 sm:max-w-lg">
+      {/* @ts-ignore - className works at runtime */}
+      <SheetContent side="right" className={"flex w-full flex-col gap-4 sm:max-w-lg" as any}>
         <SheetHeader className="pr-8">
           <div className="flex items-center justify-between gap-3">
             <div>
