@@ -266,14 +266,8 @@ const Login = () => {
                 <img
                   src={logoPsi}
                   alt="Logo PSI — Plataforma de Sistemas Interactivos"
-                  className="w-[72%] max-w-[460px] object-contain drop-shadow-xl"
+                  className="w-[80%] max-w-[500px] object-contain drop-shadow-xl"
                 />
-                <div className="mt-4 text-center">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">PSI</h1>
-                  <p className="mt-1 text-sm font-medium text-primary md:text-base lg:text-lg">
-                    Plataforma de Sistemas Interactivos
-                  </p>
-                </div>
               </div>
 
               {/* RIGHT: Professional cards — 50% */}
