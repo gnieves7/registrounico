@@ -379,7 +379,7 @@ const Login = () => {
                 </button>
                 <button
                   onClick={() => setView("question-psicodiagnostico")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(45,60%,75%)]"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]"
                 >
                   <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
