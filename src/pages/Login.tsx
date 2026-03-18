@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart, Search, Gavel, User, UserX, Briefcase } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
-import logoPsi from "@/assets/logo_psi.png";
+import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { applySystemTheme, getStoredSystemArea, setStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
