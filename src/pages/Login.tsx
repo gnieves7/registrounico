@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart, Search, Gavel, User, UserX, Briefcase } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
-import logoPsi from "@/assets/logo_psi.png";
+import logoPsi from "@/assets/Logo_PSI_mejorado.png";
 import { applySystemTheme, getStoredSystemArea, setStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
@@ -26,7 +26,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
     codes: ["Código Clínico", "Código Intervenciones"],
-    accentHue: "30",
+    accentHue: "35",
   },
   {
     id: "evaluar" as const,
@@ -37,7 +37,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
     codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
-    accentHue: "45",
+    accentHue: "225",
   },
   {
     id: "acompanar" as const,
@@ -48,7 +48,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
     codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
-    accentHue: "200",
+    accentHue: "100",
   },
 ];
 
@@ -266,14 +266,8 @@ const Login = () => {
                 <img
                   src={logoPsi}
                   alt="Logo PSI — Plataforma de Sistemas Interactivos"
-                  className="w-[72%] max-w-[460px] object-contain drop-shadow-xl"
+                  className="w-[80%] max-w-[500px] object-contain drop-shadow-xl"
                 />
-                <div className="mt-4 text-center">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">PSI</h1>
-                  <p className="mt-1 text-sm font-medium text-primary md:text-base lg:text-lg">
-                    Plataforma de Sistemas Interactivos
-                  </p>
-                </div>
               </div>
 
               {/* RIGHT: Professional cards — 50% */}
@@ -385,17 +379,17 @@ const Login = () => {
                 </button>
                 <button
                   onClick={() => setView("question-psicodiagnostico")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(45,60%,75%)]"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]"
                 >
-                  <BookOpen className="h-8 w-8 text-[hsl(45,70%,30%)]" />
+                  <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                   <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                 </button>
                 <button
                   onClick={() => setView("question-forense")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(200,50%,75%)]"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]"
                 >
-                  <Scale className="h-8 w-8 text-[hsl(200,60%,30%)]" />
+                  <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                   <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                 </button>

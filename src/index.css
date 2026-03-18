@@ -10,13 +10,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* Profesional Cálido - Tonos tierra, beige y mostaza */
+    /* Base: Deep Maroon / Burgundy — from Logo PSI morado */
     --background: 0 0% 96%;
     --foreground: 0 0% 9%;
 
@@ -26,43 +22,40 @@ All colors MUST be HSL.
     --popover: 0 0% 89%;
     --popover-foreground: 0 0% 9%;
 
-    /* Principal: Tonos tierra cálidos #8B7355 */
-    --primary: 20 90% 48%;
-    --primary-foreground: 33 100% 96%;
+    --primary: 0 68% 28%;
+    --primary-foreground: 0 0% 98%;
 
-    /* Secundario: Beige suave #F5F0E8 */
     --secondary: 0 0% 32%;
     --secondary-foreground: 0 0% 98%;
 
     --muted: 0 0% 63%;
     --muted-foreground: 0 0% 9%;
 
-    /* Acento: Mostaza apagado #C4A574 */
-    --accent: 47 100% 96%;
-    --accent-foreground: 37 92% 50%;
+    --accent: 0 30% 94%;
+    --accent-foreground: 0 60% 22%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 85% 97%;
 
     --border: 0 0% 83%;
     --input: 0 0% 83%;
-    --ring: 20 90% 48%;
+    --ring: 0 68% 28%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 36 33% 97%;
+    --sidebar-background: 0 18% 97%;
     --sidebar-foreground: 0 0% 9%;
-    --sidebar-primary: 20 90% 48%;
-    --sidebar-primary-foreground: 33 100% 96%;
-    --sidebar-accent: 0 0% 32%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 0 0% 83%;
-    --sidebar-ring: 20 90% 48%;
+    --sidebar-primary: 0 68% 28%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 20% 90%;
+    --sidebar-accent-foreground: 0 60% 18%;
+    --sidebar-border: 0 12% 83%;
+    --sidebar-ring: 0 68% 28%;
 
-    --chart-1: 27 95% 60%;
-    --chart-2: 43 96% 56%;
-    --chart-3: 47 95% 53%;
-    --chart-4: 24 94% 53%;
+    --chart-1: 0 68% 42%;
+    --chart-2: 35 80% 50%;
+    --chart-3: 220 60% 50%;
+    --chart-4: 100 50% 42%;
     --chart-5: 0 0% 45%;
 
     --sidebar: 0 0% 98%;
@@ -85,7 +78,6 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark mode con tonos tierra */
     --background: 0 0% 9%;
     --foreground: 0 0% 98%;
 
@@ -95,8 +87,8 @@ All colors MUST be HSL.
     --popover: 0 0% 25%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 27 95% 60%;
-    --primary-foreground: 12 81% 14%;
+    --primary: 0 58% 42%;
+    --primary-foreground: 0 0% 98%;
 
     --secondary: 0 0% 45%;
     --secondary-foreground: 0 0% 98%;
@@ -104,29 +96,29 @@ All colors MUST be HSL.
     --muted: 0 0% 45%;
     --muted-foreground: 0 0% 98%;
 
-    --accent: 20 91% 14%;
-    --accent-foreground: 43 96% 56%;
+    --accent: 0 30% 16%;
+    --accent-foreground: 0 50% 70%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 85% 97%;
 
     --border: 0 0% 32%;
     --input: 0 0% 32%;
-    --ring: 27 95% 60%;
+    --ring: 0 58% 42%;
 
-    --sidebar-background: 24 25% 12%;
+    --sidebar-background: 0 18% 12%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 27 95% 60%;
-    --sidebar-primary-foreground: 12 81% 14%;
-    --sidebar-accent: 43 96% 56%;
-    --sidebar-accent-foreground: 20 91% 14%;
+    --sidebar-primary: 0 58% 42%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 0 30% 22%;
+    --sidebar-accent-foreground: 0 40% 70%;
     --sidebar-border: 0 0% 32%;
-    --sidebar-ring: 27 95% 60%;
+    --sidebar-ring: 0 58% 42%;
 
-    --chart-1: 30 97% 72%;
-    --chart-2: 45 96% 64%;
-    --chart-3: 48 96% 76%;
-    --chart-4: 27 95% 60%;
+    --chart-1: 0 68% 52%;
+    --chart-2: 35 80% 60%;
+    --chart-3: 220 60% 60%;
+    --chart-4: 100 50% 52%;
     --chart-5: 0 0% 45%;
 
     --sidebar: 0 0% 14%;
@@ -151,67 +143,70 @@ All colors MUST be HSL.
     --system-card-gradient: linear-gradient(180deg, hsl(var(--card)), hsl(var(--primary) / 0.06));
   }
 
+  /* Reflexionar — Orange/Amber (starburst naranja) */
   body[data-system="reflexionar"] {
-    --primary: 18 71% 45%;
-    --primary-foreground: 35 100% 97%;
-    --accent: 18 45% 93%;
-    --accent-foreground: 18 58% 28%;
-    --ring: 18 71% 45%;
-    --card: 34 42% 98%;
-    --popover: 34 42% 98%;
-    --sidebar-background: 28 45% 96%;
-    --sidebar-primary: 18 71% 45%;
-    --sidebar-primary-foreground: 35 100% 97%;
-    --sidebar-accent: 18 38% 88%;
-    --sidebar-accent-foreground: 18 58% 24%;
-    --sidebar-border: 24 32% 82%;
-    --system-tint: hsl(18 71% 45% / 0.08);
-    --system-tint-strong: hsl(18 71% 45% / 0.16);
-    --system-gradient: linear-gradient(135deg, hsl(18 71% 45%), hsl(29 65% 40%));
-    --system-surface: linear-gradient(180deg, hsl(34 42% 98%), hsl(18 71% 45% / 0.07));
-    --system-card-gradient: linear-gradient(180deg, hsl(34 42% 98%), hsl(18 71% 45% / 0.08));
+    --primary: 35 85% 48%;
+    --primary-foreground: 40 100% 97%;
+    --accent: 35 50% 93%;
+    --accent-foreground: 30 65% 28%;
+    --ring: 35 85% 48%;
+    --card: 38 42% 98%;
+    --popover: 38 42% 98%;
+    --sidebar-background: 34 45% 96%;
+    --sidebar-primary: 35 85% 48%;
+    --sidebar-primary-foreground: 40 100% 97%;
+    --sidebar-accent: 35 42% 88%;
+    --sidebar-accent-foreground: 30 58% 24%;
+    --sidebar-border: 32 32% 82%;
+    --system-tint: hsl(35 85% 48% / 0.08);
+    --system-tint-strong: hsl(35 85% 48% / 0.16);
+    --system-gradient: linear-gradient(135deg, hsl(35 85% 48%), hsl(28 75% 42%));
+    --system-surface: linear-gradient(180deg, hsl(38 42% 98%), hsl(35 85% 48% / 0.07));
+    --system-card-gradient: linear-gradient(180deg, hsl(38 42% 98%), hsl(35 85% 48% / 0.08));
   }
 
+  /* Evaluar — Blue (starburst azul) */
   body[data-system="evaluar"] {
-    --primary: 42 78% 42%;
-    --primary-foreground: 45 100% 97%;
-    --accent: 45 52% 92%;
-    --accent-foreground: 42 64% 24%;
-    --ring: 42 78% 42%;
-    --card: 45 38% 98%;
-    --popover: 45 38% 98%;
-    --sidebar-background: 45 44% 95%;
-    --sidebar-primary: 42 78% 42%;
-    --sidebar-primary-foreground: 45 100% 97%;
-    --sidebar-accent: 45 40% 86%;
-    --sidebar-accent-foreground: 42 64% 22%;
-    --sidebar-border: 42 30% 80%;
-    --system-tint: hsl(42 78% 42% / 0.09);
-    --system-tint-strong: hsl(42 78% 42% / 0.18);
-    --system-gradient: linear-gradient(135deg, hsl(42 78% 42%), hsl(36 72% 34%));
-    --system-surface: linear-gradient(180deg, hsl(45 38% 98%), hsl(42 78% 42% / 0.08));
-    --system-card-gradient: linear-gradient(180deg, hsl(45 38% 98%), hsl(42 78% 42% / 0.09));
+    --primary: 225 65% 50%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 225 45% 93%;
+    --accent-foreground: 225 55% 30%;
+    --ring: 225 65% 50%;
+    --card: 225 32% 98%;
+    --popover: 225 32% 98%;
+    --sidebar-background: 225 38% 96%;
+    --sidebar-primary: 225 65% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 35% 88%;
+    --sidebar-accent-foreground: 225 55% 24%;
+    --sidebar-border: 225 25% 82%;
+    --system-tint: hsl(225 65% 50% / 0.09);
+    --system-tint-strong: hsl(225 65% 50% / 0.18);
+    --system-gradient: linear-gradient(135deg, hsl(225 65% 50%), hsl(230 58% 40%));
+    --system-surface: linear-gradient(180deg, hsl(225 32% 98%), hsl(225 65% 50% / 0.08));
+    --system-card-gradient: linear-gradient(180deg, hsl(225 32% 98%), hsl(225 65% 50% / 0.09));
   }
 
+  /* Acompañar — Green (starburst verde) */
   body[data-system="acompanar"] {
-    --primary: 201 56% 42%;
+    --primary: 100 55% 38%;
     --primary-foreground: 0 0% 100%;
-    --accent: 199 40% 92%;
-    --accent-foreground: 201 56% 26%;
-    --ring: 201 56% 42%;
-    --card: 198 42% 98%;
-    --popover: 198 42% 98%;
-    --sidebar-background: 198 46% 95%;
-    --sidebar-primary: 201 56% 42%;
+    --accent: 100 35% 93%;
+    --accent-foreground: 100 50% 24%;
+    --ring: 100 55% 38%;
+    --card: 100 28% 98%;
+    --popover: 100 28% 98%;
+    --sidebar-background: 100 32% 96%;
+    --sidebar-primary: 100 55% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 199 35% 86%;
-    --sidebar-accent-foreground: 201 56% 22%;
-    --sidebar-border: 199 28% 80%;
-    --system-tint: hsl(201 56% 42% / 0.09);
-    --system-tint-strong: hsl(201 56% 42% / 0.18);
-    --system-gradient: linear-gradient(135deg, hsl(201 56% 42%), hsl(210 48% 33%));
-    --system-surface: linear-gradient(180deg, hsl(198 42% 98%), hsl(201 56% 42% / 0.08));
-    --system-card-gradient: linear-gradient(180deg, hsl(198 42% 98%), hsl(201 56% 42% / 0.09));
+    --sidebar-accent: 100 30% 88%;
+    --sidebar-accent-foreground: 100 50% 22%;
+    --sidebar-border: 100 22% 82%;
+    --system-tint: hsl(100 55% 38% / 0.09);
+    --system-tint-strong: hsl(100 55% 38% / 0.18);
+    --system-gradient: linear-gradient(135deg, hsl(100 55% 38%), hsl(110 48% 30%));
+    --system-surface: linear-gradient(180deg, hsl(100 28% 98%), hsl(100 55% 38% / 0.08));
+    --system-card-gradient: linear-gradient(180deg, hsl(100 28% 98%), hsl(100 55% 38% / 0.09));
   }
 }
 
@@ -257,6 +252,34 @@ All colors MUST be HSL.
     background: hsl(var(--primary) / 0.14);
     color: hsl(var(--primary));
     box-shadow: inset 0 0 0 1px hsl(var(--primary) / 0.15);
+  }
+
+  /* System badge */
+  body[data-system] .system-badge {
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
+  /* System tabs */
+  body[data-system] .system-tab-active {
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+    border-bottom: 2px solid hsl(var(--primary));
+    font-weight: 600;
+  }
+
+  /* System alert */
+  body[data-system] .system-alert {
+    background: hsl(var(--primary) / 0.06);
+    border-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
+  }
+
+  /* System welcome banner */
+  body[data-system] .system-welcome {
+    background: var(--system-gradient);
+    color: hsl(var(--primary-foreground));
   }
 }
 
