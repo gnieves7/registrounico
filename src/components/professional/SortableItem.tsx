@@ -17,7 +17,8 @@ export const SortableItem = ({ id, children, disabled }: SortableItemProps) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id, disabled });
+  // @ts-ignore - dnd-kit version compat
+  } = useSortable({ id, disabled } as any);
 
   const style = {
     transform: CSS.Transform.toString(transform),
