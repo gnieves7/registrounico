@@ -26,7 +26,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
     codes: ["Código Clínico", "Código Intervenciones"],
-    accentHue: "30",
+    accentHue: "35",
   },
   {
     id: "evaluar" as const,
@@ -37,7 +37,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
     codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
-    accentHue: "45",
+    accentHue: "225",
   },
   {
     id: "acompanar" as const,
@@ -48,7 +48,7 @@ const systemCards = [
     redirect: "/dashboard",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
     codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
-    accentHue: "200",
+    accentHue: "100",
   },
 ];
 
