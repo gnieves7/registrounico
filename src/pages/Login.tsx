@@ -387,9 +387,9 @@ const Login = () => {
                 </button>
                 <button
                   onClick={() => setView("question-forense")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(200,50%,75%)]"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]"
                 >
-                  <Scale className="h-8 w-8 text-[hsl(200,60%,30%)]" />
+                  <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                   <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                 </button>
