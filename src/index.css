@@ -75,6 +75,13 @@
 
     --tracking-normal: 0em;
     --spacing: 0.25rem;
+
+    /* System tint tokens (default to base primary) */
+    --system-tint: hsl(var(--primary) / 0.08);
+    --system-tint-strong: hsl(var(--primary) / 0.16);
+    --system-gradient: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent-foreground)));
+    --system-surface: linear-gradient(180deg, hsl(var(--background) / 0.96), hsl(var(--primary) / 0.05));
+    --system-card-gradient: linear-gradient(180deg, hsl(var(--card)), hsl(var(--primary) / 0.06));
   }
 
   .dark {
@@ -131,16 +138,6 @@
     --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
-  }
-}
-
-@layer base {
-  :root {
-    --system-tint: hsl(var(--primary) / 0.08);
-    --system-tint-strong: hsl(var(--primary) / 0.16);
-    --system-gradient: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent-foreground)));
-    --system-surface: linear-gradient(180deg, hsl(var(--background) / 0.96), hsl(var(--primary) / 0.05));
-    --system-card-gradient: linear-gradient(180deg, hsl(var(--card)), hsl(var(--primary) / 0.06));
   }
 
   /* Reflexionar — Orange/Amber (starburst naranja) */
@@ -210,6 +207,65 @@
   }
 }
 
+/* ─── 1. Global CSS polish: anti-aliasing, uniformity, depth ─── */
+@layer base {
+  * {
+    @apply border-border;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Consistent focus ring everywhere */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring/40 ring-offset-2 ring-offset-background;
+  }
+
+  /* Smoother scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ─── 2. Smooth CSS transitions between system themes ─── */
+body {
+  transition:
+    background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.35s ease;
+}
+
+/* Propagate transitions to themed surfaces */
+body *,
+body *::before,
+body *::after {
+  transition:
+    background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    color 0.3s ease;
+}
+
+/* Opt-out for elements that shouldn't transition (inputs, animations) */
+input, textarea, select,
+[data-no-transition],
+.animate-pulse, .animate-spin {
+  transition: none !important;
+}
+
+/* ─── 3. Suppress initial flash (set by JS before React mounts) ─── */
+body.system-loading {
+  opacity: 0;
+}
+body.system-ready {
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+/* ─── System component layer ─── */
 @layer components {
   body[data-system] .system-main {
     background: var(--system-surface);
@@ -280,15 +336,5 @@
   body[data-system] .system-welcome {
     background: var(--system-gradient);
     color: hsl(var(--primary-foreground));
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
   }
 }

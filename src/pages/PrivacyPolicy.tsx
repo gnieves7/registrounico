@@ -101,7 +101,7 @@ const termsOfUseSections = [
     icon: MessageCircle,
     title: "Comunicaciones por Telegram",
     content:
-      "Las notificaciones por Telegram son opcionales y requieren una vinculación expresa del usuario con un chat privado. Su finalidad es exclusivamente operativa y de acompañamiento clínico-administrativo; no constituyen atención de urgencia ni reemplazan la comunicación profesional por los canales habituales. El consentimiento para recibir estos avisos puede revocarse en cualquier momento, y la plataforma limitará su frecuencia a eventos puntuales y necesarios del proceso terapéutico, excluyendo publicidad, promociones o envíos masivos.",
+      "Las notificaciones por Telegram son opcionales, se restringen exclusivamente a chats privados y requieren una vinculación expresa del usuario mediante la generación de un token único. Su finalidad es exclusivamente operativa y de acompañamiento clínico-administrativo; no constituyen atención de urgencia ni reemplazan la comunicación profesional por los canales habituales. El consentimiento para recibir estos avisos puede revocarse en cualquier momento desde la plataforma o solicitándolo al profesional, sin afectar la licitud del tratamiento previo. La plataforma limitará su frecuencia a eventos puntuales y necesarios del proceso terapéutico (turnos, tareas, informes, premios), excluyendo toda publicidad, promociones, contenido comercial o envíos masivos. Los datos de vinculación se eliminan al revocar el consentimiento.",
   },
   {
     icon: AlertTriangle,
