@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { applySystemTheme, getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
@@ -42,6 +42,7 @@ export function AppLayout() {
   const { user, isLoading, isApproved, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const isFirstRender = useRef(true);
 
   const currentArea = getStoredSystemArea();
   const currentSystem = currentArea ? systemBranding[currentArea] : null;
@@ -57,8 +58,15 @@ export function AppLayout() {
     }
   }, [user, isLoading, isApproved, isAdmin, navigate]);
 
+  // Apply theme: instant on first render, smooth on route changes
   useEffect(() => {
-    applySystemTheme(getStoredSystemArea());
+    const area = getStoredSystemArea();
+    if (isFirstRender.current) {
+      applySystemTheme(area, false);
+      isFirstRender.current = false;
+    } else {
+      applySystemTheme(area, true);
+    }
   }, [location.pathname]);
 
   if (isLoading) {
@@ -73,7 +81,7 @@ export function AppLayout() {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full animate-fade-in">
         <AppSidebar />
         <SidebarInset className="flex flex-col">
           <header className="system-header sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-16 md:gap-4 md:px-4">

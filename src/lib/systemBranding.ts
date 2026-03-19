@@ -46,13 +46,30 @@ export const setStoredSystemArea = (area: SystemArea) => {
   sessionStorage.setItem("user_area", area);
 };
 
-export const applySystemTheme = (area: SystemArea | null) => {
+/**
+ * Apply system theme to <body>.
+ * @param area   – the system to activate (or null to reset)
+ * @param smooth – when true, lets CSS transitions handle the change;
+ *                 when false (first render), applies instantly without flash.
+ */
+export const applySystemTheme = (area: SystemArea | null, smooth = true) => {
   if (typeof document === "undefined") return;
+
+  if (!smooth) {
+    // First paint: suppress flash
+    document.body.classList.add("system-loading");
+  }
 
   if (area) {
     document.body.dataset.system = area;
-    return;
+  } else {
+    delete document.body.dataset.system;
   }
 
-  delete document.body.dataset.system;
+  if (!smooth) {
+    // Force a reflow so the theme is painted before we reveal
+    void document.body.offsetHeight;
+    document.body.classList.remove("system-loading");
+    document.body.classList.add("system-ready");
+  }
 };
