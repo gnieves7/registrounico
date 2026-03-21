@@ -77,6 +77,26 @@ const faqItems = [
     q: "¿Puedo usar la plataforma desde el celular?",
     a: "Sí, PSI está optimizada para dispositivos móviles. Podés acceder desde cualquier navegador sin necesidad de instalar una aplicación."
   },
+  {
+    q: "¿Cómo solicito una consulta o turno?",
+    a: "Podés agendar tu consulta directamente desde la plataforma en la sección \"Mis Turnos\", o contactarnos por WhatsApp o email. También podés solicitar turno desde el botón de agenda en la página principal."
+  },
+  {
+    q: "¿Se realizan consultas en modalidad online?",
+    a: "Sí, ofrecemos atención tanto presencial como online por videollamada. La modalidad virtual está disponible para seguimiento clínico, psicodiagnóstico y acompañamiento forense, con la misma calidad y confidencialidad que la atención presencial."
+  },
+  {
+    q: "¿Cuánto dura una sesión?",
+    a: "Las sesiones clínicas tienen una duración aproximada de 45 a 50 minutos. Las evaluaciones psicodiagnósticas pueden requerir entre 60 y 90 minutos dependiendo del instrumento aplicado. Las entrevistas forenses se ajustan a las necesidades del proceso judicial."
+  },
+  {
+    q: "¿Cuántas sesiones necesito?",
+    a: "La cantidad de sesiones varía según cada caso. En la primera consulta se realiza una evaluación inicial y se establece un plan de trabajo conjunto. El proceso puede ser breve (8-12 sesiones) o extenderse según los objetivos terapéuticos acordados."
+  },
+  {
+    q: "¿Qué diferencia hay entre los tres sistemas?",
+    a: "El Sistema Reflexionar es el área clínica para terapia y seguimiento emocional. El Sistema Evaluar es el área psicodiagnóstica para tests de personalidad y evaluaciones de aptitud. El Sistema Acompañar es el área forense para acompañamiento en causas judiciales y pericias."
+  },
 ];
 
 const Login = () => {
