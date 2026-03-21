@@ -3,11 +3,23 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/layout/Footer";
-import { ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar, ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart, Search, Gavel, User, UserX, Briefcase } from "lucide-react";
+import {
+  ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar,
+  ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart,
+  Search, Gavel, User, UserX, Briefcase, ChevronDown, Moon, Sun
+} from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
-import logoPsi from "@/assets/Logo_PSI_mejorado.png";
-import { applySystemTheme, getStoredSystemArea, setStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
+import logoPsi from "@/assets/Logo_PSI_PRO.png";
+import logoALPJF from "@/assets/logo_ALPJF.png";
+import logoAPFRA from "@/assets/logo_APFRA.png";
+import {
+  applySystemTheme, getStoredSystemArea, setStoredSystemArea,
+  systemBranding, type SystemArea
+} from "@/lib/systemBranding";
+import {
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger
+} from "@/components/ui/accordion";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
@@ -52,10 +64,26 @@ const systemCards = [
   },
 ];
 
+const faqItems = [
+  {
+    q: "¿Cómo accedo por primera vez a la plataforma?",
+    a: "Seleccioná \"Soy Paciente\", elegí el sistema que te indicó tu profesional y autenticáte con tu cuenta de Google. Tu acceso será revisado y aprobado antes de ingresar."
+  },
+  {
+    q: "¿Mis datos son confidenciales?",
+    a: "Absolutamente. Toda la información es cifrada, almacenada en servidores seguros y solo accesible por vos y tu profesional tratante. Cumplimos con estándares internacionales de protección de datos en salud."
+  },
+  {
+    q: "¿Puedo usar la plataforma desde el celular?",
+    a: "Sí, PSI está optimizada para dispositivos móviles. Podés acceder desde cualquier navegador sin necesidad de instalar una aplicación."
+  },
+];
+
 const Login = () => {
   const { user, isLoading, isApproved, signInWithGoogle, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("main");
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
     if (user && !isLoading && isApproved) {
@@ -69,9 +97,14 @@ const Login = () => {
       }
       return;
     }
-
     applySystemTheme(null);
   }, [user, isLoading, isApproved, navigate]);
+
+  const toggleDark = () => {
+    const next = !isDark;
+    setIsDark(next);
+    document.documentElement.classList.toggle("dark", next);
+  };
 
   const handleGoogleLogin = async (redirectPath: string, area: SystemArea) => {
     try {
@@ -139,9 +172,8 @@ const Login = () => {
     return (
       <div
         key={system.id}
-        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+        className="group flex flex-col items-stretch rounded-2xl border border-border/40 glass-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
       >
-        {/* Colored top stripe */}
         <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
         <div className="flex flex-col items-center gap-3 p-5 flex-1">
           <div
@@ -171,32 +203,17 @@ const Login = () => {
           )}
           {showTurno && (
             <div className="w-full space-y-2 mt-auto">
-              <a
-                href={CALENDAR_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
-              >
-                <Calendar className="h-4 w-4" />
-                Solicitar Turno
+              <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                <Calendar className="h-4 w-4" /> Solicitar Turno
               </a>
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-2 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-2 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
+                <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
-              <a
-                href={EMPRESA_WEB}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
-              >
-                <Globe className="h-4 w-4" />
-                Sitio Web
+              <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
+                <Globe className="h-4 w-4" /> Sitio Web
               </a>
             </div>
           )}
@@ -209,15 +226,10 @@ const Login = () => {
     <button
       key={system.id}
       onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 glass-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
     >
-      <div className="flex h-28 w-28 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-105 md:h-32 md:w-32">
-        <img
-          src={system.image}
-          alt={system.title}
-          className="h-full w-full rounded-full object-contain"
-          loading="lazy"
-        />
+      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
+        <img src={system.image} alt={system.title} className="h-full w-full rounded-full object-contain" loading="lazy" />
       </div>
       <div className="space-y-1">
         <h3 className="text-sm font-bold text-foreground md:text-base">{system.title}</h3>
@@ -234,8 +246,7 @@ const Login = () => {
       onClick={() => setView(backTo)}
       className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
     >
-      <ArrowLeft className="h-4 w-4" />
-      Volver
+      <ArrowLeft className="h-4 w-4" /> Volver
     </button>
   );
 
@@ -247,7 +258,7 @@ const Login = () => {
     };
     const system = map[questionView];
     return (
-      <div className="mx-auto w-full max-w-md px-6 py-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+      <div className="mx-auto w-full max-w-md px-6 py-6 animate-fade-in">
         {renderBackButton("no-paciente")}
         {renderSystemCard(system, false, true)}
       </div>
@@ -255,63 +266,72 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-muted/30">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-muted/30 relative">
+      {/* Dark mode toggle */}
+      <button
+        onClick={toggleDark}
+        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full glass-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
+        aria-label="Toggle dark mode"
+      >
+        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </button>
+
       <main className="flex flex-1 flex-col">
-        {/* Hero: Logo LEFT (50%) + Cards RIGHT (50%) */}
+        {/* ═══ HERO: Compact logo + text-first approach ═══ */}
         <header className="w-full">
-          <div className="mx-auto max-w-6xl px-6 py-8 lg:px-10">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-10">
-              {/* LEFT: Logo — 50% */}
-              <div className="flex flex-col items-center justify-center lg:w-1/2 mb-8 lg:mb-0">
+          <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
+              {/* LEFT: Logo — reduced on desktop, small on mobile */}
+              <div className="flex items-center justify-center lg:w-[38%] mb-6 lg:mb-0">
                 <img
                   src={logoPsi}
-                  alt="Logo PSI — Plataforma de Sistemas Interactivos"
-                  className="w-[80%] max-w-[500px] object-contain drop-shadow-xl"
+                  alt="PSI PRO — Plataforma de Sistemas Interactivos"
+                  className="w-[55%] max-w-[340px] lg:w-full lg:max-w-[380px] object-contain drop-shadow-xl"
                 />
               </div>
 
-              {/* RIGHT: Professional cards — 50% */}
-              <div className="lg:w-1/2 flex flex-col gap-4">
-                {/* Card 1 */}
-                <div className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 to-card p-5 shadow-sm">
+              {/* RIGHT: Text-first professional cards — glassmorphism ═══ */}
+              <div className="lg:w-[62%] flex flex-col gap-3">
+                {/* Welcome card — Serif title */}
+                <div className="glass-card rounded-2xl border border-primary/15 p-5 shadow-sm">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <Heart className="h-4 w-4 text-primary" />
                     </div>
-                    <h3 className="text-sm font-bold text-foreground">¡Un gusto saludarte!</h3>
+                    <h1 className="text-base font-bold text-foreground font-serif lg:text-lg">¡Un gusto saludarte!</h1>
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
                     Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
                   </p>
                 </div>
 
-                {/* Card 2 */}
-                <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-gradient-to-br from-[hsl(45,60%,96%)] to-card p-5 shadow-sm">
+                {/* Practice card */}
+                <div className="glass-card rounded-2xl border border-[hsl(45,60%,80%)]/40 p-5 shadow-sm">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
                       <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
                     </div>
-                    <h3 className="text-sm font-bold text-foreground">Mi práctica</h3>
+                    <h2 className="text-base font-bold text-foreground font-serif">Mi práctica</h2>
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
                     Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
                   </p>
                 </div>
 
-                {/* Card 3 */}
-                <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-gradient-to-br from-[hsl(200,50%,96%)] to-card p-5 shadow-sm">
+                {/* PSI card */}
+                <div className="glass-card rounded-2xl border border-[hsl(200,50%,80%)]/40 p-5 shadow-sm">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
                       <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
                     </div>
-                    <h3 className="text-sm font-bold text-foreground">PSI</h3>
+                    <h2 className="text-base font-bold text-foreground font-serif">PSI</h2>
                   </div>
-                  <div className="space-y-2 text-xs leading-relaxed text-muted-foreground">
+                  <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
                     <p>
-                      Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense en causas judiciales.
+                      Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
                     </p>
                     <p>
-                      Una plataforma única que integra tres (3) <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong> para la atención en Salud Mental: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
+                      Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
                     </p>
                   </div>
                 </div>
@@ -320,39 +340,60 @@ const Login = () => {
           </div>
         </header>
 
-        {/* Profile buttons with reference image */}
+        {/* ═══ BENTO GRID CTAs ═══ */}
         <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
-          <p className="font-medium text-foreground text-base md:text-lg text-center mb-6">¿En qué puedo ayudarte?</p>
+          <p className="font-serif font-semibold text-foreground text-lg md:text-xl text-center mb-6">¿En qué puedo ayudarte?</p>
 
           {view === "main" && (
-            <div className="flex flex-col items-center gap-6 animate-in fade-in duration-300">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 w-full max-w-2xl justify-items-center">
+            <div className="animate-fade-in">
+              {/* Bento grid: "Soy Paciente" is larger */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
+                {/* Soy Paciente — spans 2 cols */}
+                <button
+                  onClick={() => setView("paciente")}
+                  className="col-span-2 group flex items-center gap-5 rounded-2xl border-2 border-primary/30 glass-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50 pulse-glow"
+                >
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full border-[3px] border-primary bg-primary/10 flex items-center justify-center shadow-md transition-all duration-200 group-hover:shadow-lg group-hover:scale-105 shrink-0">
+                    <User className="h-8 w-8 sm:h-9 sm:w-9 text-primary" strokeWidth={1.8} />
+                  </div>
+                  <div>
+                    <span className="text-base sm:text-lg font-bold text-foreground block">Soy Paciente</span>
+                    <span className="text-xs text-muted-foreground mt-1 block">Accedé a tu sistema asignado</span>
+                  </div>
+                </button>
+
+                {/* Smaller CTAs */}
                 {[
-                  { label: "Soy Paciente", view: "paciente" as View, Icon: User, bg: "bg-primary/10", border: "border-primary", iconColor: "text-primary" },
-                  { label: "No soy Paciente", view: "no-paciente" as View, Icon: UserX, bg: "bg-accent/50", border: "border-accent-foreground/30", iconColor: "text-accent-foreground" },
-                  { label: "Soy Profesional", view: "profesional" as View, Icon: Briefcase, bg: "bg-secondary", border: "border-secondary-foreground/30", iconColor: "text-secondary-foreground" },
-                  { label: "Soy Empresa", view: "empresa" as View, Icon: Building2, bg: "bg-muted", border: "border-muted-foreground/30", iconColor: "text-muted-foreground" },
+                  { label: "No soy Paciente", view: "no-paciente" as View, Icon: UserX, iconColor: "text-accent-foreground" },
+                  { label: "Soy Profesional", view: "profesional" as View, Icon: Briefcase, iconColor: "text-secondary-foreground" },
                 ].map((item) => (
                   <button
                     key={item.label}
                     onClick={() => setView(item.view)}
-                    className="group flex flex-col items-center gap-3 transition-all duration-200 hover:-translate-y-1"
+                    className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                   >
-                    <div
-                      className={`h-[4.5rem] w-[4.5rem] sm:h-20 sm:w-20 rounded-full border-[3px] ${item.border} ${item.bg} flex items-center justify-center shadow-md transition-all duration-200 group-hover:shadow-lg group-hover:scale-105`}
-                    >
-                      <item.Icon className={`h-8 w-8 sm:h-9 sm:w-9 ${item.iconColor}`} strokeWidth={1.8} />
+                    <div className="h-14 w-14 rounded-full border-2 border-border/60 bg-muted/30 flex items-center justify-center transition-all duration-200 group-hover:scale-105">
+                      <item.Icon className={`h-6 w-6 ${item.iconColor}`} strokeWidth={1.8} />
                     </div>
                     <span className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight">{item.label}</span>
                   </button>
                 ))}
+
+                {/* Empresa — full width */}
+                <button
+                  onClick={() => setView("empresa")}
+                  className="col-span-2 sm:col-span-4 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 glass-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                >
+                  <Building2 className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+                  <span className="text-sm font-semibold text-foreground">Soy una Empresa</span>
+                </button>
               </div>
             </div>
           )}
 
           {/* Soy Paciente → 3 system buttons */}
           {view === "paciente" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="animate-fade-in">
               {renderBackButton()}
               <p className="mb-6 text-center text-sm text-muted-foreground">
                 Seleccioná el sistema al que necesitás acceder:
@@ -365,30 +406,24 @@ const Login = () => {
 
           {/* No soy Paciente → 3 questions */}
           {view === "no-paciente" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="animate-fade-in">
               {renderBackButton()}
               <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
-                <button
-                  onClick={() => setView("question-terapia")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]"
-                >
+                <button onClick={() => setView("question-terapia")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
                   <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
                   <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
                 </button>
-                <button
-                  onClick={() => setView("question-psicodiagnostico")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]"
-                >
+                <button onClick={() => setView("question-psicodiagnostico")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
                   <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                   <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                 </button>
-                <button
-                  onClick={() => setView("question-forense")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]"
-                >
+                <button onClick={() => setView("question-forense")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
                   <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
                   <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                   <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
@@ -397,41 +432,27 @@ const Login = () => {
             </div>
           )}
 
-          {/* Question detail views */}
           {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
             renderQuestionView(view)}
 
           {/* Soy Profesional */}
           {view === "profesional" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+            <div className="animate-fade-in mx-auto max-w-md">
               {renderBackButton()}
-              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 glass-card p-8">
                 <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
-                  <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="8" r="4" />
-                    <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-                  </svg>
+                  <Briefcase className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground">Contacto Profesional</h3>
+                <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Profesional</h3>
                 <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
                 <div className="w-full space-y-3 mt-2">
-                  <a
-                    href={WHATSAPP_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 transition-all hover:bg-green-100 active:scale-[0.98]"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    WhatsApp
+                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
                   </a>
-                  <a
-                    href={EMPRESA_WEB}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
-                  >
-                    <Globe className="h-4 w-4" />
-                    Sitio Web
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" /> Sitio Web
                   </a>
                 </div>
               </div>
@@ -440,28 +461,20 @@ const Login = () => {
 
           {/* Soy una Empresa */}
           {view === "empresa" && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 mx-auto max-w-md">
+            <div className="animate-fade-in mx-auto max-w-md">
               {renderBackButton()}
-              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                <Building2 className="h-12 w-12 text-blue-600" />
-                <h3 className="text-lg font-semibold text-foreground">Contacto Empresarial</h3>
+              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 glass-card p-8">
+                <Building2 className="h-12 w-12 text-primary" />
+                <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
                 <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
                 <div className="w-full space-y-3 mt-2">
-                  <a
-                    href={EMPRESA_EMAIL}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]"
-                  >
-                    <Mail className="h-4 w-4" />
-                    Enviar Email
+                  <a href={EMPRESA_EMAIL}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                    <Mail className="h-4 w-4" /> Enviar Email
                   </a>
-                  <a
-                    href={EMPRESA_WEB}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-700 transition-all hover:bg-blue-100 active:scale-[0.98]"
-                  >
-                    <Globe className="h-4 w-4" />
-                    Sitio Web
+                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
+                    <Globe className="h-4 w-4" /> Sitio Web
                   </a>
                 </div>
               </div>
@@ -469,25 +482,55 @@ const Login = () => {
           )}
         </section>
 
-        {/* Professional Stats */}
+        {/* ═══ STATS ═══ */}
         <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10">
-          <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
+          <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
             <ProfessionalStats />
           </div>
         </section>
 
-        {/* Quote */}
-        <section className="mx-auto w-full max-w-5xl px-6 pb-6 lg:px-10">
-          <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/5 via-card to-primary/5 px-8 py-7 shadow-sm">
+        {/* ═══ AVALES / INSTITUTIONAL LOGOS ═══ */}
+        <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10">
+          <div className="glass-card rounded-2xl border border-border/40 px-6 py-5 shadow-sm">
+            <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
+            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+              <img src={logoALPJF} alt="Asociación Latinoamericana de Psicología Jurídica y Forense" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+              <img src={logoAPFRA} alt="Asociación de Psicólogos Forenses de la República Argentina" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity dark:invert" />
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ FAQ ═══ */}
+        <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10">
+          <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
+            <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
+            <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
+              {faqItems.map((item, i) => (
+                <AccordionItem key={i} value={`faq-${i}`} className="border-border/30">
+                  <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline py-3">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </section>
+
+        {/* ═══ QUOTE ═══ */}
+        <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
+          <div className="relative overflow-hidden glass-card rounded-2xl border border-primary/15 px-8 py-7 shadow-sm">
             <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
-            <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
-              ✨ <em>"Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"</em>
+            <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed font-serif italic">
+              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
             </p>
           </div>
         </section>
 
-        {/* Privacy Notice */}
-        <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
+        {/* ═══ PRIVACY NOTICE ═══ */}
+        <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl glass-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
           <div className="flex items-center gap-2.5">
             <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
             <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
@@ -496,8 +539,7 @@ const Login = () => {
             Al ingresar, aceptás los{" "}
             <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
               Términos de Uso, Condiciones del Servicio y Políticas de Privacidad
-            </Link>
-            .
+            </Link>.
           </p>
         </div>
       </main>
