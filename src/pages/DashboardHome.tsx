@@ -129,11 +129,11 @@ const DashboardHome = () => {
       {/* System Welcome Banner */}
       {currentSystem && welcome && (
         <div className="system-welcome mb-6 flex items-center gap-4 rounded-2xl p-5 shadow-lg md:p-6">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/20 md:h-16 md:w-16">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/20 overflow-hidden md:h-16 md:w-16">
             <img
               src={currentSystem.logo}
               alt={currentSystem.label}
-              className="h-10 w-10 object-contain md:h-12 md:w-12"
+              className="h-full w-full rounded-full object-cover"
             />
           </div>
           <div className="min-w-0">
