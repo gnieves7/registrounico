@@ -1,0 +1,178 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Eye, FileText } from "lucide-react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+
+interface TestRecord {
+  id: string;
+  user_id: string;
+  test_type: string;
+  is_complete: boolean;
+  total_questions_answered: number;
+  total_questions: number;
+  created_at: string;
+  updated_at: string;
+  user_name?: string;
+  user_email?: string;
+}
+
+export function AdminTestsSection() {
+  const [tests, setTests] = useState<TestRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState("all");
+
+  useEffect(() => {
+    fetchAllTests();
+  }, []);
+
+  const fetchAllTests = async () => {
+    try {
+      // Fetch all test types and profiles in parallel
+      const [mmpi2Res, mcmi3Res, mbtiRes, scl90rRes, profilesRes] = await Promise.all([
+        supabase.from("mmpi2_tests").select("id, user_id, is_complete, total_questions_answered, created_at, updated_at"),
+        supabase.from("mcmi3_tests").select("id, user_id, is_complete, total_questions_answered, created_at, updated_at"),
+        supabase.from("mbti_tests").select("id, user_id, is_complete, created_at, updated_at"),
+        supabase.from("scl90r_tests").select("id, user_id, is_complete, total_questions_answered, created_at, updated_at"),
+        supabase.from("profiles").select("user_id, full_name, email"),
+      ]);
+
+      const profileMap = new Map((profilesRes.data || []).map((p) => [p.user_id, p]));
+
+      const mapTests = (data: any[] | null, type: string, totalQ: number): TestRecord[] =>
+        (data || []).map((t) => ({
+          id: t.id,
+          user_id: t.user_id,
+          test_type: type,
+          is_complete: t.is_complete || false,
+          total_questions_answered: t.total_questions_answered || 0,
+          total_questions: totalQ,
+          created_at: t.created_at,
+          updated_at: t.updated_at,
+          user_name: profileMap.get(t.user_id)?.full_name || undefined,
+          user_email: profileMap.get(t.user_id)?.email || undefined,
+        }));
+
+      const all = [
+        ...mapTests(mmpi2Res.data, "MMPI-2", 567),
+        ...mapTests(mcmi3Res.data, "MCMI-III", 175),
+        ...mapTests(mbtiRes.data, "MBTI", 70),
+        ...mapTests(scl90rRes.data, "SCL-90-R", 90),
+      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+      setTests(all);
+    } catch (e) {
+      console.error("Error fetching tests:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtered = filterType === "all" ? tests : tests.filter((t) => t.test_type === filterType);
+  const inProgress = filtered.filter((t) => !t.is_complete);
+  const completed = filtered.filter((t) => t.is_complete);
+
+  const TestTable = ({ items, showProgress }: { items: TestRecord[]; showProgress?: boolean }) => (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Usuario</TableHead>
+          <TableHead>Test</TableHead>
+          {showProgress && <TableHead>Progreso</TableHead>}
+          <TableHead className="hidden md:table-cell">Fecha</TableHead>
+          <TableHead className="text-right">Acciones</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {items.length === 0 ? (
+          <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin registros</TableCell></TableRow>
+        ) : (
+          items.map((t) => (
+            <TableRow key={t.id}>
+              <TableCell>
+                <div>
+                  <p className="text-sm font-medium">{t.user_name || "Sin nombre"}</p>
+                  <p className="text-xs text-muted-foreground">{t.user_email}</p>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">{t.test_type}</Badge>
+              </TableCell>
+              {showProgress && (
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Progress value={t.total_questions > 0 ? (t.total_questions_answered / t.total_questions) * 100 : 0} className="h-2 w-20" />
+                    <span className="text-xs text-muted-foreground">
+                      {t.total_questions_answered}/{t.total_questions}
+                    </span>
+                  </div>
+                </TableCell>
+              )}
+              <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
+                {format(new Date(t.created_at), "dd MMM yyyy", { locale: es })}
+              </TableCell>
+              <TableCell className="text-right">
+                <div className="flex justify-end gap-1">
+                  <Button size="icon" variant="ghost" className="h-8 w-8">
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  {t.is_complete && (
+                    <Button size="icon" variant="ghost" className="h-8 w-8">
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))
+        )}
+      </TableBody>
+    </Table>
+  );
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <Select value={filterType} onValueChange={setFilterType}>
+          <SelectTrigger className="w-[180px]"><SelectValue placeholder="Tipo de test" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="MMPI-2">MMPI-2</SelectItem>
+            <SelectItem value="MCMI-III">MCMI-III</SelectItem>
+            <SelectItem value="MBTI">MBTI</SelectItem>
+            <SelectItem value="SCL-90-R">SCL-90-R</SelectItem>
+          </SelectContent>
+        </Select>
+        <Badge variant="outline">{filtered.length} tests totales</Badge>
+      </div>
+
+      <Tabs defaultValue="in-progress">
+        <TabsList>
+          <TabsTrigger value="in-progress">En curso ({inProgress.length})</TabsTrigger>
+          <TabsTrigger value="completed">Completados ({completed.length})</TabsTrigger>
+        </TabsList>
+        <TabsContent value="in-progress">
+          <Card>
+            <CardContent className="pt-4">
+              {loading ? <p className="text-center py-8 text-muted-foreground">Cargando…</p> : <TestTable items={inProgress} showProgress />}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="completed">
+          <Card>
+            <CardContent className="pt-4">
+              {loading ? <p className="text-center py-8 text-muted-foreground">Cargando…</p> : <TestTable items={completed} />}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
