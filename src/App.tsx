@@ -34,6 +34,7 @@ import OutcomeMonitoring from "./pages/OutcomeMonitoring";
 import CamaraGesell from "./pages/CamaraGesell";
 import SymbolicAwards from "./pages/SymbolicAwards";
 import TelegramCenter from "./pages/TelegramCenter";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/pending-approval" element={<PendingApproval />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
             {/* Protected routes with sidebar layout */}
             <Route element={<AppLayout />}>

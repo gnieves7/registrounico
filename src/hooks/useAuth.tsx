@@ -45,6 +45,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setTimeout(() => {
             if (isMounted) fetchUserData(session.user.id);
           }, 0);
+
+          // Log auth events
+          if (event === "SIGNED_IN") {
+            supabase.from("activity_log").insert({
+              user_id: session.user.id,
+              event_type: "login",
+              event_detail: { user_name: session.user.user_metadata?.full_name || session.user.email },
+            }).then();
+          }
         } else {
           setProfile(null);
           setIsAdmin(false);

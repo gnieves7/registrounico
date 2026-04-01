@@ -92,6 +92,7 @@ const getFilteredMenuItems = () => {
 };
 
 const adminMenuItems = [
+  { title: "Dashboard Admin", url: "/admin/dashboard", icon: BarChart3 },
   { title: "Panel Admin", url: "/admin", icon: Settings },
   { title: "Formulación de Caso", url: "/case-formulation", icon: Map },
   { title: "Termómetro Emocional (Admin)", url: "/emotional-thermometer", icon: Thermometer },
