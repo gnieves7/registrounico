@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { applySystemTheme, getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
+import { toast } from "@/hooks/use-toast";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
