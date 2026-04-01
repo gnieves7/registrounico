@@ -36,6 +36,7 @@ const routeLabels: Record<string, string> = {
   "/symbolic-awards": "Premios Simbólicos",
   "/telegram": "Telegram",
   "/admin": "Panel Admin",
+  "/admin/dashboard": "Dashboard Admin",
   "/privacy-policy": "Política de Privacidad",
 };
 
