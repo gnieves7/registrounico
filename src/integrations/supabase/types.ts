@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          created_at: string
+          event_detail: Json | null
+          event_type: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_detail?: Json | null
+          event_type: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_detail?: Json | null
+          event_type?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       alliance_ratings: {
         Row: {
           access_token: string | null
@@ -494,6 +518,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      informes_pdf: {
+        Row: {
+          created_at: string
+          generated_by: string
+          id: string
+          storage_path: string | null
+          test_record_id: string | null
+          test_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generated_by: string
+          id?: string
+          storage_path?: string | null
+          test_record_id?: string | null
+          test_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generated_by?: string
+          id?: string
+          storage_path?: string | null
+          test_record_id?: string | null
+          test_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       laura_conversations: {
         Row: {
