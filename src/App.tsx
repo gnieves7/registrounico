@@ -49,6 +49,7 @@ const App = () => (
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/pending-approval" element={<PendingApproval />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
             {/* Protected routes with sidebar layout */}
             <Route element={<AppLayout />}>
