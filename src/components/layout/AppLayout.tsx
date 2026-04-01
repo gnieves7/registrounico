@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { applySystemTheme, getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
+import { toast } from "@/hooks/use-toast";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import Footer from "./Footer";
@@ -39,7 +40,7 @@ const routeLabels: Record<string, string> = {
 };
 
 export function AppLayout() {
-  const { user, isLoading, isApproved, isAdmin } = useAuth();
+  const { user, isLoading, isApproved, isAdmin, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isFirstRender = useRef(true);
@@ -57,6 +58,19 @@ export function AppLayout() {
       navigate("/pending-approval");
     }
   }, [user, isLoading, isApproved, isAdmin, navigate]);
+
+  // Welcome toast — once per session
+  useEffect(() => {
+    if (!user || !profile?.full_name) return;
+    const key = "psi_welcome_shown";
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    const firstName = profile.full_name.split(" ")[0];
+    toast({
+      title: `¡Un gusto saludarte, ${firstName}!`,
+      description: "Bienvenido/a a Mi Práctica · PSI",
+    });
+  }, [user, profile]);
 
   // Apply theme: instant on first render, smooth on route changes
   useEffect(() => {

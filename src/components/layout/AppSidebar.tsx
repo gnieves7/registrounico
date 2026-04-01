@@ -25,7 +25,7 @@ import {
   Award,
   Send,
 } from "lucide-react";
-import logoPsi from "@/assets/Logo_PSI_mejorado.png";
+import logoPsi from "@/assets/Logo_PSI_blanco.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
