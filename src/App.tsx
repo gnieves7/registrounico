@@ -34,6 +34,7 @@ import OutcomeMonitoring from "./pages/OutcomeMonitoring";
 import CamaraGesell from "./pages/CamaraGesell";
 import SymbolicAwards from "./pages/SymbolicAwards";
 import TelegramCenter from "./pages/TelegramCenter";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
