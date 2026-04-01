@@ -59,6 +59,19 @@ export function AppLayout() {
     }
   }, [user, isLoading, isApproved, isAdmin, navigate]);
 
+  // Welcome toast — once per session
+  useEffect(() => {
+    if (!user || !profile?.full_name) return;
+    const key = "psi_welcome_shown";
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    const firstName = profile.full_name.split(" ")[0];
+    toast({
+      title: `¡Un gusto saludarte, ${firstName}!`,
+      description: "Bienvenido/a a Mi Práctica · PSI",
+    });
+  }, [user, profile]);
+
   // Apply theme: instant on first render, smooth on route changes
   useEffect(() => {
     const area = getStoredSystemArea();
