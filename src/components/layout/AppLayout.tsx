@@ -40,7 +40,7 @@ const routeLabels: Record<string, string> = {
 };
 
 export function AppLayout() {
-  const { user, isLoading, isApproved, isAdmin } = useAuth();
+  const { user, isLoading, isApproved, isAdmin, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isFirstRender = useRef(true);
