@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Eye, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { AdminTestResultsModal } from "@/components/admin/AdminTestResultsModal";
 
 interface TestRecord {
   id: string;
@@ -28,6 +29,7 @@ export function AdminTestsSection() {
   const [tests, setTests] = useState<TestRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("all");
+  const [selectedTest, setSelectedTest] = useState<TestRecord | null>(null);
 
   useEffect(() => {
     fetchAllTests();
@@ -35,7 +37,6 @@ export function AdminTestsSection() {
 
   const fetchAllTests = async () => {
     try {
-      // Fetch all test types and profiles in parallel
       const [mmpi2Res, mcmi3Res, mbtiRes, scl90rRes, profilesRes] = await Promise.all([
         supabase.from("mmpi2_tests").select("id, user_id, is_complete, total_questions_answered, created_at, updated_at"),
         supabase.from("mcmi3_tests").select("id, user_id, is_complete, total_questions_answered, created_at, updated_at"),
@@ -120,11 +121,23 @@ export function AdminTestsSection() {
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8">
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8"
+                    title="Ver resultados"
+                    onClick={() => setSelectedTest(t)}
+                  >
                     <Eye className="h-4 w-4" />
                   </Button>
                   {t.is_complete && (
-                    <Button size="icon" variant="ghost" className="h-8 w-8">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-8 w-8"
+                      title="Ver resultados e informe"
+                      onClick={() => setSelectedTest(t)}
+                    >
                       <FileText className="h-4 w-4" />
                     </Button>
                   )}
@@ -173,6 +186,18 @@ export function AdminTestsSection() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Results Modal */}
+      {selectedTest && (
+        <AdminTestResultsModal
+          open={!!selectedTest}
+          onOpenChange={(open) => { if (!open) setSelectedTest(null); }}
+          testId={selectedTest.id}
+          testType={selectedTest.test_type}
+          userId={selectedTest.user_id}
+          userName={selectedTest.user_name}
+        />
+      )}
     </div>
   );
 }
