@@ -71,7 +71,10 @@ export function Mcmi3Test({ existingTest, onComplete }: Mcmi3TestProps) {
         .eq("id", existingTest.id);
       if (error) throw error;
       toast({ title: isComplete ? "Test completado" : "Progreso guardado" });
-      if (isComplete) onComplete();
+      if (isComplete) {
+        logTestComplete(user!.id, "MCMI-III", existingTest.id);
+        onComplete();
+      }
     } catch (error) {
       console.error(error);
       toast({ title: "Error al guardar", variant: "destructive" });

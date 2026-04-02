@@ -71,7 +71,10 @@ export function Scl90rTest({ existingTest, onComplete }: Scl90rTestProps) {
         .eq("id", existingTest.id);
       if (error) throw error;
       toast({ title: isComplete ? "Test completado" : "Progreso guardado" });
-      if (isComplete) onComplete();
+      if (isComplete) {
+        logTestComplete(user!.id, "SCL-90-R", existingTest.id);
+        onComplete();
+      }
     } catch (error) {
       console.error(error);
       toast({ title: "Error al guardar", variant: "destructive" });

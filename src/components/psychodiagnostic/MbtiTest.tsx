@@ -90,6 +90,9 @@ export const MbtiTest = ({ existingTest, onComplete }: MbtiTestProps) => {
     });
 
     setShowResults(true);
+    if (currentTest) {
+      logTestComplete(currentTest.user_id, "MBTI", currentTest.id);
+    }
     onComplete?.();
   };
 

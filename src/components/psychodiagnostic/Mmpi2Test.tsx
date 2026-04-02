@@ -94,6 +94,9 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
 
   const handleFinishTest = async () => {
     await handleSaveProgress();
+    if (currentTest && responses.size === TOTAL_QUESTIONS) {
+      logTestComplete(currentTest.user_id, "MMPI-2", currentTest.id);
+    }
     onComplete?.();
   };
 
