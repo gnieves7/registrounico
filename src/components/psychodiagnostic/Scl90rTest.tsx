@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { scl90rQuestions, scl90rResponseOptions } from "@/data/scl90rQuestions";
 import { supabase } from "@/integrations/supabase/client";
+import { logTestComplete } from "@/lib/activityLogger";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, ChevronRight, Save, CheckCircle2 } from "lucide-react";
