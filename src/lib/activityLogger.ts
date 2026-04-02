@@ -6,11 +6,11 @@ export const logActivity = async (
   eventDetail?: Record<string, unknown>
 ) => {
   try {
-    await supabase.from("activity_log").insert({
+    await supabase.from("activity_log").insert([{
       user_id: userId,
       event_type: eventType,
-      event_detail: eventDetail || {},
-    });
+      event_detail: (eventDetail || {}) as unknown as import("@/integrations/supabase/types").Json,
+    }]);
   } catch (e) {
     console.error("Error logging activity:", e);
   }
