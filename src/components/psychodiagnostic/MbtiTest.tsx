@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logTestComplete } from "@/lib/activityLogger";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -89,6 +90,9 @@ export const MbtiTest = ({ existingTest, onComplete }: MbtiTestProps) => {
     });
 
     setShowResults(true);
+    if (currentTest) {
+      logTestComplete(currentTest.user_id, "MBTI", currentTest.id);
+    }
     onComplete?.();
   };
 

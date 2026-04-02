@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { logTestComplete } from "@/lib/activityLogger";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -93,6 +94,9 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
 
   const handleFinishTest = async () => {
     await handleSaveProgress();
+    if (currentTest && responses.size === TOTAL_QUESTIONS) {
+      logTestComplete(currentTest.user_id, "MMPI-2", currentTest.id);
+    }
     onComplete?.();
   };
 

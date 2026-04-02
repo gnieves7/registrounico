@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { scl90rQuestions, scl90rResponseOptions } from "@/data/scl90rQuestions";
 import { supabase } from "@/integrations/supabase/client";
+import { logTestComplete } from "@/lib/activityLogger";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, ChevronRight, Save, CheckCircle2 } from "lucide-react";
@@ -70,7 +71,10 @@ export function Scl90rTest({ existingTest, onComplete }: Scl90rTestProps) {
         .eq("id", existingTest.id);
       if (error) throw error;
       toast({ title: isComplete ? "Test completado" : "Progreso guardado" });
-      if (isComplete) onComplete();
+      if (isComplete) {
+        logTestComplete(user!.id, "SCL-90-R", existingTest.id);
+        onComplete();
+      }
     } catch (error) {
       console.error(error);
       toast({ title: "Error al guardar", variant: "destructive" });
