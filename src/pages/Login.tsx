@@ -502,42 +502,44 @@ const Login = () => {
           )}
         </section>
 
-        {/* ═══ STATS ═══ */}
-        <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10">
-          <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
-            <ProfessionalStats />
-          </div>
-        </section>
+        {/* ═══ STATS — hidden until user interacts ═══ */}
+        {view !== "main" && (
+          <>
+            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
+              <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
+                <ProfessionalStats />
+              </div>
+            </section>
 
-        {/* ═══ AVALES / INSTITUTIONAL LOGOS ═══ */}
-        <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10">
-          <div className="glass-card rounded-2xl border border-border/40 px-6 py-5 shadow-sm">
-            <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
-            <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
-              <img src={logoALPJF} alt="Asociación Latinoamericana de Psicología Jurídica y Forense" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity" />
-              <img src={logoAPFRA} alt="Asociación de Psicólogos Forenses de la República Argentina" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity dark:invert" />
-            </div>
-          </div>
-        </section>
+            <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 animate-fade-in">
+              <div className="glass-card rounded-2xl border border-border/40 px-6 py-5 shadow-sm">
+                <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
+                <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
+                  <img src={logoALPJF} alt="Asociación Latinoamericana de Psicología Jurídica y Forense" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity" />
+                  <img src={logoAPFRA} alt="Asociación de Psicólogos Forenses de la República Argentina" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity dark:invert" />
+                </div>
+              </div>
+            </section>
 
-        {/* ═══ FAQ ═══ */}
-        <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10">
-          <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
-            <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
-            <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
-              {faqItems.map((item, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="border-border/30">
-                  <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline py-3">
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
+            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
+              <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
+                <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
+                <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
+                  {faqItems.map((item, i) => (
+                    <AccordionItem key={i} value={`faq-${i}`} className="border-border/30">
+                      <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline py-3">
+                        {item.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                        {item.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            </section>
+          </>
+        )}
 
         {/* ═══ QUOTE ═══ */}
         <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
