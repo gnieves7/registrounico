@@ -24,6 +24,7 @@ type Psychobiography = Tables<"psychobiographies">;
 
 interface PatientPsychobiographyViewProps {
   userId: string;
+  patientName?: string;
 }
 
 export function PatientPsychobiographyView({ userId }: PatientPsychobiographyViewProps) {
