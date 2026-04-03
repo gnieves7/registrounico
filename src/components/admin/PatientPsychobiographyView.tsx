@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { 
   User, 
@@ -14,7 +15,8 @@ import {
   Heart, 
   Star,
   CheckCircle2,
-  XCircle
+  XCircle,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -24,9 +26,10 @@ type Psychobiography = Tables<"psychobiographies">;
 
 interface PatientPsychobiographyViewProps {
   userId: string;
+  patientName?: string;
 }
 
-export function PatientPsychobiographyView({ userId }: PatientPsychobiographyViewProps) {
+export function PatientPsychobiographyView({ userId, patientName }: PatientPsychobiographyViewProps) {
   const [data, setData] = useState<Psychobiography | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -290,6 +293,65 @@ export function PatientPsychobiographyView({ userId }: PatientPsychobiographyVie
     },
   ];
 
+  const handleDownloadPsychobiography = () => {
+    if (!data) return;
+    const printContent = sections
+      .map(s => {
+        const Icon = s.icon;
+        return `<h2 style="color:#4f46e5;border-bottom:2px solid #7c3aed;padding-bottom:4px;margin-top:16px;">${s.title}</h2>`;
+      })
+      .join('');
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Psicobiografía — ${patientName || 'Paciente'}</title>
+<style>
+  body{font-family:'Segoe UI',sans-serif;font-size:10pt;color:#1a1a1a;padding:20mm;max-width:210mm;margin:0 auto}
+  h1{color:#4f46e5;font-size:18pt;border-bottom:3px solid #4f46e5;padding-bottom:6px}
+  h2{color:#4f46e5;font-size:12pt;border-bottom:2px solid #7c3aed;padding-bottom:4px;margin-top:16px}
+  .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #eee}
+  .label{color:#888;font-size:9pt}.value{font-weight:600}
+  .section{margin-bottom:12px}
+  @media print{@page{margin:15mm;size:A4}}
+</style></head><body>
+<h1>Psicobiografía</h1>
+<div class="row"><span class="label">Paciente</span><span class="value">${patientName || '—'}</span></div>
+<div class="row"><span class="label">Fecha de nacimiento</span><span class="value">${data.birth_date ? new Date(data.birth_date).toLocaleDateString('es-AR') : '—'}</span></div>
+<div class="row"><span class="label">Lugar de nacimiento</span><span class="value">${data.birth_place || '—'}</span></div>
+<div class="row"><span class="label">Nacionalidad</span><span class="value">${data.nationality || '—'}</span></div>
+<div class="row"><span class="label">Dirección</span><span class="value">${data.address || '—'}</span></div>
+<div class="row"><span class="label">Nivel educativo</span><span class="value">${data.education_level || '—'}</span></div>
+<div class="row"><span class="label">Ocupación</span><span class="value">${data.occupation || '—'}</span></div>
+<div class="row"><span class="label">Estado civil</span><span class="value">${data.marital_status || '—'}</span></div>
+<div class="row"><span class="label">Motivo de consulta</span><span class="value">${data.consultation_reason || '—'}</span></div>
+<div class="row"><span class="label">Derivado por</span><span class="value">${data.referred_by || '—'}</span></div>
+${renderJsonToPrint("Familia", data.family_data)}
+${renderJsonToPrint("Historia Médica", data.medical_history)}
+${renderJsonToPrint("Historia Psicológica", data.psychological_history)}
+${renderJsonToPrint("Social y Laboral", data.social_data)}
+${renderJsonToPrint("Estilo de Vida", data.lifestyle_data)}
+${renderJsonToPrint("Valores Personales", data.personal_values)}
+<div style="margin-top:20px;padding-top:8px;border-top:1px solid #ddd;font-size:8pt;color:#aaa">Documento confidencial para uso clínico. Última actualización: ${new Date(data.updated_at).toLocaleDateString('es-AR')}</div>
+</body></html>`;
+
+    const w = window.open('', '_blank');
+    if (w) { w.document.write(html); w.document.close(); setTimeout(() => w.print(), 500); }
+  };
+
+  const renderJsonToPrint = (title: string, jsonData: unknown): string => {
+    if (!jsonData || (typeof jsonData === 'object' && Object.keys(jsonData as object).length === 0)) return '';
+    const obj = jsonData as Record<string, unknown>;
+    const rows = Object.entries(obj).map(([k, v]) => {
+      if (v === null || v === undefined || v === '') return '';
+      if (typeof v === 'object' && !Array.isArray(v)) {
+        return Object.entries(v as Record<string, unknown>)
+          .filter(([, sv]) => sv !== null && sv !== undefined && sv !== '')
+          .map(([sk, sv]) => `<div class="row"><span class="label">${sk}</span><span class="value">${String(sv)}</span></div>`)
+          .join('');
+      }
+      return `<div class="row"><span class="label">${k}</span><span class="value">${Array.isArray(v) ? v.join(', ') : String(v)}</span></div>`;
+    }).join('');
+    return rows ? `<h2>${title}</h2><div class="section">${rows}</div>` : '';
+  };
+
   return (
     <div className="space-y-4">
       {/* Progress Card */}
@@ -297,10 +359,16 @@ export function PatientPsychobiographyView({ userId }: PatientPsychobiographyVie
         <CardContent className="py-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground">Progreso</span>
-            <span className="text-sm text-muted-foreground flex items-center gap-1">
-              {progress === 100 && <CheckCircle2 className="h-4 w-4 text-green-500" />}
-              {progress}% completado
-            </span>
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="outline" className="h-7 gap-1.5 text-xs" onClick={handleDownloadPsychobiography}>
+                <Download className="h-3 w-3" />
+                Descargar PDF
+              </Button>
+              <span className="text-sm text-muted-foreground flex items-center gap-1">
+                {progress === 100 && <CheckCircle2 className="h-4 w-4 text-green-500" />}
+                {progress}% completado
+              </span>
+            </div>
           </div>
           <Progress value={progress} className="h-2" />
           <p className="mt-2 text-xs text-muted-foreground">

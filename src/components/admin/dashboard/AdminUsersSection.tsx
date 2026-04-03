@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Eye, ClipboardList, Bell, CheckCircle2, XCircle, Trash2 } from "lucide-react";
+import { Search, Eye, ClipboardList, Bell, CheckCircle2, XCircle, Trash2, Download, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -211,42 +211,57 @@ export function AdminUsersSection() {
 
       {/* Patient Detail Sheet */}
       <Sheet open={!!selectedPatient} onOpenChange={(open) => !open && setSelectedPatient(null)}>
-        <SheetContent className="w-[95vw] max-w-2xl overflow-y-auto p-4 sm:p-6" side="right">
+        <SheetContent className="w-[95vw] max-w-2xl overflow-y-auto p-0" side="right">
           {selectedPatient && (
             <>
-              <SheetHeader className="mb-6">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-14 w-14">
-                    <AvatarImage src={selectedPatient.avatar_url || undefined} />
-                    <AvatarFallback className="bg-primary text-primary-foreground">{getInitials(selectedPatient.full_name)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <SheetTitle>{selectedPatient.full_name || "Sin nombre"}</SheetTitle>
-                    <SheetDescription>{selectedPatient.email}</SheetDescription>
+              {/* Enhanced header with gradient */}
+              <div className="sticky top-0 z-10 bg-gradient-to-b from-primary/10 to-background border-b border-border/50 p-4 sm:p-6">
+                <SheetHeader className="mb-0">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16 border-2 border-primary/30 shadow-md">
+                      <AvatarImage src={selectedPatient.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-lg">{getInitials(selectedPatient.full_name)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <SheetTitle className="text-lg">{selectedPatient.full_name || "Sin nombre"}</SheetTitle>
+                      <SheetDescription className="truncate">{selectedPatient.email}</SheetDescription>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <Badge variant={selectedPatient.is_approved ? "default" : "secondary"} className={selectedPatient.is_approved ? "bg-green-600 text-white text-[10px]" : "bg-yellow-500 text-white text-[10px]"}>
+                          {selectedPatient.is_approved ? "Aprobado" : "Pendiente"}
+                        </Badge>
+                        <span className="text-[10px] text-muted-foreground">
+                          Desde {format(new Date(selectedPatient.created_at), "dd MMM yyyy", { locale: es })}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <ClinicalHistoryExportButton userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "Paciente"} />
-                </div>
-              </SheetHeader>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="w-full mb-4 flex flex-wrap h-auto gap-1">
-                  <TabsTrigger value="emotional" className="text-xs flex-1">Emocional</TabsTrigger>
-                  <TabsTrigger value="dreams" className="text-xs flex-1">Sueños</TabsTrigger>
-                  <TabsTrigger value="abcde" className="text-xs flex-1">ABCDE</TabsTrigger>
-                  <TabsTrigger value="notebook" className="text-xs flex-1">Cuaderno</TabsTrigger>
-                  <TabsTrigger value="psychodiagnostic" className="text-xs flex-1">Tests</TabsTrigger>
-                  <TabsTrigger value="psychobiography" className="text-xs flex-1">Psicobio</TabsTrigger>
-                  <TabsTrigger value="sessions" className="text-xs flex-1">Sesiones</TabsTrigger>
-                  <TabsTrigger value="documents" className="text-xs flex-1">Docs</TabsTrigger>
-                </TabsList>
-                <TabsContent value="emotional"><PatientEmotionalView userId={selectedPatient.user_id} /></TabsContent>
-                <TabsContent value="dreams"><PatientDreamsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
-                <TabsContent value="abcde"><PatientAbcdeView userId={selectedPatient.user_id} /></TabsContent>
-                <TabsContent value="notebook"><PatientNotebookView userId={selectedPatient.user_id} /></TabsContent>
-                <TabsContent value="psychodiagnostic"><PatientPsychodiagnosticView patientId={selectedPatient.user_id} patientName={selectedPatient.full_name || undefined} /></TabsContent>
-                <TabsContent value="psychobiography"><PatientPsychobiographyView userId={selectedPatient.user_id} /></TabsContent>
-                <TabsContent value="sessions"><PatientSessionsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
-                <TabsContent value="documents"><PatientDocumentsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
-              </Tabs>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <ClinicalHistoryExportButton userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "Paciente"} />
+                  </div>
+                </SheetHeader>
+              </div>
+              <div className="p-4 sm:p-6">
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="w-full mb-4 flex flex-wrap h-auto gap-1">
+                    <TabsTrigger value="emotional" className="text-xs flex-1">Emocional</TabsTrigger>
+                    <TabsTrigger value="dreams" className="text-xs flex-1">Sueños</TabsTrigger>
+                    <TabsTrigger value="abcde" className="text-xs flex-1">ABCDE</TabsTrigger>
+                    <TabsTrigger value="notebook" className="text-xs flex-1">Cuaderno</TabsTrigger>
+                    <TabsTrigger value="psychodiagnostic" className="text-xs flex-1">Tests</TabsTrigger>
+                    <TabsTrigger value="psychobiography" className="text-xs flex-1">Psicobio</TabsTrigger>
+                    <TabsTrigger value="sessions" className="text-xs flex-1">Sesiones</TabsTrigger>
+                    <TabsTrigger value="documents" className="text-xs flex-1">Docs</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="emotional"><PatientEmotionalView userId={selectedPatient.user_id} /></TabsContent>
+                  <TabsContent value="dreams"><PatientDreamsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
+                  <TabsContent value="abcde"><PatientAbcdeView userId={selectedPatient.user_id} /></TabsContent>
+                  <TabsContent value="notebook"><PatientNotebookView userId={selectedPatient.user_id} /></TabsContent>
+                  <TabsContent value="psychodiagnostic"><PatientPsychodiagnosticView patientId={selectedPatient.user_id} patientName={selectedPatient.full_name || undefined} /></TabsContent>
+                  <TabsContent value="psychobiography"><PatientPsychobiographyView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "Paciente"} /></TabsContent>
+                  <TabsContent value="sessions"><PatientSessionsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
+                  <TabsContent value="documents"><PatientDocumentsView userId={selectedPatient.user_id} patientName={selectedPatient.full_name || "el paciente"} /></TabsContent>
+                </Tabs>
+              </div>
             </>
           )}
         </SheetContent>

@@ -12,7 +12,10 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Home,
+  ArrowLeft,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +47,7 @@ export function AdminDashboardLayout({
 }: AdminDashboardLayoutProps) {
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
@@ -132,10 +136,17 @@ export function AdminDashboardLayout({
       {/* Main */}
       <main className="flex-1 overflow-auto">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/80 px-6 backdrop-blur">
+          <Button size="icon" variant="ghost" className="h-8 w-8 shrink-0" onClick={() => navigate("/dashboard")}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <h1 className="text-lg font-bold text-foreground">
             {sidebarItems.find((i) => i.key === activeSection)?.label}
           </h1>
           <div className="flex-1" />
+          <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => navigate("/dashboard")}>
+            <Home className="h-3.5 w-3.5" />
+            Inicio
+          </Button>
           <Badge variant="outline" className="text-xs">
             Tiempo real <span className="ml-1 inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
           </Badge>
