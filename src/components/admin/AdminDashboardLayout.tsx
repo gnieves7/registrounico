@@ -47,6 +47,7 @@ export function AdminDashboardLayout({
 }: AdminDashboardLayoutProps) {
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   if (isLoading) {
     return (
