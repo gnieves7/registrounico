@@ -27,7 +27,7 @@ interface PatientPsychobiographyViewProps {
   patientName?: string;
 }
 
-export function PatientPsychobiographyView({ userId }: PatientPsychobiographyViewProps) {
+export function PatientPsychobiographyView({ userId, patientName }: PatientPsychobiographyViewProps) {
   const [data, setData] = useState<Psychobiography | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
