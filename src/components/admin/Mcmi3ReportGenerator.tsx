@@ -260,7 +260,7 @@ ${page2}
     setIsGenerating(true);
     try {
       const priceNum = parseFloat(price) || 0;
-      const { error } = await supabase.from("documents").insert({
+      const { data: docData, error } = await supabase.from("documents").insert({
         patient_id: patientId,
         title: `Informe MCMI-III - ${new Date(testDate).toLocaleDateString('es-AR')}`,
         description: `Informe MCMI-III generado automáticamente. Respuestas: ${totalAnswered}/175.`,
@@ -268,9 +268,35 @@ ${page2}
         price: priceNum,
         is_paid: priceNum === 0,
         payment_date: priceNum === 0 ? new Date().toISOString() : null,
-      });
+      }).select().single();
       if (error) throw error;
-      toast({ title: "Informe generado", description: priceNum > 0 ? `Con costo de $${priceNum}` : "Gratuito" });
+
+      // Register in informes_pdf
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("informes_pdf").insert({
+          user_id: patientId,
+          test_type: "MCMI-III",
+          test_record_id: testId,
+          generated_by: user.id,
+        });
+      }
+
+      // Notify patient
+      await supabase.from("app_notifications").insert({
+        recipient_user_id: patientId,
+        notification_type: "document_available",
+        title: "Nuevo informe disponible",
+        message: priceNum > 0
+          ? `Tu informe MCMI-III está listo. Precio: $${priceNum}. Realizá el pago para obtener el código de descarga.`
+          : "Tu informe MCMI-III está listo y disponible para descargar.",
+        related_table: "documents",
+        related_record_id: docData?.id || null,
+        route: "/documents",
+        metadata: { test_type: "MCMI-III", price: priceNum },
+      });
+
+      toast({ title: "Informe generado y paciente notificado", description: priceNum > 0 ? `Con costo de $${priceNum}` : "Gratuito" });
       setShowDialog(false);
     } catch (error) {
       console.error("Error generating report:", error);

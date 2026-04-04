@@ -20,7 +20,8 @@ import {
   Shield,
   Calendar,
   Building2,
-  BarChart3
+  BarChart3,
+  Activity
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -30,6 +31,8 @@ import { mbtiDescriptions, mbtiPreferences, getPreferenceStrength } from "@/data
 import { Mmpi2ProfileAnalysis } from "./Mmpi2ProfileAnalysis";
 import { Mmpi2ReportGenerator } from "./Mmpi2ReportGenerator";
 import { MbtiReportGenerator } from "./MbtiReportGenerator";
+import { Mcmi3ReportGenerator } from "./Mcmi3ReportGenerator";
+import { Scl90rReportGenerator } from "./Scl90rReportGenerator";
 import type { Json } from "@/integrations/supabase/types";
 
 interface PatientPsychodiagnosticViewProps {
@@ -69,6 +72,32 @@ interface Mmpi2Test {
   created_at: string;
 }
 
+interface Mcmi3Test {
+  id: string;
+  user_id: string;
+  test_date: string;
+  responses: { question_number: number; answer: 'V' | 'F' }[];
+  total_questions_answered: number;
+  is_complete: boolean;
+  clinical_notes: string | null;
+  clinical_interpretation: string | null;
+  interpretation_date: string | null;
+  created_at: string;
+}
+
+interface Scl90rTest {
+  id: string;
+  user_id: string;
+  test_date: string;
+  responses: { question_number: number; answer: number }[];
+  total_questions_answered: number;
+  is_complete: boolean;
+  clinical_notes: string | null;
+  clinical_interpretation: string | null;
+  interpretation_date: string | null;
+  created_at: string;
+}
+
 interface ForensicCase {
   id: string;
   user_id: string;
@@ -87,6 +116,8 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
   const queryClient = useQueryClient();
   const [selectedMbti, setSelectedMbti] = useState<MbtiTest | null>(null);
   const [selectedMmpi2, setSelectedMmpi2] = useState<Mmpi2Test | null>(null);
+  const [selectedMcmi3, setSelectedMcmi3] = useState<Mcmi3Test | null>(null);
+  const [selectedScl90r, setSelectedScl90r] = useState<Scl90rTest | null>(null);
   const [selectedCase, setSelectedCase] = useState<ForensicCase | null>(null);
   const [clinicalNotes, setClinicalNotes] = useState("");
   const [interpretation, setInterpretation] = useState("");
@@ -122,6 +153,40 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
         ...test,
         responses: (test.responses as Json) as { question_number: number; answer: 'V' | 'F' }[]
       })) as Mmpi2Test[];
+    },
+  });
+
+  // Query MCMI-III tests
+  const mcmi3Query = useQuery({
+    queryKey: ["admin-mcmi3-tests", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("mcmi3_tests")
+        .select("*")
+        .eq("user_id", patientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data.map(test => ({
+        ...test,
+        responses: (test.responses as Json) as { question_number: number; answer: 'V' | 'F' }[]
+      })) as Mcmi3Test[];
+    },
+  });
+
+  // Query SCL-90-R tests
+  const scl90rQuery = useQuery({
+    queryKey: ["admin-scl90r-tests", patientId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("scl90r_tests")
+        .select("*")
+        .eq("user_id", patientId)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data.map(test => ({
+        ...test,
+        responses: (test.responses as Json) as { question_number: number; answer: number }[]
+      })) as Scl90rTest[];
     },
   });
 
@@ -178,8 +243,50 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
     },
   });
 
+  // Update MCMI-III interpretation
+  const updateMcmi3Interpretation = useMutation({
+    mutationFn: async ({ id, interpretation, notes }: { id: string; interpretation: string; notes: string }) => {
+      const { error } = await supabase
+        .from("mcmi3_tests")
+        .update({ 
+          clinical_interpretation: interpretation,
+          clinical_notes: notes,
+          interpretation_date: new Date().toISOString()
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-mcmi3-tests", patientId] });
+      toast({ title: "Interpretación MCMI-III guardada" });
+      setSelectedMcmi3(null);
+    },
+  });
+
+  // Update SCL-90-R interpretation
+  const updateScl90rInterpretation = useMutation({
+    mutationFn: async ({ id, interpretation, notes }: { id: string; interpretation: string; notes: string }) => {
+      const { error } = await supabase
+        .from("scl90r_tests")
+        .update({ 
+          clinical_interpretation: interpretation,
+          clinical_notes: notes,
+          interpretation_date: new Date().toISOString()
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-scl90r-tests", patientId] });
+      toast({ title: "Interpretación SCL-90-R guardada" });
+      setSelectedScl90r(null);
+    },
+  });
+
   const mbtiTests = mbtiQuery.data || [];
   const mmpi2Tests = mmpi2Query.data || [];
+  const mcmi3Tests = mcmi3Query.data || [];
+  const scl90rTests = scl90rQuery.data || [];
   const forensicCases = forensicQuery.data || [];
 
   const openMbtiDialog = (test: MbtiTest) => {
@@ -191,6 +298,32 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
     setSelectedMmpi2(test);
     setInterpretation(test.clinical_interpretation || "");
     setClinicalNotes(test.clinical_notes || "");
+  };
+
+  const openMcmi3Dialog = (test: Mcmi3Test) => {
+    setSelectedMcmi3(test);
+    setInterpretation(test.clinical_interpretation || "");
+    setClinicalNotes(test.clinical_notes || "");
+  };
+
+  const openScl90rDialog = (test: Scl90rTest) => {
+    setSelectedScl90r(test);
+    setInterpretation(test.clinical_interpretation || "");
+    setClinicalNotes(test.clinical_notes || "");
+  };
+
+  // Helper to convert MCMI-III responses array to Record<number, boolean>
+  const mcmi3ResponsesAsRecord = (responses: { question_number: number; answer: 'V' | 'F' }[]): Record<number, boolean> => {
+    const record: Record<number, boolean> = {};
+    responses.forEach(r => { record[r.question_number] = r.answer === 'V'; });
+    return record;
+  };
+
+  // Helper to convert SCL-90-R responses array to Record<number, number>
+  const scl90rResponsesAsRecord = (responses: { question_number: number; answer: number }[]): Record<number, number> => {
+    const record: Record<number, number> = {};
+    responses.forEach(r => { record[r.question_number] = r.answer; });
+    return record;
   };
 
   return (
@@ -329,6 +462,122 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
               )}
             </CardContent>
           </Card>
+
+          {/* MCMI-III Tests */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-purple-600" />
+                Inventarios MCMI-III
+              </CardTitle>
+              <CardDescription>Inventario Clínico Multiaxial de Millon-III</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {mcmi3Query.isLoading ? (
+                <p className="text-muted-foreground">Cargando...</p>
+              ) : mcmi3Tests.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">
+                  El paciente no ha realizado inventarios MCMI-III
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {mcmi3Tests.map((test) => (
+                    <div
+                      key={test.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer"
+                      onClick={() => openMcmi3Dialog(test)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center">
+                          <span className="text-2xl font-bold text-purple-600">
+                            {test.total_questions_answered}
+                          </span>
+                          <span className="text-xs text-muted-foreground">/175</span>
+                        </div>
+                        <div>
+                          <p className="font-medium">
+                            {test.is_complete ? "Inventario Completado" : "En progreso"}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {format(new Date(test.test_date), "PP", { locale: es })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={test.is_complete ? "default" : "secondary"}>
+                          {Math.round((test.total_questions_answered / 175) * 100)}%
+                        </Badge>
+                        {test.clinical_interpretation && (
+                          <Badge variant="outline">
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Interpretado
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* SCL-90-R Tests */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5 text-emerald-600" />
+                Inventarios SCL-90-R
+              </CardTitle>
+              <CardDescription>Cuestionario de 90 Síntomas Revisado</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {scl90rQuery.isLoading ? (
+                <p className="text-muted-foreground">Cargando...</p>
+              ) : scl90rTests.length === 0 ? (
+                <p className="text-muted-foreground text-center py-4">
+                  El paciente no ha realizado inventarios SCL-90-R
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {scl90rTests.map((test) => (
+                    <div
+                      key={test.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 cursor-pointer"
+                      onClick={() => openScl90rDialog(test)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col items-center">
+                          <span className="text-2xl font-bold text-emerald-600">
+                            {test.total_questions_answered}
+                          </span>
+                          <span className="text-xs text-muted-foreground">/90</span>
+                        </div>
+                        <div>
+                          <p className="font-medium">
+                            {test.is_complete ? "Inventario Completado" : "En progreso"}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {format(new Date(test.test_date), "PP", { locale: es })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant={test.is_complete ? "default" : "secondary"}>
+                          {Math.round((test.total_questions_answered / 90) * 100)}%
+                        </Badge>
+                        {test.clinical_interpretation && (
+                          <Badge variant="outline">
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Interpretado
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Forensic Section */}
@@ -431,7 +680,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                       </TabsList>
 
                       <TabsContent value="profile" className="mt-4 space-y-4">
-                        {/* Type header */}
                         {typeInfo && (
                           <div className="rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 p-4 text-center">
                             <Badge variant="secondary" className="text-xl px-5 py-1 font-bold">{selectedMbti.personality_type}</Badge>
@@ -440,7 +688,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                           </div>
                         )}
 
-                        {/* Preference bars */}
                         <div className="space-y-3">
                           {dims.map((dim) => {
                             const total = dim.leftScore + dim.rightScore;
@@ -466,14 +713,12 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                           })}
                         </div>
 
-                        {/* Description */}
                         {typeInfo && (
                           <>
                             <div className="rounded-lg border p-3">
                               <p className="text-sm text-muted-foreground leading-relaxed">{typeInfo.description}</p>
                             </div>
 
-                            {/* Dominant preferences */}
                             <div>
                               <h4 className="text-sm font-semibold mb-2 flex items-center gap-1"><Brain className="h-4 w-4 text-primary" /> Preferencias Dominantes</h4>
                               <div className="grid grid-cols-2 gap-2">
@@ -497,7 +742,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                               </div>
                             </div>
 
-                            {/* Contributions */}
                             <div>
                               <h4 className="text-sm font-semibold mb-2 flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-primary" /> Contribución a la Organización</h4>
                               <ul className="space-y-1">
@@ -509,7 +753,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                               </ul>
                             </div>
 
-                            {/* Leadership & Environment */}
                             <div className="grid grid-cols-2 gap-3">
                               <div>
                                 <h4 className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-primary" /> Estilo de Mando</h4>
@@ -529,7 +772,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                               </div>
                             </div>
 
-                            {/* Dangers & Suggestions */}
                             <div className="grid grid-cols-2 gap-3">
                               <div className="rounded-lg border border-destructive/20 p-3">
                                 <h4 className="text-xs font-semibold mb-1.5 text-destructive">⚠ Peligros Potenciales</h4>
@@ -629,7 +871,6 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                   <Badge>{selectedMmpi2.total_questions_answered}/567</Badge>
                 </div>
 
-                {/* Perfil Psicológico Automático */}
                 <Tabs defaultValue="profile" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="profile" className="gap-2">
@@ -701,6 +942,162 @@ export const PatientPsychodiagnosticView = ({ patientId, patientName }: PatientP
                   notes: clinicalNotes
                 })}
                 disabled={updateMmpi2Interpretation.isPending}
+              >
+                Guardar Interpretación
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* MCMI-III Dialog */}
+      <Dialog open={!!selectedMcmi3} onOpenChange={() => setSelectedMcmi3(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-purple-600" />
+              MCMI-III - Interpretación Clínica
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedMcmi3 && (
+            <ScrollArea className="max-h-[70vh]">
+              <div className="space-y-4 pr-4">
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <span>Respuestas completadas</span>
+                  <Badge>{selectedMcmi3.total_questions_answered}/175</Badge>
+                </div>
+
+                <Progress value={(selectedMcmi3.total_questions_answered / 175) * 100} className="h-2" />
+
+                <div className="space-y-4">
+                  <div>
+                    <Label>Interpretación Clínica</Label>
+                    <Textarea
+                      value={interpretation}
+                      onChange={(e) => setInterpretation(e.target.value)}
+                      placeholder="Escriba la interpretación clínica del MCMI-III..."
+                      rows={6}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Notas Adicionales</Label>
+                    <Textarea
+                      value={clinicalNotes}
+                      onChange={(e) => setClinicalNotes(e.target.value)}
+                      placeholder="Notas adicionales..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {selectedMcmi3?.is_complete && (
+              <Mcmi3ReportGenerator
+                testId={selectedMcmi3.id}
+                patientId={patientId}
+                patientName={patientName}
+                testDate={selectedMcmi3.test_date}
+                responses={mcmi3ResponsesAsRecord(selectedMcmi3.responses)}
+                totalAnswered={selectedMcmi3.total_questions_answered}
+                isComplete={selectedMcmi3.is_complete}
+                clinicalInterpretation={selectedMcmi3.clinical_interpretation}
+                clinicalNotes={selectedMcmi3.clinical_notes}
+              />
+            )}
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSelectedMcmi3(null)}>
+                Cancelar
+              </Button>
+              <Button 
+                onClick={() => selectedMcmi3 && updateMcmi3Interpretation.mutate({ 
+                  id: selectedMcmi3.id, 
+                  interpretation,
+                  notes: clinicalNotes
+                })}
+                disabled={updateMcmi3Interpretation.isPending}
+              >
+                Guardar Interpretación
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* SCL-90-R Dialog */}
+      <Dialog open={!!selectedScl90r} onOpenChange={() => setSelectedScl90r(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Activity className="h-5 w-5 text-emerald-600" />
+              SCL-90-R - Interpretación Clínica
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedScl90r && (
+            <ScrollArea className="max-h-[70vh]">
+              <div className="space-y-4 pr-4">
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <span>Respuestas completadas</span>
+                  <Badge>{selectedScl90r.total_questions_answered}/90</Badge>
+                </div>
+
+                <Progress value={(selectedScl90r.total_questions_answered / 90) * 100} className="h-2" />
+
+                <div className="space-y-4">
+                  <div>
+                    <Label>Interpretación Clínica</Label>
+                    <Textarea
+                      value={interpretation}
+                      onChange={(e) => setInterpretation(e.target.value)}
+                      placeholder="Escriba la interpretación clínica del SCL-90-R..."
+                      rows={6}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Notas Adicionales</Label>
+                    <Textarea
+                      value={clinicalNotes}
+                      onChange={(e) => setClinicalNotes(e.target.value)}
+                      placeholder="Notas adicionales..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
+            </ScrollArea>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {selectedScl90r?.is_complete && (
+              <Scl90rReportGenerator
+                testId={selectedScl90r.id}
+                patientId={patientId}
+                patientName={patientName}
+                testDate={selectedScl90r.test_date}
+                responses={scl90rResponsesAsRecord(selectedScl90r.responses)}
+                totalAnswered={selectedScl90r.total_questions_answered}
+                isComplete={selectedScl90r.is_complete}
+                clinicalInterpretation={selectedScl90r.clinical_interpretation}
+                clinicalNotes={selectedScl90r.clinical_notes}
+              />
+            )}
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setSelectedScl90r(null)}>
+                Cancelar
+              </Button>
+              <Button 
+                onClick={() => selectedScl90r && updateScl90rInterpretation.mutate({ 
+                  id: selectedScl90r.id, 
+                  interpretation,
+                  notes: clinicalNotes
+                })}
+                disabled={updateScl90rInterpretation.isPending}
               >
                 Guardar Interpretación
               </Button>
