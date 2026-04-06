@@ -144,7 +144,7 @@ const Login = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="animate-pulse text-primary">Cargando...</div>
       </div>
     );
@@ -152,7 +152,7 @@ const Login = () => {
 
   if (user && !isApproved) {
     return (
-      <div className="flex min-h-screen flex-col bg-white dark:bg-background">
+      <div className="flex min-h-screen flex-col bg-background">
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50 max-w-md text-center">
             <ShieldCheck className="mb-4 h-14 w-14 text-primary" />
@@ -171,7 +171,7 @@ const Login = () => {
 
   if (user && isApproved) {
     return (
-      <div className="flex min-h-screen flex-col bg-white dark:bg-background">
+      <div className="flex min-h-screen flex-col bg-background">
         <main className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50">
             <Flame className="mb-4 h-14 w-14 text-primary" />
@@ -192,7 +192,7 @@ const Login = () => {
     return (
       <div
         key={system.id}
-        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-white dark:bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
       >
         <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
         <div className="flex flex-col items-center gap-3 p-5 flex-1">
@@ -246,9 +246,9 @@ const Login = () => {
     <button
       key={system.id}
       onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-white dark:bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
     >
-      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-white dark:bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
+      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
         <img src={system.image} alt={system.title} className="h-full w-full rounded-full object-contain" loading="lazy" />
       </div>
       <div className="space-y-1">
@@ -289,11 +289,11 @@ const Login = () => {
   const isMainView = view === "main";
 
   return (
-    <div className="flex min-h-screen flex-col bg-white dark:bg-background relative">
+    <div className="flex min-h-screen flex-col bg-background relative">
       {/* Dark mode toggle */}
       <button
         onClick={toggleDark}
-        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full bg-white dark:bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
+        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
         aria-label="Toggle dark mode"
       >
         {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -316,7 +316,7 @@ const Login = () => {
                 {/* Soy Paciente — primary, spans full width */}
                 <button
                   onClick={() => setView("paciente")}
-                  className="col-span-2 group flex items-center gap-4 rounded-2xl border-2 border-primary/30 bg-white dark:bg-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50"
+                  className="col-span-2 group flex items-center gap-4 rounded-2xl border-2 border-primary/30 bg-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50"
                 >
                   <div className="h-14 w-14 rounded-full border-2 border-primary bg-primary/10 flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105 shrink-0">
                     <User className="h-7 w-7 text-primary" strokeWidth={1.8} />
@@ -330,7 +330,7 @@ const Login = () => {
                 {/* No soy Paciente */}
                 <button
                   onClick={() => setView("no-paciente")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
                     <UserX className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
@@ -341,7 +341,7 @@ const Login = () => {
                 {/* Soy Profesional */}
                 <button
                   onClick={() => setView("profesional")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
                     <Briefcase className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
@@ -352,7 +352,7 @@ const Login = () => {
                 {/* Soy Empresa — full width */}
                 <button
                   onClick={() => setView("empresa")}
-                  className="col-span-2 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  className="col-span-2 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 bg-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <Building2 className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
                   <span className="text-sm font-semibold text-foreground">Soy una Empresa</span>
@@ -375,7 +375,7 @@ const Login = () => {
         {!isMainView && (
           <>
             {/* Compact header with logo + welcome */}
-            <header className="w-full border-b border-border/20 bg-white dark:bg-background">
+            <header className="w-full border-b border-border/20 bg-background">
               <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
                   {/* Logo — reduced */}
@@ -389,7 +389,7 @@ const Login = () => {
 
                   {/* Welcome text cards */}
                   <div className="lg:w-[65%] flex flex-col gap-3">
-                    <div className="rounded-2xl border border-primary/15 bg-white dark:bg-card p-5 shadow-sm">
+                    <div className="rounded-2xl border border-primary/15 bg-card p-5 shadow-sm">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <Heart className="h-4 w-4 text-primary" />
@@ -401,7 +401,7 @@ const Login = () => {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-white dark:bg-card p-5 shadow-sm">
+                    <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
                           <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
@@ -413,7 +413,7 @@ const Login = () => {
                       </p>
                     </div>
 
-                    <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-white dark:bg-card p-5 shadow-sm">
+                    <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-card p-5 shadow-sm">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
                           <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
@@ -456,19 +456,19 @@ const Login = () => {
                   <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
                     <button onClick={() => setView("question-terapia")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
                       <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
                       <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
                     </button>
                     <button onClick={() => setView("question-psicodiagnostico")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
                       <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                       <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                     </button>
                     <button onClick={() => setView("question-forense")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
                       <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                       <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
@@ -484,7 +484,7 @@ const Login = () => {
               {view === "profesional" && (
                 <div className="animate-fade-in mx-auto max-w-md">
                   {renderBackButton()}
-                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-white dark:bg-card p-8">
+                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
                     <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
                       <Briefcase className="h-7 w-7 text-white" />
                     </div>
@@ -508,7 +508,7 @@ const Login = () => {
               {view === "empresa" && (
                 <div className="animate-fade-in mx-auto max-w-md">
                   {renderBackButton()}
-                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-white dark:bg-card p-8">
+                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
                     <Building2 className="h-12 w-12 text-primary" />
                     <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
                     <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
@@ -529,13 +529,13 @@ const Login = () => {
 
             {/* Stats, avales, FAQ — shown after interaction */}
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
-              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-6 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <ProfessionalStats />
               </div>
             </section>
 
             <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 animate-fade-in">
-              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-5 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-card px-6 py-5 shadow-sm">
                 <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
                 <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
                   <img src={logoALPJF} alt="Asociación Latinoamericana de Psicología Jurídica y Forense" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity" />
@@ -545,7 +545,7 @@ const Login = () => {
             </section>
 
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
-              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-6 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
                 <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
                   {faqItems.map((item, i) => (
@@ -564,7 +564,7 @@ const Login = () => {
 
             {/* Quote */}
             <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
-              <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-white dark:bg-card px-8 py-7 shadow-sm">
+              <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-card px-8 py-7 shadow-sm">
                 <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
                 <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed font-serif italic">
                   ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
@@ -573,7 +573,7 @@ const Login = () => {
             </section>
 
             {/* Privacy */}
-            <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-white dark:bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
+            <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
               <div className="flex items-center gap-2.5">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
                 <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
