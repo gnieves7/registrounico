@@ -236,11 +236,12 @@ const DashboardHome = () => {
                 compact={!!todayRecord}
               />
             </section>
+            {/* Emotional Evolution Chart */}
+            <section>
+              <EmotionalEvolutionChart />
+            </section>
           </>
         )}
-
-        {/* Emotional Record — only for Reflexionar (already handled above) */}
-        {currentArea && currentArea !== "reflexionar" && null}
 
         {/* Two Column Layout */}
         <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
