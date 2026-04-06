@@ -12,6 +12,7 @@ import {
   Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
   TrendingUp, Activity
 } from "lucide-react";
+import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvolutionChart";
 
 interface TodayRecord {
   id: string;
