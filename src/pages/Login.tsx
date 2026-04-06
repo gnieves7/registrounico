@@ -144,7 +144,7 @@ const Login = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-background">
         <div className="animate-pulse text-primary">Cargando...</div>
       </div>
     );
@@ -152,7 +152,7 @@ const Login = () => {
 
   if (user && !isApproved) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-white dark:bg-background">
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50 max-w-md text-center">
             <ShieldCheck className="mb-4 h-14 w-14 text-primary" />
@@ -171,7 +171,7 @@ const Login = () => {
 
   if (user && isApproved) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="flex min-h-screen flex-col bg-white dark:bg-background">
         <main className="flex flex-1 items-center justify-center">
           <div className="flex flex-col items-center rounded-3xl bg-card p-10 shadow-xl border border-border/50">
             <Flame className="mb-4 h-14 w-14 text-primary" />
@@ -192,7 +192,7 @@ const Login = () => {
     return (
       <div
         key={system.id}
-        className="group flex flex-col items-stretch rounded-2xl border border-border/40 glass-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-white dark:bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
       >
         <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
         <div className="flex flex-col items-center gap-3 p-5 flex-1">
@@ -246,9 +246,9 @@ const Login = () => {
     <button
       key={system.id}
       onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 glass-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-white dark:bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
     >
-      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
+      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-white dark:bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
         <img src={system.image} alt={system.title} className="h-full w-full rounded-full object-contain" loading="lazy" />
       </div>
       <div className="space-y-1">
@@ -285,234 +285,257 @@ const Login = () => {
     );
   };
 
+  /* ═══ MAIN VIEW: Clean white, logo + 4 buttons ═══ */
+  const isMainView = view === "main";
+
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-background via-background to-muted/30 relative">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-background relative">
       {/* Dark mode toggle */}
       <button
         onClick={toggleDark}
-        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full glass-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
+        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full bg-white dark:bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
         aria-label="Toggle dark mode"
       >
         {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
       </button>
 
       <main className="flex flex-1 flex-col">
-        {/* ═══ HERO: Compact logo + text-first approach ═══ */}
-        <header className="w-full">
-          <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
-              {/* LEFT: Logo — reduced on desktop, small on mobile */}
-              <div className="flex items-center justify-center lg:w-[38%] mb-6 lg:mb-0">
-                <img
-                  src={logoPsi}
-                  alt="PSI PRO — Plataforma de Sistemas Interactivos"
-                  className="w-[55%] max-w-[340px] lg:w-full lg:max-w-[380px] object-contain drop-shadow-xl"
-                />
-              </div>
+        {/* ═══ MAIN VIEW: Only logo + 4 buttons ═══ */}
+        {isMainView && (
+          <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 animate-fade-in">
+            {/* Logo — centered, moderate size */}
+            <img
+              src={logoPsi}
+              alt="PSI PRO — Plataforma de Sistemas Interactivos"
+              className="w-[45%] max-w-[280px] mb-10 object-contain drop-shadow-lg"
+            />
 
-              {/* RIGHT: Text-first professional cards — glassmorphism ═══ */}
-              <div className="lg:w-[62%] flex flex-col gap-3">
-                {/* Welcome card — Serif title */}
-                <div className="glass-card rounded-2xl border border-primary/15 p-5 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Heart className="h-4 w-4 text-primary" />
-                    </div>
-                    <h1 className="text-base font-bold text-foreground font-serif lg:text-lg">¡Un gusto saludarte!</h1>
-                  </div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
-                  </p>
-                </div>
-
-                {/* Practice card */}
-                <div className="glass-card rounded-2xl border border-[hsl(45,60%,80%)]/40 p-5 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
-                      <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
-                    </div>
-                    <h2 className="text-base font-bold text-foreground font-serif">Mi práctica</h2>
-                  </div>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
-                  </p>
-                </div>
-
-                {/* PSI card */}
-                <div className="glass-card rounded-2xl border border-[hsl(200,50%,80%)]/40 p-5 shadow-sm">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
-                      <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
-                    </div>
-                    <h2 className="text-base font-bold text-foreground font-serif">PSI</h2>
-                  </div>
-                  <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
-                    <p>
-                      Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
-                    </p>
-                    <p>
-                      Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* ═══ BENTO GRID CTAs ═══ */}
-        <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
-          <p className="font-serif font-semibold text-foreground text-lg md:text-xl text-center mb-6">¿En qué puedo ayudarte?</p>
-
-          {view === "main" && (
-            <div className="animate-fade-in">
-              {/* Bento grid: "Soy Paciente" is larger */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                {/* Soy Paciente — spans 2 cols */}
+            {/* 4 action buttons — Bento grid */}
+            <div className="w-full max-w-lg">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Soy Paciente — primary, spans full width */}
                 <button
                   onClick={() => setView("paciente")}
-                  className="col-span-2 group flex items-center gap-5 rounded-2xl border-2 border-primary/30 glass-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50 pulse-glow"
+                  className="col-span-2 group flex items-center gap-4 rounded-2xl border-2 border-primary/30 bg-white dark:bg-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50"
                 >
-                  <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full border-[3px] border-primary bg-primary/10 flex items-center justify-center shadow-md transition-all duration-200 group-hover:shadow-lg group-hover:scale-105 shrink-0">
-                    <User className="h-8 w-8 sm:h-9 sm:w-9 text-primary" strokeWidth={1.8} />
+                  <div className="h-14 w-14 rounded-full border-2 border-primary bg-primary/10 flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105 shrink-0">
+                    <User className="h-7 w-7 text-primary" strokeWidth={1.8} />
                   </div>
                   <div>
-                    <span className="text-base sm:text-lg font-bold text-foreground block">Soy Paciente</span>
-                    <span className="text-xs text-muted-foreground mt-1 block">Accedé a tu sistema asignado</span>
+                    <span className="text-base font-bold text-foreground block">Soy Paciente</span>
+                    <span className="text-xs text-muted-foreground mt-0.5 block">Accedé a tu sistema asignado</span>
                   </div>
                 </button>
 
-                {/* Smaller CTAs */}
-                {[
-                  { label: "No soy Paciente", view: "no-paciente" as View, Icon: UserX, iconColor: "text-accent-foreground" },
-                  { label: "Soy Profesional", view: "profesional" as View, Icon: Briefcase, iconColor: "text-secondary-foreground" },
-                ].map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => setView(item.view)}
-                    className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                  >
-                    <div className="h-14 w-14 rounded-full border-2 border-border/60 bg-muted/30 flex items-center justify-center transition-all duration-200 group-hover:scale-105">
-                      <item.Icon className={`h-6 w-6 ${item.iconColor}`} strokeWidth={1.8} />
-                    </div>
-                    <span className="text-xs sm:text-sm font-semibold text-foreground text-center leading-tight">{item.label}</span>
-                  </button>
-                ))}
+                {/* No soy Paciente */}
+                <button
+                  onClick={() => setView("no-paciente")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
+                    <UserX className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+                  </div>
+                  <span className="text-xs font-semibold text-foreground text-center">No soy Paciente</span>
+                </button>
 
-                {/* Empresa — full width */}
+                {/* Soy Profesional */}
+                <button
+                  onClick={() => setView("profesional")}
+                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
+                    <Briefcase className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+                  </div>
+                  <span className="text-xs font-semibold text-foreground text-center">Soy Profesional</span>
+                </button>
+
+                {/* Soy Empresa — full width */}
                 <button
                   onClick={() => setView("empresa")}
-                  className="col-span-2 sm:col-span-4 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 glass-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  className="col-span-2 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                 >
                   <Building2 className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
                   <span className="text-sm font-semibold text-foreground">Soy una Empresa</span>
                 </button>
               </div>
             </div>
-          )}
 
-          {/* Soy Paciente → 3 system buttons */}
-          {view === "paciente" && (
-            <div className="animate-fade-in">
-              {renderBackButton()}
-              <p className="mb-6 text-center text-sm text-muted-foreground">
-                Seleccioná el sistema al que necesitás acceder:
-              </p>
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                {systemCards.map((system) => renderPatientSystemButton(system))}
-              </div>
+            {/* Privacy link */}
+            <div className="mt-8 flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+              <span>Tus datos están protegidos. </span>
+              <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
+                Política de Privacidad
+              </Link>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* No soy Paciente → 3 questions */}
-          {view === "no-paciente" && (
-            <div className="animate-fade-in">
-              {renderBackButton()}
-              <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
-                <button onClick={() => setView("question-terapia")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
-                  <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
-                  <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
-                  <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
-                </button>
-                <button onClick={() => setView("question-psicodiagnostico")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
-                  <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
-                  <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
-                  <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
-                </button>
-                <button onClick={() => setView("question-forense")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 glass-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
-                  <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
-                  <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
-                  <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
-            renderQuestionView(view)}
-
-          {/* Soy Profesional */}
-          {view === "profesional" && (
-            <div className="animate-fade-in mx-auto max-w-md">
-              {renderBackButton()}
-              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 glass-card p-8">
-                <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
-                  <Briefcase className="h-7 w-7 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Profesional</h3>
-                <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
-                <div className="w-full space-y-3 mt-2">
-                  <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
-                    <MessageCircle className="h-4 w-4" /> WhatsApp
-                  </a>
-                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
-                    <Globe className="h-4 w-4" /> Sitio Web
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Soy una Empresa */}
-          {view === "empresa" && (
-            <div className="animate-fade-in mx-auto max-w-md">
-              {renderBackButton()}
-              <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 glass-card p-8">
-                <Building2 className="h-12 w-12 text-primary" />
-                <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
-                <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
-                <div className="w-full space-y-3 mt-2">
-                  <a href={EMPRESA_EMAIL}
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
-                    <Mail className="h-4 w-4" /> Enviar Email
-                  </a>
-                  <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
-                    <Globe className="h-4 w-4" /> Sitio Web
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
-
-        {/* ═══ STATS — hidden until user interacts ═══ */}
-        {view !== "main" && (
+        {/* ═══ AFTER SELECTING: Show welcome + content ═══ */}
+        {!isMainView && (
           <>
+            {/* Compact header with logo + welcome */}
+            <header className="w-full border-b border-border/20 bg-white dark:bg-background">
+              <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
+                  {/* Logo — reduced */}
+                  <div className="flex items-center justify-center lg:w-[35%] mb-5 lg:mb-0">
+                    <img
+                      src={logoPsi}
+                      alt="PSI PRO"
+                      className="w-[45%] max-w-[280px] lg:w-full lg:max-w-[320px] object-contain drop-shadow-lg"
+                    />
+                  </div>
+
+                  {/* Welcome text cards */}
+                  <div className="lg:w-[65%] flex flex-col gap-3">
+                    <div className="rounded-2xl border border-primary/15 bg-white dark:bg-card p-5 shadow-sm">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <Heart className="h-4 w-4 text-primary" />
+                        </div>
+                        <h1 className="text-base font-bold text-foreground font-serif lg:text-lg">¡Un gusto saludarte!</h1>
+                      </div>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-white dark:bg-card p-5 shadow-sm">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
+                          <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
+                        </div>
+                        <h2 className="text-base font-bold text-foreground font-serif">Mi práctica</h2>
+                      </div>
+                      <p className="text-sm leading-relaxed text-muted-foreground">
+                        Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-white dark:bg-card p-5 shadow-sm">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
+                          <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
+                        </div>
+                        <h2 className="text-base font-bold text-foreground font-serif">PSI</h2>
+                      </div>
+                      <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
+                        <p>
+                          Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
+                        </p>
+                        <p>
+                          Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            {/* Content area */}
+            <section className="mx-auto w-full max-w-4xl px-6 py-6 lg:px-10">
+              {/* Soy Paciente → 3 system buttons */}
+              {view === "paciente" && (
+                <div className="animate-fade-in">
+                  {renderBackButton()}
+                  <p className="mb-6 text-center text-sm text-muted-foreground">
+                    Seleccioná el sistema al que necesitás acceder:
+                  </p>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                    {systemCards.map((system) => renderPatientSystemButton(system))}
+                  </div>
+                </div>
+              )}
+
+              {/* No soy Paciente → 3 questions */}
+              {view === "no-paciente" && (
+                <div className="animate-fade-in">
+                  {renderBackButton()}
+                  <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+                    <button onClick={() => setView("question-terapia")}
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
+                      <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
+                      <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
+                      <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
+                    </button>
+                    <button onClick={() => setView("question-psicodiagnostico")}
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
+                      <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
+                      <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
+                      <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
+                    </button>
+                    <button onClick={() => setView("question-forense")}
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-white dark:bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
+                      <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
+                      <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
+                      <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
+                renderQuestionView(view)}
+
+              {/* Soy Profesional */}
+              {view === "profesional" && (
+                <div className="animate-fade-in mx-auto max-w-md">
+                  {renderBackButton()}
+                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-white dark:bg-card p-8">
+                    <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
+                      <Briefcase className="h-7 w-7 text-white" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Profesional</h3>
+                    <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
+                    <div className="w-full space-y-3 mt-2">
+                      <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
+                        <MessageCircle className="h-4 w-4" /> WhatsApp
+                      </a>
+                      <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
+                        <Globe className="h-4 w-4" /> Sitio Web
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Soy una Empresa */}
+              {view === "empresa" && (
+                <div className="animate-fade-in mx-auto max-w-md">
+                  {renderBackButton()}
+                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-white dark:bg-card p-8">
+                    <Building2 className="h-12 w-12 text-primary" />
+                    <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
+                    <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
+                    <div className="w-full space-y-3 mt-2">
+                      <a href={EMPRESA_EMAIL}
+                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                        <Mail className="h-4 w-4" /> Enviar Email
+                      </a>
+                      <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
+                        <Globe className="h-4 w-4" /> Sitio Web
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* Stats, avales, FAQ — shown after interaction */}
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
-              <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-6 shadow-sm">
                 <ProfessionalStats />
               </div>
             </section>
 
             <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 animate-fade-in">
-              <div className="glass-card rounded-2xl border border-border/40 px-6 py-5 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-5 shadow-sm">
                 <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
                 <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
                   <img src={logoALPJF} alt="Asociación Latinoamericana de Psicología Jurídica y Forense" className="h-16 md:h-20 object-contain opacity-80 hover:opacity-100 transition-opacity" />
@@ -522,7 +545,7 @@ const Login = () => {
             </section>
 
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
-              <div className="glass-card rounded-2xl border border-border/40 px-6 py-6 shadow-sm">
+              <div className="rounded-2xl border border-border/40 bg-white dark:bg-card px-6 py-6 shadow-sm">
                 <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
                 <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
                   {faqItems.map((item, i) => (
@@ -538,32 +561,32 @@ const Login = () => {
                 </Accordion>
               </div>
             </section>
+
+            {/* Quote */}
+            <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
+              <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-white dark:bg-card px-8 py-7 shadow-sm">
+                <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
+                <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed font-serif italic">
+                  ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
+                </p>
+              </div>
+            </section>
+
+            {/* Privacy */}
+            <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-white dark:bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+                <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Al ingresar, aceptás los{" "}
+                <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
+                  Términos de Uso, Condiciones del Servicio y Políticas de Privacidad
+                </Link>.
+              </p>
+            </div>
           </>
         )}
-
-        {/* ═══ QUOTE ═══ */}
-        <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
-          <div className="relative overflow-hidden glass-card rounded-2xl border border-primary/15 px-8 py-7 shadow-sm">
-            <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
-            <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed font-serif italic">
-              ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
-            </p>
-          </div>
-        </section>
-
-        {/* ═══ PRIVACY NOTICE ═══ */}
-        <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl glass-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
-          <div className="flex items-center gap-2.5">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
-            <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Al ingresar, aceptás los{" "}
-            <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
-              Términos de Uso, Condiciones del Servicio y Políticas de Privacidad
-            </Link>.
-          </p>
-        </div>
       </main>
 
       <Footer />

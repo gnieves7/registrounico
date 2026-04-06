@@ -9,7 +9,8 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   User, MessageCircle, FileText, Thermometer, BookOpen, Brain, Scale, Eye,
-  Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3
+  Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
+  TrendingUp, Activity
 } from "lucide-react";
 
 interface TodayRecord {
@@ -24,6 +25,8 @@ interface UpcomingSessionData {
   topic: string | null;
   calendar_link: string | null;
 }
+
+const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 const quickActionsBySystem: Record<SystemArea, { title: string; description: string; icon: typeof User; href: string }[]> = {
   reflexionar: [
@@ -54,7 +57,7 @@ const quickActionsBySystem: Record<SystemArea, { title: string; description: str
 const welcomeMessages: Record<SystemArea, { greeting: string; subtitle: string }> = {
   reflexionar: {
     greeting: "Bienvenido a tu espacio clínico",
-    subtitle: "Reflexión, acompañamiento y herramientas para tu bienestar emocional.",
+    subtitle: "Seguimiento de tratamiento, acompañamiento y herramientas para tu bienestar emocional.",
   },
   evaluar: {
     greeting: "Bienvenido al área de evaluación",
@@ -70,6 +73,7 @@ const DashboardHome = () => {
   const { user, profile } = useAuth();
   const [todayRecord, setTodayRecord] = useState<TodayRecord | null>(null);
   const [upcomingSession, setUpcomingSession] = useState<UpcomingSessionData | null>(null);
+  const [sessionsCount, setSessionsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   const currentArea = getStoredSystemArea();
@@ -98,6 +102,13 @@ const DashboardHome = () => {
         .limit(1)
         .maybeSingle();
       setUpcomingSession(sessionData);
+
+      // Count total sessions for reflexionar
+      const { count } = await supabase
+        .from("sessions")
+        .select("id", { count: "exact", head: true })
+        .eq("patient_id", user.id);
+      setSessionsCount(count || 0);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -123,6 +134,8 @@ const DashboardHome = () => {
       </div>
     );
   }
+
+  const isReflexionar = currentArea === "reflexionar" || !currentArea;
 
   return (
     <div className="container mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-8">
@@ -165,16 +178,68 @@ const DashboardHome = () => {
       )}
 
       <div className="space-y-4 md:space-y-6">
-        {/* Emotional Record — only for Reflexionar */}
-        {(!currentArea || currentArea === "reflexionar") && (
-          <section>
-            <EmotionalRecordWidget
-              todayRecord={todayRecord}
-              onRecordSaved={fetchData}
-              compact={!!todayRecord}
-            />
-          </section>
+        {/* ═══ REFLEXIONAR: Treatment tracking + Appointment request ═══ */}
+        {isReflexionar && (
+          <>
+            {/* Treatment tracking summary */}
+            <section className="grid gap-4 grid-cols-2 md:grid-cols-4">
+              <Card className="border-primary/20">
+                <CardContent className="flex flex-col items-center gap-2 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                    <Calendar className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-2xl font-bold text-foreground">{sessionsCount}</span>
+                  <span className="text-xs text-muted-foreground text-center">Sesiones totales</span>
+                </CardContent>
+              </Card>
+              <Card className="border-primary/20">
+                <CardContent className="flex flex-col items-center gap-2 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                    <Activity className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-2xl font-bold text-foreground">{todayRecord ? "✓" : "—"}</span>
+                  <span className="text-xs text-muted-foreground text-center">Registro hoy</span>
+                </CardContent>
+              </Card>
+              <Card className="border-primary/20">
+                <CardContent className="flex flex-col items-center gap-2 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-2xl font-bold text-foreground">{upcomingSession ? "1" : "0"}</span>
+                  <span className="text-xs text-muted-foreground text-center">Turno próximo</span>
+                </CardContent>
+              </Card>
+              <a
+                href={CALENDAR_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Card className="h-full border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer">
+                  <CardContent className="flex flex-col items-center justify-center gap-2 p-4 h-full">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
+                      <Calendar className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-xs font-semibold text-primary text-center">Solicitar Turno</span>
+                  </CardContent>
+                </Card>
+              </a>
+            </section>
+
+            {/* Emotional Record */}
+            <section>
+              <EmotionalRecordWidget
+                todayRecord={todayRecord}
+                onRecordSaved={fetchData}
+                compact={!!todayRecord}
+              />
+            </section>
+          </>
         )}
+
+        {/* Emotional Record — only for Reflexionar (already handled above) */}
+        {currentArea && currentArea !== "reflexionar" && null}
 
         {/* Two Column Layout */}
         <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
