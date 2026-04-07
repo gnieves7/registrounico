@@ -12,6 +12,7 @@ import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/logo_psi.png";
 import heroImage from "@/assets/hero_psi_landing.png";
+import heroAccessImage from "@/assets/hero_access.png";
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
