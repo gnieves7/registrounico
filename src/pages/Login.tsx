@@ -311,15 +311,16 @@ const Login = () => {
         {/* ═══ MAIN VIEW: Hero image + animated buttons ═══ */}
         {isMainView && (
           <div className="flex flex-col">
-            {/* Hero Image — full width, seamless */}
-            <section className="relative w-full">
+            {/* Hero Image — parallax effect */}
+            <section ref={heroRef} className="relative w-full overflow-hidden">
               <img
                 src={heroImage}
-                alt="PSI — Plataforma de Sistemas Interactivos"
-                className="w-full h-auto object-cover animate-fade-in"
+                alt=".PSI. — Plataforma de Sistemas Interactivos"
+                className="w-full h-auto object-cover animate-fade-in will-change-transform"
+                style={{ transform: `translateY(${scrollY * 0.3}px) scale(${1 + scrollY * 0.0003})` }}
               />
               {/* Seamless gradient fade into buttons section */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
             </section>
 
             {/* Access buttons — seamless continuation with staggered animations */}
