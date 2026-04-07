@@ -12,7 +12,6 @@ import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_blanco.png";
 import heroImage from "@/assets/hero_psi_landing.png";
-import sistemasImage from "@/assets/sistemas_landing.png";
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
@@ -301,82 +300,74 @@ const Login = () => {
       </button>
 
       <main className="flex flex-1 flex-col">
-        {/* ═══ MAIN VIEW: Hero image + systems image + 4 buttons ═══ */}
+        {/* ═══ MAIN VIEW: Hero image + buttons below ═══ */}
         {isMainView && (
           <div className="flex flex-col animate-fade-in">
-            {/* Hero Section — Image 1 as background */}
-            <section className="relative w-full overflow-hidden">
+            {/* Hero Image — full width, untouched */}
+            <section className="w-full">
               <img
                 src={heroImage}
                 alt="PSI — Plataforma de Sistemas Interactivos"
                 className="w-full h-auto object-cover"
               />
-              {/* Overlay with 4 access buttons on mobile */}
-              <div className="absolute inset-0 flex flex-col items-start justify-end p-6 bg-gradient-to-t from-black/60 via-black/20 to-transparent md:from-black/40 md:via-transparent">
-                <div className="w-full max-w-lg">
-                  <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                    {/* Soy Paciente */}
-                    <button
-                      onClick={() => setView("paciente")}
-                      className="col-span-2 flex items-center gap-3 rounded-xl bg-white/95 dark:bg-card/95 backdrop-blur px-4 py-3 text-left transition-all duration-200 hover:scale-[1.02] hover:shadow-lg border border-white/20"
-                    >
-                      <div className="h-10 w-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                        <User className="h-5 w-5 text-primary" strokeWidth={1.8} />
-                      </div>
-                      <div>
-                        <span className="text-sm font-bold text-foreground block">Soy Paciente</span>
-                        <span className="text-[10px] text-muted-foreground">Accedé a tu sistema asignado</span>
-                      </div>
-                    </button>
+            </section>
 
-                    {/* No soy Paciente */}
-                    <button
-                      onClick={() => setView("no-paciente")}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-white/90 dark:bg-card/90 backdrop-blur px-3 py-2.5 transition-all duration-200 hover:scale-[1.02] border border-white/20"
-                    >
-                      <UserX className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
-                      <span className="text-xs font-semibold text-foreground">No soy Paciente</span>
-                    </button>
+            {/* Access buttons — styled to match hero's gold/warm palette */}
+            <section className="w-full bg-gradient-to-b from-[#f8f5f0] to-[#f0ece4] dark:from-[#1a1815] dark:to-[#15130f] px-5 py-6 md:px-8 md:py-8">
+              <div className="mx-auto max-w-xl">
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Soy Paciente — primary gold CTA */}
+                  <button
+                    onClick={() => setView("paciente")}
+                    className="col-span-2 group flex items-center gap-4 rounded-full bg-gradient-to-r from-[#d4a332] to-[#c49028] px-6 py-3.5 text-left transition-all duration-300 hover:shadow-lg hover:shadow-[#d4a332]/25 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                      <User className="h-5 w-5 text-white" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <span className="text-sm font-bold text-white block tracking-wide">Soy Paciente</span>
+                      <span className="text-[10px] text-white/70">Accedé a tu sistema asignado</span>
+                    </div>
+                  </button>
 
-                    {/* Soy Profesional */}
-                    <button
-                      onClick={() => setView("profesional")}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-white/90 dark:bg-card/90 backdrop-blur px-3 py-2.5 transition-all duration-200 hover:scale-[1.02] border border-white/20"
-                    >
-                      <Briefcase className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
-                      <span className="text-xs font-semibold text-foreground">Soy Profesional</span>
-                    </button>
+                  {/* No soy Paciente */}
+                  <button
+                    onClick={() => setView("no-paciente")}
+                    className="group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/30 bg-white/80 dark:bg-white/10 px-4 py-2.5 transition-all duration-200 hover:border-[#d4a332]/60 hover:bg-white dark:hover:bg-white/15 hover:scale-[1.02]"
+                  >
+                    <UserX className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
+                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
+                  </button>
 
-                    {/* Soy Empresa */}
-                    <button
-                      onClick={() => setView("empresa")}
-                      className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-white/85 dark:bg-card/85 backdrop-blur px-3 py-2 transition-all duration-200 hover:scale-[1.02] border border-white/20"
-                    >
-                      <Building2 className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
-                      <span className="text-xs font-semibold text-foreground">Soy una Empresa</span>
-                    </button>
-                  </div>
+                  {/* Soy Profesional */}
+                  <button
+                    onClick={() => setView("profesional")}
+                    className="group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/30 bg-white/80 dark:bg-white/10 px-4 py-2.5 transition-all duration-200 hover:border-[#d4a332]/60 hover:bg-white dark:hover:bg-white/15 hover:scale-[1.02]"
+                  >
+                    <Briefcase className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
+                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
+                  </button>
+
+                  {/* Soy Empresa */}
+                  <button
+                    onClick={() => setView("empresa")}
+                    className="col-span-2 group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/20 bg-white/60 dark:bg-white/5 px-4 py-2 transition-all duration-200 hover:border-[#d4a332]/40 hover:bg-white/80 dark:hover:bg-white/10 hover:scale-[1.02]"
+                  >
+                    <Building2 className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
+                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
+                  </button>
+                </div>
+
+                {/* Privacy */}
+                <div className="mt-5 flex items-center justify-center gap-2">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/70" />
+                  <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/50">Tus datos están protegidos. </span>
+                  <Link to="/privacy-policy" className="text-[10px] text-[#d4a332] hover:underline font-medium">
+                    Política de Privacidad
+                  </Link>
                 </div>
               </div>
             </section>
-
-            {/* Systems Section — Image 2 */}
-            <section className="relative w-full overflow-hidden">
-              <img
-                src={sistemasImage}
-                alt="Estudio integral de la Salud Mental — Sistemas Reflexionar, Evaluar y Acompañar"
-                className="w-full h-auto object-cover"
-              />
-            </section>
-
-            {/* Privacy link */}
-            <div className="flex items-center justify-center gap-2 py-4 px-6 bg-background">
-              <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              <span className="text-xs text-muted-foreground">Tus datos están protegidos. </span>
-              <Link to="/privacy-policy" className="text-xs text-primary hover:underline font-medium">
-                Política de Privacidad
-              </Link>
-            </div>
           </div>
         )}
 
