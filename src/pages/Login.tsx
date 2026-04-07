@@ -11,6 +11,8 @@ import {
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/Logo_PSI_blanco.png";
+import heroImage from "@/assets/hero_psi_landing.png";
+import sistemasImage from "@/assets/sistemas_landing.png";
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
@@ -285,7 +287,6 @@ const Login = () => {
     );
   };
 
-  /* ═══ MAIN VIEW: Clean white, logo + 4 buttons ═══ */
   const isMainView = view === "main";
 
   return (
@@ -293,78 +294,86 @@ const Login = () => {
       {/* Dark mode toggle */}
       <button
         onClick={toggleDark}
-        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full bg-card border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
+        className="fixed top-4 right-4 z-50 h-10 w-10 rounded-full bg-card/80 backdrop-blur border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-all hover:scale-110 shadow-md"
         aria-label="Toggle dark mode"
       >
         {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
       </button>
 
       <main className="flex flex-1 flex-col">
-        {/* ═══ MAIN VIEW: Only logo + 4 buttons ═══ */}
+        {/* ═══ MAIN VIEW: Hero image + systems image + 4 buttons ═══ */}
         {isMainView && (
-          <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 animate-fade-in">
-            {/* Logo — centered, moderate size */}
-            <img
-              src={logoPsi}
-              alt="PSI PRO — Plataforma de Sistemas Interactivos"
-              className="w-[45%] max-w-[280px] mb-10 object-contain drop-shadow-lg"
-            />
+          <div className="flex flex-col animate-fade-in">
+            {/* Hero Section — Image 1 as background */}
+            <section className="relative w-full overflow-hidden">
+              <img
+                src={heroImage}
+                alt="PSI — Plataforma de Sistemas Interactivos"
+                className="w-full h-auto object-cover"
+              />
+              {/* Overlay with 4 access buttons on mobile */}
+              <div className="absolute inset-0 flex flex-col items-start justify-end p-6 bg-gradient-to-t from-black/60 via-black/20 to-transparent md:from-black/40 md:via-transparent">
+                <div className="w-full max-w-lg">
+                  <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+                    {/* Soy Paciente */}
+                    <button
+                      onClick={() => setView("paciente")}
+                      className="col-span-2 flex items-center gap-3 rounded-xl bg-white/95 dark:bg-card/95 backdrop-blur px-4 py-3 text-left transition-all duration-200 hover:scale-[1.02] hover:shadow-lg border border-white/20"
+                    >
+                      <div className="h-10 w-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                        <User className="h-5 w-5 text-primary" strokeWidth={1.8} />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-foreground block">Soy Paciente</span>
+                        <span className="text-[10px] text-muted-foreground">Accedé a tu sistema asignado</span>
+                      </div>
+                    </button>
 
-            {/* 4 action buttons — Bento grid */}
-            <div className="w-full max-w-lg">
-              <div className="grid grid-cols-2 gap-4">
-                {/* Soy Paciente — primary, spans full width */}
-                <button
-                  onClick={() => setView("paciente")}
-                  className="col-span-2 group flex items-center gap-4 rounded-2xl border-2 border-primary/30 bg-card px-6 py-5 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50"
-                >
-                  <div className="h-14 w-14 rounded-full border-2 border-primary bg-primary/10 flex items-center justify-center shadow-sm transition-transform duration-200 group-hover:scale-105 shrink-0">
-                    <User className="h-7 w-7 text-primary" strokeWidth={1.8} />
-                  </div>
-                  <div>
-                    <span className="text-base font-bold text-foreground block">Soy Paciente</span>
-                    <span className="text-xs text-muted-foreground mt-0.5 block">Accedé a tu sistema asignado</span>
-                  </div>
-                </button>
+                    {/* No soy Paciente */}
+                    <button
+                      onClick={() => setView("no-paciente")}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/90 dark:bg-card/90 backdrop-blur px-3 py-2.5 transition-all duration-200 hover:scale-[1.02] border border-white/20"
+                    >
+                      <UserX className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
+                      <span className="text-xs font-semibold text-foreground">No soy Paciente</span>
+                    </button>
 
-                {/* No soy Paciente */}
-                <button
-                  onClick={() => setView("no-paciente")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
-                    <UserX className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-                  </div>
-                  <span className="text-xs font-semibold text-foreground text-center">No soy Paciente</span>
-                </button>
+                    {/* Soy Profesional */}
+                    <button
+                      onClick={() => setView("profesional")}
+                      className="flex items-center justify-center gap-2 rounded-xl bg-white/90 dark:bg-card/90 backdrop-blur px-3 py-2.5 transition-all duration-200 hover:scale-[1.02] border border-white/20"
+                    >
+                      <Briefcase className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
+                      <span className="text-xs font-semibold text-foreground">Soy Profesional</span>
+                    </button>
 
-                {/* Soy Profesional */}
-                <button
-                  onClick={() => setView("profesional")}
-                  className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                >
-                  <div className="h-12 w-12 rounded-full border-2 border-border/60 bg-muted/20 flex items-center justify-center transition-transform group-hover:scale-105">
-                    <Briefcase className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+                    {/* Soy Empresa */}
+                    <button
+                      onClick={() => setView("empresa")}
+                      className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-white/85 dark:bg-card/85 backdrop-blur px-3 py-2 transition-all duration-200 hover:scale-[1.02] border border-white/20"
+                    >
+                      <Building2 className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
+                      <span className="text-xs font-semibold text-foreground">Soy una Empresa</span>
+                    </button>
                   </div>
-                  <span className="text-xs font-semibold text-foreground text-center">Soy Profesional</span>
-                </button>
-
-                {/* Soy Empresa — full width */}
-                <button
-                  onClick={() => setView("empresa")}
-                  className="col-span-2 group flex items-center justify-center gap-3 rounded-2xl border border-border/40 bg-card px-6 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <Building2 className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-                  <span className="text-sm font-semibold text-foreground">Soy una Empresa</span>
-                </button>
+                </div>
               </div>
-            </div>
+            </section>
+
+            {/* Systems Section — Image 2 */}
+            <section className="relative w-full overflow-hidden">
+              <img
+                src={sistemasImage}
+                alt="Estudio integral de la Salud Mental — Sistemas Reflexionar, Evaluar y Acompañar"
+                className="w-full h-auto object-cover"
+              />
+            </section>
 
             {/* Privacy link */}
-            <div className="mt-8 flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center justify-center gap-2 py-4 px-6 bg-background">
               <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-              <span>Tus datos están protegidos. </span>
-              <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
+              <span className="text-xs text-muted-foreground">Tus datos están protegidos. </span>
+              <Link to="/privacy-policy" className="text-xs text-primary hover:underline font-medium">
                 Política de Privacidad
               </Link>
             </div>
@@ -378,7 +387,6 @@ const Login = () => {
             <header className="w-full border-b border-border/20 bg-background">
               <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
-                  {/* Logo — reduced */}
                   <div className="flex items-center justify-center lg:w-[35%] mb-5 lg:mb-0">
                     <img
                       src={logoPsi}
@@ -387,7 +395,6 @@ const Login = () => {
                     />
                   </div>
 
-                  {/* Welcome text cards */}
                   <div className="lg:w-[65%] flex flex-col gap-3">
                     <div className="rounded-2xl border border-primary/15 bg-card p-5 shadow-sm">
                       <div className="flex items-center gap-3 mb-2">
@@ -436,7 +443,6 @@ const Login = () => {
 
             {/* Content area */}
             <section className="mx-auto w-full max-w-4xl px-6 py-6 lg:px-10">
-              {/* Soy Paciente → 3 system buttons */}
               {view === "paciente" && (
                 <div className="animate-fade-in">
                   {renderBackButton()}
@@ -449,7 +455,6 @@ const Login = () => {
                 </div>
               )}
 
-              {/* No soy Paciente → 3 questions */}
               {view === "no-paciente" && (
                 <div className="animate-fade-in">
                   {renderBackButton()}
@@ -480,7 +485,6 @@ const Login = () => {
               {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
                 renderQuestionView(view)}
 
-              {/* Soy Profesional */}
               {view === "profesional" && (
                 <div className="animate-fade-in mx-auto max-w-md">
                   {renderBackButton()}
@@ -504,7 +508,6 @@ const Login = () => {
                 </div>
               )}
 
-              {/* Soy una Empresa */}
               {view === "empresa" && (
                 <div className="animate-fade-in mx-auto max-w-md">
                   {renderBackButton()}
@@ -527,7 +530,7 @@ const Login = () => {
               )}
             </section>
 
-            {/* Stats, avales, FAQ — shown after interaction */}
+            {/* Stats, avales, FAQ */}
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <ProfessionalStats />
