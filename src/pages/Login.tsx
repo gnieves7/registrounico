@@ -300,69 +300,75 @@ const Login = () => {
       </button>
 
       <main className="flex flex-1 flex-col">
-        {/* ═══ MAIN VIEW: Hero image + buttons below ═══ */}
+        {/* ═══ MAIN VIEW: Hero image + animated buttons ═══ */}
         {isMainView && (
-          <div className="flex flex-col animate-fade-in">
-            {/* Hero Image — full width, untouched */}
-            <section className="w-full">
+          <div className="flex flex-col">
+            {/* Hero Image — full width, seamless */}
+            <section className="relative w-full">
               <img
                 src={heroImage}
                 alt="PSI — Plataforma de Sistemas Interactivos"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover animate-fade-in"
               />
+              {/* Seamless gradient fade into buttons section */}
+              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
             </section>
 
-            {/* Access buttons — styled to match hero's gold/warm palette */}
-            <section className="w-full bg-gradient-to-b from-[#f8f5f0] to-[#f0ece4] dark:from-[#1a1815] dark:to-[#15130f] px-5 py-6 md:px-8 md:py-8">
-              <div className="mx-auto max-w-xl">
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Soy Paciente — primary gold CTA */}
-                  <button
-                    onClick={() => setView("paciente")}
-                    className="col-span-2 group flex items-center gap-4 rounded-full bg-gradient-to-r from-[#d4a332] to-[#c49028] px-6 py-3.5 text-left transition-all duration-300 hover:shadow-lg hover:shadow-[#d4a332]/25 hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                      <User className="h-5 w-5 text-white" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-white block tracking-wide">Soy Paciente</span>
-                      <span className="text-[10px] text-white/70">Accedé a tu sistema asignado</span>
-                    </div>
-                  </button>
+            {/* Access buttons — seamless continuation with staggered animations */}
+            <section className="w-full bg-gradient-to-b from-[#f8f5f0] via-[#f4efe8] to-[#eee8de] dark:from-[#1a1815] dark:via-[#17140f] dark:to-[#13110d] px-5 pb-8 pt-2 md:px-8 -mt-1">
+              <div className="mx-auto max-w-lg space-y-3">
+                {/* Soy Paciente — primary gold CTA */}
+                <button
+                  onClick={() => setView("paciente")}
+                  className="w-full group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-6 py-4 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
+                  style={{ animationDelay: "0.1s", animationFillMode: "both" }}
+                >
+                  <div className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <User className="h-5 w-5 text-white" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-sm font-bold text-white block tracking-wide">Soy Paciente</span>
+                    <span className="text-[11px] text-white/70">Accedé a tu sistema asignado</span>
+                  </div>
+                  <ChevronDown className="h-4 w-4 text-white/50 -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
 
-                  {/* No soy Paciente */}
+                {/* Row: No soy Paciente + Soy Profesional */}
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setView("no-paciente")}
-                    className="group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/30 bg-white/80 dark:bg-white/10 px-4 py-2.5 transition-all duration-200 hover:border-[#d4a332]/60 hover:bg-white dark:hover:bg-white/15 hover:scale-[1.02]"
+                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    style={{ animationDelay: "0.25s", animationFillMode: "both" }}
                   >
-                    <UserX className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
+                    <UserX className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
                     <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
                   </button>
 
-                  {/* Soy Profesional */}
                   <button
                     onClick={() => setView("profesional")}
-                    className="group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/30 bg-white/80 dark:bg-white/10 px-4 py-2.5 transition-all duration-200 hover:border-[#d4a332]/60 hover:bg-white dark:hover:bg-white/15 hover:scale-[1.02]"
+                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    style={{ animationDelay: "0.35s", animationFillMode: "both" }}
                   >
-                    <Briefcase className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
+                    <Briefcase className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
                     <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
-                  </button>
-
-                  {/* Soy Empresa */}
-                  <button
-                    onClick={() => setView("empresa")}
-                    className="col-span-2 group flex items-center justify-center gap-2 rounded-full border border-[#d4a332]/20 bg-white/60 dark:bg-white/5 px-4 py-2 transition-all duration-200 hover:border-[#d4a332]/40 hover:bg-white/80 dark:hover:bg-white/10 hover:scale-[1.02]"
-                  >
-                    <Building2 className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332]" strokeWidth={1.8} />
-                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
                   </button>
                 </div>
 
-                {/* Privacy */}
-                <div className="mt-5 flex items-center justify-center gap-2">
-                  <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/70" />
-                  <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/50">Tus datos están protegidos. </span>
-                  <Link to="/privacy-policy" className="text-[10px] text-[#d4a332] hover:underline font-medium">
+                {/* Soy Empresa */}
+                <button
+                  onClick={() => setView("empresa")}
+                  className="w-full group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/15 bg-white/70 dark:bg-white/5 backdrop-blur-sm px-4 py-3 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white/90 hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                  style={{ animationDelay: "0.45s", animationFillMode: "both" }}
+                >
+                  <Building2 className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                  <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
+                </button>
+
+                {/* Privacy — subtle */}
+                <div className="flex items-center justify-center gap-2 pt-2 animate-fade-in" style={{ animationDelay: "0.6s", animationFillMode: "both" }}>
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/50" />
+                  <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/40">Tus datos están protegidos. </span>
+                  <Link to="/privacy-policy" className="text-[10px] text-[#d4a332]/80 hover:text-[#d4a332] hover:underline font-medium transition-colors">
                     Política de Privacidad
                   </Link>
                 </div>
