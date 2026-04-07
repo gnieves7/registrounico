@@ -387,7 +387,7 @@ const Login = () => {
                   <div className="flex items-center justify-center lg:w-[35%] mb-5 lg:mb-0">
                     <img
                       src={logoPsi}
-                      alt="PSI PRO"
+                      alt=".PSI. — Plataforma de Sistemas Interactivos"
                       className="w-[45%] max-w-[280px] lg:w-full lg:max-w-[320px] object-contain drop-shadow-lg"
                     />
                   </div>
