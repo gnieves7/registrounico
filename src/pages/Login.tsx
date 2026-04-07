@@ -435,7 +435,7 @@ const Login = () => {
                       </div>
                       <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
                         <p>
-                          Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
+                          Estas disciplinas se reúnen en <strong className="text-foreground">.PSI. — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
                         </p>
                         <p>
                           Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
