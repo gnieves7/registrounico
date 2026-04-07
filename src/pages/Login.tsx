@@ -317,7 +317,7 @@ const Login = () => {
                 src={heroImage}
                 alt=".PSI. — Plataforma de Sistemas Interactivos"
                 className="w-full h-auto object-cover animate-fade-in will-change-transform"
-                style={{ transform: `translateY(${scrollY * 0.3}px) scale(${1 + scrollY * 0.0003})` }}
+                style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
               />
               {/* Seamless gradient fade into buttons section */}
               <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
