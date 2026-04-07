@@ -6,12 +6,13 @@ import Footer from "@/components/layout/Footer";
 import {
   ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar,
   ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart,
-  Search, Gavel, User, UserX, Briefcase, ChevronDown, Moon, Sun
+  Search, User, UserX, Briefcase, ChevronDown, Moon, Sun
 } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 import logoPsi from "@/assets/logo_psi.png";
 import heroImage from "@/assets/hero_psi_landing.png";
+import heroAccessImage from "@/assets/hero_access.png";
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
@@ -386,69 +387,56 @@ const Login = () => {
           </div>
         )}
 
-        {/* ═══ AFTER SELECTING: Show welcome + content ═══ */}
+        {/* ═══ AFTER SELECTING: Show welcome + content with hero image ═══ */}
         {!isMainView && (
           <>
-            {/* Compact header with logo + welcome */}
-            <header className="w-full border-b border-border/20 bg-background">
-              <div className="mx-auto max-w-6xl px-6 py-6 lg:px-10 lg:py-8">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12">
-                  <div className="flex items-center justify-center lg:w-[35%] mb-5 lg:mb-0">
-                    <img
-                      src={logoPsi}
-                      alt=".PSI. — Plataforma de Sistemas Interactivos"
-                      className="w-[45%] max-w-[280px] lg:w-full lg:max-w-[320px] object-contain drop-shadow-lg"
-                    />
+            {/* Hero access image with parallax */}
+            <section className="relative w-full overflow-hidden">
+              <img
+                src={heroAccessImage}
+                alt=".PSI. — Acceso a la plataforma"
+                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover animate-fade-in will-change-transform"
+                style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 px-4">
+                <img src={logoPsi} alt=".PSI." className="h-12 md:h-16 object-contain drop-shadow-lg" />
+                <p className="text-xs text-muted-foreground/80 font-medium tracking-wide">Plataforma de Sistemas Interactivos</p>
+              </div>
+            </section>
+
+            {/* Welcome cards */}
+            <section className="w-full bg-background px-5 pb-4 pt-6 md:px-8">
+              <div className="mx-auto max-w-4xl">
+                <div className="flex flex-col lg:flex-row gap-3 mb-4">
+                  <div className="lg:flex-1 rounded-2xl border border-primary/15 bg-card p-5 shadow-sm animate-fade-in" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Heart className="h-4 w-4 text-primary" />
+                      </div>
+                      <h1 className="text-base font-bold text-foreground font-serif">¡Un gusto saludarte!</h1>
+                    </div>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
+                    </p>
                   </div>
-
-                  <div className="lg:w-[65%] flex flex-col gap-3">
-                    <div className="rounded-2xl border border-primary/15 bg-card p-5 shadow-sm">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <Heart className="h-4 w-4 text-primary" />
-                        </div>
-                        <h1 className="text-base font-bold text-foreground font-serif lg:text-lg">¡Un gusto saludarte!</h1>
+                  <div className="lg:flex-1 rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
+                        <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
                       </div>
-                      <p className="text-sm leading-relaxed text-muted-foreground">
-                        Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
-                      </p>
+                      <h2 className="text-base font-bold text-foreground font-serif">Mi práctica y PSI</h2>
                     </div>
-
-                    <div className="rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
-                          <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
-                        </div>
-                        <h2 className="text-base font-bold text-foreground font-serif">Mi práctica</h2>
-                      </div>
-                      <p className="text-sm leading-relaxed text-muted-foreground">
-                        Mi práctica se orienta al cuidado de la Salud Mental, integrando la complejidad de tres campos complementarios: la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong>.
-                      </p>
-                    </div>
-
-                    <div className="rounded-2xl border border-[hsl(200,50%,80%)]/40 bg-card p-5 shadow-sm">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="h-9 w-9 rounded-full bg-[hsl(200,50%,90%)] flex items-center justify-center shrink-0">
-                          <Gavel className="h-4 w-4 text-[hsl(200,60%,30%)]" />
-                        </div>
-                        <h2 className="text-base font-bold text-foreground font-serif">PSI</h2>
-                      </div>
-                      <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
-                        <p>
-                          Estas disciplinas se reúnen en <strong className="text-foreground">.PSI. — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
-                        </p>
-                        <p>
-                          Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
+                      Mi práctica integra la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong> en <strong className="text-foreground">.PSI.</strong>
+                    </p>
                   </div>
                 </div>
               </div>
-            </header>
+            </section>
 
             {/* Content area */}
-            <section className="mx-auto w-full max-w-4xl px-6 py-6 lg:px-10">
+            <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
               {view === "paciente" && (
                 <div className="animate-fade-in">
                   {renderBackButton()}
