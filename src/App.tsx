@@ -71,7 +71,7 @@ const App = () => (
               <Route path="/symbolic-awards" element={<SymbolicAwards />} />
               <Route path="/telegram" element={<TelegramCenter />} />
               {/* Admin routes */}
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="/case-formulation" element={<CaseFormulation />} />
               <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
               <Route path="/narrative-analysis" element={<NarrativeAnalysis />} />
