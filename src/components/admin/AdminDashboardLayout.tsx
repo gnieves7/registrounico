@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import logoPsi from "@/assets/Logo_PSI_blanco.png";
+import logoPsi from "@/assets/logo_psi.png";
 
 export type AdminSection = "dashboard" | "users" | "tests" | "reports" | "notifications" | "settings";
 
