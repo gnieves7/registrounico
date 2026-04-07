@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -105,6 +105,14 @@ const Login = () => {
   const navigate = useNavigate();
   const [view, setView] = useState<View>("main");
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (user && !isLoading && isApproved) {
@@ -303,15 +311,16 @@ const Login = () => {
         {/* ═══ MAIN VIEW: Hero image + animated buttons ═══ */}
         {isMainView && (
           <div className="flex flex-col">
-            {/* Hero Image — full width, seamless */}
-            <section className="relative w-full">
+            {/* Hero Image — parallax effect */}
+            <section ref={heroRef} className="relative w-full overflow-hidden">
               <img
                 src={heroImage}
-                alt="PSI — Plataforma de Sistemas Interactivos"
-                className="w-full h-auto object-cover animate-fade-in"
+                alt=".PSI. — Plataforma de Sistemas Interactivos"
+                className="w-full h-auto object-cover animate-fade-in will-change-transform"
+                style={{ transform: `translateY(${scrollY * 0.3}px) scale(${1 + scrollY * 0.0003})` }}
               />
               {/* Seamless gradient fade into buttons section */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
             </section>
 
             {/* Access buttons — seamless continuation with staggered animations */}
@@ -387,7 +396,7 @@ const Login = () => {
                   <div className="flex items-center justify-center lg:w-[35%] mb-5 lg:mb-0">
                     <img
                       src={logoPsi}
-                      alt="PSI PRO"
+                      alt=".PSI. — Plataforma de Sistemas Interactivos"
                       className="w-[45%] max-w-[280px] lg:w-full lg:max-w-[320px] object-contain drop-shadow-lg"
                     />
                   </div>
@@ -426,7 +435,7 @@ const Login = () => {
                       </div>
                       <div className="space-y-1.5 text-sm leading-relaxed text-muted-foreground">
                         <p>
-                          Estas disciplinas se reúnen en <strong className="text-foreground">PSI — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
+                          Estas disciplinas se reúnen en <strong className="text-foreground">.PSI. — Plataforma de Sistemas Interactivos</strong>, un ecosistema digital de aplicaciones para el soporte clínico, herramientas de psicodiagnóstico y el seguimiento psicoforense.
                         </p>
                         <p>
                           Tres <strong className="text-foreground">Sistemas Estructurados y Complementarios</strong>: 1. Sistema Reflexionar · 2. Sistema Evaluar · 3. Sistema Acompañar.
