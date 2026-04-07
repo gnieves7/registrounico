@@ -6,7 +6,7 @@ import Footer from "@/components/layout/Footer";
 import {
   ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar,
   ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart,
-  Search, Gavel, User, UserX, Briefcase, ChevronDown, Moon, Sun
+  Search, User, UserX, Briefcase, ChevronDown, Moon, Sun
 } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
