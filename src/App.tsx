@@ -14,7 +14,7 @@ import Psychodiagnostic from "./pages/Psychodiagnostic";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
 import Documents from "./pages/Documents";
-import Admin from "./pages/Admin";
+
 import ProfessionalProfile from "./pages/ProfessionalProfile";
 import Forensic from "./pages/Forensic";
 import AnxietyRecord from "./pages/AnxietyRecord";
