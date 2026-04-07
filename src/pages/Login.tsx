@@ -105,6 +105,14 @@ const Login = () => {
   const navigate = useNavigate();
   const [view, setView] = useState<View>("main");
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
+  const [scrollY, setScrollY] = useState(0);
+  const heroRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (user && !isLoading && isApproved) {
