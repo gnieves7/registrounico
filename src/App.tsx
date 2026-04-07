@@ -14,7 +14,7 @@ import Psychodiagnostic from "./pages/Psychodiagnostic";
 import LauraChat from "./pages/LauraChat";
 import Sessions from "./pages/Sessions";
 import Documents from "./pages/Documents";
-import Admin from "./pages/Admin";
+
 import ProfessionalProfile from "./pages/ProfessionalProfile";
 import Forensic from "./pages/Forensic";
 import AnxietyRecord from "./pages/AnxietyRecord";
@@ -49,9 +49,10 @@ const App = () => (
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
             <Route path="/pending-approval" element={<PendingApproval />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
             {/* Protected routes with sidebar layout */}
+
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardHome />} />
               <Route path="/psychobiography" element={<Psychobiography />} />
@@ -70,7 +71,7 @@ const App = () => (
               <Route path="/symbolic-awards" element={<SymbolicAwards />} />
               <Route path="/telegram" element={<TelegramCenter />} />
               {/* Admin routes */}
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="/case-formulation" element={<CaseFormulation />} />
               <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
               <Route path="/narrative-analysis" element={<NarrativeAnalysis />} />

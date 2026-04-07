@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
-import logoPsi from "@/assets/logo_psi.png";
+
 import heroImage from "@/assets/hero_psi_landing.png";
 import heroAccessImage from "@/assets/hero_access.png";
 import logoALPJF from "@/assets/logo_ALPJF.png";
@@ -395,21 +395,17 @@ const Login = () => {
               <img
                 src={heroAccessImage}
                 alt=".PSI. — Acceso a la plataforma"
-                className="w-full h-[40vh] sm:h-[45vh] md:h-[50vh] object-cover animate-fade-in will-change-transform"
+                className="w-full h-[30vh] sm:h-[35vh] md:h-[45vh] object-cover animate-fade-in will-change-transform"
                 style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-              <div className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 px-4">
-                <img src={logoPsi} alt=".PSI." className="h-12 md:h-16 object-contain drop-shadow-lg" />
-                <p className="text-xs text-muted-foreground/80 font-medium tracking-wide">Plataforma de Sistemas Interactivos</p>
-              </div>
             </section>
 
             {/* Welcome cards */}
             <section className="w-full bg-background px-5 pb-4 pt-6 md:px-8">
               <div className="mx-auto max-w-4xl">
                 <div className="flex flex-col lg:flex-row gap-3 mb-4">
-                  <div className="lg:flex-1 rounded-2xl border border-primary/15 bg-card p-5 shadow-sm animate-fade-in" style={{ animationDelay: "0.1s", animationFillMode: "both" }}>
+                  <div className="lg:flex-1 rounded-2xl border border-primary/15 bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.15s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                         <Heart className="h-4 w-4 text-primary" />
@@ -420,7 +416,7 @@ const Login = () => {
                       Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
                     </p>
                   </div>
-                  <div className="lg:flex-1 rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+                  <div className="lg:flex-1 rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.35s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
                         <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
