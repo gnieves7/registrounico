@@ -176,7 +176,7 @@ export function AppSidebar() {
             <img
               src={currentSystem?.logo || logoPsi}
               alt={currentSystem?.label || "PSI"}
-              className={`shrink-0 rounded-full ${currentSystem ? "h-9 w-9 object-contain p-0.5" : "h-full w-full object-cover"}`}
+              className="h-full w-full shrink-0 rounded-full object-cover"
             />
           </div>
           {!collapsed && (
