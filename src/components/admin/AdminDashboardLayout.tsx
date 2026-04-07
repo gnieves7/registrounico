@@ -70,7 +70,7 @@ export function AdminDashboardLayout({
       >
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-border px-4 py-4">
-          <img src={logoPsi} alt="PSI" className="h-8 w-8 rounded-full object-cover bg-primary/80 p-1" />
+          <img src={logoPsi} alt=".PSI." className="h-8 w-8 rounded-full object-cover" />
           {!collapsed && (
             <div className="flex flex-col leading-none">
               <span className="text-sm font-bold text-foreground">Panel Admin</span>
