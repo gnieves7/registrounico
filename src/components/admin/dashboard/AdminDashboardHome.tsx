@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Brain, Moon, Thermometer, Award } from "lucide-react";
+import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Brain, Moon, Thermometer, Award, Inbox } from "lucide-react";
+import { SkeletonMetricCards, SkeletonChart } from "@/components/ui/skeleton";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
@@ -225,20 +227,30 @@ export function AdminDashboardHome() {
     { label: "Nuevos registros (24h)", value: metrics.newUsersToday, icon: UserPlus, color: "text-purple-500" },
   ];
 
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <SkeletonMetricCards />
+        <div className="grid gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3"><SkeletonChart /></div>
+          <div className="lg:col-span-2"><SkeletonChart /></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Metric Cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         {metricCards.map((m) => (
           <Card key={m.label}>
-            <CardContent className="flex items-center gap-3 py-5">
+            <CardContent className="flex items-center gap-3 px-5 py-4">
               <div className="rounded-xl bg-muted p-2.5">
                 <m.icon className={`h-5 w-5 ${m.color}`} />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">
-                  {loading ? "—" : m.value}
-                </p>
+                <p className="text-2xl font-bold text-foreground">{m.value}</p>
                 <p className="text-xs text-muted-foreground">{m.label}</p>
               </div>
             </CardContent>
