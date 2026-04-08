@@ -391,14 +391,14 @@ const Login = () => {
         {!isMainView && (
           <>
             {/* Hero access image with parallax */}
-            <section className="relative w-full overflow-hidden max-h-[35vh] md:max-h-[32vh] lg:max-h-[30vh]">
+            <section className="relative w-full overflow-hidden">
               <img
                 src={heroAccessImage}
                 alt=".PSI. — Acceso a la plataforma"
-                className="w-full h-full object-cover object-center animate-fade-in will-change-transform"
-                style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
+                className="w-full h-auto block animate-fade-in will-change-transform"
+                style={{ transform: `translateY(${scrollY * 0.08}px)` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
             </section>
 
             {/* Welcome cards */}
