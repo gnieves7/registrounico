@@ -174,32 +174,14 @@ export function AdminTestsSection() {
         <TabsContent value="in-progress">
           <Card>
             <CardContent className="pt-4">
-              {loading ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-4 py-3 border-b border-border/30 animate-pulse">
-                      <div className="flex-1 space-y-1.5"><div className="h-3.5 w-32 bg-muted rounded" /><div className="h-3 w-48 bg-muted rounded" /></div>
-                      <div className="h-5 w-16 bg-muted rounded-full" />
-                    </div>
-                  ))}
-                </div>
-              ) : <TestTable items={inProgress} showProgress />}
+              {loading ? <p className="text-center py-8 text-muted-foreground">Cargando…</p> : <TestTable items={inProgress} showProgress />}
             </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="completed">
           <Card>
             <CardContent className="pt-4">
-              {loading ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-4 py-3 border-b border-border/30 animate-pulse">
-                      <div className="flex-1 space-y-1.5"><div className="h-3.5 w-32 bg-muted rounded" /><div className="h-3 w-48 bg-muted rounded" /></div>
-                      <div className="h-5 w-16 bg-muted rounded-full" />
-                    </div>
-                  ))}
-                </div>
-              ) : <TestTable items={completed} />}
+              {loading ? <p className="text-center py-8 text-muted-foreground">Cargando…</p> : <TestTable items={completed} />}
             </CardContent>
           </Card>
         </TabsContent>

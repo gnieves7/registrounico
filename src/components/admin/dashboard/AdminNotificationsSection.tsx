@@ -93,23 +93,9 @@ export function AdminNotificationsSection() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex items-start gap-3 rounded-lg border border-border/30 p-3 animate-pulse">
-                  <div className="flex-1 space-y-2">
-                    <div className="h-3.5 w-40 bg-muted rounded" />
-                    <div className="h-3 w-64 bg-muted rounded" />
-                    <div className="h-2.5 w-24 bg-muted rounded" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <p className="text-center py-8 text-muted-foreground">Cargando…</p>
           ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Bell className="h-12 w-12 text-muted-foreground/30 mb-3" />
-              <p className="text-sm font-medium text-foreground">Sin notificaciones</p>
-              <p className="text-xs text-muted-foreground mt-1">Las notificaciones aparecerán aquí cuando haya actividad relevante.</p>
-            </div>
+            <p className="text-center py-12 text-muted-foreground">Sin notificaciones</p>
           ) : (
             <div className="space-y-2">
               {filtered.map((n) => (
