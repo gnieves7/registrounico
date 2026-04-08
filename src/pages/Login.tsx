@@ -313,12 +313,12 @@ const Login = () => {
         {isMainView && (
           <div className="flex flex-col">
             {/* Hero Image — parallax effect */}
-            <section ref={heroRef} className="relative w-full overflow-hidden max-h-[50vh] md:max-h-[45vh] lg:max-h-[40vh]">
+            <section ref={heroRef} className="relative w-full overflow-hidden">
               <img
                 src={heroImage}
                 alt=".PSI. — Plataforma de Sistemas Interactivos"
-                className="w-full h-full object-cover object-center animate-fade-in will-change-transform"
-                style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
+                className="w-full h-auto block animate-fade-in will-change-transform"
+                style={{ transform: `translateY(${scrollY * 0.08}px)` }}
               />
               {/* Seamless gradient fade into buttons section */}
               <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
