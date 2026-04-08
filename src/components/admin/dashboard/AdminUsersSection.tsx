@@ -167,6 +167,7 @@ export function AdminUsersSection() {
               <p className="text-xs text-muted-foreground mt-1">No se encontraron usuarios con los filtros aplicados.</p>
             </div>
           ) : (
+            <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Usuario</TableHead>
@@ -177,7 +178,7 @@ export function AdminUsersSection() {
               </TableHeader>
               <TableBody>
                 {filtered.map((p) => (
-                  <TableRow key={p.id}>
+                  <TableRow key={p.id} className="hover:bg-muted/50 transition-colors">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9">
@@ -207,13 +208,7 @@ export function AdminUsersSection() {
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" disabled={updatingStatus === p.user_id} onClick={() => updateStatus(p.user_id, false)}>
                             <XCircle className="h-4 w-4" />
                           </Button>
-          ) : filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
-              <p className="text-sm font-medium text-foreground">Sin resultados</p>
-              <p className="text-xs text-muted-foreground mt-1">No se encontraron usuarios con los filtros aplicados.</p>
-            </div>
-          ) : (
+                        ) : (
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" disabled={updatingStatus === p.user_id} onClick={() => updateStatus(p.user_id, true)}>
                             <CheckCircle2 className="h-4 w-4" />
                           </Button>
