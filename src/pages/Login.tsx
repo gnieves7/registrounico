@@ -326,52 +326,52 @@ const Login = () => {
 
             {/* Access buttons — seamless continuation with staggered animations */}
             <section className="w-full bg-gradient-to-b from-[#f8f5f0] via-[#f4efe8] to-[#eee8de] dark:from-[#1a1815] dark:via-[#17140f] dark:to-[#13110d] px-5 pb-8 pt-2 md:px-8 -mt-1">
-              <div className="mx-auto max-w-lg space-y-3">
+              <div className="mx-auto max-w-lg md:max-w-2xl space-y-3 md:space-y-4">
                 {/* Soy Paciente — primary gold CTA */}
                 <button
                   onClick={() => setView("paciente")}
-                  className="w-full group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-6 py-4 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
+                  className="w-full group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-6 py-4 md:px-8 md:py-5 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
                   style={{ animationDelay: "0.1s", animationFillMode: "both" }}
                 >
-                  <div className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
-                    <User className="h-5 w-5 text-white" strokeWidth={2} />
+                  <div className="h-11 w-11 md:h-13 md:w-13 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <User className="h-5 w-5 md:h-6 md:w-6 text-white" strokeWidth={2} />
                   </div>
                   <div className="flex-1">
-                    <span className="text-sm font-bold text-white block tracking-wide">Soy Paciente</span>
-                    <span className="text-[11px] text-white/70">Accedé a tu sistema asignado</span>
+                    <span className="text-sm md:text-base font-bold text-white block tracking-wide">Soy Paciente</span>
+                    <span className="text-[11px] md:text-xs text-white/70">Accedé a tu sistema asignado</span>
                   </div>
-                  <ChevronDown className="h-4 w-4 text-white/50 -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ChevronDown className="h-4 w-4 md:h-5 md:w-5 text-white/50 -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
 
                 {/* Row: No soy Paciente + Soy Profesional */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <button
                     onClick={() => setView("no-paciente")}
-                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 md:px-6 md:py-4.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
                     style={{ animationDelay: "0.25s", animationFillMode: "both" }}
                   >
-                    <UserX className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
+                    <UserX className="h-4 w-4 md:h-5 md:w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                    <span className="text-xs md:text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
                   </button>
 
                   <button
                     onClick={() => setView("profesional")}
-                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    className="group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-4 py-3.5 md:px-6 md:py-4.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
                     style={{ animationDelay: "0.35s", animationFillMode: "both" }}
                   >
-                    <Briefcase className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                    <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
+                    <Briefcase className="h-4 w-4 md:h-5 md:w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                    <span className="text-xs md:text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
                   </button>
                 </div>
 
                 {/* Soy Empresa */}
                 <button
                   onClick={() => setView("empresa")}
-                  className="w-full group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/15 bg-white/70 dark:bg-white/5 backdrop-blur-sm px-4 py-3 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white/90 hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                  className="w-full group flex items-center justify-center gap-2.5 rounded-2xl border border-[#d4a332]/15 bg-white/70 dark:bg-white/5 backdrop-blur-sm px-4 py-3 md:px-6 md:py-4 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white/90 hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
                   style={{ animationDelay: "0.45s", animationFillMode: "both" }}
                 >
-                  <Building2 className="h-4 w-4 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                  <span className="text-xs font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
+                  <Building2 className="h-4 w-4 md:h-5 md:w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                  <span className="text-xs md:text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
                 </button>
 
                 {/* Privacy — subtle */}
@@ -417,15 +417,37 @@ const Login = () => {
                     </p>
                   </div>
                   <div className="lg:flex-1 rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.35s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-3">
                       <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
                         <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
                       </div>
-                      <h2 className="text-base font-bold text-foreground font-serif">Mi práctica y PSI</h2>
+                      <h2 className="text-base font-bold text-foreground font-serif">.PSI. — Plataforma de Sistemas Interactivos</h2>
                     </div>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      Mi práctica integra la <strong className="text-foreground">psicoterapia</strong>, el <strong className="text-foreground">psicodiagnóstico</strong> y el abordaje <strong className="text-foreground">psico-forense</strong> en <strong className="text-foreground">.PSI.</strong>
-                    </p>
+                    <div className="text-sm leading-relaxed text-muted-foreground space-y-3">
+                      <p>
+                        <strong className="text-foreground">.PSI.</strong> ofrece una atención psicológica única y personalizada que combina tres estructuras bajo <strong className="text-foreground">Sistemas Interactivos</strong>:
+                      </p>
+                      <ol className="list-decimal list-inside space-y-0.5 pl-1">
+                        <li><strong className="text-foreground">Sistema Reflexionar</strong> (área clínica)</li>
+                        <li><strong className="text-foreground">Sistema Evaluar</strong> (área psicodiagnóstica)</li>
+                        <li><strong className="text-foreground">Sistema Acompañar</strong> (área de psicología forense)</li>
+                      </ol>
+                      <p>
+                        La integración de las tres áreas no es una suma de módulos separados sino un <strong className="text-foreground">flujo de retroalimentación continuo</strong> donde cada nivel informa y reencuadra a los demás.
+                      </p>
+                      <p>
+                        El <strong className="text-foreground">eje clínico</strong> es el suelo epistemológico: establece el vínculo, recoge la historia, detecta el estado mental actual y orienta la demanda. Sin ese encuadre, los instrumentos psicodiagnósticos se convierten en datos descontextualizados y los conceptos forenses se vacían de sujeto.
+                      </p>
+                      <p>
+                        El <strong className="text-foreground">eje psicodiagnóstico</strong> traduce la escucha clínica a lenguaje estructurado: el MMPI-2 operacionaliza las hipótesis clínicas, el Rorschach (SC-Exner) profundiza en la organización de la personalidad y el procesamiento perceptual, y la integración de perfiles permite construir una hipótesis diagnóstica sólida (CIE-10/11). Es el puente entre la singularidad clínica y el lenguaje comunicable a terceros.
+                      </p>
+                      <p>
+                        El <strong className="text-foreground">eje forense</strong> recibe esa hipótesis y la somete a las exigencias del campo jurídico: credibilidad del relato, imputabilidad, daño psíquico, competencia parental, riesgo, etc. Aquí opera un criterio epistémico diferente —la certeza probable, el estándar de fiabilidad pericial— que exige que las conclusiones sean defendibles bajo contradicción.
+                      </p>
+                      <p className="italic text-foreground/80">
+                        La integración virtuosa ocurre cuando ningún eje actúa solo: el forense sin clínica produce tecnocracia sin subjetividad; el clínico sin psicodiagnóstico carece de anclaje empírico; el psicodiagnóstico sin clínica es psicometría sin sujeto.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
