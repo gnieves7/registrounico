@@ -3,10 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { ReportStepperForm } from "@/components/admin/reports/ReportStepperForm";
 
 interface PdfReport {
   id: string;
@@ -19,6 +20,7 @@ interface PdfReport {
 export function AdminReportsSection() {
   const [reports, setReports] = useState<PdfReport[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchReports();
@@ -48,14 +50,39 @@ export function AdminReportsSection() {
     URL.revokeObjectURL(url);
   };
 
+  if (showForm) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Nuevo Informe Profesional
+          </h2>
+          <Button variant="outline" size="sm" onClick={() => setShowForm(false)}>
+            ← Volver a la lista
+          </Button>
+        </div>
+        <ReportStepperForm />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold flex items-center gap-2">
+          <FileText className="h-5 w-5" />
+          Informes PDF
+        </h2>
+        <Button size="sm" className="gap-1.5" onClick={() => setShowForm(true)}>
+          <Plus className="h-4 w-4" />
+          Nuevo informe
+        </Button>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Informes PDF generados
-          </CardTitle>
+          <CardTitle className="text-base">Informes generados</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -64,13 +91,13 @@ export function AdminReportsSection() {
             <div className="text-center py-12 text-muted-foreground">
               <FileText className="h-12 w-12 mx-auto mb-3 opacity-30" />
               <p>No se han generado informes PDF todavía.</p>
-              <p className="text-xs mt-1">Los informes se generan desde la sección de Tests completados.</p>
+              <p className="text-xs mt-1">Usá el botón "Nuevo informe" para crear uno.</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Test</TableHead>
+                  <TableHead>Tipo</TableHead>
                   <TableHead>Paciente</TableHead>
                   <TableHead className="hidden md:table-cell">Fecha</TableHead>
                   <TableHead className="text-right">Acción</TableHead>
