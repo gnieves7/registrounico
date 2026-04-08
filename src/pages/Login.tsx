@@ -313,11 +313,11 @@ const Login = () => {
         {isMainView && (
           <div className="flex flex-col">
             {/* Hero Image — parallax effect */}
-            <section ref={heroRef} className="relative w-full overflow-hidden">
+            <section ref={heroRef} className="relative w-full overflow-hidden max-h-[50vh] md:max-h-[45vh] lg:max-h-[40vh]">
               <img
                 src={heroImage}
                 alt=".PSI. — Plataforma de Sistemas Interactivos"
-                className="w-full h-auto object-cover animate-fade-in will-change-transform"
+                className="w-full h-full object-cover object-center animate-fade-in will-change-transform"
                 style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
               />
               {/* Seamless gradient fade into buttons section */}
@@ -391,11 +391,11 @@ const Login = () => {
         {!isMainView && (
           <>
             {/* Hero access image with parallax */}
-            <section className="relative w-full overflow-hidden">
+            <section className="relative w-full overflow-hidden max-h-[35vh] md:max-h-[32vh] lg:max-h-[30vh]">
               <img
                 src={heroAccessImage}
                 alt=".PSI. — Acceso a la plataforma"
-                className="w-full h-[30vh] sm:h-[35vh] md:h-[45vh] object-cover animate-fade-in will-change-transform"
+                className="w-full h-full object-cover object-center animate-fade-in will-change-transform"
                 style={{ transform: `translateY(${scrollY * 0.15}px) scale(${1 + scrollY * 0.00015})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -435,18 +435,40 @@ const Login = () => {
                       <p>
                         La integración de las tres áreas no es una suma de módulos separados sino un <strong className="text-foreground">flujo de retroalimentación continuo</strong> donde cada nivel informa y reencuadra a los demás.
                       </p>
-                      <p>
-                        El <strong className="text-foreground">eje clínico</strong> es el suelo epistemológico: establece el vínculo, recoge la historia, detecta el estado mental actual y orienta la demanda. Sin ese encuadre, los instrumentos psicodiagnósticos se convierten en datos descontextualizados y los conceptos forenses se vacían de sujeto.
-                      </p>
-                      <p>
-                        El <strong className="text-foreground">eje psicodiagnóstico</strong> traduce la escucha clínica a lenguaje estructurado: el MMPI-2 operacionaliza las hipótesis clínicas, el Rorschach (SC-Exner) profundiza en la organización de la personalidad y el procesamiento perceptual, y la integración de perfiles permite construir una hipótesis diagnóstica sólida (CIE-10/11). Es el puente entre la singularidad clínica y el lenguaje comunicable a terceros.
-                      </p>
-                      <p>
-                        El <strong className="text-foreground">eje forense</strong> recibe esa hipótesis y la somete a las exigencias del campo jurídico: credibilidad del relato, imputabilidad, daño psíquico, competencia parental, riesgo, etc. Aquí opera un criterio epistémico diferente —la certeza probable, el estándar de fiabilidad pericial— que exige que las conclusiones sean defendibles bajo contradicción.
-                      </p>
-                      <p className="italic text-foreground/80">
-                        La integración virtuosa ocurre cuando ningún eje actúa solo: el forense sin clínica produce tecnocracia sin subjetividad; el clínico sin psicodiagnóstico carece de anclaje empírico; el psicodiagnóstico sin clínica es psicometría sin sujeto.
-                      </p>
+                      <Accordion type="single" collapsible className="w-full mt-2">
+                        <AccordionItem value="eje-clinico" className="border-border/30">
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                            Eje Clínico
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                            El eje clínico es el suelo epistemológico: establece el vínculo, recoge la historia, detecta el estado mental actual y orienta la demanda. Sin ese encuadre, los instrumentos psicodiagnósticos se convierten en datos descontextualizados y los conceptos forenses se vacían de sujeto.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="eje-psicodiagnostico" className="border-border/30">
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                            Eje Psicodiagnóstico
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                            Traduce la escucha clínica a lenguaje estructurado: el MMPI-2 operacionaliza las hipótesis clínicas, el Rorschach (SC-Exner) profundiza en la organización de la personalidad y el procesamiento perceptual, y la integración de perfiles permite construir una hipótesis diagnóstica sólida (CIE-10/11). Es el puente entre la singularidad clínica y el lenguaje comunicable a terceros.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="eje-forense" className="border-border/30">
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                            Eje Forense
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                            Recibe la hipótesis diagnóstica y la somete a las exigencias del campo jurídico: credibilidad del relato, imputabilidad, daño psíquico, competencia parental, riesgo, etc. Aquí opera un criterio epistémico diferente —la certeza probable, el estándar de fiabilidad pericial— que exige que las conclusiones sean defendibles bajo contradicción.
+                          </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="integracion" className="border-border/30">
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
+                            Integración virtuosa
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed italic">
+                            La integración virtuosa ocurre cuando ningún eje actúa solo: el forense sin clínica produce tecnocracia sin subjetividad; el clínico sin psicodiagnóstico carece de anclaje empírico; el psicodiagnóstico sin clínica es psicometría sin sujeto.
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     </div>
                   </div>
                 </div>
