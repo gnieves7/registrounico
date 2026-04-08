@@ -1170,6 +1170,54 @@ export type Database = {
         }
         Relationships: []
       }
+      report_drafts: {
+        Row: {
+          case_caption: string | null
+          court_division: string | null
+          court_name: string | null
+          created_at: string
+          cuij: string | null
+          current_step: number
+          form_data: Json
+          id: string
+          patient_id: string
+          report_title: string | null
+          report_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          case_caption?: string | null
+          court_division?: string | null
+          court_name?: string | null
+          created_at?: string
+          cuij?: string | null
+          current_step?: number
+          form_data?: Json
+          id?: string
+          patient_id: string
+          report_title?: string | null
+          report_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          case_caption?: string | null
+          court_division?: string | null
+          court_name?: string | null
+          created_at?: string
+          cuij?: string | null
+          current_step?: number
+          form_data?: Json
+          id?: string
+          patient_id?: string
+          report_title?: string | null
+          report_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       scl90r_tests: {
         Row: {
           clinical_interpretation: string | null
