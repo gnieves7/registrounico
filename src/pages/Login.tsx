@@ -432,7 +432,7 @@ const Login = () => {
             {/* ═══ SERVICIOS ═══ */}
             <section id="servicios" className="w-full bg-background py-12 md:py-16">
               <div className="mx-auto max-w-[1100px] px-5 md:px-8">
-                <h2 className="text-center text-2xl font-bold text-foreground mb-2 md:text-3xl" style={{ maxFontSize: "32px" }}>
+                <h2 className="text-center text-2xl font-bold text-foreground mb-2 md:text-3xl">
                   Servicios Profesionales
                 </h2>
                 <p className="text-center text-sm text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed">
