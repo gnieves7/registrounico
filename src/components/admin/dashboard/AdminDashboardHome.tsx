@@ -329,10 +329,10 @@ export function AdminDashboardHome() {
           </CardHeader>
           <CardContent className="max-h-[280px] overflow-y-auto space-y-2">
             {recentActivity.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">Sin actividad reciente</p>
+              <AdminEmptyState icon={Inbox} title="Sin actividad reciente" description="La actividad de los pacientes se registrará automáticamente." />
             ) : (
               recentActivity.map((a) => (
-                <div key={a.id} className="flex items-start gap-2 rounded-md border border-border p-2 text-xs">
+                <div key={a.id} className="flex items-start gap-2 rounded-md border-b border-border/30 p-2 text-xs hover:bg-muted/50 transition-colors last:border-0">
                   <span>{eventIcons[a.event_type] || "📌"}</span>
                   <div className="flex-1 min-w-0">
                     <span className="font-medium">
