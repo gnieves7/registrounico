@@ -148,8 +148,18 @@ export function AdminUsersSection() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-muted-foreground text-center py-8">Cargando…</p>
-          ) : (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 py-3 border-b border-border/30 animate-pulse">
+                  <div className="h-9 w-9 rounded-full bg-muted shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3.5 w-32 bg-muted rounded" />
+                    <div className="h-3 w-48 bg-muted rounded" />
+                  </div>
+                  <div className="h-5 w-16 bg-muted rounded-full" />
+                </div>
+              ))}
+            </div>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -191,7 +201,13 @@ export function AdminUsersSection() {
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" disabled={updatingStatus === p.user_id} onClick={() => updateStatus(p.user_id, false)}>
                             <XCircle className="h-4 w-4" />
                           </Button>
-                        ) : (
+          ) : filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
+              <p className="text-sm font-medium text-foreground">Sin resultados</p>
+              <p className="text-xs text-muted-foreground mt-1">No se encontraron usuarios con los filtros aplicados.</p>
+            </div>
+          ) : (
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" disabled={updatingStatus === p.user_id} onClick={() => updateStatus(p.user_id, true)}>
                             <CheckCircle2 className="h-4 w-4" />
                           </Button>
