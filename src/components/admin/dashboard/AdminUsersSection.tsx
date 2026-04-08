@@ -160,7 +160,13 @@ export function AdminUsersSection() {
                 </div>
               ))}
             </div>
-            <Table>
+          ) : filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Users className="h-12 w-12 text-muted-foreground/30 mb-3" />
+              <p className="text-sm font-medium text-foreground">Sin resultados</p>
+              <p className="text-xs text-muted-foreground mt-1">No se encontraron usuarios con los filtros aplicados.</p>
+            </div>
+          ) : (
               <TableHeader>
                 <TableRow>
                   <TableHead>Usuario</TableHead>
