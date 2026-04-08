@@ -55,7 +55,7 @@ export function ReportStepperForm() {
         patient_id: selectedPatient,
         report_type: reportType,
         current_step: currentStep,
-        form_data: formData as Record<string, unknown>,
+        form_data: JSON.parse(JSON.stringify(formData)),
         status: "draft" as const,
         cuij: formData.cuij || null,
         court_name: formData.courtName || null,
