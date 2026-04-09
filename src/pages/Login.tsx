@@ -312,19 +312,28 @@ const Login = () => {
         {/* ═══ MAIN VIEW: Hero image + animated buttons ═══ */}
         {isMainView && (
           <div className="flex flex-col">
-            {/* Hero Section — two-column on desktop, stacked on mobile */}
             <section
               ref={heroRef}
-              className="relative w-full bg-gradient-to-b from-[#f8f5f0] via-[#f4efe8] to-[#eee8de] dark:from-[#1a1815] dark:via-[#17140f] dark:to-[#13110d]"
+              className="relative w-full bg-white dark:bg-[#0d0d0d] min-h-[80vh] flex items-center justify-center"
             >
-              <div className="flex flex-col md:flex-row md:items-center md:min-h-[80vh] md:max-h-[90vh] px-[5%] gap-8 py-8 md:py-0">
-                {/* Left column — text + buttons (55%) */}
-                <div className="flex flex-col justify-center md:flex-[0_0_55%] space-y-4 md:space-y-5">
+              <div className="flex flex-col items-center w-full max-w-lg px-6 py-16 md:py-20 space-y-8">
+                {/* Title */}
+                <div className="text-center space-y-2 animate-fade-in" style={{ animationDelay: "0s", animationFillMode: "both" }}>
+                  <h1 className="text-6xl md:text-7xl font-black tracking-tight text-[#1a1a1a] dark:text-white" style={{ fontFamily: "'Georgia', serif" }}>
+                    . PSI .
+                  </h1>
+                  <p className="text-sm md:text-base font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332]">
+                    Plataforma de Sistemas Interactivos
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="w-full space-y-4">
                   {/* Soy Paciente — primary gold CTA */}
                   <button
                     onClick={() => setView("paciente")}
                     className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-8 py-3.5 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in min-w-[180px] min-h-[48px]"
-                    style={{ animationDelay: "0.1s", animationFillMode: "both" }}
+                    style={{ animationDelay: "0.15s", animationFillMode: "both" }}
                   >
                     <div className="h-11 w-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
                       <User className="h-5 w-5 text-white" strokeWidth={2} />
@@ -340,8 +349,8 @@ const Login = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setView("no-paciente")}
-                      className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-w-[180px] min-h-[48px]"
-                      style={{ animationDelay: "0.25s", animationFillMode: "both" }}
+                      className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
+                      style={{ animationDelay: "0.3s", animationFillMode: "both" }}
                     >
                       <UserX className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
                       <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
@@ -349,8 +358,8 @@ const Login = () => {
 
                     <button
                       onClick={() => setView("profesional")}
-                      className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-white/90 dark:bg-white/8 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-w-[180px] min-h-[48px]"
-                      style={{ animationDelay: "0.35s", animationFillMode: "both" }}
+                      className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
+                      style={{ animationDelay: "0.4s", animationFillMode: "both" }}
                     >
                       <Briefcase className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
                       <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
@@ -360,31 +369,21 @@ const Login = () => {
                   {/* Soy Empresa */}
                   <button
                     onClick={() => setView("empresa")}
-                    className="w-full group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/15 bg-white/70 dark:bg-white/5 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white/90 hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-w-[180px] min-h-[48px]"
-                    style={{ animationDelay: "0.45s", animationFillMode: "both" }}
+                    className="w-full group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/15 bg-[#faf8f5] dark:bg-white/5 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
+                    style={{ animationDelay: "0.5s", animationFillMode: "both" }}
                   >
                     <Building2 className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
                     <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
                   </button>
-
-                  {/* Privacy — subtle */}
-                  <div className="flex items-center justify-center gap-2 pt-1 animate-fade-in" style={{ animationDelay: "0.6s", animationFillMode: "both" }}>
-                    <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/50" />
-                    <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/40">Tus datos están protegidos. </span>
-                    <Link to="/privacy-policy" className="text-[10px] text-[#d4a332]/80 hover:text-[#d4a332] hover:underline font-medium transition-colors">
-                      Política de Privacidad
-                    </Link>
-                  </div>
                 </div>
 
-                {/* Right column — hero image (45%) */}
-                <div className="flex items-center justify-center md:flex-[0_0_45%]">
-                  <img
-                    src={heroImage}
-                    alt=".PSI. — Plataforma de Sistemas Interactivos"
-                    className="w-[90%] max-h-[40vh] md:w-full md:max-w-[500px] md:max-h-[60vh] object-contain mx-auto animate-fade-in will-change-transform"
-                    style={{ transform: `translateY(${scrollY * 0.08}px)` }}
-                  />
+                {/* Privacy — subtle */}
+                <div className="flex items-center justify-center gap-2 animate-fade-in" style={{ animationDelay: "0.65s", animationFillMode: "both" }}>
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/50" />
+                  <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/40">Tus datos están protegidos. </span>
+                  <Link to="/privacy-policy" className="text-[10px] text-[#d4a332]/80 hover:text-[#d4a332] hover:underline font-medium transition-colors">
+                    Política de Privacidad
+                  </Link>
                 </div>
               </div>
             </section>
