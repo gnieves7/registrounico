@@ -207,6 +207,42 @@
   }
 }
 
+/* ─── Golden shimmer animation for .PSI. title ─── */
+@keyframes golden-shimmer {
+  0%, 100% {
+    text-shadow: 0 0 8px rgba(212, 163, 50, 0.3), 0 0 20px rgba(212, 163, 50, 0.1);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(212, 163, 50, 0.6), 0 0 40px rgba(212, 163, 50, 0.2), 0 0 60px rgba(212, 163, 50, 0.1);
+  }
+}
+
+.golden-shimmer {
+  animation: golden-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes golden-text-sweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.golden-text-sweep {
+  background: linear-gradient(90deg, #1a1a1a 0%, #1a1a1a 35%, #d4a332 50%, #1a1a1a 65%, #1a1a1a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: golden-text-sweep 4s ease-in-out infinite;
+}
+
+.dark .golden-text-sweep {
+  background: linear-gradient(90deg, #fff 0%, #fff 35%, #d4a332 50%, #fff 65%, #fff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ─── 1. Global CSS polish: anti-aliasing, uniformity, depth ─── */
 @layer base {
   * {
