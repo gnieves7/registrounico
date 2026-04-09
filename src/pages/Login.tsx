@@ -319,7 +319,7 @@ const Login = () => {
               <div className="flex flex-col items-center w-full max-w-lg px-6 py-16 md:py-20 space-y-8">
                 {/* Title */}
                 <div className="text-center space-y-2 animate-fade-in" style={{ animationDelay: "0s", animationFillMode: "both" }}>
-                  <h1 className="text-6xl md:text-7xl font-black tracking-tight text-[#1a1a1a] dark:text-white" style={{ fontFamily: "'Georgia', serif" }}>
+                  <h1 className="text-6xl md:text-7xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
                     . PSI .
                   </h1>
                   <p className="text-sm md:text-base font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332]">
