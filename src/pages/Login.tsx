@@ -393,25 +393,87 @@ const Login = () => {
         {/* ═══ AFTER SELECTING: Show welcome + content with hero image ═══ */}
         {!isMainView && (
           <>
-            {/* Hero access image with parallax */}
-            <section className="relative w-full overflow-hidden">
-              <img
-                src={heroAccessImage}
-                alt=".PSI. — Acceso a la plataforma"
-                className="w-full h-auto block animate-fade-in will-change-transform"
-                style={{ transform: `translateY(${scrollY * 0.08}px)` }}
-              />
-              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/50 to-transparent" />
+            {/* Hero robot image with interactive spheres */}
+            <section className="relative w-full bg-white dark:bg-[#0d0d0d] overflow-hidden">
+              <div className="relative mx-auto max-w-lg px-4 pt-8 pb-4">
+                {/* Robot image */}
+                <div className="relative">
+                  <img
+                    src={heroRobotImage}
+                    alt=".PSI. — Plataforma de Sistemas Interactivos"
+                    className="w-full h-auto block animate-fade-in"
+                  />
+
+                  {/* Overlay buttons on spheres — positioned over the white bars in the image */}
+                  {/* Reflexionar — orange sphere (left) */}
+                  <button
+                    onClick={() => handleGoogleLogin("/dashboard", "reflexionar")}
+                    className="absolute flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-orange-200/60 px-3 py-1.5 shadow-lg shadow-orange-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20 hover:bg-white active:scale-95 group"
+                    style={{ left: "5%", bottom: "24%", minWidth: "120px" }}
+                  >
+                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span className="text-[11px] font-bold text-[#8B5E00] group-hover:text-orange-700 transition-colors">Reflexionar</span>
+                  </button>
+
+                  {/* Evaluar — blue sphere (center) */}
+                  <button
+                    onClick={() => handleGoogleLogin("/dashboard", "evaluar")}
+                    className="absolute flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-blue-200/60 px-3 py-1.5 shadow-lg shadow-blue-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 hover:bg-white active:scale-95 group"
+                    style={{ left: "50%", transform: "translateX(-50%)", bottom: "14%", minWidth: "110px" }}
+                  >
+                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span className="text-[11px] font-bold text-blue-700 group-hover:text-blue-800 transition-colors">Evaluar</span>
+                  </button>
+
+                  {/* Acompañar — green sphere (right) */}
+                  <button
+                    onClick={() => handleGoogleLogin("/dashboard", "acompanar")}
+                    className="absolute flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-green-200/60 px-3 py-1.5 shadow-lg shadow-green-500/10 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-green-500/20 hover:bg-white active:scale-95 group"
+                    style={{ right: "5%", bottom: "24%", minWidth: "120px" }}
+                  >
+                    <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                    <span className="text-[11px] font-bold text-green-700 group-hover:text-green-800 transition-colors">Acompañar</span>
+                  </button>
+                </div>
+
+                {/* Back button */}
+                <div className="mt-4">
+                  <button
+                    onClick={() => setView("main")}
+                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <ArrowLeft className="h-4 w-4" /> Volver al inicio
+                  </button>
+                </div>
+              </div>
+
+              {/* Subtle orange accent line */}
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
             </section>
 
-            {/* Welcome cards */}
-            <section className="w-full bg-background px-5 pb-4 pt-6 md:px-8">
+            {/* Welcome cards — white bg with subtle orange details */}
+            <section className="w-full bg-white dark:bg-[#0d0d0d] px-5 pb-4 pt-6 md:px-8">
               <div className="mx-auto max-w-4xl">
                 <div className="flex flex-col lg:flex-row gap-3 mb-4">
-                  <div className="lg:flex-1 rounded-2xl border border-primary/15 bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.15s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
+                  <div className="lg:flex-1 rounded-2xl border border-orange-200/30 bg-white dark:bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.15s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <Heart className="h-4 w-4 text-primary" />
+                      <div className="h-9 w-9 rounded-full bg-orange-50 dark:bg-primary/10 flex items-center justify-center shrink-0">
+                        <Heart className="h-4 w-4 text-orange-500 dark:text-primary" />
                       </div>
                       <h1 className="text-base font-bold text-foreground font-serif">¡Un gusto saludarte!</h1>
                     </div>
@@ -419,10 +481,10 @@ const Login = () => {
                       Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
                     </p>
                   </div>
-                  <div className="lg:flex-1 rounded-2xl border border-[hsl(45,60%,80%)]/40 bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.35s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
+                  <div className="lg:flex-1 rounded-2xl border border-orange-200/20 bg-white dark:bg-card p-5 shadow-sm opacity-0 animate-fade-in" style={{ animationDelay: "0.35s", animationFillMode: "forwards", animationDuration: "0.5s" }}>
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="h-9 w-9 rounded-full bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
-                        <Search className="h-4 w-4 text-[hsl(45,70%,30%)]" />
+                      <div className="h-9 w-9 rounded-full bg-orange-50 dark:bg-[hsl(45,60%,90%)] flex items-center justify-center shrink-0">
+                        <Search className="h-4 w-4 text-orange-600 dark:text-[hsl(45,70%,30%)]" />
                       </div>
                       <h2 className="text-base font-bold text-foreground font-serif">.PSI. — Plataforma de Sistemas Interactivos</h2>
                     </div>
@@ -478,13 +540,12 @@ const Login = () => {
               </div>
             </section>
 
-            {/* Content area */}
-            <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10">
+            {/* Content area for sub-views */}
+            <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10 bg-white dark:bg-[#0d0d0d]">
               {view === "paciente" && (
-                <div className="animate-fade-in">
-                  {renderBackButton()}
-                  <p className="mb-6 text-center text-sm text-muted-foreground">
-                    Seleccioná el sistema al que necesitás acceder:
+                <div className="animate-fade-in text-center">
+                  <p className="mb-4 text-sm text-muted-foreground">
+                    También podés seleccionar tu sistema directamente:
                   </p>
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                     {systemCards.map((system) => renderPatientSystemButton(system))}
@@ -494,24 +555,23 @@ const Login = () => {
 
               {view === "no-paciente" && (
                 <div className="animate-fade-in">
-                  {renderBackButton()}
                   <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
                     <button onClick={() => setView("question-terapia")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(30,40%,80%)]">
-                      <Flame className="h-8 w-8 text-[hsl(30,50%,35%)]" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-orange-300/50">
+                      <Flame className="h-8 w-8 text-orange-500" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
                       <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
                     </button>
                     <button onClick={() => setView("question-psicodiagnostico")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(225,50%,75%)]">
-                      <BookOpen className="h-8 w-8 text-[hsl(225,60%,40%)]" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-300/50">
+                      <BookOpen className="h-8 w-8 text-blue-500" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                       <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                     </button>
                     <button onClick={() => setView("question-forense")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[hsl(100,40%,70%)]">
-                      <Scale className="h-8 w-8 text-[hsl(100,50%,30%)]" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-300/50">
+                      <Scale className="h-8 w-8 text-green-600" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                       <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                     </button>
@@ -524,10 +584,9 @@ const Login = () => {
 
               {view === "profesional" && (
                 <div className="animate-fade-in mx-auto max-w-md">
-                  {renderBackButton()}
                   <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                    <div className="h-14 w-14 rounded-full bg-[hsl(14,70%,52%)] flex items-center justify-center">
-                      <Briefcase className="h-7 w-7 text-white" />
+                    <div className="h-14 w-14 rounded-full bg-orange-100 dark:bg-[hsl(14,70%,52%)] flex items-center justify-center">
+                      <Briefcase className="h-7 w-7 text-orange-600 dark:text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Profesional</h3>
                     <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
@@ -547,14 +606,13 @@ const Login = () => {
 
               {view === "empresa" && (
                 <div className="animate-fade-in mx-auto max-w-md">
-                  {renderBackButton()}
                   <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                    <Building2 className="h-12 w-12 text-primary" />
+                    <Building2 className="h-12 w-12 text-orange-500" />
                     <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
                     <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
                     <div className="w-full space-y-3 mt-2">
                       <a href={EMPRESA_EMAIL}
-                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-orange-200/30 bg-orange-50 dark:bg-primary/5 px-4 py-3 text-sm font-medium text-orange-700 dark:text-primary transition-all hover:bg-orange-100 dark:hover:bg-primary/10 active:scale-[0.98]">
                         <Mail className="h-4 w-4" /> Enviar Email
                       </a>
                       <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
@@ -568,13 +626,13 @@ const Login = () => {
             </section>
 
             {/* Stats, avales, FAQ */}
-            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
+            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <ProfessionalStats />
               </div>
             </section>
 
-            <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 animate-fade-in">
+            <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-5 shadow-sm">
                 <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
                 <div className="flex items-center justify-center gap-8 md:gap-12 flex-wrap">
@@ -584,7 +642,7 @@ const Login = () => {
               </div>
             </section>
 
-            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 animate-fade-in">
+            <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
                 <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
@@ -603,9 +661,9 @@ const Login = () => {
             </section>
 
             {/* Quote */}
-            <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10">
-              <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-card px-8 py-7 shadow-sm">
-                <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-primary/40" />
+            <section className="mx-auto w-full max-w-5xl px-6 pb-4 lg:px-10 bg-white dark:bg-[#0d0d0d]">
+              <div className="relative overflow-hidden rounded-2xl border border-orange-200/20 bg-card px-8 py-7 shadow-sm">
+                <div className="absolute -left-2 top-0 bottom-0 w-1.5 rounded-full bg-orange-400/40" />
                 <p className="text-base leading-relaxed text-foreground/85 md:text-lg md:leading-relaxed font-serif italic">
                   ✨ "Los senderos del inconsciente son sinuosos y enigmáticos, agradables, poderosos y en ocasiones siniestros. Recorrerlo es la única manera de descubrirte y poder lograr la paz mental. Es un viaje largo y puedo acompañarte. Seré tu guía, el tiempo que vos decidas"
                 </p>
@@ -613,14 +671,14 @@ const Login = () => {
             </section>
 
             {/* Privacy */}
-            <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
+            <div className="mx-auto mb-8 flex max-w-5xl flex-col items-center gap-2 rounded-xl bg-white dark:bg-card border border-border/30 px-5 py-3 mx-6 lg:mx-10 shadow-sm">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
+                <ShieldCheck className="h-4 w-4 shrink-0 text-orange-500 dark:text-primary" />
                 <p className="text-xs text-muted-foreground">Tus datos están protegidos y son confidenciales.</p>
               </div>
               <p className="text-xs text-muted-foreground">
                 Al ingresar, aceptás los{" "}
-                <Link to="/privacy-policy" className="text-primary hover:underline font-medium">
+                <Link to="/privacy-policy" className="text-orange-600 dark:text-primary hover:underline font-medium transition-colors">
                   Términos de Uso, Condiciones del Servicio y Políticas de Privacidad
                 </Link>.
               </p>
