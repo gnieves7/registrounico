@@ -321,7 +321,7 @@ const Login = () => {
                 style={{ transform: `translateY(${scrollY * 0.08}px)` }}
               />
               {/* Seamless gradient fade into buttons section */}
-              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#f8f5f0] dark:from-[#1a1815] to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#f8f5f0] via-[#f8f5f0]/60 dark:from-[#1a1815] dark:via-[#1a1815]/60 to-transparent" />
             </section>
 
             {/* Access buttons — seamless continuation with staggered animations */}
@@ -398,7 +398,7 @@ const Login = () => {
                 className="w-full h-auto block animate-fade-in will-change-transform"
                 style={{ transform: `translateY(${scrollY * 0.08}px)` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/50 to-transparent" />
             </section>
 
             {/* Welcome cards */}
