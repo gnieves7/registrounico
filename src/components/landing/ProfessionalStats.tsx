@@ -17,6 +17,15 @@ const statIcons: Record<string, typeof Flame> = {
   informes_psicodiagnosticos: BookOpen,
 };
 
+const statColors: Record<string, { bg: string; border: string; text: string }> = {
+  terapia: { bg: "bg-sky-50 dark:bg-sky-950/30", border: "border-sky-300/50", text: "text-sky-600 dark:text-sky-400" },
+  camara_gesell: { bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-300/50", text: "text-emerald-600 dark:text-emerald-400" },
+  informes_forenses: { bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-300/50", text: "text-emerald-600 dark:text-emerald-400" },
+  informes_psicodiagnosticos: { bg: "bg-sky-50 dark:bg-sky-950/30", border: "border-sky-300/50", text: "text-sky-600 dark:text-sky-400" },
+};
+
+const defaultColor = { bg: "bg-sky-50 dark:bg-sky-950/30", border: "border-sky-300/50", text: "text-sky-600 dark:text-sky-400" };
+
 const useCountUp = (target: number, duration = 2000, startDelay = 0) => {
   const [count, setCount] = useState(0);
   const hasStarted = useRef(false);
@@ -44,6 +53,7 @@ const AnimatedStat = ({ stat, index }: { stat: Stat; index: number }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { count, start } = useCountUp(stat.stat_value, 2000, index * 200);
   const Icon = statIcons[stat.stat_key] || Flame;
+  const colors = statColors[stat.stat_key] || defaultColor;
 
   useEffect(() => {
     const el = ref.current;
@@ -58,10 +68,9 @@ const AnimatedStat = ({ stat, index }: { stat: Stat; index: number }) => {
 
   return (
     <div ref={ref} className="flex flex-col items-center animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
-      <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-primary/30 bg-primary/5 md:h-28 md:w-28 group hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 hover:scale-105 cursor-default">
-        {/* Background contextual icon */}
-        <Icon className="absolute h-12 w-12 text-primary/[0.06] md:h-14 md:w-14" strokeWidth={1} />
-        <span className="relative text-2xl font-bold text-primary md:text-3xl tabular-nums">
+      <div className={`relative flex h-24 w-24 items-center justify-center rounded-full border-2 ${colors.border} ${colors.bg} md:h-28 md:w-28 group hover:scale-105 transition-all duration-300 cursor-default`}>
+        <Icon className={`absolute h-12 w-12 opacity-[0.08] md:h-14 md:w-14 ${colors.text}`} strokeWidth={1} />
+        <span className={`relative text-2xl font-bold md:text-3xl tabular-nums ${colors.text}`}>
           {count}
         </span>
       </div>
