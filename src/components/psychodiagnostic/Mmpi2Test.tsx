@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, CheckCircle2, ArrowRight, ArrowLeft, Save, AlertTriangle } from "lucide-react";
+import { FileText, CheckCircle2, ArrowRight, ArrowLeft, Save, AlertTriangle, Trash2 } from "lucide-react";
 import { usePsychodiagnostic, type Mmpi2Test as Mmpi2TestType } from "@/hooks/usePsychodiagnostic";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 interface Mmpi2TestProps {
   existingTest?: Mmpi2TestType;
@@ -73,6 +77,19 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
         newMap.set(questionNumber, answer);
       }
       return newMap;
+    });
+  };
+
+  const handleClearTest = async () => {
+    if (!currentTest) return;
+    setResponses(new Map());
+    setCurrentPage(0);
+    setVisitedPages(new Set([0]));
+    await updateMmpi2Test.mutateAsync({
+      id: currentTest.id,
+      responses: [] as unknown as { question_number: number; answer: 'V' | 'F' }[],
+      total_questions_answered: 0,
+      is_complete: false,
     });
   };
 
@@ -257,6 +274,27 @@ export const Mmpi2Test = ({ existingTest, onComplete }: Mmpi2TestProps) => {
           </div>
 
           <div className="flex gap-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" disabled={responses.size === 0}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Limpiar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Limpiar todas las respuestas?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta acción borrará las {responses.size} respuestas registradas. Deberás completar el inventario desde cero.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleClearTest}>Sí, limpiar todo</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
             <Button 
               variant="secondary" 
               onClick={handleSaveProgress}
