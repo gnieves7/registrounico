@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Brain, FileText, Clock, CheckCircle2, Activity, UserCheck } from "lucide-react";
+import { Brain, FileText, Clock, CheckCircle2, Activity, UserCheck, Plus, History, Trash2 } from "lucide-react";
 import { MbtiTest } from "@/components/psychodiagnostic/MbtiTest";
 import { Mmpi2Test } from "@/components/psychodiagnostic/Mmpi2Test";
 import { Mcmi3Test } from "@/components/psychodiagnostic/Mcmi3Test";
@@ -161,24 +161,58 @@ const Psychodiagnostic = () => {
                 <CardDescription className="text-xs">Inventario Multifásico de Personalidad</CardDescription>
               </CardHeader>
               <CardContent>
-                {mmpi2Loading ? <p className="text-muted-foreground text-sm">Cargando...</p> : latestMmpi2 ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      {latestMmpi2.is_complete ? (
-                        <Badge variant="default"><CheckCircle2 className="h-3 w-3 mr-1" />Completado</Badge>
-                      ) : (
-                        <Badge variant="secondary">{latestMmpi2.total_questions_answered}/567</Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">{format(new Date(latestMmpi2.test_date), "PP", { locale: es })}</p>
-                    <Button variant="outline" className="w-full text-sm transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => handleStartTest('mmpi2', latestMmpi2.id)}>
-                      {latestMmpi2.is_complete ? "Ver Respuestas" : "Continuar"}
+                {mmpi2Loading ? <p className="text-muted-foreground text-sm">Cargando...</p> : (
+                  <div className="space-y-3">
+                    {/* Latest test */}
+                    {latestMmpi2 && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          {latestMmpi2.is_complete ? (
+                            <Badge variant="default"><CheckCircle2 className="h-3 w-3 mr-1" />Completado</Badge>
+                          ) : (
+                            <Badge variant="secondary">{latestMmpi2.total_questions_answered}/567</Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">{format(new Date(latestMmpi2.test_date), "PP", { locale: es })}</p>
+                        <Button variant="outline" className="w-full text-sm transition-all duration-200 hover:scale-105 active:scale-95" onClick={() => handleStartTest('mmpi2', latestMmpi2.id)}>
+                          {latestMmpi2.is_complete ? "Ver Respuestas" : "Continuar"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* History of previous tests */}
+                    {mmpi2Tests.length > 1 && (
+                      <div className="border-t pt-2 space-y-1">
+                        <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+                          <History className="h-3 w-3" /> Administraciones anteriores
+                        </p>
+                        {mmpi2Tests.slice(1).map(test => (
+                          <button
+                            key={test.id}
+                            onClick={() => handleStartTest('mmpi2', test.id)}
+                            className="w-full flex items-center justify-between text-xs px-2 py-1.5 rounded-md hover:bg-muted/50 transition-colors"
+                          >
+                            <span className="text-muted-foreground">{format(new Date(test.test_date), "PP", { locale: es })}</span>
+                            {test.is_complete ? (
+                              <Badge variant="outline" className="text-[10px] h-5"><CheckCircle2 className="h-2.5 w-2.5 mr-0.5" />Completo</Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-[10px] h-5">{test.total_questions_answered}/567</Badge>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* New test button */}
+                    <Button 
+                      size="sm" 
+                      variant={latestMmpi2 ? "outline" : "default"}
+                      className="w-full text-sm transition-all duration-200 hover:scale-105 active:scale-95" 
+                      onClick={() => handleStartTest('mmpi2', "new")}
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                      {latestMmpi2 ? "Nueva administración" : "Comenzar"}
                     </Button>
-                  </div>
-                ) : (
-                  <div className="text-center py-3">
-                    <p className="text-muted-foreground text-sm mb-2">No realizado</p>
-                    <Button size="sm" onClick={() => handleStartTest('mmpi2', "new")} className="transition-all duration-200 hover:scale-105 active:scale-95">Comenzar</Button>
                   </div>
                 )}
               </CardContent>
