@@ -29,6 +29,7 @@ export function AdminTestResultsModal({
 }: AdminTestResultsModalProps) {
   const [testData, setTestData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [mmpiGender, setMmpiGender] = useState<'male' | 'female'>('male');
 
   useEffect(() => {
     if (!open || !testId) return;
