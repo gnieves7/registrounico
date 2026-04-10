@@ -544,7 +544,7 @@ ${page5}
                 <select
                   className="w-full mt-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={gender}
-                  onChange={(e) => setGender(e.target.value as 'male' | 'female')}
+                  onChange={(e) => handleGenderChange(e.target.value)}
                 >
                   <option value="male">Hombres</option>
                   <option value="female">Mujeres</option>
