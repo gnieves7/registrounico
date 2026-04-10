@@ -27,6 +27,8 @@ interface Mmpi2ProfileAnalysisProps {
   responses: Mmpi2Response[];
   totalAnswered: number;
   isComplete: boolean;
+  gender?: 'male' | 'female';
+  onGenderChange?: (gender: 'male' | 'female') => void;
 }
 
 const SCALE_ICONS: Record<string, typeof Activity> = {
@@ -34,8 +36,14 @@ const SCALE_ICONS: Record<string, typeof Activity> = {
   Pa: AlertTriangle, Pt: Zap, Sc: Brain, Ma: Activity, Si: User,
 };
 
-export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: Mmpi2ProfileAnalysisProps) => {
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete, gender: externalGender, onGenderChange }: Mmpi2ProfileAnalysisProps) => {
+  const [internalGender, setInternalGender] = useState<'male' | 'female'>('male');
+  const gender = externalGender ?? internalGender;
+  const handleGenderChange = (v: string) => {
+    const g = v as 'male' | 'female';
+    if (onGenderChange) onGenderChange(g);
+    else setInternalGender(g);
+  };
 
   const analysis = useMemo(() => {
     if (responses.length < 100) return null;
@@ -150,24 +158,31 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
         </AlertDescription>
       </Alert>
 
-      {/* Gender selection for norms */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium">Baremos:</span>
-        <Select value={gender} onValueChange={(v) => setGender(v as 'male' | 'female')}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Hombres</SelectItem>
-            <SelectItem value="female">Mujeres</SelectItem>
-          </SelectContent>
-        </Select>
-        {omissions > 0 && (
-          <Badge variant="secondary" className="text-xs">
-            ? (Omisiones): {omissions}
-          </Badge>
-        )}
-      </div>
+      {/* Gender selection for norms - only show if not controlled externally */}
+      {!onGenderChange && (
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium">Baremos:</span>
+          <Select value={gender} onValueChange={(v) => handleGenderChange(v as 'male' | 'female')}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Hombres</SelectItem>
+              <SelectItem value="female">Mujeres</SelectItem>
+            </SelectContent>
+          </Select>
+          {omissions > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              ? (Omisiones): {omissions}
+            </Badge>
+          )}
+        </div>
+      )}
+      {onGenderChange && omissions > 0 && (
+        <Badge variant="secondary" className="text-xs">
+          ? (Omisiones): {omissions}
+        </Badge>
+      )}
 
       <Tabs defaultValue="chart" className="space-y-3">
         <TabsList className="grid w-full grid-cols-6">
@@ -184,7 +199,7 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
             responses={responses}
             totalAnswered={totalAnswered}
             gender={gender}
-            onGenderChange={setGender}
+            onGenderChange={handleGenderChange as (gender: 'male' | 'female') => void}
           />
         </TabsContent>
 

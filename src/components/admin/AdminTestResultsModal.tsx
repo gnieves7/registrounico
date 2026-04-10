@@ -5,7 +5,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Brain, FileText } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BarChart3, Brain, FileText, Users } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Mmpi2ProfileAnalysis } from "./Mmpi2ProfileAnalysis";
@@ -28,6 +29,7 @@ export function AdminTestResultsModal({
 }: AdminTestResultsModalProps) {
   const [testData, setTestData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [mmpiGender, setMmpiGender] = useState<'male' | 'female'>('male');
 
   useEffect(() => {
     if (!open || !testId) return;
@@ -81,38 +83,62 @@ export function AdminTestResultsModal({
               {testType === "MMPI-2" && (() => {
                 const responses = (testData.responses as Json) as { question_number: number; answer: 'V' | 'F' }[];
                 return (
-                  <Tabs defaultValue="analysis" className="space-y-3">
-                    <TabsList>
-                      <TabsTrigger value="analysis" className="gap-1">
-                        <Brain className="h-3.5 w-3.5" />
-                        Análisis
-                      </TabsTrigger>
-                      <TabsTrigger value="report" className="gap-1">
-                        <FileText className="h-3.5 w-3.5" />
-                        Informe PDF
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="analysis">
-                      <Mmpi2ProfileAnalysis
-                        responses={responses}
-                        totalAnswered={testData.total_questions_answered || 0}
-                        isComplete={testData.is_complete || false}
-                      />
-                    </TabsContent>
-                    <TabsContent value="report">
-                      <Mmpi2ReportGenerator
-                        testId={testId}
-                        patientId={userId}
-                        patientName={userName}
-                        responses={responses}
-                        totalAnswered={testData.total_questions_answered || 0}
-                        isComplete={testData.is_complete || false}
-                        testDate={testData.test_date || testData.created_at}
-                        clinicalInterpretation={testData.clinical_interpretation}
-                        clinicalNotes={testData.clinical_notes}
-                      />
-                    </TabsContent>
-                  </Tabs>
+                  <div className="space-y-3">
+                    {/* Unified Gender Selector */}
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Baremos del paciente:</span>
+                      <Select value={mmpiGender} onValueChange={(v) => setMmpiGender(v as 'male' | 'female')}>
+                        <SelectTrigger className="w-[160px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">Masculino</SelectItem>
+                          <SelectItem value="female">Femenino</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <span className="text-xs text-muted-foreground">
+                        Seleccione el baremo según el género del paciente evaluado
+                      </span>
+                    </div>
+
+                    <Tabs defaultValue="analysis" className="space-y-3">
+                      <TabsList>
+                        <TabsTrigger value="analysis" className="gap-1">
+                          <Brain className="h-3.5 w-3.5" />
+                          Análisis
+                        </TabsTrigger>
+                        <TabsTrigger value="report" className="gap-1">
+                          <FileText className="h-3.5 w-3.5" />
+                          Informe PDF
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="analysis">
+                        <Mmpi2ProfileAnalysis
+                          responses={responses}
+                          totalAnswered={testData.total_questions_answered || 0}
+                          isComplete={testData.is_complete || false}
+                          gender={mmpiGender}
+                          onGenderChange={setMmpiGender}
+                        />
+                      </TabsContent>
+                      <TabsContent value="report">
+                        <Mmpi2ReportGenerator
+                          testId={testId}
+                          patientId={userId}
+                          patientName={userName}
+                          responses={responses}
+                          totalAnswered={testData.total_questions_answered || 0}
+                          isComplete={testData.is_complete || false}
+                          testDate={testData.test_date || testData.created_at}
+                          clinicalInterpretation={testData.clinical_interpretation}
+                          clinicalNotes={testData.clinical_notes}
+                          gender={mmpiGender}
+                          onGenderChange={setMmpiGender}
+                        />
+                      </TabsContent>
+                    </Tabs>
+                  </div>
                 );
               })()}
 
