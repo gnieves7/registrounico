@@ -27,6 +27,8 @@ interface Mmpi2ProfileAnalysisProps {
   responses: Mmpi2Response[];
   totalAnswered: number;
   isComplete: boolean;
+  gender?: 'male' | 'female';
+  onGenderChange?: (gender: 'male' | 'female') => void;
 }
 
 const SCALE_ICONS: Record<string, typeof Activity> = {
@@ -34,8 +36,14 @@ const SCALE_ICONS: Record<string, typeof Activity> = {
   Pa: AlertTriangle, Pt: Zap, Sc: Brain, Ma: Activity, Si: User,
 };
 
-export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: Mmpi2ProfileAnalysisProps) => {
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete, gender: externalGender, onGenderChange }: Mmpi2ProfileAnalysisProps) => {
+  const [internalGender, setInternalGender] = useState<'male' | 'female'>('male');
+  const gender = externalGender ?? internalGender;
+  const handleGenderChange = (v: string) => {
+    const g = v as 'male' | 'female';
+    if (onGenderChange) onGenderChange(g);
+    else setInternalGender(g);
+  };
 
   const analysis = useMemo(() => {
     if (responses.length < 100) return null;
