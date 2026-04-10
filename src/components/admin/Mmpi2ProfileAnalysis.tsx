@@ -150,24 +150,31 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete }: M
         </AlertDescription>
       </Alert>
 
-      {/* Gender selection for norms */}
-      <div className="flex items-center gap-3">
-        <span className="text-sm font-medium">Baremos:</span>
-        <Select value={gender} onValueChange={(v) => setGender(v as 'male' | 'female')}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Hombres</SelectItem>
-            <SelectItem value="female">Mujeres</SelectItem>
-          </SelectContent>
-        </Select>
-        {omissions > 0 && (
-          <Badge variant="secondary" className="text-xs">
-            ? (Omisiones): {omissions}
-          </Badge>
-        )}
-      </div>
+      {/* Gender selection for norms - only show if not controlled externally */}
+      {!onGenderChange && (
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium">Baremos:</span>
+          <Select value={gender} onValueChange={(v) => handleGenderChange(v as 'male' | 'female')}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Hombres</SelectItem>
+              <SelectItem value="female">Mujeres</SelectItem>
+            </SelectContent>
+          </Select>
+          {omissions > 0 && (
+            <Badge variant="secondary" className="text-xs">
+              ? (Omisiones): {omissions}
+            </Badge>
+          )}
+        </div>
+      )}
+      {onGenderChange && omissions > 0 && (
+        <Badge variant="secondary" className="text-xs">
+          ? (Omisiones): {omissions}
+        </Badge>
+      )}
 
       <Tabs defaultValue="chart" className="space-y-3">
         <TabsList className="grid w-full grid-cols-6">
