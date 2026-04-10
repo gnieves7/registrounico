@@ -199,7 +199,7 @@ export const Mmpi2ProfileAnalysis = ({ responses, totalAnswered, isComplete, gen
             responses={responses}
             totalAnswered={totalAnswered}
             gender={gender}
-            onGenderChange={setGender}
+            onGenderChange={handleGenderChange as (gender: 'male' | 'female') => void}
           />
         </TabsContent>
 

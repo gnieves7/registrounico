@@ -34,6 +34,8 @@ interface Mmpi2ReportGeneratorProps {
   testDate: string;
   clinicalInterpretation?: string | null;
   clinicalNotes?: string | null;
+  gender?: 'male' | 'female';
+  onGenderChange?: (gender: 'male' | 'female') => void;
 }
 
 interface ScoreEntry {
@@ -48,11 +50,17 @@ interface ScoreEntry {
 
 export const Mmpi2ReportGenerator = ({
   testId, patientId, patientName, responses, totalAnswered, isComplete,
-  testDate, clinicalInterpretation, clinicalNotes,
+  testDate, clinicalInterpretation, clinicalNotes, gender: externalGender, onGenderChange,
 }: Mmpi2ReportGeneratorProps) => {
   const { toast } = useToast();
   const [showDialog, setShowDialog] = useState(false);
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [internalGender, setInternalGender] = useState<'male' | 'female'>('male');
+  const gender = externalGender ?? internalGender;
+  const handleGenderChange = (v: string) => {
+    const g = v as 'male' | 'female';
+    if (onGenderChange) onGenderChange(g);
+    else setInternalGender(g);
+  };
   const [price, setPrice] = useState("0");
   const [additionalNotes, setAdditionalNotes] = useState(clinicalInterpretation || "");
   const [isGenerating, setIsGenerating] = useState(false);
