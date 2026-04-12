@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "./pages/Login";
+import ProfessionalLanding from "./pages/ProfessionalLanding";
 import DashboardHome from "./pages/DashboardHome";
 import Notebook from "./pages/Notebook";
 import DreamRecord from "./pages/DreamRecord";
@@ -48,6 +49,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/profesional" element={<ProfessionalLanding />} />
             <Route path="/pending-approval" element={<PendingApproval />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
