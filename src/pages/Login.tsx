@@ -360,7 +360,7 @@ const Login = () => {
                      </button>
 
                     <button
-                      onClick={() => window.location.href = "/profesional"}
+                      onClick={() => navigate("/profesional")}
                       className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
                       style={{ animationDelay: "0.4s", animationFillMode: "both" }}
                     >
