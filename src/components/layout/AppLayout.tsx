@@ -156,6 +156,7 @@ export function AppLayout() {
 
           <Footer />
         </SidebarInset>
+        </div>
       </div>
     </SidebarProvider>
   );
