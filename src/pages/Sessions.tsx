@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Calendar, ExternalLink, Clock, MessageSquare, Target, Lightbulb, Save, CalendarPlus } from "lucide-react";
 import { format, isPast, isFuture, isToday } from "date-fns";
 import { es } from "date-fns/locale";
+import { demoSessions } from "@/data/demoData";
 
 const GOOGLE_CALENDAR_BOOKING_URL = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
@@ -33,6 +35,7 @@ interface EditingState {
 
 const Sessions = () => {
   const { user } = useAuth();
+  const { isDemoMode, guardWrite } = useDemoMode();
   const { toast } = useToast();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,10 +43,15 @@ const Sessions = () => {
   const [savingIds, setSavingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    if (isDemoMode) {
+      setSessions(demoSessions as Session[]);
+      setIsLoading(false);
+      return;
+    }
     if (user) {
       fetchSessions();
     }
-  }, [user]);
+  }, [user, isDemoMode]);
 
   const fetchSessions = async () => {
     if (!user) return;
@@ -88,6 +96,7 @@ const Sessions = () => {
   };
 
   const saveSession = async (sessionId: string) => {
+    if (isDemoMode) { guardWrite("Guardar notas"); return; }
     const editData = editing[sessionId];
     if (!editData) return;
 

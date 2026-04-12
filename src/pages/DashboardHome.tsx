@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { supabase } from "@/integrations/supabase/client";
 import { EmotionalRecordWidget } from "@/components/emotional/EmotionalRecordWidget";
 import { UpcomingSession } from "@/components/dashboard/UpcomingSession";
 import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
-import { getStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
+import { getStoredSystemArea, setStoredSystemArea, applySystemTheme, systemBranding, type SystemArea } from "@/lib/systemBranding";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   User, MessageCircle, FileText, Thermometer, BookOpen, Brain, Scale, Eye,
   Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
-  TrendingUp, Activity
+  TrendingUp, Activity, RefreshCw
 } from "lucide-react";
 import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvolutionChart";
+import { demoSessions, demoEmotionalRecords } from "@/data/demoData";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface TodayRecord {
   id: string;
@@ -72,17 +75,27 @@ const welcomeMessages: Record<SystemArea, { greeting: string; subtitle: string }
 
 const DashboardHome = () => {
   const { user, profile } = useAuth();
+  const { isDemoMode, demoProfile } = useDemoMode();
   const [todayRecord, setTodayRecord] = useState<TodayRecord | null>(null);
   const [upcomingSession, setUpcomingSession] = useState<UpcomingSessionData | null>(null);
   const [sessionsCount, setSessionsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const currentArea = getStoredSystemArea();
+  const [currentArea, setCurrentArea] = useState<SystemArea | null>(getStoredSystemArea());
   const currentSystem = currentArea ? systemBranding[currentArea] : null;
   const welcome = currentArea ? welcomeMessages[currentArea] : null;
   const quickActions = currentArea ? quickActionsBySystem[currentArea] : quickActionsBySystem.reflexionar;
 
   const fetchData = async () => {
+    if (isDemoMode) {
+      const demoToday = demoEmotionalRecords.find(r => r.record_date === new Date().toISOString().split("T")[0]);
+      setTodayRecord(demoToday ? { id: demoToday.id, emoji: demoToday.emoji, reflection: demoToday.reflection } : null);
+      const futureSessions = demoSessions.filter(s => new Date(s.session_date) >= new Date());
+      setUpcomingSession(futureSessions[0] ? { id: futureSessions[0].id, session_date: futureSessions[0].session_date, topic: futureSessions[0].topic, calendar_link: null } : null);
+      setSessionsCount(demoSessions.length);
+      setIsLoading(false);
+      return;
+    }
     if (!user) return;
     try {
       const today = new Date().toISOString().split("T")[0];
@@ -104,7 +117,6 @@ const DashboardHome = () => {
         .maybeSingle();
       setUpcomingSession(sessionData);
 
-      // Count total sessions for reflexionar
       const { count } = await supabase
         .from("sessions")
         .select("id", { count: "exact", head: true })
@@ -119,7 +131,13 @@ const DashboardHome = () => {
 
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, [user, isDemoMode]);
+
+  const handleSystemChange = (area: SystemArea) => {
+    setStoredSystemArea(area);
+    applySystemTheme(area, true);
+    setCurrentArea(area);
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -152,7 +170,7 @@ const DashboardHome = () => {
           </div>
           <div className="min-w-0">
             <h1 className="text-lg font-bold md:text-xl">
-              {getGreeting()}, {profile?.full_name?.split(" ")[0] || "bienvenido"}
+              {getGreeting()}, {isDemoMode ? demoProfile.full_name.split(" ")[0] : (profile?.full_name?.split(" ")[0] || "bienvenido")}
             </h1>
             <p className="text-sm opacity-90">{welcome.greeting}</p>
             <p className="mt-0.5 text-xs opacity-75">{welcome.subtitle}</p>
@@ -163,7 +181,26 @@ const DashboardHome = () => {
         </div>
       )}
 
-      {/* Fallback welcome if no system */}
+      {/* Demo system switcher */}
+      {isDemoMode && (
+        <Card className="mb-6 border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardContent className="flex items-center gap-3 p-4">
+            <RefreshCw className="h-4 w-4 text-amber-600 shrink-0" />
+            <span className="text-sm font-medium text-foreground">Cambiar sistema:</span>
+            <Select value={currentArea || "reflexionar"} onValueChange={(v) => handleSystemChange(v as SystemArea)}>
+              <SelectTrigger className="w-[200px] h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="reflexionar">Reflexionar (Clínica)</SelectItem>
+                <SelectItem value="evaluar">Evaluar (Psicodiagnóstica)</SelectItem>
+                <SelectItem value="acompanar">Acompañar (Forense)</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+      )}
+
       {!currentSystem && (
         <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="min-w-0">

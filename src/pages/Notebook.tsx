@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BookOpen, Plus, Save, Trash2, Lock, ChevronDown, ChevronUp, Share2, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { demoNotebookEntries } from "@/data/demoData";
 
 interface NotebookEntry {
   id: string;
@@ -22,6 +24,7 @@ interface NotebookEntry {
 
 const Notebook = () => {
   const { user } = useAuth();
+  const { isDemoMode, guardWrite } = useDemoMode();
   const { toast } = useToast();
   const [entries, setEntries] = useState<NotebookEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,8 +36,13 @@ const Notebook = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setEntries(demoNotebookEntries as NotebookEntry[]);
+      setIsLoading(false);
+      return;
+    }
     if (user) fetchEntries();
-  }, [user]);
+  }, [user, isDemoMode]);
 
   const fetchEntries = async () => {
     if (!user) return;
@@ -54,6 +62,7 @@ const Notebook = () => {
   };
 
   const handleCreate = () => {
+    if (isDemoMode) { guardWrite("Crear entrada"); return; }
     setIsCreating(true);
     setEditTitle("");
     setEditContent("");
@@ -61,6 +70,7 @@ const Notebook = () => {
   };
 
   const handleSave = async () => {
+    if (isDemoMode) { guardWrite("Guardar entrada"); return; }
     if (!user) return;
     setIsSaving(true);
     try {
@@ -87,6 +97,7 @@ const Notebook = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (isDemoMode) { guardWrite("Eliminar entrada"); return; }
     try {
       const { error } = await (supabase.from("notebook_entries" as any) as any)
         .delete()
@@ -100,6 +111,7 @@ const Notebook = () => {
   };
 
   const toggleShare = async (entry: NotebookEntry) => {
+    if (isDemoMode) { guardWrite("Compartir entrada"); return; }
     const newValue = !entry.shared_with_therapist;
     try {
       const { error } = await (supabase.from("notebook_entries" as any) as any)
@@ -119,6 +131,7 @@ const Notebook = () => {
   };
 
   const startEdit = (entry: NotebookEntry) => {
+    if (isDemoMode) { guardWrite("Editar entrada"); return; }
     setEditingId(entry.id);
     setEditTitle(entry.title || "");
     setEditContent(entry.content);

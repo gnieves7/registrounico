@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Moon, Plus, Calendar, Sparkles, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { useDreamRecords, DreamRecordInsert } from "@/hooks/useDreamRecords";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { demoDreamRecords } from "@/data/demoData";
 
 // Emojis para describir elementos del sueño
 const dreamEmojis = [
@@ -43,10 +45,14 @@ const dreamEmojis = [
 ];
 
 const DreamRecord = () => {
-  const { dreams, isLoading, isSaving, saveDream, updateInterpretation } = useDreamRecords();
+  const { isDemoMode, guardWrite } = useDemoMode();
+  const { dreams: realDreams, isLoading: realLoading, isSaving, saveDream, updateInterpretation } = useDreamRecords();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDream, setSelectedDream] = useState<string | null>(null);
   const [interpretationText, setInterpretationText] = useState("");
+
+  const dreams = isDemoMode ? demoDreamRecords : realDreams;
+  const isLoading = isDemoMode ? false : realLoading;
   
   // Form state
   const [newDream, setNewDream] = useState<DreamRecordInsert>({
@@ -66,6 +72,7 @@ const DreamRecord = () => {
   };
 
   const handleSaveDream = async () => {
+    if (isDemoMode) { guardWrite("Guardar sueño"); return; }
     if (!newDream.dream_content.trim()) return;
     
     const result = await saveDream(newDream);
@@ -81,6 +88,7 @@ const DreamRecord = () => {
   };
 
   const handleSaveInterpretation = async () => {
+    if (isDemoMode) { guardWrite("Guardar interpretación"); return; }
     if (!selectedDream || !interpretationText.trim()) return;
     await updateInterpretation(selectedDream, interpretationText);
     setSelectedDream(null);
@@ -90,6 +98,11 @@ const DreamRecord = () => {
   const openInterpretation = (dreamId: string, currentInterpretation: string | null) => {
     setSelectedDream(dreamId);
     setInterpretationText(currentInterpretation || "");
+  };
+
+  const handleOpenDialog = () => {
+    if (isDemoMode) { guardWrite("Registrar sueño"); return; }
+    setIsDialogOpen(true);
   };
 
   return (
@@ -110,99 +123,106 @@ const DreamRecord = () => {
           </div>
         </div>
 
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="w-full sm:w-auto">
-              <Plus className="h-4 w-4 mr-2" />
-              Registrar Sueño
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Moon className="h-5 w-5" />
-                Nuevo Registro de Sueño
-              </DialogTitle>
-              <DialogDescription>
-                Describe tu sueño y selecciona los elementos que aparecieron
-              </DialogDescription>
-            </DialogHeader>
+        {isDemoMode ? (
+          <Button size="sm" className="w-full sm:w-auto" onClick={handleOpenDialog}>
+            <Plus className="h-4 w-4 mr-2" />
+            Registrar Sueño
+          </Button>
+        ) : (
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Registrar Sueño
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Moon className="h-5 w-5" />
+                  Nuevo Registro de Sueño
+                </DialogTitle>
+                <DialogDescription>
+                  Describe tu sueño y selecciona los elementos que aparecieron
+                </DialogDescription>
+              </DialogHeader>
 
-            <div className="space-y-6 py-4">
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+              <div className="space-y-6 py-4">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="dream-date">Fecha del sueño</Label>
+                    <Input
+                      id="dream-date"
+                      type="date"
+                      value={newDream.dream_date}
+                      onChange={(e) =>
+                        setNewDream((prev) => ({ ...prev, dream_date: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dream-title">Título (opcional)</Label>
+                    <Input
+                      id="dream-title"
+                      placeholder="Ej: El vuelo sobre el mar"
+                      value={newDream.title || ""}
+                      onChange={(e) =>
+                        setNewDream((prev) => ({ ...prev, title: e.target.value }))
+                      }
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="dream-date">Fecha del sueño</Label>
-                  <Input
-                    id="dream-date"
-                    type="date"
-                    value={newDream.dream_date}
+                  <Label htmlFor="dream-content">Descripción del sueño</Label>
+                  <Textarea
+                    id="dream-content"
+                    placeholder="Describe tu sueño con el mayor detalle posible..."
+                    className="min-h-[150px]"
+                    value={newDream.dream_content}
                     onChange={(e) =>
-                      setNewDream((prev) => ({ ...prev, dream_date: e.target.value }))
+                      setNewDream((prev) => ({ ...prev, dream_content: e.target.value }))
                     }
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dream-title">Título (opcional)</Label>
-                  <Input
-                    id="dream-title"
-                    placeholder="Ej: El vuelo sobre el mar"
-                    value={newDream.title || ""}
-                    onChange={(e) =>
-                      setNewDream((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                  />
+
+                <div className="space-y-3">
+                  <Label>Elementos del sueño</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Selecciona los símbolos que aparecieron en tu sueño
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {dreamEmojis.map(({ emoji, label }) => (
+                      <Button
+                        key={emoji}
+                        type="button"
+                        variant={newDream.dream_emojis.includes(emoji) ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => toggleEmoji(emoji)}
+                        className="h-auto py-1.5 px-3"
+                      >
+                        <span className="mr-1.5 text-lg">{emoji}</span>
+                        <span className="text-xs">{label}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-4">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    Cancelar
+                  </Button>
+                  <Button 
+                    onClick={handleSaveDream} 
+                    disabled={isSaving || !newDream.dream_content.trim()}
+                  >
+                    {isSaving ? "Guardando..." : "Guardar Sueño"}
+                  </Button>
                 </div>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dream-content">Descripción del sueño</Label>
-                <Textarea
-                  id="dream-content"
-                  placeholder="Describe tu sueño con el mayor detalle posible..."
-                  className="min-h-[150px]"
-                  value={newDream.dream_content}
-                  onChange={(e) =>
-                    setNewDream((prev) => ({ ...prev, dream_content: e.target.value }))
-                  }
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Elementos del sueño</Label>
-                <p className="text-sm text-muted-foreground">
-                  Selecciona los símbolos que aparecieron en tu sueño
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {dreamEmojis.map(({ emoji, label }) => (
-                    <Button
-                      key={emoji}
-                      type="button"
-                      variant={newDream.dream_emojis.includes(emoji) ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => toggleEmoji(emoji)}
-                      className="h-auto py-1.5 px-3"
-                    >
-                      <span className="mr-1.5 text-lg">{emoji}</span>
-                      <span className="text-xs">{label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Cancelar
-                </Button>
-                <Button 
-                  onClick={handleSaveDream} 
-                  disabled={isSaving || !newDream.dream_content.trim()}
-                >
-                  {isSaving ? "Guardando..." : "Guardar Sueño"}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {/* Content */}
@@ -262,7 +282,7 @@ const DreamRecord = () => {
                     <CardContent className="space-y-4">
                       {dream.dream_emojis.length > 0 && (
                         <div className="flex flex-wrap gap-1.5">
-                          {dream.dream_emojis.map((emoji, idx) => (
+                          {dream.dream_emojis.map((emoji: string, idx: number) => (
                             <span
                               key={idx}
                               className="text-xl bg-muted rounded-md p-1"
