@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
+import { SchoolPreview } from "@/components/landing/SchoolPreview";
 
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "pdf.consultas@gmail.com";
@@ -251,6 +252,9 @@ const ProfessionalLanding = () => {
           </div>
         </div>
       </section>
+
+      {/* [3.5] SCHOOL PREVIEW — Terminología por escuela */}
+      <SchoolPreview />
 
       {/* [4] PARA QUIÉN ES */}
       <section className="py-12 px-5" style={{ background: "#F8F7F4" }}>
