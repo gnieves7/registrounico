@@ -113,6 +113,14 @@ const ProfessionalLanding = () => {
           </Link>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => navigate("/demo")}
+              className="rounded-md border px-4 py-2 text-sm font-semibold transition-all hover:opacity-90"
+              style={{ borderColor: "#A07C2E", color: "#A07C2E", fontFamily: "'DM Sans', sans-serif", borderRadius: "6px" }}
+            >
+              <Eye className="inline h-3.5 w-3.5 mr-1" />
+              Probar gratis
+            </button>
+            <button
               onClick={() => signInWithGoogle()}
               className="text-sm font-medium transition-colors hover:opacity-80"
               style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
