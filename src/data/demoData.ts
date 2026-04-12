@@ -180,3 +180,106 @@ export const demoPsychobiography = {
   created_at: "2025-03-15T10:00:00Z",
   updated_at: "2026-04-01T14:30:00Z",
 };
+
+// ── Admin Demo Data ──
+
+export const demoAdminTests = [
+  {
+    id: "demo-test-1",
+    user_id: "demo-patient-1",
+    test_type: "MMPI-2",
+    is_complete: true,
+    total_questions_answered: 567,
+    total_questions: 567,
+    created_at: new Date(Date.now() - 5 * 86400000).toISOString(),
+    updated_at: new Date(Date.now() - 4 * 86400000).toISOString(),
+    user_name: "María García López",
+    user_email: "maria.garcia@demo.psi",
+  },
+  {
+    id: "demo-test-2",
+    user_id: "demo-patient-1",
+    test_type: "SCL-90-R",
+    is_complete: true,
+    total_questions_answered: 90,
+    total_questions: 90,
+    created_at: new Date(Date.now() - 10 * 86400000).toISOString(),
+    updated_at: new Date(Date.now() - 9 * 86400000).toISOString(),
+    user_name: "María García López",
+    user_email: "maria.garcia@demo.psi",
+  },
+  {
+    id: "demo-test-3",
+    user_id: "demo-patient-2",
+    test_type: "MBTI",
+    is_complete: false,
+    total_questions_answered: 42,
+    total_questions: 70,
+    created_at: new Date(Date.now() - 2 * 86400000).toISOString(),
+    updated_at: new Date(Date.now() - 1 * 86400000).toISOString(),
+    user_name: "Juan Pérez Rodríguez",
+    user_email: "juan.perez@demo.psi",
+  },
+  {
+    id: "demo-test-4",
+    user_id: "demo-patient-2",
+    test_type: "MCMI-III",
+    is_complete: false,
+    total_questions_answered: 89,
+    total_questions: 175,
+    created_at: new Date(Date.now() - 1 * 86400000).toISOString(),
+    updated_at: new Date().toISOString(),
+    user_name: "Juan Pérez Rodríguez",
+    user_email: "juan.perez@demo.psi",
+  },
+];
+
+export const demoAdminReports = [
+  {
+    id: "demo-report-1",
+    user_id: "demo-patient-1",
+    test_type: "MMPI-2",
+    storage_path: null,
+    created_at: new Date(Date.now() - 3 * 86400000).toISOString(),
+    generated_by: "admin",
+    test_record_id: "demo-test-1",
+  },
+  {
+    id: "demo-report-2",
+    user_id: "demo-patient-1",
+    test_type: "SCL-90-R",
+    storage_path: null,
+    created_at: new Date(Date.now() - 8 * 86400000).toISOString(),
+    generated_by: "admin",
+    test_record_id: "demo-test-2",
+  },
+];
+
+export const demoAdminActivity = [
+  { id: "demo-act-1", event_type: "login", event_detail: { user_name: "María García López" }, created_at: new Date(Date.now() - 1 * 3600000).toISOString() },
+  { id: "demo-act-2", event_type: "emotional_record", event_detail: { user_name: "María García López" }, created_at: new Date(Date.now() - 2 * 3600000).toISOString() },
+  { id: "demo-act-3", event_type: "test_complete", event_detail: { user_name: "María García López", test_type: "MMPI-2" }, created_at: new Date(Date.now() - 5 * 3600000).toISOString() },
+  { id: "demo-act-4", event_type: "notebook_entry", event_detail: { user_name: "María García López" }, created_at: new Date(Date.now() - 8 * 3600000).toISOString() },
+  { id: "demo-act-5", event_type: "dream_record", event_detail: { user_name: "María García López" }, created_at: new Date(Date.now() - 12 * 3600000).toISOString() },
+  { id: "demo-act-6", event_type: "login", event_detail: { user_name: "Juan Pérez Rodríguez" }, created_at: new Date(Date.now() - 24 * 3600000).toISOString() },
+  { id: "demo-act-7", event_type: "test_start", event_detail: { user_name: "Juan Pérez Rodríguez", test_type: "MBTI" }, created_at: new Date(Date.now() - 25 * 3600000).toISOString() },
+  { id: "demo-act-8", event_type: "session_update", event_detail: { user_name: "Juan Pérez Rodríguez" }, created_at: new Date(Date.now() - 30 * 3600000).toISOString() },
+];
+
+export const demoAdminAlerts = [
+  { id: "demo-alert-1", type: "emotional", patient: "María García López", detail: "Registró 😰 ⚠️ Puntuación baja", time: new Date(Date.now() - 5 * 86400000).toISOString() },
+  { id: "demo-alert-2", type: "emotional", patient: "María García López", detail: "Registró 😊", time: new Date().toISOString() },
+  { id: "demo-alert-3", type: "dream", patient: "María García López", detail: 'Registró un sueño: "El vuelo sobre el mar"', time: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: "demo-alert-4", type: "notebook", patient: "María García López", detail: 'Compartió nota: "Reflexión sobre la sesión de hoy"', time: new Date(Date.now() - 1 * 86400000).toISOString() },
+  { id: "demo-alert-5", type: "emotional", patient: "Juan Pérez Rodríguez", detail: "Registró 😊", time: new Date().toISOString() },
+];
+
+export const demoWeeklyData = [
+  { day: "lun", tests: 1 },
+  { day: "mar", tests: 0 },
+  { day: "mié", tests: 2 },
+  { day: "jue", tests: 1 },
+  { day: "vie", tests: 0 },
+  { day: "sáb", tests: 0 },
+  { day: "dom", tests: 1 },
+];

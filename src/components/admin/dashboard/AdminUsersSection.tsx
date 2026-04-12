@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ import { PatientPsychodiagnosticView } from "@/components/admin/PatientPsychodia
 import { PatientAbcdeView } from "@/components/admin/PatientAbcdeView";
 import { PatientNotebookView } from "@/components/admin/PatientNotebookView";
 import { ClinicalHistoryExportButton } from "@/components/admin/ClinicalHistoryExportButton";
+import { demoPatients } from "@/data/demoData";
 
 interface Patient {
   id: string;
@@ -46,6 +48,7 @@ interface Patient {
 
 export function AdminUsersSection() {
   const { user } = useAuth();
+  const { isDemoMode, guardWrite } = useDemoMode();
   const { toast } = useToast();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +61,20 @@ export function AdminUsersSection() {
   const [activeTab, setActiveTab] = useState("emotional");
 
   useEffect(() => {
+    if (isDemoMode) {
+      setPatients(demoPatients.map(p => ({
+        id: p.id,
+        user_id: p.id,
+        full_name: p.full_name,
+        email: p.email,
+        avatar_url: p.avatar_url,
+        is_approved: p.is_approved,
+        created_at: p.created_at,
+      })));
+      setLoading(false);
+      return;
+    }
+
     fetchPatients();
 
     const channel = supabase
@@ -71,7 +88,7 @@ export function AdminUsersSection() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, []);
+  }, [isDemoMode]);
 
   const fetchPatients = async () => {
     try {
@@ -93,6 +110,7 @@ export function AdminUsersSection() {
   }, [patients, search, statusFilter, user?.id]);
 
   const updateStatus = async (userId: string, approve: boolean) => {
+    if (isDemoMode) { guardWrite("Cambiar estado de paciente"); return; }
     try {
       setUpdatingStatus(userId);
       await supabase.functions.invoke("notify-patient-status", { body: { patientUserId: userId, approved: approve } });
@@ -106,6 +124,7 @@ export function AdminUsersSection() {
   };
 
   const deletePatient = async () => {
+    if (isDemoMode) { guardWrite("Eliminar paciente"); return; }
     if (!deletingPatient) return;
     try {
       setIsDeleting(true);

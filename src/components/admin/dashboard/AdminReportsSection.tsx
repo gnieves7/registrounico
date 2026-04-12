@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ReportStepperForm } from "@/components/admin/reports/ReportStepperForm";
+import { demoAdminReports } from "@/data/demoData";
 
 interface PdfReport {
   id: string;
@@ -18,13 +20,19 @@ interface PdfReport {
 }
 
 export function AdminReportsSection() {
+  const { isDemoMode, guardWrite } = useDemoMode();
   const [reports, setReports] = useState<PdfReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setReports(demoAdminReports);
+      setLoading(false);
+      return;
+    }
     fetchReports();
-  }, []);
+  }, [isDemoMode]);
 
   const fetchReports = async () => {
     try {

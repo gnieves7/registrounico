@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { Navigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
@@ -46,10 +47,11 @@ export function AdminDashboardLayout({
   notificationCount = 0,
 }: AdminDashboardLayoutProps) {
   const { isAdmin, isLoading, profile, signOut } = useAuth();
+  const { isDemoMode, demoProfile } = useDemoMode();
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
 
-  if (isLoading) {
+  if (!isDemoMode && isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
         <div className="animate-pulse text-primary">Verificando permisos…</div>
@@ -57,7 +59,7 @@ export function AdminDashboardLayout({
     );
   }
 
-  if (!isAdmin) return <Navigate to="/dashboard" replace />;
+  if (!isDemoMode && !isAdmin) return <Navigate to="/dashboard" replace />;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
@@ -108,18 +110,20 @@ export function AdminDashboardLayout({
           {!collapsed && (
             <div className="flex items-center gap-2 px-1">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarImage src={isDemoMode ? undefined : (profile?.avatar_url || undefined)} />
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {profile?.full_name?.charAt(0) || "A"}
+                  {isDemoMode ? "D" : (profile?.full_name?.charAt(0) || "A")}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium truncate">{profile?.full_name || "Admin"}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{profile?.email}</p>
+                <p className="text-xs font-medium truncate">{isDemoMode ? demoProfile.full_name : (profile?.full_name || "Admin")}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{isDemoMode ? demoProfile.email : profile?.email}</p>
               </div>
-              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => signOut()}>
-                <LogOut className="h-3.5 w-3.5" />
-              </Button>
+              {!isDemoMode && (
+                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => signOut()}>
+                  <LogOut className="h-3.5 w-3.5" />
+                </Button>
+              )}
             </div>
           )}
           <Button
