@@ -131,7 +131,13 @@ const DashboardHome = () => {
 
   useEffect(() => {
     fetchData();
-  }, [user]);
+  }, [user, isDemoMode]);
+
+  const handleSystemChange = (area: SystemArea) => {
+    setStoredSystemArea(area);
+    applySystemTheme(area, true);
+    setCurrentArea(area);
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -164,7 +170,7 @@ const DashboardHome = () => {
           </div>
           <div className="min-w-0">
             <h1 className="text-lg font-bold md:text-xl">
-              {getGreeting()}, {profile?.full_name?.split(" ")[0] || "bienvenido"}
+              {getGreeting()}, {isDemoMode ? demoProfile.full_name.split(" ")[0] : (profile?.full_name?.split(" ")[0] || "bienvenido")}
             </h1>
             <p className="text-sm opacity-90">{welcome.greeting}</p>
             <p className="mt-0.5 text-xs opacity-75">{welcome.subtitle}</p>
