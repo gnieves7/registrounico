@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   ShieldCheck, Lock, BarChart3, Scale, Activity,
@@ -26,6 +26,7 @@ const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
 const ProfessionalLanding = () => {
   const { signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
   const [showAccessModal, setShowAccessModal] = useState(false);
   const [formData, setFormData] = useState({
