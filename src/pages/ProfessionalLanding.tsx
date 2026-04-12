@@ -165,6 +165,14 @@ const ProfessionalLanding = () => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
+              onClick={() => navigate("/demo")}
+              className="w-full sm:w-auto rounded-md border-2 px-6 py-3 text-sm font-semibold transition-all hover:opacity-90"
+              style={{ borderColor: "#A07C2E", color: "#A07C2E", borderRadius: "6px", fontFamily: "'DM Sans', sans-serif" }}
+            >
+              <Eye className="inline h-4 w-4 mr-1" />
+              Probar gratis
+            </button>
+            <button
               onClick={() => setShowAccessModal(true)}
               className="w-full sm:w-auto rounded-md px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ background: "#1C3F6E", borderRadius: "6px", fontFamily: "'DM Sans', sans-serif" }}
