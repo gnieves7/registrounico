@@ -42,6 +42,11 @@ export default function Psychobiography() {
   const [activeTab, setActiveTab] = useState("treatment");
   const { data, isLoading, isSaving, updateSection, calculateProgress } = usePsychobiography();
 
+  const guardedUpdateSection = async (updates: any): Promise<boolean> => {
+    if (isDemoMode) { guardWrite("Guardar sección"); return false; }
+    return updateSection(updates);
+  };
+
   const progress = calculateProgress();
 
   if (isLoading) {
