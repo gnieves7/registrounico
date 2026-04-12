@@ -5,7 +5,7 @@ import {
   ShieldCheck, Lock, BarChart3, Scale, Activity,
   Briefcase, GraduationCap, Building2, ChevronRight,
   MessageCircle, Mail, Globe, ArrowRight, Check,
-  User, BookOpen, Heart
+  User, BookOpen, Heart, Eye
 } from "lucide-react";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger
