@@ -181,7 +181,26 @@ const DashboardHome = () => {
         </div>
       )}
 
-      {/* Fallback welcome if no system */}
+      {/* Demo system switcher */}
+      {isDemoMode && (
+        <Card className="mb-6 border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardContent className="flex items-center gap-3 p-4">
+            <RefreshCw className="h-4 w-4 text-amber-600 shrink-0" />
+            <span className="text-sm font-medium text-foreground">Cambiar sistema:</span>
+            <Select value={currentArea || "reflexionar"} onValueChange={(v) => handleSystemChange(v as SystemArea)}>
+              <SelectTrigger className="w-[200px] h-8">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="reflexionar">Reflexionar (Clínica)</SelectItem>
+                <SelectItem value="evaluar">Evaluar (Psicodiagnóstica)</SelectItem>
+                <SelectItem value="acompanar">Acompañar (Forense)</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+      )}
+
       {!currentSystem && (
         <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div className="min-w-0">
