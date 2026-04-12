@@ -131,7 +131,7 @@ export function AppSidebar() {
 
   // Fetch pending patients count for admin
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!isAdmin || isDemoMode) return;
     
     const fetchPending = async () => {
       const { count } = await supabase
@@ -143,7 +143,6 @@ export function AppSidebar() {
 
     fetchPending();
 
-    // Listen for profile changes (new registrations or status updates)
     const channel = supabase
       .channel('sidebar-pending-count')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
@@ -152,7 +151,7 @@ export function AppSidebar() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [isAdmin]);
+  }, [isAdmin, isDemoMode]);
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -165,9 +164,18 @@ export function AppSidebar() {
   };
 
   const handleSignOut = async () => {
+    if (isDemoMode) {
+      exitDemoMode();
+      navigate("/profesional");
+      return;
+    }
     await signOut();
     navigate("/login");
   };
+
+  const displayProfile = isDemoMode
+    ? { full_name: demoProfile.full_name, email: demoProfile.email, avatar_url: null }
+    : profile;
 
   return (
     <Sidebar collapsible="icon">
