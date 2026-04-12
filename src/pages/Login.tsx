@@ -319,12 +319,15 @@ const Login = () => {
               <div className="flex flex-col items-center w-full max-w-lg px-6 py-16 md:py-20 space-y-8">
                 {/* Title */}
                 <div className="text-center space-y-2 animate-fade-in" style={{ animationDelay: "0s", animationFillMode: "both" }}>
-                  <h1 className="text-6xl md:text-7xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
-                    . PSI .
-                  </h1>
-                  <p className="text-sm md:text-base font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332]">
-                    Plataforma de Sistemas Interactivos
-                  </p>
+                   <h1 className="text-6xl md:text-7xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
+                     . PSI .
+                   </h1>
+                   <p className="text-sm md:text-base font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332]">
+                     Plataforma de Sistemas Interactivos
+                   </p>
+                   <p className="text-[11px] mt-1 tracking-wide text-[#8a7a5e] dark:text-[#d4a332]/50">
+                     Herramienta clínica integrada para psicólogos · Santa Fe, Argentina
+                   </p>
                 </div>
 
                 {/* Buttons */}
@@ -347,17 +350,17 @@ const Login = () => {
 
                   {/* Row: No soy Paciente + Soy Profesional */}
                   <div className="grid grid-cols-2 gap-3">
-                    <button
+                     <button
                       onClick={() => setView("no-paciente")}
                       className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
                       style={{ animationDelay: "0.3s", animationFillMode: "both" }}
                     >
-                      <UserX className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                      <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">No soy Paciente</span>
-                    </button>
+                       <UserX className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                       <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Derivante</span>
+                     </button>
 
                     <button
-                      onClick={() => setView("profesional")}
+                      onClick={() => navigate("/profesional")}
                       className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
                       style={{ animationDelay: "0.4s", animationFillMode: "both" }}
                     >
