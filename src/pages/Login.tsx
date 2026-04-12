@@ -328,8 +328,6 @@ const Login = () => {
                    <p className="text-[11px] mt-1 tracking-wide text-[#8a7a5e] dark:text-[#d4a332]/50">
                      Herramienta clínica integrada para psicólogos · Santa Fe, Argentina
                    </p>
-                    Plataforma de Sistemas Interactivos
-                  </p>
                 </div>
 
                 {/* Buttons */}
