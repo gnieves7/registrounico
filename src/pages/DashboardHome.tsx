@@ -16,6 +16,7 @@ import {
 import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvolutionChart";
 import { demoSessions, demoEmotionalRecords } from "@/data/demoData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { motion } from "framer-motion";
 
 interface TodayRecord {
   id: string;
@@ -183,22 +184,28 @@ const DashboardHome = () => {
 
       {/* Demo system switcher */}
       {isDemoMode && (
-        <Card className="mb-6 border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
-          <CardContent className="flex items-center gap-3 p-4">
-            <RefreshCw className="h-4 w-4 text-amber-600 shrink-0" />
-            <span className="text-sm font-medium text-foreground">Cambiar sistema:</span>
-            <Select value={currentArea || "reflexionar"} onValueChange={(v) => handleSystemChange(v as SystemArea)}>
-              <SelectTrigger className="w-[200px] h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="reflexionar">Reflexionar (Clínica)</SelectItem>
-                <SelectItem value="evaluar">Evaluar (Psicodiagnóstica)</SelectItem>
-                <SelectItem value="acompanar">Acompañar (Forense)</SelectItem>
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="mb-6 border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20">
+            <CardContent className="flex items-center gap-3 p-4">
+              <RefreshCw className="h-4 w-4 text-amber-600 shrink-0" />
+              <span className="text-sm font-medium text-foreground">Cambiar sistema:</span>
+              <Select value={currentArea || "reflexionar"} onValueChange={(v) => handleSystemChange(v as SystemArea)}>
+                <SelectTrigger className="w-[200px] h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="reflexionar">Reflexionar (Clínica)</SelectItem>
+                  <SelectItem value="evaluar">Evaluar (Psicodiagnóstica)</SelectItem>
+                  <SelectItem value="acompanar">Acompañar (Forense)</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
 
       {!currentSystem && (
@@ -291,20 +298,27 @@ const DashboardHome = () => {
           <section className="space-y-3">
             <h2 className="font-medium text-foreground">Accesos Rápidos</h2>
             <div className="grid gap-3 sm:grid-cols-2">
-              {quickActions.map((action) => (
-                <Link key={action.href} to={action.href}>
-                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]">
-                    <CardContent className="flex items-center gap-4 p-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <action.icon className="h-5 w-5" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-foreground">{action.title}</p>
-                        <p className="text-sm text-muted-foreground truncate">{action.description}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+              {quickActions.map((action, i) => (
+                <motion.div
+                  key={action.href}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.06 }}
+                >
+                  <Link to={action.href}>
+                    <Card className="h-full transition-all duration-200 hover:shadow-md hover:border-primary/30 hover:scale-[1.02] hover:-translate-y-0.5 active:scale-[0.98]">
+                      <CardContent className="flex items-center gap-4 p-4">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <action.icon className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-foreground">{action.title}</p>
+                          <p className="text-sm text-muted-foreground truncate">{action.description}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </section>
