@@ -110,35 +110,35 @@ export default function Psychobiography() {
         </TabsList>
 
         <TabsContent value="treatment">
-          <TreatmentSection data={data} onSave={updateSection} isSaving={isSaving} />
+          <TreatmentSection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="personal">
-          <PersonalDataSection data={data} onSave={updateSection} isSaving={isSaving} />
+          <PersonalDataSection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="family">
-          <FamilySection data={data} onSave={updateSection} isSaving={isSaving} />
+          <FamilySection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="medical">
-          <MedicalHistorySection data={data} onSave={updateSection} isSaving={isSaving} />
+          <MedicalHistorySection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="psychological">
-          <PsychologicalHistorySection data={data} onSave={updateSection} isSaving={isSaving} />
+          <PsychologicalHistorySection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="social-work">
-          <SocialWorkSection data={data} onSave={updateSection} isSaving={isSaving} />
+          <SocialWorkSection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="lifestyle">
-          <LifestyleSection data={data} onSave={updateSection} isSaving={isSaving} />
+          <LifestyleSection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
 
         <TabsContent value="events">
-          <SignificantEventsSection data={data} onSave={updateSection} isSaving={isSaving} />
+          <SignificantEventsSection data={data} onSave={guardedUpdateSection} isSaving={isSaving} />
         </TabsContent>
       </Tabs>
     </div>
