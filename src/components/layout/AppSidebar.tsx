@@ -269,18 +269,18 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
           <Avatar className="h-7 w-7 md:h-8 md:w-8">
-            <AvatarImage src={profile?.avatar_url || undefined} />
+            <AvatarImage src={displayProfile?.avatar_url || undefined} />
             <AvatarFallback className="bg-primary text-primary-foreground text-[10px] md:text-xs">
-              {getInitials(profile?.full_name)}
+              {getInitials(displayProfile?.full_name ?? null)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="flex flex-1 flex-col overflow-hidden">
               <span className="truncate text-xs font-medium text-sidebar-foreground md:text-sm">
-                {profile?.full_name || "Usuario"}
+                {displayProfile?.full_name || "Usuario"}
               </span>
               <span className="truncate text-[10px] text-sidebar-foreground/60 md:text-xs">
-                {profile?.email || ""}
+                {displayProfile?.email || ""}
               </span>
             </div>
           )}
