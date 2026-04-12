@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { 
   Home, 
   User, 
@@ -112,6 +113,7 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, isAdmin, signOut } = useAuth();
+  const { isDemoMode, demoProfile, exitDemoMode } = useDemoMode();
   const [pendingCount, setPendingCount] = useState(0);
 
   const currentPath = location.pathname;
@@ -129,7 +131,7 @@ export function AppSidebar() {
 
   // Fetch pending patients count for admin
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!isAdmin || isDemoMode) return;
     
     const fetchPending = async () => {
       const { count } = await supabase
@@ -141,7 +143,6 @@ export function AppSidebar() {
 
     fetchPending();
 
-    // Listen for profile changes (new registrations or status updates)
     const channel = supabase
       .channel('sidebar-pending-count')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
@@ -150,7 +151,7 @@ export function AppSidebar() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [isAdmin]);
+  }, [isAdmin, isDemoMode]);
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -163,9 +164,18 @@ export function AppSidebar() {
   };
 
   const handleSignOut = async () => {
+    if (isDemoMode) {
+      exitDemoMode();
+      navigate("/profesional");
+      return;
+    }
     await signOut();
     navigate("/login");
   };
+
+  const displayProfile = isDemoMode
+    ? { full_name: demoProfile.full_name, email: demoProfile.email, avatar_url: null }
+    : profile;
 
   return (
     <Sidebar collapsible="icon">
@@ -259,18 +269,18 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
           <Avatar className="h-7 w-7 md:h-8 md:w-8">
-            <AvatarImage src={profile?.avatar_url || undefined} />
+            <AvatarImage src={displayProfile?.avatar_url || undefined} />
             <AvatarFallback className="bg-primary text-primary-foreground text-[10px] md:text-xs">
-              {getInitials(profile?.full_name)}
+              {getInitials(displayProfile?.full_name ?? null)}
             </AvatarFallback>
           </Avatar>
           {!collapsed && (
             <div className="flex flex-1 flex-col overflow-hidden">
               <span className="truncate text-xs font-medium text-sidebar-foreground md:text-sm">
-                {profile?.full_name || "Usuario"}
+                {displayProfile?.full_name || "Usuario"}
               </span>
               <span className="truncate text-[10px] text-sidebar-foreground/60 md:text-xs">
-                {profile?.email || ""}
+                {displayProfile?.email || ""}
               </span>
             </div>
           )}

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   ShieldCheck, Lock, BarChart3, Scale, Activity,
   Briefcase, GraduationCap, Building2, ChevronRight,
   MessageCircle, Mail, Globe, ArrowRight, Check,
-  User, BookOpen, Heart
+  User, BookOpen, Heart, Eye
 } from "lucide-react";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger
@@ -26,6 +26,7 @@ const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
 const ProfessionalLanding = () => {
   const { signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
   const [showAccessModal, setShowAccessModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -112,6 +113,14 @@ const ProfessionalLanding = () => {
           </Link>
           <div className="flex items-center gap-3">
             <button
+              onClick={() => navigate("/demo")}
+              className="rounded-md border px-4 py-2 text-sm font-semibold transition-all hover:opacity-90"
+              style={{ borderColor: "#A07C2E", color: "#A07C2E", fontFamily: "'DM Sans', sans-serif", borderRadius: "6px" }}
+            >
+              <Eye className="inline h-3.5 w-3.5 mr-1" />
+              Probar gratis
+            </button>
+            <button
               onClick={() => signInWithGoogle()}
               className="text-sm font-medium transition-colors hover:opacity-80"
               style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
@@ -155,6 +164,14 @@ const ProfessionalLanding = () => {
             Diseñada por y para psicólogos en ejercicio real.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => navigate("/demo")}
+              className="w-full sm:w-auto rounded-md border-2 px-6 py-3 text-sm font-semibold transition-all hover:opacity-90"
+              style={{ borderColor: "#A07C2E", color: "#A07C2E", borderRadius: "6px", fontFamily: "'DM Sans', sans-serif" }}
+            >
+              <Eye className="inline h-4 w-4 mr-1" />
+              Probar gratis
+            </button>
             <button
               onClick={() => setShowAccessModal(true)}
               className="w-full sm:w-auto rounded-md px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90"

@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { applySystemTheme, getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
 import { toast } from "@/hooks/use-toast";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { DemoBanner } from "./DemoBanner";
 import Footer from "./Footer";
 import { ChevronRight, Home } from "lucide-react";
 import {
@@ -42,6 +44,7 @@ const routeLabels: Record<string, string> = {
 
 export function AppLayout() {
   const { user, isLoading, isApproved, isAdmin, profile } = useAuth();
+  const { isDemoMode } = useDemoMode();
   const navigate = useNavigate();
   const location = useLocation();
   const isFirstRender = useRef(true);
@@ -53,15 +56,17 @@ export function AppLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (isDemoMode) return; // skip auth redirects in demo
     if (!isLoading && !user) {
       navigate("/login");
     } else if (!isLoading && user && !isAdmin && !isApproved) {
       navigate("/pending-approval");
     }
-  }, [user, isLoading, isApproved, isAdmin, navigate]);
+  }, [user, isLoading, isApproved, isAdmin, navigate, isDemoMode]);
 
   // Welcome toast — once per session
   useEffect(() => {
+    if (isDemoMode) return;
     if (!user || !profile?.full_name) return;
     const key = "psi_welcome_shown";
     if (sessionStorage.getItem(key)) return;
@@ -71,7 +76,7 @@ export function AppLayout() {
       title: `¡Un gusto saludarte, ${firstName}!`,
       description: "Bienvenido/a a Mi Práctica · PSI",
     });
-  }, [user, profile]);
+  }, [user, profile, isDemoMode]);
 
   // Apply theme: instant on first render, smooth on route changes
   useEffect(() => {
@@ -84,7 +89,7 @@ export function AppLayout() {
     }
   }, [location.pathname]);
 
-  if (isLoading) {
+  if (!isDemoMode && isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="animate-pulse text-primary">Cargando...</div>
@@ -92,11 +97,13 @@ export function AppLayout() {
     );
   }
 
-  if (!user) return null;
+  if (!isDemoMode && !user) return null;
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full animate-fade-in">
+      <div className="flex min-h-screen w-full animate-fade-in flex-col">
+        <DemoBanner />
+        <div className="flex flex-1">
         <AppSidebar />
         <SidebarInset className="flex flex-col">
           <header className="system-header sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-border px-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:h-16 md:gap-4 md:px-4">
@@ -149,6 +156,7 @@ export function AppLayout() {
 
           <Footer />
         </SidebarInset>
+        </div>
       </div>
     </SidebarProvider>
   );
