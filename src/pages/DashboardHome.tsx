@@ -87,6 +87,15 @@ const DashboardHome = () => {
   const quickActions = currentArea ? quickActionsBySystem[currentArea] : quickActionsBySystem.reflexionar;
 
   const fetchData = async () => {
+    if (isDemoMode) {
+      const demoToday = demoEmotionalRecords.find(r => r.record_date === new Date().toISOString().split("T")[0]);
+      setTodayRecord(demoToday ? { id: demoToday.id, emoji: demoToday.emoji, reflection: demoToday.reflection } : null);
+      const futureSessions = demoSessions.filter(s => new Date(s.session_date) >= new Date());
+      setUpcomingSession(futureSessions[0] ? { id: futureSessions[0].id, session_date: futureSessions[0].session_date, topic: futureSessions[0].topic, calendar_link: null } : null);
+      setSessionsCount(demoSessions.length);
+      setIsLoading(false);
+      return;
+    }
     if (!user) return;
     try {
       const today = new Date().toISOString().split("T")[0];
@@ -108,7 +117,6 @@ const DashboardHome = () => {
         .maybeSingle();
       setUpcomingSession(sessionData);
 
-      // Count total sessions for reflexionar
       const { count } = await supabase
         .from("sessions")
         .select("id", { count: "exact", head: true })
