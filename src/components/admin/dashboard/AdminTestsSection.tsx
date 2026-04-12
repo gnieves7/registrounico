@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Eye, FileText } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AdminTestResultsModal } from "@/components/admin/AdminTestResultsModal";
+import { demoAdminTests } from "@/data/demoData";
 
 interface TestRecord {
   id: string;
@@ -26,14 +28,20 @@ interface TestRecord {
 }
 
 export function AdminTestsSection() {
+  const { isDemoMode } = useDemoMode();
   const [tests, setTests] = useState<TestRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("all");
   const [selectedTest, setSelectedTest] = useState<TestRecord | null>(null);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setTests(demoAdminTests);
+      setLoading(false);
+      return;
+    }
     fetchAllTests();
-  }, []);
+  }, [isDemoMode]);
 
   const fetchAllTests = async () => {
     try {
