@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { supabase } from "@/integrations/supabase/client";
 import { EmotionalRecordWidget } from "@/components/emotional/EmotionalRecordWidget";
 import { UpcomingSession } from "@/components/dashboard/UpcomingSession";
 import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
-import { getStoredSystemArea, systemBranding, type SystemArea } from "@/lib/systemBranding";
+import { getStoredSystemArea, setStoredSystemArea, applySystemTheme, systemBranding, type SystemArea } from "@/lib/systemBranding";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   User, MessageCircle, FileText, Thermometer, BookOpen, Brain, Scale, Eye,
   Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
-  TrendingUp, Activity
+  TrendingUp, Activity, RefreshCw
 } from "lucide-react";
 import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvolutionChart";
+import { demoSessions, demoEmotionalRecords } from "@/data/demoData";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface TodayRecord {
   id: string;
