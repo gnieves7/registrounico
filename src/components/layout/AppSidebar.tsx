@@ -112,6 +112,7 @@ export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, isAdmin, signOut } = useAuth();
+  const { isDemoMode, demoProfile, exitDemoMode } = useDemoMode();
   const [pendingCount, setPendingCount] = useState(0);
 
   const currentPath = location.pathname;
