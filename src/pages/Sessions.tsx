@@ -35,6 +35,7 @@ interface EditingState {
 
 const Sessions = () => {
   const { user } = useAuth();
+  const { isDemoMode, guardWrite } = useDemoMode();
   const { toast } = useToast();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,10 +43,15 @@ const Sessions = () => {
   const [savingIds, setSavingIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    if (isDemoMode) {
+      setSessions(demoSessions as Session[]);
+      setIsLoading(false);
+      return;
+    }
     if (user) {
       fetchSessions();
     }
-  }, [user]);
+  }, [user, isDemoMode]);
 
   const fetchSessions = async () => {
     if (!user) return;
@@ -90,7 +96,7 @@ const Sessions = () => {
   };
 
   const saveSession = async (sessionId: string) => {
-    const editData = editing[sessionId];
+    if (isDemoMode) { guardWrite("Guardar notas"); return; }
     if (!editData) return;
 
     setSavingIds(prev => new Set(prev).add(sessionId));
