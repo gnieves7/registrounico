@@ -75,12 +75,13 @@ const welcomeMessages: Record<SystemArea, { greeting: string; subtitle: string }
 
 const DashboardHome = () => {
   const { user, profile } = useAuth();
+  const { isDemoMode, demoProfile } = useDemoMode();
   const [todayRecord, setTodayRecord] = useState<TodayRecord | null>(null);
   const [upcomingSession, setUpcomingSession] = useState<UpcomingSessionData | null>(null);
   const [sessionsCount, setSessionsCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
-  const currentArea = getStoredSystemArea();
+  const [currentArea, setCurrentArea] = useState<SystemArea | null>(getStoredSystemArea());
   const currentSystem = currentArea ? systemBranding[currentArea] : null;
   const welcome = currentArea ? welcomeMessages[currentArea] : null;
   const quickActions = currentArea ? quickActionsBySystem[currentArea] : quickActionsBySystem.reflexionar;
