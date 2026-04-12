@@ -97,6 +97,7 @@ const Sessions = () => {
 
   const saveSession = async (sessionId: string) => {
     if (isDemoMode) { guardWrite("Guardar notas"); return; }
+    const editData = editing[sessionId];
     if (!editData) return;
 
     setSavingIds(prev => new Set(prev).add(sessionId));
