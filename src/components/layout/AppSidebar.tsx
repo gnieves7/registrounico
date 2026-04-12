@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import { 
   Home, 
   User, 
