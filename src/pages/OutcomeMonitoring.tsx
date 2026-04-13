@@ -82,6 +82,7 @@ const RESPONSE_LABELS_4 = ["Nunca (0)", "Varios días (1)", "Más de la mitad (2
 export default function OutcomeMonitoring() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('monitoring');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
