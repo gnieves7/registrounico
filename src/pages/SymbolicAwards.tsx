@@ -227,8 +227,6 @@ export default function SymbolicAwards() {
     void loadAwards();
   }, [loadAwards]);
 
-  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
-
   const filteredAwards = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase();
     const normalizedPatientSearch = patientSearchQuery.trim().toLowerCase();
