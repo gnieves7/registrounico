@@ -214,6 +214,11 @@ export const SCHOOL_CONFIG: Record<SchoolType, SchoolConfig> = {
       { name: 'Fritz Perls', works: ['Gestalt Therapy', 'El enfoque Gestalt'] },
       { name: 'Irvin Yalom', works: ['Psicoterapia existencial', 'El don de la terapia'] },
       { name: 'Viktor Frankl', works: ['El hombre en busca de sentido', 'Logoterapia y análisis existencial'] },
+      { name: 'Eugene Gendlin', works: ['Focusing'] },
+      { name: 'Charlotte Bühler', works: ['El curso de la vida humana'] },
+      { name: 'Martin Buber', works: ['Yo y Tú'] },
+      { name: 'Leslie Greenberg', works: ['Emotion-Focused Therapy'] },
+      { name: 'Rollo May', works: ['Love and Will', 'The Meaning of Anxiety'] },
     ],
     diagnosticFramework: {
       name: 'Conceptualización experiencial',
