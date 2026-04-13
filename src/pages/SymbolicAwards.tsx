@@ -287,6 +287,8 @@ export default function SymbolicAwards() {
     return Array.from(timelineMap.values());
   }, [filteredAwards]);
 
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
   const resetGrantForm = () => {
     setSelectedCategoryKey(AWARD_CATALOG[0].key);
     setSelectedAwardKey(AWARD_CATALOG[0].awards[0].key);
