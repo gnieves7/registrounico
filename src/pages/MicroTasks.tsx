@@ -66,6 +66,8 @@ export default function MicroTasks() {
     if (pid) loadTasks(pid);
   }, [selectedPatient, isAdmin, user]);
 
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
   const loadTasks = async (patientId: string) => {
     const { data } = await supabase
       .from("micro_tasks")
