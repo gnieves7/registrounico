@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -35,6 +37,7 @@ const STATUS_LABELS: Record<string, { label: string; variant: "default" | "secon
 export default function MicroTasks() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('tasks');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
@@ -62,6 +65,8 @@ export default function MicroTasks() {
     const pid = isAdmin ? selectedPatient : user?.id;
     if (pid) loadTasks(pid);
   }, [selectedPatient, isAdmin, user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const loadTasks = async (patientId: string) => {
     const { data } = await supabase

@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -140,6 +142,7 @@ const escapeHtml = (value: string) =>
 export default function SymbolicAwards() {
   const { isAdmin, user, profile, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('rewards');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
@@ -283,6 +286,8 @@ export default function SymbolicAwards() {
 
     return Array.from(timelineMap.values());
   }, [filteredAwards]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const resetGrantForm = () => {
     setSelectedCategoryKey(AWARD_CATALOG[0].key);

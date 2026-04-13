@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -80,6 +82,7 @@ const RESPONSE_LABELS_4 = ["Nunca (0)", "Varios días (1)", "Más de la mitad (2
 export default function OutcomeMonitoring() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('monitoring');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
@@ -105,6 +108,8 @@ export default function OutcomeMonitoring() {
     const pid = isAdmin ? selectedPatient : user?.id;
     if (pid) loadMeasures(pid);
   }, [selectedPatient, isAdmin, user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const loadMeasures = async (patientId: string) => {
     const { data } = await supabase

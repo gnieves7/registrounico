@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { Moon, Plus, Calendar, Sparkles, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -46,6 +48,7 @@ const dreamEmojis = [
 
 const DreamRecord = () => {
   const { isDemoMode, guardWrite } = useDemoMode();
+  const schoolContent = useSchoolContent('unconscious');
   const { dreams: realDreams, isLoading: realLoading, isSaving, saveDream, updateInterpretation } = useDreamRecords();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDream, setSelectedDream] = useState<string | null>(null);
@@ -61,6 +64,9 @@ const DreamRecord = () => {
     dream_content: "",
     dream_emojis: [],
   });
+
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const toggleEmoji = (emoji: string) => {
     setNewDream((prev) => ({

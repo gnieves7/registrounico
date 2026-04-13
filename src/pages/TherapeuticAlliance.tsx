@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +34,7 @@ const ITEMS = [
 export default function TherapeuticAlliance() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('alliance');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
@@ -59,6 +62,8 @@ export default function TherapeuticAlliance() {
       loadRatings(pid);
     }
   }, [selectedPatient, isAdmin, user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const loadSessions = async (patientId: string) => {
     const { data } = await supabase

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +49,7 @@ const AFFECTIVE_CATEGORIES = [
 export default function EmotionalThermometer() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('emotional');
   const isPatient = !isAdmin;
 
   // Admin state
@@ -73,6 +76,8 @@ export default function EmotionalThermometer() {
       loadEmaData(user.id);
     }
   }, [selectedPatient, isAdmin, user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const loadEmaData = async (patientId: string) => {
     const [configRes, responsesRes] = await Promise.all([

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +27,7 @@ interface AbcdeRecord {
 const AnxietyRecord = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('training');
   const [records, setRecords] = useState<AbcdeRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -39,6 +42,8 @@ const AnxietyRecord = () => {
   useEffect(() => {
     if (user) fetchRecords();
   }, [user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const fetchRecords = async () => {
     if (!user) return;

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useDemoMode } from "@/hooks/useDemoMode";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +43,10 @@ export default function Psychobiography() {
   const { isDemoMode, guardWrite } = useDemoMode();
   const [activeTab, setActiveTab] = useState("treatment");
   const { data, isLoading, isSaving, updateSection, calculateProgress } = usePsychobiography();
+  const schoolContent = useSchoolContent('history');
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
 
   const guardedUpdateSection = async (updates: any): Promise<boolean> => {
     if (isDemoMode) { guardWrite("Guardar sección"); return false; }
