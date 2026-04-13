@@ -43,6 +43,8 @@ const AnxietyRecord = () => {
     if (user) fetchRecords();
   }, [user]);
 
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
   const fetchRecords = async () => {
     if (!user) return;
     try {
