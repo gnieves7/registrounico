@@ -170,7 +170,7 @@ function ExerciseCard({ exercise, demoMode }: { exercise: SectionExercise; demoM
 }
 
 export default function SchoolSectionRenderer({ section }: SchoolSectionRendererProps) {
-  const { isDemo } = useDemoMode();
+  const { isDemoMode } = useDemoMode();
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-2 py-4 md:px-4">
