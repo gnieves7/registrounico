@@ -109,6 +109,8 @@ export default function OutcomeMonitoring() {
     if (pid) loadMeasures(pid);
   }, [selectedPatient, isAdmin, user]);
 
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
   const loadMeasures = async (patientId: string) => {
     const { data } = await supabase
       .from("outcome_measures")
