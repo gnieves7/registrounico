@@ -239,7 +239,7 @@ export default function SchoolSectionRenderer({ section }: SchoolSectionRenderer
             Ejercicios clínicos
           </h2>
           {section.exercises.map(ex => (
-            <ExerciseCard key={ex.id} exercise={ex} demoMode={isDemo} />
+            <ExerciseCard key={ex.id} exercise={ex} demoMode={isDemoMode} />
           ))}
         </div>
       )}
