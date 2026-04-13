@@ -27,6 +27,7 @@ interface AbcdeRecord {
 const AnxietyRecord = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('training');
   const [records, setRecords] = useState<AbcdeRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
