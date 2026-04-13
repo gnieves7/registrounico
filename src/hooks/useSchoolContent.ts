@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useActiveSchool } from './useActiveSchool';
 import { HUMANISTIC_SECTIONS, type HumanisticSection } from '@/data/humanisticContent';
 import { SYSTEMIC_SECTIONS } from '@/data/systemicContent';
+import { PSYCHOANALYTIC_SECTIONS } from '@/data/psychoanalyticContent';
 
 /**
  * Given a menuId (e.g. 'history', 'training', 'emotional'), returns
@@ -17,6 +18,9 @@ export function useSchoolContent(menuId: string): HumanisticSection | null {
     }
     if (schoolId === 'systemic') {
       return SYSTEMIC_SECTIONS.find(s => s.menuId === menuId) ?? null;
+    }
+    if (schoolId === 'psychoanalytic') {
+      return PSYCHOANALYTIC_SECTIONS.find(s => s.menuId === menuId) ?? null;
     }
     return null;
   }, [schoolId, menuId]);
