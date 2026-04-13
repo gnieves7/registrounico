@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getActiveSchoolId } from "@/hooks/useActiveSchool";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -44,7 +45,7 @@ export function useLauraChat() {
           Authorization: `Bearer ${token}`,
           apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
-        body: JSON.stringify({ messages: [...messages, userMsg] }),
+        body: JSON.stringify({ messages: [...messages, userMsg], school: getActiveSchoolId() }),
       });
 
       if (!resp.ok || !resp.body) {
