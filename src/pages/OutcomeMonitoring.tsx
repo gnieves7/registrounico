@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

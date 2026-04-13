@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useDemoMode } from "@/hooks/useDemoMode";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

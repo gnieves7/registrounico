@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSchoolContent } from "@/hooks/useSchoolContent";
+import SchoolSectionRenderer from "@/components/school/SchoolSectionRenderer";
 import { Moon, Plus, Calendar, Sparkles, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
