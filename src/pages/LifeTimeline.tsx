@@ -35,6 +35,7 @@ const VALENCE_LABELS: Record<string, string> = {
 export default function LifeTimeline() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('timeline');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
@@ -61,6 +62,8 @@ export default function LifeTimeline() {
     const pid = isAdmin ? selectedPatient : user?.id;
     if (pid) loadEvents(pid);
   }, [selectedPatient, isAdmin, user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const loadEvents = async (patientId: string) => {
     const { data } = await supabase

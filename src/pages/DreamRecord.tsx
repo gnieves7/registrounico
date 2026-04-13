@@ -48,6 +48,7 @@ const dreamEmojis = [
 
 const DreamRecord = () => {
   const { isDemoMode, guardWrite } = useDemoMode();
+  const schoolContent = useSchoolContent('unconscious');
   const { dreams: realDreams, isLoading: realLoading, isSaving, saveDream, updateInterpretation } = useDreamRecords();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedDream, setSelectedDream] = useState<string | null>(null);
@@ -63,6 +64,9 @@ const DreamRecord = () => {
     dream_content: "",
     dream_emojis: [],
   });
+
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const toggleEmoji = (emoji: string) => {
     setNewDream((prev) => ({

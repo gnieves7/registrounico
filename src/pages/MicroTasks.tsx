@@ -37,6 +37,7 @@ const STATUS_LABELS: Record<string, { label: string; variant: "default" | "secon
 export default function MicroTasks() {
   const { isAdmin, user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
+  const schoolContent = useSchoolContent('tasks');
   const isPatient = !isAdmin;
 
   const [patients, setPatients] = useState<{ user_id: string; full_name: string | null }[]>([]);
