@@ -4,6 +4,7 @@ import { HUMANISTIC_SECTIONS, type HumanisticSection } from '@/data/humanisticCo
 import { SYSTEMIC_SECTIONS } from '@/data/systemicContent';
 import { PSYCHOANALYTIC_SECTIONS } from '@/data/psychoanalyticContent';
 import { CBT_SECTIONS } from '@/data/cbtContent';
+import { BEHAVIORAL_SECTIONS } from '@/data/behavioralContent';
 
 /**
  * Given a menuId (e.g. 'history', 'training', 'emotional'), returns
@@ -25,6 +26,9 @@ export function useSchoolContent(menuId: string): HumanisticSection | null {
     }
     if (schoolId === 'cognitive_behavioral') {
       return CBT_SECTIONS.find(s => s.menuId === menuId) ?? null;
+    }
+    if (schoolId === 'behavioral') {
+      return BEHAVIORAL_SECTIONS.find(s => s.menuId === menuId) ?? null;
     }
     return null;
   }, [schoolId, menuId]);
