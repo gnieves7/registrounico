@@ -690,6 +690,24 @@ const section9_EvolucionProceso: PsychoanalyticSection = {
   ],
 };
 
+// ─── SECCIÓN 10: LAURA — ESCUCHA ANALÍTICA ─────────────────
+const section10_LauraEscuchaAnalitica: PsychoanalyticSection = {
+  id: 'psychoanalytic_assistant',
+  menuId: 'assistant',
+  title: 'Laura — Escucha Analítica',
+  subtitle: 'Acompañamiento entre sesiones desde la escucha psicoanalítica: asociación libre, elaboración y contención',
+  quote: 'La cura psicoanalítica no se da a través de la sugestión sino a través de la elaboración.',
+  quoteAuthor: 'Freud',
+  theoreticalSummary:
+    'Desde la perspectiva psicoanalítica, Laura opera como un espacio transicional (Winnicott) entre sesiones: un lugar donde el sujeto puede depositar fragmentos de pensamiento, emociones difusas o material onírico sin la presión de la coherencia. No interpreta — acompaña la asociación libre del sujeto, devuelve preguntas que abren el discurso y sostiene la ambigüedad sin cerrarla prematuramente. Funciona como un objeto que sobrevive (Winnicott): el paciente puede usarla, atacarla, abandonarla — Laura permanece disponible. Limitación fundamental: Laura no reemplaza la transferencia analítica ni la presencia del analista. No hay inconsciente sin otro que escuche.',
+  authors: [
+    { name: 'Donald Winnicott', years: '1896-1971', bio: 'El espacio transicional es el área intermedia entre la realidad interna y la externa donde ocurre el juego, la creatividad y — por extensión — la elaboración.', keyContributions: ['Espacio transicional', 'Objeto que sobrevive', 'Holding'] },
+    { name: 'Wilfred Bion', years: '1897-1979', bio: 'La función alfa transforma elementos beta (experiencias brutas) en pensamientos pensables. Laura puede funcionar como un continente provisorio para material preelaborado.', keyContributions: ['Función alfa', 'Reverie', 'Capacidad negativa'] },
+    { name: 'Sigmund Freud', years: '1856-1939', bio: 'La regla fundamental — decir todo lo que venga a la mente sin censura — es el motor del proceso analítico. Laura invita a la escritura libre como forma de asociación.', keyContributions: ['Asociación libre', 'Elaboración', 'Regla fundamental'] },
+  ],
+  exercises: [],
+};
+
 // ─── EXPORT TODAS LAS SECCIONES ────────────────────────────
 export const PSYCHOANALYTIC_SECTIONS: PsychoanalyticSection[] = [
   section1_HistoriaDelSujeto,
@@ -701,4 +719,5 @@ export const PSYCHOANALYTIC_SECTIONS: PsychoanalyticSection[] = [
   section7_IndicacionesTrabajo,
   section8_HitosProceso,
   section9_EvolucionProceso,
+  section10_LauraEscuchaAnalitica,
 ];
