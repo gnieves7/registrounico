@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDemoMode } from "@/hooks/useDemoMode";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent } from "@/components/ui/card";
-import { Brain, BookOpen, Scale, ArrowRight, ChevronRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Brain, BookOpen, Scale, ArrowRight, ChevronRight, ShieldCheck, LogIn } from "lucide-react";
 import { setStoredSystemArea, applySystemTheme, type SystemArea } from "@/lib/systemBranding";
 import { SCHOOL_LIST, type SchoolType } from "@/config/schools";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 const systems: { key: SystemArea; label: string; subtitle: string; icon: typeof Brain; color: string }[] = [
   { key: "reflexionar", label: "Reflexionar", subtitle: "Área Clínica", icon: Brain, color: "bg-blue-500/10 text-blue-600" },
@@ -15,15 +20,73 @@ const systems: { key: SystemArea; label: string; subtitle: string; icon: typeof 
 
 export default function DemoEntry() {
   const { enterDemoMode } = useDemoMode();
+  const { user, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
-  const [entered, setEntered] = useState(false);
-  const [step, setStep] = useState<"school" | "system">("school");
+  const [step, setStep] = useState<"auth" | "school" | "system">("auth");
   const [selectedSchool, setSelectedSchool] = useState<SchoolType | null>(null);
+  const [fullName, setFullName] = useState("");
+  const [matricula, setMatricula] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // If user is already logged in, pre-fill name
   useEffect(() => {
+    if (user?.user_metadata?.full_name) {
+      setFullName(user.user_metadata.full_name);
+    }
+  }, [user]);
+
+  const handleAuthRequest = async () => {
+    if (!fullName.trim()) {
+      toast.error("Ingresá tu nombre completo");
+      return;
+    }
+    if (!matricula.trim()) {
+      toast.error("Ingresá tu número de matrícula profesional");
+      return;
+    }
+
+    if (!user) {
+      // Need to sign in with Google first
+      setIsSubmitting(true);
+      try {
+        await signInWithGoogle();
+        // After redirect, user will come back — we store temp data
+        sessionStorage.setItem("psi_demo_request_name", fullName.trim());
+        sessionStorage.setItem("psi_demo_request_matricula", matricula.trim());
+      } catch (err) {
+        toast.error("Error al iniciar sesión con Google");
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    // User is already logged in — proceed
+    proceedAfterAuth();
+  };
+
+  const proceedAfterAuth = () => {
+    // Store request info for admin review
+    sessionStorage.setItem("psi_demo_request_name", fullName.trim());
+    sessionStorage.setItem("psi_demo_request_matricula", matricula.trim());
+
+    toast.success("Solicitud registrada", {
+      description: "Tu acceso de prueba ha sido habilitado. Un administrador revisará tu solicitud.",
+    });
+
     enterDemoMode();
-    setEntered(true);
-  }, [enterDemoMode]);
+    setStep("school");
+  };
+
+  // Check if returning from Google OAuth
+  useEffect(() => {
+    const savedName = sessionStorage.getItem("psi_demo_request_name");
+    const savedMatricula = sessionStorage.getItem("psi_demo_request_matricula");
+    if (user && savedName && savedMatricula) {
+      setFullName(savedName);
+      setMatricula(savedMatricula);
+      proceedAfterAuth();
+    }
+  }, [user]);
 
   const handleSchoolSelect = (id: SchoolType) => {
     setSelectedSchool(id);
@@ -37,18 +100,111 @@ export default function DemoEntry() {
     navigate("/dashboard", { replace: true });
   };
 
-  if (!entered) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="animate-pulse text-primary">Preparando demostración…</div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <AnimatePresence mode="wait">
-        {step === "school" ? (
+        {step === "auth" ? (
+          <motion.div
+            key="auth"
+            className="w-full max-w-md space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="text-center">
+              <motion.div
+                className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+              >
+                <ShieldCheck className="h-8 w-8 text-primary" />
+              </motion.div>
+              <motion.h1
+                className="font-serif text-2xl font-bold text-foreground"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+              >
+                Solicitud de Acceso Profesional
+              </motion.h1>
+              <motion.p
+                className="mt-2 text-sm text-muted-foreground max-w-sm mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                Para acceder al modo de prueba, necesitamos verificar tu identidad profesional.
+                Un administrador revisará tu solicitud.
+              </motion.p>
+            </div>
+
+            <motion.div
+              className="space-y-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card>
+                <CardContent className="space-y-4 p-5">
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName" className="text-sm font-medium">
+                      Nombre completo
+                    </Label>
+                    <Input
+                      id="fullName"
+                      placeholder="Ej: Lic. María González"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="h-11"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="matricula" className="text-sm font-medium">
+                      Número de matrícula profesional
+                    </Label>
+                    <Input
+                      id="matricula"
+                      placeholder="Ej: MP 1889"
+                      value={matricula}
+                      onChange={(e) => setMatricula(e.target.value)}
+                      className="h-11"
+                    />
+                    <p className="text-[11px] text-muted-foreground">
+                      Colegio de Psicólogos u organismo habilitante correspondiente
+                    </p>
+                  </div>
+
+                  <Button
+                    onClick={handleAuthRequest}
+                    disabled={isSubmitting}
+                    className="w-full h-11 gap-2"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    {user ? "Solicitar acceso de prueba" : "Continuar con Google"}
+                  </Button>
+
+                  {!user && (
+                    <p className="text-[11px] text-center text-muted-foreground">
+                      Se te pedirá iniciar sesión con tu cuenta de Google para verificar tu identidad
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.p
+              className="text-center text-xs text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              🔒 Navegación de solo lectura · No se modifican datos reales
+            </motion.p>
+          </motion.div>
+        ) : step === "school" ? (
           <motion.div
             key="school"
             className="w-full max-w-lg space-y-6"

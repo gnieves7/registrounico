@@ -679,6 +679,24 @@ const section9_MonitoreoResultados: CbtSection = {
   ],
 };
 
+// ─── SECCIÓN 10: LAURA — ASISTENTE COGNITIVO ───────────────
+const section10_LauraAsistenteCognitivo: CbtSection = {
+  id: 'cbt_assistant',
+  menuId: 'assistant',
+  title: 'Laura — Asistente Cognitivo',
+  subtitle: 'Acompañamiento entre sesiones desde el modelo cognitivo-conductual: reestructuración, experimentos y psicoeducación',
+  quote: 'El objetivo no es pensar positivo — es pensar con precisión.',
+  quoteAuthor: 'Beck',
+  theoreticalSummary:
+    'Desde la TCC, Laura funciona como un recurso de psicoeducación y práctica guiada entre sesiones. Utiliza preguntas socráticas (Beck) para guiar el descubrimiento — no da la respuesta. Facilita la identificación de pensamientos automáticos, la evaluación de evidencia a favor y en contra, y la generación de pensamientos alternativos. Puede guiar experimentos conductuales planificados y activación conductual. Desde la tercera ola, Laura puede facilitar ejercicios de defusión cognitiva (Hayes/ACT), mindfulness informal y autocompasión (Neff/Gilbert). Limitación: Laura no reemplaza la conceptualización del caso ni la alianza terapéutica. Los experimentos conductuales requieren supervisión profesional.',
+  authors: [
+    { name: 'Aaron T. Beck', years: '1921-2021', bio: 'El empirismo colaborativo y las preguntas socráticas son el motor del cambio cognitivo. Laura usa este método para guiar el autodescubrimiento.', keyContributions: ['Preguntas socráticas', 'Empirismo colaborativo', 'Reestructuración cognitiva'] },
+    { name: 'Steven Hayes', years: '1948-', bio: 'La defusión cognitiva cambia la relación con los pensamientos sin intentar modificar su contenido. Laura puede facilitar ejercicios de desliteralización.', keyContributions: ['Defusión cognitiva', 'ACT', 'Hexaflex'] },
+    { name: 'Nikolaos Kazantzis', years: '', bio: 'Las tareas entre sesiones son el mecanismo principal de generalización del aprendizaje terapéutico. Laura facilita la adherencia y el seguimiento.', keyContributions: ['Tareas terapéuticas', 'Generalización', 'Adherencia'] },
+  ],
+  exercises: [],
+};
+
 // ─── EXPORT ────────────────────────────────────────────────
 export const CBT_SECTIONS: CbtSection[] = [
   section1_HistoriaClinica,
@@ -690,4 +708,5 @@ export const CBT_SECTIONS: CbtSection[] = [
   section7_TareasSesiones,
   section8_LogrosTerapeuticos,
   section9_MonitoreoResultados,
+  section10_LauraAsistenteCognitivo,
 ];
