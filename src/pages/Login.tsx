@@ -289,7 +289,7 @@ const Login = () => {
     const system = map[questionView];
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-fade-in">
-        {renderBackButton("no-paciente")}
+        {renderBackButton("consulta")}
         {renderSystemCard(system, false, true)}
       </div>
     );
@@ -332,7 +332,7 @@ const Login = () => {
 
                 {/* Buttons */}
                 <div className="w-full space-y-4">
-                  {/* Soy Paciente — primary gold CTA */}
+                  {/* Paciente — primary gold CTA */}
                   <button
                     onClick={() => setView("paciente")}
                     className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-8 py-3.5 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in min-w-[180px] min-h-[48px]"
@@ -342,21 +342,21 @@ const Login = () => {
                       <User className="h-5 w-5 text-white" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
-                      <span className="text-base font-bold text-white block tracking-wide">Soy Paciente</span>
+                      <span className="text-base font-bold text-white block tracking-wide">Paciente</span>
                       <span className="text-xs text-white/70">Accedé a tu sistema asignado</span>
                     </div>
                     <ChevronDown className="h-5 w-5 text-white/50 -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
 
-                  {/* Row: No soy Paciente + Soy Profesional */}
+                  {/* Row: Consulta + Profesional */}
                   <div className="grid grid-cols-2 gap-3">
                      <button
-                      onClick={() => setView("no-paciente")}
+                      onClick={() => setView("consulta")}
                       className="group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-6 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
                       style={{ animationDelay: "0.3s", animationFillMode: "both" }}
                     >
-                       <UserX className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                       <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Derivante</span>
+                       <Search className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
+                       <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Consulta</span>
                      </button>
 
                     <button
@@ -365,18 +365,18 @@ const Login = () => {
                       style={{ animationDelay: "0.4s", animationFillMode: "both" }}
                     >
                       <Briefcase className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                      <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy Profesional</span>
+                      <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Profesional</span>
                     </button>
                   </div>
 
-                  {/* Soy Empresa */}
+                  {/* Empresa */}
                   <button
                     onClick={() => setView("empresa")}
                     className="w-full group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/15 bg-[#faf8f5] dark:bg-white/5 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
                     style={{ animationDelay: "0.5s", animationFillMode: "both" }}
                   >
                     <Building2 className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332] transition-transform duration-300 group-hover:scale-110" strokeWidth={1.8} />
-                    <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Soy una Empresa</span>
+                    <span className="text-sm font-semibold text-[#5a4a1e] dark:text-[#d4a332]/90">Empresa</span>
                   </button>
                 </div>
 
