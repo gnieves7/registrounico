@@ -6,13 +6,13 @@ import Footer from "@/components/layout/Footer";
 import {
   ShieldCheck, LogOut, Flame, BookOpen, Scale, Calendar,
   ArrowLeft, Building2, MessageCircle, Globe, Mail, Heart,
-  Search, User, UserX, Briefcase, ChevronDown, Moon, Sun
+  Search, User, Briefcase, ChevronDown, Moon, Sun
 } from "lucide-react";
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 
 
-import heroRobotImage from "@/assets/hero_psi_robot.png";
+
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
