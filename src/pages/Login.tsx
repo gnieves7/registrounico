@@ -11,8 +11,6 @@ import {
 import ProfessionalStats from "@/components/landing/ProfessionalStats";
 import { toast } from "@/hooks/use-toast";
 
-
-
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import {
@@ -39,7 +37,6 @@ const systemCards = [
     image: systemBranding.reflexionar.logo,
     redirect: "/dashboard",
     description: "Abordaje terapéutico, avances, monitoreo del estado de ánimo e intervenciones clínicas.",
-    codes: ["Código Clínico", "Código Intervenciones"],
     accentHue: "35",
   },
   {
@@ -50,7 +47,6 @@ const systemCards = [
     image: systemBranding.evaluar.logo,
     redirect: "/dashboard",
     description: "Estudio de la personalidad, perfiles, psicodiagnósticos clínicos y aptitud psíquica.",
-    codes: ["Código Personalidad", "Código Rorschach", "Código Aptitud Psíquica", "Código Junta Médica"],
     accentHue: "225",
   },
   {
@@ -61,7 +57,6 @@ const systemCards = [
     image: systemBranding.acompanar.logo,
     redirect: "/dashboard",
     description: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses.",
-    codes: ["Código Pericia", "Código Familia", "Código Cámara Gesell", "Código IPP"],
     accentHue: "100",
   },
 ];
@@ -197,89 +192,6 @@ const Login = () => {
     );
   }
 
-  const renderSystemCard = (system: (typeof systemCards)[0], showLogin = true, showTurno = false) => {
-    const h = system.accentHue;
-    return (
-      <div
-        key={system.id}
-        className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-card overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-      >
-        <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
-        <div className="flex flex-col items-center gap-3 p-5 flex-1">
-          <div
-            className="flex h-14 w-14 items-center justify-center rounded-full"
-            style={{ background: `hsl(${h}, 40%, 92%)` }}
-          >
-            <system.icon className="h-6 w-6" style={{ color: `hsl(${h}, 55%, 35%)` }} />
-          </div>
-          <div className="text-center flex-1">
-            <h3 className="text-sm font-bold text-foreground">{system.title}</h3>
-            <p className="text-xs font-semibold text-primary tracking-wide mt-0.5">{system.area}</p>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
-          </div>
-          {showLogin && (
-            <button
-              onClick={() => handleGoogleLogin(system.redirect, system.id)}
-              className="mt-auto w-full flex items-center justify-center gap-2 rounded-xl bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/20 active:scale-[0.98]"
-            >
-              <svg className="h-4 w-4" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-              </svg>
-              Acceder
-            </button>
-          )}
-          {showTurno && (
-            <div className="w-full space-y-2 mt-auto">
-              <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
-                <Calendar className="h-4 w-4" /> Solicitar Turno
-              </a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-2 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
-              <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
-                <Globe className="h-4 w-4" /> Sitio Web
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  const renderPatientSystemButton = (system: (typeof systemCards)[0]) => (
-    <button
-      key={system.id}
-      onClick={() => handleGoogleLogin(system.redirect, system.id)}
-      className="group flex flex-col items-center gap-4 rounded-[2rem] border border-border/40 bg-card px-6 py-7 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
-    >
-      <div className="flex h-24 w-24 items-center justify-center rounded-full border border-border/50 bg-background p-3 shadow-sm transition-transform duration-300 group-hover:scale-110 md:h-28 md:w-28">
-        <img src={system.image} alt={system.title} className="h-full w-full rounded-full object-contain" loading="lazy" />
-      </div>
-      <div className="space-y-1">
-        <h3 className="text-sm font-bold text-foreground md:text-base">{system.title}</h3>
-        <p className="text-xs font-medium text-muted-foreground">{system.area}</p>
-      </div>
-      <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
-        Ingresar con Google
-      </span>
-    </button>
-  );
-
-  const renderBackButton = (backTo: View = "main") => (
-    <button
-      onClick={() => setView(backTo)}
-      className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
-    >
-      <ArrowLeft className="h-4 w-4" /> Volver
-    </button>
-  );
-
   const renderQuestionView = (questionView: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
     const map = {
       "question-terapia": systemCards[0],
@@ -287,15 +199,67 @@ const Login = () => {
       "question-forense": systemCards[2],
     };
     const system = map[questionView];
+    const h = system.accentHue;
     return (
       <div className="mx-auto w-full max-w-md px-6 py-6 animate-fade-in">
-        {renderBackButton("consulta")}
-        {renderSystemCard(system, false, true)}
+        <button
+          onClick={() => setView("consulta")}
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" /> Volver
+        </button>
+        <div className="group flex flex-col items-stretch rounded-2xl border border-border/40 bg-card overflow-hidden">
+          <div className="h-1.5" style={{ background: `hsl(${h}, 55%, 50%)` }} />
+          <div className="flex flex-col items-center gap-3 p-5">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full" style={{ background: `hsl(${h}, 40%, 92%)` }}>
+              <system.icon className="h-6 w-6" style={{ color: `hsl(${h}, 55%, 35%)` }} />
+            </div>
+            <div className="text-center">
+              <h3 className="text-sm font-bold text-foreground">{system.title}</h3>
+              <p className="text-xs font-semibold text-primary tracking-wide mt-0.5">{system.area}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{system.description}</p>
+            </div>
+            <div className="w-full space-y-2 mt-auto">
+              <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-all hover:bg-primary/10 active:scale-[0.98]">
+                <Calendar className="h-4 w-4" /> Solicitar Turno
+              </a>
+              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#d4a332]/20 bg-[#d4a332]/5 px-4 py-2 text-sm font-medium text-[#9a7a2e] dark:text-[#d4a332] transition-all hover:bg-[#d4a332]/10 active:scale-[0.98]">
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+              <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#d4a332]/20 bg-[#d4a332]/5 px-4 py-2 text-sm font-medium text-[#9a7a2e] dark:text-[#d4a332] transition-all hover:bg-[#d4a332]/10 active:scale-[0.98]">
+                <Globe className="h-4 w-4" /> Sitio Web
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
 
   const isMainView = view === "main";
+  const showSystemButtons = view === "paciente";
+  const showTurnoCTA = view === "consulta" || view === "empresa" || view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense";
+
+  /* ── Google icon (white version) ── */
+  const GoogleIconWhite = () => (
+    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+      <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+      <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+      <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  );
+  const GoogleIconColor = () => (
+    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  );
 
   return (
     <div className="flex min-h-screen flex-col bg-background relative">
@@ -309,7 +273,7 @@ const Login = () => {
       </button>
 
       <main className="flex flex-1 flex-col">
-        {/* ═══ MAIN VIEW: Hero image + animated buttons ═══ */}
+        {/* ═══ MAIN VIEW ═══ */}
         {isMainView && (
           <div className="flex flex-col">
             <section
@@ -317,7 +281,6 @@ const Login = () => {
               className="relative w-full bg-white dark:bg-[#0d0d0d] min-h-[80vh] flex items-center justify-center"
             >
               <div className="flex flex-col items-center w-full max-w-lg px-6 py-16 md:py-20 space-y-8">
-                {/* Title */}
                 <div className="text-center space-y-2 animate-fade-in" style={{ animationDelay: "0s", animationFillMode: "both" }}>
                    <h1 className="text-6xl md:text-7xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
                      . PSI .
@@ -330,9 +293,7 @@ const Login = () => {
                    </p>
                 </div>
 
-                {/* Buttons */}
                 <div className="w-full space-y-4">
-                  {/* Paciente — primary gold CTA */}
                   <button
                     onClick={() => setView("paciente")}
                     className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-8 py-3.5 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in min-w-[180px] min-h-[48px]"
@@ -348,7 +309,6 @@ const Login = () => {
                     <ChevronDown className="h-5 w-5 text-white/50 -rotate-90 transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
 
-                  {/* Row: Consulta + Profesional */}
                   <div className="grid grid-cols-2 gap-3">
                      <button
                       onClick={() => setView("consulta")}
@@ -369,7 +329,6 @@ const Login = () => {
                     </button>
                   </div>
 
-                  {/* Empresa */}
                   <button
                     onClick={() => setView("empresa")}
                     className="w-full group flex items-center justify-center gap-2.5 rounded-[50px] border border-[#d4a332]/15 bg-[#faf8f5] dark:bg-white/5 backdrop-blur-sm px-8 py-3.5 transition-all duration-500 ease-out hover:border-[#d4a332]/35 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/8 dark:hover:bg-white/10 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in min-h-[48px]"
@@ -380,7 +339,6 @@ const Login = () => {
                   </button>
                 </div>
 
-                {/* Privacy — subtle */}
                 <div className="flex items-center justify-center gap-2 animate-fade-in" style={{ animationDelay: "0.65s", animationFillMode: "both" }}>
                   <ShieldCheck className="h-3.5 w-3.5 text-[#d4a332]/50" />
                   <span className="text-[10px] text-[#8a7a5e] dark:text-[#d4a332]/40">Tus datos están protegidos. </span>
@@ -393,13 +351,12 @@ const Login = () => {
           </div>
         )}
 
-        {/* ═══ AFTER SELECTING: Show welcome + content with hero image ═══ */}
+        {/* ═══ AFTER SELECTING ═══ */}
         {!isMainView && (
           <>
-            {/* Compact header with PSI branding + 3 system buttons */}
+            {/* Header */}
             <section className="relative w-full bg-white dark:bg-[#0d0d0d] overflow-hidden">
               <div className="relative mx-auto max-w-lg px-6 pt-10 pb-6">
-                {/* PSI Title */}
                 <div className="text-center mb-8 animate-fade-in">
                   <h1 className="text-4xl md:text-5xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
                     . PSI .
@@ -409,85 +366,91 @@ const Login = () => {
                   </p>
                 </div>
 
-                {/* 3 system buttons — gold pill style matching main page */}
-                <div className="space-y-3">
-                  <button
-                    onClick={() => handleGoogleLogin("/dashboard", "reflexionar")}
-                    className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-7 py-3 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
-                    style={{ animationDelay: "0.1s", animationFillMode: "both" }}
-                  >
-                    <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
-                      <Flame className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <span className="text-sm font-bold text-white block">Reflexionar</span>
-                      <span className="text-[11px] text-white/70">Área Clínica</span>
-                    </div>
-                    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                    </svg>
-                  </button>
+                {/* System buttons — ONLY for paciente */}
+                {showSystemButtons && (
+                  <div className="space-y-3">
+                    <button
+                      onClick={() => handleGoogleLogin("/dashboard", "reflexionar")}
+                      className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-7 py-3 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
+                      style={{ animationDelay: "0.1s", animationFillMode: "both" }}
+                    >
+                      <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                        <Flame className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-bold text-white block">Reflexionar</span>
+                        <span className="text-[11px] text-white/70">Área Clínica</span>
+                      </div>
+                      <GoogleIconWhite />
+                    </button>
 
-                  <button
-                    onClick={() => handleGoogleLogin("/dashboard", "evaluar")}
-                    className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
-                    style={{ animationDelay: "0.2s", animationFillMode: "both" }}
-                  >
-                    <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
-                      <BookOpen className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
-                    </div>
-                    <div className="flex-1">
-                      <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Evaluar</span>
-                      <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Psicodiagnóstica</span>
-                    </div>
-                    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                    </svg>
-                  </button>
+                    <button
+                      onClick={() => handleGoogleLogin("/dashboard", "evaluar")}
+                      className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                      style={{ animationDelay: "0.2s", animationFillMode: "both" }}
+                    >
+                      <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                        <BookOpen className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Evaluar</span>
+                        <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Psicodiagnóstica</span>
+                      </div>
+                      <GoogleIconColor />
+                    </button>
 
-                  <button
-                    onClick={() => handleGoogleLogin("/dashboard", "acompanar")}
-                    className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
-                    style={{ animationDelay: "0.3s", animationFillMode: "both" }}
-                  >
-                    <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
-                      <Scale className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
-                    </div>
-                    <div className="flex-1">
-                      <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Acompañar</span>
-                      <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Forense</span>
-                    </div>
-                    <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                    </svg>
-                  </button>
-                </div>
+                    <button
+                      onClick={() => handleGoogleLogin("/dashboard", "acompanar")}
+                      className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                      style={{ animationDelay: "0.3s", animationFillMode: "both" }}
+                    >
+                      <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                        <Scale className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Acompañar</span>
+                        <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Forense</span>
+                      </div>
+                      <GoogleIconColor />
+                    </button>
+                  </div>
+                )}
 
-                {/* Back button */}
+                {/* Solicitar Turno CTA — for consulta / empresa */}
+                {showTurnoCTA && (
+                  <div className="animate-fade-in">
+                    <a
+                      href={CALENDAR_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-7 py-3.5 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98]"
+                    >
+                      <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                        <Calendar className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <span className="text-sm font-bold text-white block">Solicitar Turno</span>
+                        <span className="text-[11px] text-white/70">Agendá tu consulta ahora</span>
+                      </div>
+                      <ChevronDown className="h-5 w-5 text-white/50 -rotate-90" />
+                    </a>
+                  </div>
+                )}
+
+                {/* Back button — visible pill */}
                 <div className="mt-5 flex justify-center">
                   <button
                     onClick={() => setView("main")}
-                    className="flex items-center gap-2 text-sm text-[#9a7a2e] dark:text-[#d4a332]/70 hover:text-[#5a4a1e] dark:hover:text-[#d4a332] transition-colors"
+                    className="flex items-center gap-2.5 rounded-[50px] border border-[#d4a332]/30 bg-[#faf8f5] dark:bg-white/8 px-6 py-2.5 text-sm font-semibold text-[#9a7a2e] dark:text-[#d4a332]/80 hover:border-[#d4a332]/50 hover:bg-white dark:hover:bg-white/12 transition-all duration-300 shadow-sm"
                   >
                     <ArrowLeft className="h-4 w-4" /> Volver al inicio
                   </button>
                 </div>
               </div>
-
-              {/* Subtle gold accent line */}
               <div className="h-px w-full bg-gradient-to-r from-transparent via-[#d4a332]/30 to-transparent" />
             </section>
 
-            {/* Welcome cards — white bg with subtle orange details */}
+            {/* Welcome cards */}
             <section className="w-full bg-white dark:bg-[#0d0d0d] px-5 pb-4 pt-6 md:px-8">
               <div className="mx-auto max-w-4xl">
                 <div className="flex flex-col lg:flex-row gap-3 mb-4">
@@ -496,7 +459,7 @@ const Login = () => {
                       <div className="h-9 w-9 rounded-full bg-orange-50 dark:bg-primary/10 flex items-center justify-center shrink-0">
                         <Heart className="h-4 w-4 text-orange-500 dark:text-primary" />
                       </div>
-                      <h1 className="text-base font-bold text-foreground font-serif">¡Un gusto saludarte!</h1>
+                      <h2 className="text-base font-bold text-foreground font-serif">¡Un gusto saludarte!</h2>
                     </div>
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       Soy <span className="font-semibold text-foreground">Germán Nieves</span>, Psicólogo clínico, Especialista en Psicología Forense, Diplomado en Psicodiagnóstico y experto en Rorschach.
@@ -523,33 +486,25 @@ const Login = () => {
                       </p>
                       <Accordion type="single" collapsible className="w-full mt-2">
                         <AccordionItem value="eje-clinico" className="border-border/30">
-                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
-                            Eje Clínico
-                          </AccordionTrigger>
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">Eje Clínico</AccordionTrigger>
                           <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                            El eje clínico es el suelo epistemológico: establece el vínculo, recoge la historia, detecta el estado mental actual y orienta la demanda. Sin ese encuadre, los instrumentos psicodiagnósticos se convierten en datos descontextualizados y los conceptos forenses se vacían de sujeto.
+                            El eje clínico es el suelo epistemológico: establece el vínculo, recoge la historia, detecta el estado mental actual y orienta la demanda.
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value="eje-psicodiagnostico" className="border-border/30">
-                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
-                            Eje Psicodiagnóstico
-                          </AccordionTrigger>
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">Eje Psicodiagnóstico</AccordionTrigger>
                           <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                            Traduce la escucha clínica a lenguaje estructurado: el MMPI-2 operacionaliza las hipótesis clínicas, el Rorschach (SC-Exner) profundiza en la organización de la personalidad y el procesamiento perceptual, y la integración de perfiles permite construir una hipótesis diagnóstica sólida (CIE-10/11). Es el puente entre la singularidad clínica y el lenguaje comunicable a terceros.
+                            Traduce la escucha clínica a lenguaje estructurado: MMPI-2, Rorschach (SC-Exner) e integración de perfiles para hipótesis diagnóstica sólida (CIE-10/11).
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value="eje-forense" className="border-border/30">
-                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
-                            Eje Forense
-                          </AccordionTrigger>
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">Eje Forense</AccordionTrigger>
                           <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
-                            Recibe la hipótesis diagnóstica y la somete a las exigencias del campo jurídico: credibilidad del relato, imputabilidad, daño psíquico, competencia parental, riesgo, etc. Aquí opera un criterio epistémico diferente —la certeza probable, el estándar de fiabilidad pericial— que exige que las conclusiones sean defendibles bajo contradicción.
+                            Somete la hipótesis diagnóstica a las exigencias del campo jurídico: credibilidad del relato, imputabilidad, daño psíquico, competencia parental, riesgo.
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value="integracion" className="border-border/30">
-                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">
-                            Integración virtuosa
-                          </AccordionTrigger>
+                          <AccordionTrigger className="text-sm font-semibold text-foreground hover:no-underline py-2">Integración virtuosa</AccordionTrigger>
                           <AccordionContent className="text-sm text-muted-foreground leading-relaxed italic">
                             La integración virtuosa ocurre cuando ningún eje actúa solo: el forense sin clínica produce tecnocracia sin subjetividad; el clínico sin psicodiagnóstico carece de anclaje empírico; el psicodiagnóstico sin clínica es psicometría sin sujeto.
                           </AccordionContent>
@@ -561,31 +516,29 @@ const Login = () => {
               </div>
             </section>
 
-            {/* Content area for sub-views */}
+            {/* Sub-view content */}
             <section className="mx-auto w-full max-w-4xl px-6 py-4 lg:px-10 bg-white dark:bg-[#0d0d0d]">
-              {view === "paciente" && (
-                <></>
-              )}
+              {view === "paciente" && <></>}
 
               {view === "consulta" && (
                 <div className="animate-fade-in">
-                  <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
+                  <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-5">Contame, ¿qué necesitás?</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
                     <button onClick={() => setView("question-terapia")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-orange-300/50">
-                      <Flame className="h-8 w-8 text-orange-500" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40">
+                      <Flame className="h-8 w-8 text-[#d4a332]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Necesitás terapia?</span>
                       <span className="text-xs text-muted-foreground text-center">Comenzá tu proceso terapéutico</span>
                     </button>
                     <button onClick={() => setView("question-psicodiagnostico")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-300/50">
-                      <BookOpen className="h-8 w-8 text-blue-500" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40">
+                      <BookOpen className="h-8 w-8 text-[#d4a332]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Te solicitan un psicodiagnóstico?</span>
                       <span className="text-xs text-muted-foreground text-center">Evaluación de personalidad y aptitud</span>
                     </button>
                     <button onClick={() => setView("question-forense")}
-                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-green-300/50">
-                      <Scale className="h-8 w-8 text-green-600" />
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40">
+                      <Scale className="h-8 w-8 text-[#d4a332]" />
                       <span className="text-sm font-semibold text-foreground text-center">¿Buscás asesoramiento para una causa judicial?</span>
                       <span className="text-xs text-muted-foreground text-center">Pericias y prácticas psico-forenses</span>
                     </button>
@@ -596,56 +549,41 @@ const Login = () => {
               {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") &&
                 renderQuestionView(view)}
 
-              {view === "profesional" && (
-                <div className="animate-fade-in mx-auto max-w-md">
-                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                    <div className="h-14 w-14 rounded-full bg-orange-100 dark:bg-[hsl(14,70%,52%)] flex items-center justify-center">
-                      <Briefcase className="h-7 w-7 text-orange-600 dark:text-white" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Profesional</h3>
-                    <p className="text-sm text-muted-foreground text-center">Para derivaciones, interconsultas o consultas profesionales.</p>
-                    <div className="w-full space-y-3 mt-2">
-                      <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-green-300/40 bg-green-50 dark:bg-green-950/30 px-4 py-3 text-sm font-medium text-green-700 dark:text-green-400 transition-all hover:bg-green-100 dark:hover:bg-green-950/50 active:scale-[0.98]">
-                        <MessageCircle className="h-4 w-4" /> WhatsApp
-                      </a>
-                      <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
-                        <Globe className="h-4 w-4" /> Sitio Web
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               {view === "empresa" && (
-                <div className="animate-fade-in mx-auto max-w-md">
-                  <div className="flex flex-col items-center gap-4 rounded-2xl border border-border/40 bg-card p-8">
-                    <Building2 className="h-12 w-12 text-orange-500" />
-                    <h3 className="text-lg font-semibold text-foreground font-serif">Contacto Empresarial</h3>
-                    <p className="text-sm text-muted-foreground text-center">Para servicios corporativos, evaluaciones y consultas institucionales.</p>
-                    <div className="w-full space-y-3 mt-2">
-                      <a href={EMPRESA_EMAIL}
-                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-orange-200/30 bg-orange-50 dark:bg-primary/5 px-4 py-3 text-sm font-medium text-orange-700 dark:text-primary transition-all hover:bg-orange-100 dark:hover:bg-primary/10 active:scale-[0.98]">
-                        <Mail className="h-4 w-4" /> Enviar Email
-                      </a>
-                      <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 rounded-xl border border-blue-300/40 bg-blue-50 dark:bg-blue-950/30 px-4 py-3 text-sm font-medium text-blue-700 dark:text-blue-400 transition-all hover:bg-blue-100 dark:hover:bg-blue-950/50 active:scale-[0.98]">
-                        <Globe className="h-4 w-4" /> Sitio Web
-                      </a>
-                    </div>
+                <div className="animate-fade-in">
+                  <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-5">Contame, ¿qué necesitás?</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+                    <a href={EMPRESA_EMAIL}
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40 text-center">
+                      <Mail className="h-8 w-8 text-[#d4a332]" />
+                      <span className="text-sm font-semibold text-foreground">Escribinos por email</span>
+                      <span className="text-xs text-muted-foreground">Consultas corporativas e institucionales</span>
+                    </a>
+                    <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40 text-center">
+                      <MessageCircle className="h-8 w-8 text-[#d4a332]" />
+                      <span className="text-sm font-semibold text-foreground">WhatsApp</span>
+                      <span className="text-xs text-muted-foreground">Respuesta rápida y personalizada</span>
+                    </a>
+                    <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
+                      className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-[#d4a332]/40 text-center">
+                      <Globe className="h-8 w-8 text-[#d4a332]" />
+                      <span className="text-sm font-semibold text-foreground">Sitio Web</span>
+                      <span className="text-xs text-muted-foreground">Conocé nuestros servicios</span>
+                    </a>
                   </div>
                 </div>
               )}
             </section>
 
-            {/* Stats, avales, FAQ */}
+            {/* Prácticas y experiencia */}
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <ProfessionalStats />
               </div>
             </section>
 
+            {/* Avales */}
             <section className="mx-auto w-full max-w-5xl px-6 py-2 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-5 shadow-sm">
                 <h3 className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">Avales institucionales</h3>
@@ -656,6 +594,7 @@ const Login = () => {
               </div>
             </section>
 
+            {/* Preguntas frecuentes */}
             <section className="mx-auto w-full max-w-5xl px-6 py-6 lg:px-10 bg-white dark:bg-[#0d0d0d] animate-fade-in">
               <div className="rounded-2xl border border-border/40 bg-card px-6 py-6 shadow-sm">
                 <h3 className="text-center text-lg font-semibold text-foreground font-serif mb-4">Preguntas frecuentes</h3>
