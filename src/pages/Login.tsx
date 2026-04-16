@@ -396,71 +396,95 @@ const Login = () => {
         {/* ═══ AFTER SELECTING: Show welcome + content with hero image ═══ */}
         {!isMainView && (
           <>
-            {/* Hero robot image + buttons below */}
+            {/* Compact header with PSI branding + 3 system buttons */}
             <section className="relative w-full bg-white dark:bg-[#0d0d0d] overflow-hidden">
-              <div className="relative mx-auto max-w-lg px-4 pt-8 pb-4">
-                {/* Robot image */}
-                <img
-                  src={heroRobotImage}
-                  alt=".PSI. — Plataforma de Sistemas Interactivos"
-                  className="w-full max-w-sm mx-auto h-auto block animate-fade-in"
-                />
+              <div className="relative mx-auto max-w-lg px-6 pt-10 pb-6">
+                {/* PSI Title */}
+                <div className="text-center mb-8 animate-fade-in">
+                  <h1 className="text-4xl md:text-5xl font-black tracking-tight golden-text-sweep golden-shimmer" style={{ fontFamily: "'Georgia', serif" }}>
+                    . PSI .
+                  </h1>
+                  <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332] mt-1">
+                    Plataforma de Sistemas Interactivos
+                  </p>
+                </div>
 
-                {/* 3 buttons aligned below the image */}
-                <div className="flex items-center justify-center gap-3 mt-6">
+                {/* 3 system buttons — gold pill style matching main page */}
+                <div className="space-y-3">
                   <button
                     onClick={() => handleGoogleLogin("/dashboard", "reflexionar")}
-                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 px-5 py-2.5 shadow-lg shadow-orange-500/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95"
+                    className="w-full group flex items-center gap-4 rounded-[50px] bg-gradient-to-r from-[#d4a332] via-[#c9982a] to-[#b8871f] px-7 py-3 text-left shadow-lg shadow-[#d4a332]/15 transition-all duration-500 ease-out hover:shadow-xl hover:shadow-[#d4a332]/30 hover:-translate-y-0.5 active:scale-[0.98] animate-fade-in"
+                    style={{ animationDelay: "0.1s", animationFillMode: "both" }}
                   >
+                    <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                      <Flame className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-sm font-bold text-white block">Reflexionar</span>
+                      <span className="text-[11px] text-white/70">Área Clínica</span>
+                    </div>
                     <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
                       <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                       <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                       <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                       <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span className="text-sm font-bold text-white">Reflexionar</span>
                   </button>
 
                   <button
                     onClick={() => handleGoogleLogin("/dashboard", "evaluar")}
-                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-sky-400 to-sky-500 px-5 py-2.5 shadow-lg shadow-sky-500/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-sky-500/30 active:scale-95"
+                    className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    style={{ animationDelay: "0.2s", animationFillMode: "both" }}
                   >
+                    <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                      <BookOpen className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Evaluar</span>
+                      <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Psicodiagnóstica</span>
+                    </div>
                     <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span className="text-sm font-bold text-white">Evaluar</span>
                   </button>
 
                   <button
                     onClick={() => handleGoogleLogin("/dashboard", "acompanar")}
-                    className="flex items-center gap-2 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 px-5 py-2.5 shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/30 active:scale-95"
+                    className="w-full group flex items-center gap-4 rounded-[50px] border border-[#d4a332]/25 bg-[#faf8f5] dark:bg-white/8 backdrop-blur-sm px-7 py-3 text-left transition-all duration-500 ease-out hover:border-[#d4a332]/50 hover:bg-white hover:shadow-md hover:shadow-[#d4a332]/10 dark:hover:bg-white/12 hover:-translate-y-0.5 active:scale-[0.97] animate-fade-in"
+                    style={{ animationDelay: "0.3s", animationFillMode: "both" }}
                   >
+                    <div className="h-10 w-10 rounded-full bg-[#d4a332]/10 flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110">
+                      <Scale className="h-5 w-5 text-[#9a7a2e] dark:text-[#d4a332]" />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-sm font-bold text-[#5a4a1e] dark:text-[#d4a332]/90 block">Acompañar</span>
+                      <span className="text-[11px] text-[#8a7a5e] dark:text-[#d4a332]/50">Área Forense</span>
+                    </div>
                     <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                      <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                     </svg>
-                    <span className="text-sm font-bold text-white">Acompañar</span>
                   </button>
                 </div>
 
                 {/* Back button */}
-                <div className="mt-4">
+                <div className="mt-5 flex justify-center">
                   <button
                     onClick={() => setView("main")}
-                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex items-center gap-2 text-sm text-[#9a7a2e] dark:text-[#d4a332]/70 hover:text-[#5a4a1e] dark:hover:text-[#d4a332] transition-colors"
                   >
                     <ArrowLeft className="h-4 w-4" /> Volver al inicio
                   </button>
                 </div>
               </div>
 
-              {/* Subtle orange accent line */}
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
+              {/* Subtle gold accent line */}
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-[#d4a332]/30 to-transparent" />
             </section>
 
             {/* Welcome cards — white bg with subtle orange details */}
