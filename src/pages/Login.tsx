@@ -28,7 +28,7 @@ const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "mailto:pdf.consultas@gmail.com";
 const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
-type View = "main" | "paciente" | "no-paciente" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
+type View = "main" | "paciente" | "consulta" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
 
 const systemCards = [
   {
