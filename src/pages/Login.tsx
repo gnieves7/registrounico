@@ -567,7 +567,7 @@ const Login = () => {
                 <></>
               )}
 
-              {view === "no-paciente" && (
+              {view === "consulta" && (
                 <div className="animate-fade-in">
                   <p className="text-center text-sm text-muted-foreground mb-5">Contame, ¿qué necesitás?</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
