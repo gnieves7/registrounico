@@ -134,6 +134,23 @@ const DashboardHome = () => {
     fetchData();
   }, [user, isDemoMode]);
 
+  // Realtime: refresh when sessions table changes for this patient (admin-side updates from Google Calendar sync)
+  useEffect(() => {
+    if (isDemoMode || !user) return;
+    const channel = supabase
+      .channel(`patient-sessions-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "sessions", filter: `patient_id=eq.${user.id}` },
+        () => fetchData()
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isDemoMode]);
+
   const handleSystemChange = (area: SystemArea) => {
     setStoredSystemArea(area);
     applySystemTheme(area, true);
