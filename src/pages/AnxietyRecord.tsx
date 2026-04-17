@@ -56,6 +56,12 @@ const AnxietyRecord = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) fetchRecords();
+  }, [user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
+
   const saveRecord = async () => {
     if (!user) return;
     if (!newRecord.situation.trim()) {
