@@ -39,12 +39,6 @@ const AnxietyRecord = () => {
     result: "",
   });
 
-  useEffect(() => {
-    if (user) fetchRecords();
-  }, [user]);
-
-  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
-
   const fetchRecords = async () => {
     if (!user) return;
     try {
@@ -61,6 +55,12 @@ const AnxietyRecord = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) fetchRecords();
+  }, [user]);
+
+  if (schoolContent) return <SchoolSectionRenderer section={schoolContent} />;
 
   const saveRecord = async () => {
     if (!user) return;
