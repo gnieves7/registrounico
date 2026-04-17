@@ -53,6 +53,23 @@ const Sessions = () => {
     }
   }, [user, isDemoMode]);
 
+  // Realtime sync with sessions table (reflects admin/Calendar-side changes)
+  useEffect(() => {
+    if (isDemoMode || !user) return;
+    const channel = supabase
+      .channel(`sessions-page-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "sessions", filter: `patient_id=eq.${user.id}` },
+        () => fetchSessions()
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isDemoMode]);
+
   const fetchSessions = async () => {
     if (!user) return;
 
