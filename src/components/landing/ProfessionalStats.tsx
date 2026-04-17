@@ -100,7 +100,7 @@ const ProfessionalStats = () => {
   return (
     <div className="space-y-4 py-4">
       <h3 className="text-center text-lg font-semibold text-foreground md:text-xl font-serif">
-        Prácticas y experiencia reflejada en números
+        Experiencia reflejada en números desde 2016 a la actualidad
       </h3>
       <div className="flex flex-wrap items-start justify-center gap-6 md:gap-0">
         {stats.map((stat, index) => (

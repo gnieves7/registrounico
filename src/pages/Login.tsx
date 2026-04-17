@@ -474,7 +474,7 @@ const Login = () => {
                     </div>
                     <div className="text-sm leading-relaxed text-muted-foreground space-y-3">
                       <p>
-                        <strong className="text-foreground">.PSI.</strong> ofrece una atención psicológica única y personalizada que combina tres estructuras bajo <strong className="text-foreground">Sistemas Interactivos</strong>:
+                        <strong className="text-foreground">.PSI.</strong> combina la estructura del proceso de terapia gestionada por el paciente y una herramienta clínica para el abordaje administrada por el profesional de la psicología, integrando tres <strong className="text-foreground">Sistemas Interactivos</strong>:
                       </p>
                       <ol className="list-decimal list-inside space-y-0.5 pl-1">
                         <li><strong className="text-foreground">Sistema Reflexionar</strong> (área clínica)</li>
