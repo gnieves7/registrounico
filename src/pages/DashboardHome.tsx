@@ -240,11 +240,34 @@ const DashboardHome = () => {
       )}
 
       <div className="space-y-4 md:space-y-6">
-        {/* ═══ REFLEXIONAR: Treatment tracking + Appointment request ═══ */}
+        {/* ═══ REFLEXIONAR: Primary CTA + Treatment tracking ═══ */}
         {isReflexionar && (
           <>
+            {/* PRIMARY CTA: Turno para terapia (Google Calendar) */}
+            <a
+              href={CALENDAR_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block rounded-2xl bg-gradient-to-r from-primary via-primary to-primary/90 p-5 shadow-lg shadow-primary/20 transition-all duration-300 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-transform group-hover:scale-110">
+                  <Calendar className="h-6 w-6 text-primary-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-base font-bold text-primary-foreground md:text-lg">Turno para terapia</h2>
+                  <p className="text-xs text-primary-foreground/80 md:text-sm">
+                    Reservá tu próxima sesión en Google Calendar — se sincroniza automáticamente con tu panel.
+                  </p>
+                </div>
+                <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-primary-foreground backdrop-blur-sm">
+                  Agendar
+                </span>
+              </div>
+            </a>
+
             {/* Treatment tracking summary */}
-            <section className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            <section className="grid gap-4 grid-cols-3">
               <Card className="border-primary/20">
                 <CardContent className="flex flex-col items-center gap-2 p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -272,21 +295,6 @@ const DashboardHome = () => {
                   <span className="text-xs text-muted-foreground text-center">Turno próximo</span>
                 </CardContent>
               </Card>
-              <a
-                href={CALENDAR_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                <Card className="h-full border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer">
-                  <CardContent className="flex flex-col items-center justify-center gap-2 p-4 h-full">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/20">
-                      <Calendar className="h-5 w-5 text-primary" />
-                    </div>
-                    <span className="text-xs font-semibold text-primary text-center">Solicitar Turno</span>
-                  </CardContent>
-                </Card>
-              </a>
             </section>
 
             {/* Emotional Record */}
