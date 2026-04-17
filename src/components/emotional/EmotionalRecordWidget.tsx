@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Check } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, Heart } from "lucide-react";
 
 const AFFECTIVE_CATEGORIES = [
   { emoji: "🤩", label: "Admiración", labelEn: "Admiration", score: 8, description: "Valoración positiva de una cualidad en otro" },
@@ -56,6 +56,7 @@ export function EmotionalRecordWidget({
   const [selectedMood, setSelectedMood] = useState<string | null>(todayRecord?.emoji || null);
   const [reflection, setReflection] = useState(todayRecord?.reflection || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSave = async () => {
     if (!user || !selectedMood) return;
@@ -127,16 +128,48 @@ export function EmotionalRecordWidget({
     );
   }
 
+  // Compact collapsed view (default state when no record yet)
+  if (!isExpanded) {
+    return (
+      <Card className="border-primary/20">
+        <button
+          onClick={() => setIsExpanded(true)}
+          className="w-full flex items-center gap-3 p-3 text-left hover:bg-accent/30 transition-colors rounded-lg"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 shrink-0">
+            <Heart className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground">¿Cómo te sentís hoy?</p>
+            <p className="text-xs text-muted-foreground">Tocá para registrar tu estado</p>
+          </div>
+          <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+        </button>
+      </Card>
+    );
+  }
+
   return (
     <Card className="border-primary/20">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span className="text-2xl">🫶</span>
-          ¿Cómo te sientes hoy?
-        </CardTitle>
-        <CardDescription>
-          Seleccioná la categoría afectiva que mejor represente tu estado emocional actual
-        </CardDescription>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Heart className="h-4 w-4 text-primary" />
+              ¿Cómo te sentís hoy?
+            </CardTitle>
+            <CardDescription className="text-xs mt-1">
+              Elegí la categoría que mejor represente tu estado
+            </CardDescription>
+          </div>
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="text-muted-foreground hover:text-foreground transition-colors p-1"
+            aria-label="Contraer"
+          >
+            <ChevronUp className="h-4 w-4" />
+          </button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* 27 Affective Categories Grid */}

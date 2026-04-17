@@ -1,8 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, ExternalLink } from "lucide-react";
+import { Calendar, Clock, ExternalLink, CalendarPlus } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+
+const GOOGLE_CALENDAR_BOOKING_URL = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 interface UpcomingSessionProps {
   session?: {
@@ -79,18 +81,28 @@ export function UpcomingSession({ session }: UpcomingSessionProps) {
           </div>
         </div>
 
-        {session.calendar_link && (
+        <div className="grid gap-2 sm:grid-cols-2">
           <Button variant="outline" className="w-full" asChild>
-            <a 
-              href={session.calendar_link} 
-              target="_blank" 
+            <a
+              href={session.calendar_link || GOOGLE_CALENDAR_BOOKING_URL}
+              target="_blank"
               rel="noopener noreferrer"
             >
               <ExternalLink className="mr-2 h-4 w-4" />
-              Ver en calendario
+              {session.calendar_link ? "Ver en calendario" : "Sincronizar con Calendar"}
             </a>
           </Button>
-        )}
+          <Button variant="default" className="w-full" asChild>
+            <a
+              href={GOOGLE_CALENDAR_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <CalendarPlus className="mr-2 h-4 w-4" />
+              Solicitar nuevo turno
+            </a>
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
