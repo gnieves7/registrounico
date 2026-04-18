@@ -1017,6 +1017,54 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_resources: {
+        Row: {
+          author: string | null
+          created_at: string
+          description: string | null
+          id: string
+          resource_type: string
+          role_tag: string
+          section: string
+          sort_order: number
+          source: string | null
+          storage_path: string | null
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          resource_type: string
+          role_tag?: string
+          section: string
+          sort_order?: number
+          source?: string | null
+          storage_path?: string | null
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          resource_type?: string
+          role_tag?: string
+          section?: string
+          sort_order?: number
+          source?: string | null
+          storage_path?: string | null
+          title?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       professional_stats: {
         Row: {
           created_at: string
@@ -1217,6 +1265,35 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      resource_downloads: {
+        Row: {
+          downloaded_at: string
+          id: string
+          resource_id: string
+          user_id: string
+        }
+        Insert: {
+          downloaded_at?: string
+          id?: string
+          resource_id: string
+          user_id: string
+        }
+        Update: {
+          downloaded_at?: string
+          id?: string
+          resource_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_downloads_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "professional_resources"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       scl90r_tests: {
         Row: {
