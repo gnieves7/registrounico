@@ -54,7 +54,7 @@ const allPatientMenuItems = [
 const hiddenByArea: Record<string, string[]> = {
   reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell"],
   evaluar: ["/forensic", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
-  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record"],
+  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record", "/psychobiography", "/telegram", "/notebook", "/sessions", "/professional-profile"],
 };
 
 const areaLabels: Record<string, string> = {

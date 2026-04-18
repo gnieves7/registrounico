@@ -9,6 +9,10 @@ export type ResourceSection =
   | 'gender_violence'
   | 'psychological_damage'
   | 'sexual_abuse'
+  | 'communication_regime'
+  | 'audience_tips'
+  | 'bibliography'
+  | 'informed_consent'
   | 'report_models';
 
 export interface AuthorRef {
@@ -106,8 +110,87 @@ export const RESOURCE_SECTIONS: SectionDefinition[] = [
       'El profesional está evaluando una situación de posible abuso sexual en NNyA. Orientá desde Intebi, NICHD y CBCA/SVA. Recordá la distinción entre evaluación clínica y pericial.',
   },
   {
-    id: 'report_models',
+    id: 'communication_regime',
     number: '05',
+    title: 'Régimen Comunicacional',
+    shortTitle: 'Rég. Comunicacional',
+    accentHsl: '178 80% 27%', // teal
+    introduction:
+      'Marco de evaluación del régimen comunicacional (antes "régimen de visitas") en el Código Civil y Comercial argentino (Arts. 652-657). Aborda el rol del psicólogo como perito o consultor técnico en disputas de cuidado personal, evaluación del vínculo afectivo NNyA-progenitor y detección de obstaculización del contacto.',
+    authors: [
+      { name: 'Cecilia Grosman', contribution: 'Familia, infancia y derecho. Régimen comunicacional en el CCyC.' },
+      { name: 'Marisa Herrera', contribution: 'Código Civil y Comercial comentado — Derecho de Familia argentino.' },
+      { name: 'John Bowlby', contribution: 'Teoría del apego — base para evaluación del vínculo paterno-filial.' },
+      { name: 'Joan Kelly', contribution: 'Coparentalidad post-divorcio. Evaluación del mejor interés del niño.' },
+      { name: 'Richard Gardner (crítica)', contribution: 'SAP — concepto controvertido, no avalado por APA ni AACAP.' },
+      { name: 'Janet Johnston', contribution: 'Alto conflicto familiar y resistencia/rechazo del NNyA al contacto.' },
+      { name: 'APA Guidelines 2010', contribution: 'Pautas para evaluación psicológica en disputas de custodia.' },
+    ],
+    lauraContext:
+      'El profesional consulta sobre régimen comunicacional bajo el CCyC argentino. Orientá desde el principio del interés superior del niño, teoría del apego y diferenciación entre rechazo justificado y obstaculización. Recordá que el SAP no está avalado científicamente.',
+  },
+  {
+    id: 'audience_tips',
+    number: '06',
+    title: 'Consejos para Audiencias Orales',
+    shortTitle: 'Audiencias',
+    accentHsl: '38 60% 40%', // dorado oscuro
+    introduction:
+      'Orientación práctica para la actuación del perito de parte y consultor técnico en audiencias orales del sistema acusatorio (Ley 12.734 Santa Fe). Cubre presentación del informe, examen directo, contraexamen, manejo del lenguaje técnico y postura ética frente al tribunal.',
+    authors: [
+      { name: 'Stanley Brodsky', contribution: 'Testifying in Court — manual clásico de testimonio pericial.' },
+      { name: 'David Faust', contribution: 'The Limits of Expert Testimony. Crítica epistemológica del peritaje.' },
+      { name: 'Paul Ekman', contribution: 'Detección de la mentira y comunicación no verbal en contexto judicial.' },
+      { name: 'Giselle Salas Calvo', contribution: 'Psicología del testimonio y declaración pericial — Latinoamérica.' },
+      { name: 'Jorge Folino', contribution: 'Práctica pericial en tribunales argentinos.' },
+      { name: 'MPA / SPPDP Santa Fe', contribution: 'Lineamientos del sistema acusatorio provincial.' },
+    ],
+    lauraContext:
+      'El profesional se prepara para una audiencia oral en Santa Fe (Ley 12.734). Orientá sobre presentación del informe, manejo del contraexamen, lenguaje accesible y límites éticos del testimonio pericial (Brodsky, Faust).',
+  },
+  {
+    id: 'bibliography',
+    number: '07',
+    title: 'Bibliografía Recomendada',
+    shortTitle: 'Bibliografía',
+    accentHsl: '316 67% 32%', // magenta oscuro
+    introduction:
+      'Selección bibliográfica organizada por área temática: psicología forense general, evaluación del daño, abuso sexual infantil, violencia de género, derecho de familia y testimonio pericial. Incluye referentes argentinos, latinoamericanos y anglosajones de acceso abierto y editorial.',
+    authors: [
+      { name: 'Jorge Folino', contribution: 'Psiquiatría y psicología forense en Argentina — referencia regional.' },
+      { name: 'Mariano Castex', contribution: 'Daño psíquico en el ámbito civil y penal argentino.' },
+      { name: 'Enrique Echeburúa', contribution: 'Tratado de evaluación del daño psicológico (Pirámide).' },
+      { name: 'Irene Intebi', contribution: 'Abuso sexual infantil — Granica, varias ediciones.' },
+      { name: 'Bessel van der Kolk', contribution: 'El cuerpo lleva la cuenta — neurobiología del trauma.' },
+      { name: 'Marisa Herrera', contribution: 'Manual de Derecho de las Familias — CCyC argentino.' },
+      { name: 'Papeles del Psicólogo (COP)', contribution: 'Revista de acceso abierto — psicología forense.' },
+      { name: 'Anuario de Psicología Jurídica', contribution: 'Revista científica iberoamericana.' },
+    ],
+    lauraContext:
+      'El profesional busca bibliografía de referencia en psicología forense. Sugerí lecturas según el subtema (daño, ASI, violencia de género, derecho de familia) priorizando autores argentinos (Folino, Castex, Intebi, Herrera) y revistas de acceso abierto.',
+  },
+  {
+    id: 'informed_consent',
+    number: '08',
+    title: 'Consentimiento Informado',
+    shortTitle: 'Consentimiento',
+    accentHsl: '208 75% 37%', // azul
+    introduction:
+      'Marco legal argentino (Ley 26.529 de Derechos del Paciente, Ley 26.657 de Salud Mental, Código de Ética FePRA) y modelos diferenciados de consentimiento informado: clínico, pericial, supervisión, NNyA, terceros (obras sociales). Punto crítico: el consentimiento pericial NO es el mismo que el clínico — el peritado debe saber que el informe va al tribunal.',
+    authors: [
+      { name: 'Ley 26.529 (Argentina)', contribution: 'Derechos del Paciente, Historia Clínica y Consentimiento Informado.' },
+      { name: 'Ley 26.657 (Argentina)', contribution: 'Salud Mental — consentimiento y autonomía del paciente.' },
+      { name: 'Código de Ética FePRA', contribution: 'Federación de Psicólogos de la República Argentina.' },
+      { name: 'Código de Ética COP Santa Fe', contribution: 'Colegio de Psicólogos de Santa Fe — normativa provincial.' },
+      { name: 'CCyC Arts. 26, 595, 639', contribution: 'Capacidad progresiva de NNyA y consentimiento.' },
+      { name: 'APA Ethical Principles', contribution: 'Estándares internacionales sobre consentimiento informado.' },
+    ],
+    lauraContext:
+      'El profesional necesita orientación sobre consentimiento informado. Diferenciá según contexto: clínico (Ley 26.529), pericial (con aclaración de destino judicial del informe), NNyA (firma de ambos progenitores en divorcio conflictivo), supervisión y terceros. Citá FePRA y CCyC.',
+  },
+  {
+    id: 'report_models',
+    number: '09',
     title: 'Modelos de Informes',
     shortTitle: 'Informes',
     accentHsl: '152 64% 29%', // verde
