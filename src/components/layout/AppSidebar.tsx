@@ -4,7 +4,7 @@ import {
   Home, User, Calendar, MessageCircle, FileText, Settings, LogOut,
   Moon, Brain, UserCheck, Scale, Briefcase, ShieldCheck, Map,
   Thermometer, BookOpen, Network, Handshake, Clock, ClipboardList,
-  BarChart3, Eye, Award, Send, Gavel, BookMarked, Users, AlertOctagon,
+  BarChart3, Eye, Award, Send, Gavel, BookMarked, AlertOctagon, ShieldAlert,
   HeartHandshake, MessageSquare, Mic, FileSignature, FileCheck2,
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
