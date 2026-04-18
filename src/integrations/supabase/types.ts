@@ -549,6 +549,149 @@ export type Database = {
         }
         Relationships: []
       }
+      judicial_case_attachments: {
+        Row: {
+          attachment_type: string
+          case_id: string
+          created_at: string
+          description: string | null
+          id: string
+          mime_type: string | null
+          size_bytes: number | null
+          storage_path: string
+          title: string
+          uploaded_by: string
+        }
+        Insert: {
+          attachment_type: string
+          case_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          title: string
+          uploaded_by: string
+        }
+        Update: {
+          attachment_type?: string
+          case_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          mime_type?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          title?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "judicial_case_attachments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "judicial_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      judicial_cases: {
+        Row: {
+          additional_notes: string | null
+          case_status: string
+          case_title: string
+          complainant_dni: string | null
+          complainant_name: string | null
+          complainant_relationship: string | null
+          complaint_date: string | null
+          complaint_place: string | null
+          confidentiality_notice: string | null
+          court_division: string | null
+          court_name: string | null
+          created_at: string
+          cuij: string | null
+          defense_lawyer_email: string | null
+          defense_lawyer_matricula: string | null
+          defense_lawyer_name: string | null
+          defense_lawyer_phone: string | null
+          gesell_chamber_date: string | null
+          gesell_chamber_notes: string | null
+          id: string
+          jurisdiction: string
+          legajo_number: string | null
+          next_hearing_date: string | null
+          owner_user_id: string
+          prosecutor_name: string | null
+          reported_facts: string | null
+          sentence_date: string | null
+          sentence_summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          additional_notes?: string | null
+          case_status?: string
+          case_title: string
+          complainant_dni?: string | null
+          complainant_name?: string | null
+          complainant_relationship?: string | null
+          complaint_date?: string | null
+          complaint_place?: string | null
+          confidentiality_notice?: string | null
+          court_division?: string | null
+          court_name?: string | null
+          created_at?: string
+          cuij?: string | null
+          defense_lawyer_email?: string | null
+          defense_lawyer_matricula?: string | null
+          defense_lawyer_name?: string | null
+          defense_lawyer_phone?: string | null
+          gesell_chamber_date?: string | null
+          gesell_chamber_notes?: string | null
+          id?: string
+          jurisdiction?: string
+          legajo_number?: string | null
+          next_hearing_date?: string | null
+          owner_user_id: string
+          prosecutor_name?: string | null
+          reported_facts?: string | null
+          sentence_date?: string | null
+          sentence_summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          additional_notes?: string | null
+          case_status?: string
+          case_title?: string
+          complainant_dni?: string | null
+          complainant_name?: string | null
+          complainant_relationship?: string | null
+          complaint_date?: string | null
+          complaint_place?: string | null
+          confidentiality_notice?: string | null
+          court_division?: string | null
+          court_name?: string | null
+          created_at?: string
+          cuij?: string | null
+          defense_lawyer_email?: string | null
+          defense_lawyer_matricula?: string | null
+          defense_lawyer_name?: string | null
+          defense_lawyer_phone?: string | null
+          gesell_chamber_date?: string | null
+          gesell_chamber_notes?: string | null
+          id?: string
+          jurisdiction?: string
+          legajo_number?: string | null
+          next_hearing_date?: string | null
+          owner_user_id?: string
+          prosecutor_name?: string | null
+          reported_facts?: string | null
+          sentence_date?: string | null
+          sentence_summary?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       laura_conversations: {
         Row: {
           created_at: string
