@@ -4,7 +4,8 @@ import {
   Home, User, Calendar, MessageCircle, FileText, Settings, LogOut,
   Moon, Brain, UserCheck, Scale, Briefcase, ShieldCheck, Map,
   Thermometer, BookOpen, Network, Handshake, Clock, ClipboardList,
-  BarChart3, Eye, Award, Send,
+  BarChart3, Eye, Award, Send, Gavel, BookMarked, Users, AlertOctagon,
+  HeartHandshake, MessageSquare, Mic, FileSignature, FileCheck2,
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -51,10 +52,27 @@ const allPatientMenuItems = [
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
 ];
 
+// Items específicos del sistema Acompañar (área forense): Expediente Judicial + 9 secciones independientes
+const acompanarMenuItems = [
+  { title: "Inicio", url: "/dashboard", icon: Home },
+  { title: "Expediente Judicial", url: "/judicial-case", icon: Gavel },
+  { title: "Cámara Gesell", url: "/camara-gesell", icon: Eye },
+  { title: "Protocolos", url: "/forensic/protocols", icon: FileCheck2 },
+  { title: "Violencia de Género", url: "/forensic/gender_violence", icon: AlertOctagon },
+  { title: "Daño Psicológico", url: "/forensic/psychological_damage", icon: HeartHandshake },
+  { title: "Sospecha de Abuso Sexual", url: "/forensic/sexual_abuse", icon: ShieldAlert },
+  { title: "Régimen Comunicacional", url: "/forensic/communication_regime", icon: MessageSquare },
+  { title: "Consejos para Audiencias", url: "/forensic/audience_tips", icon: Mic },
+  { title: "Bibliografía Recomendada", url: "/forensic/bibliography", icon: BookMarked },
+  { title: "Consentimiento Informado", url: "/forensic/informed_consent", icon: FileSignature },
+  { title: "Modelos de Informes", url: "/forensic/report_models", icon: FileText },
+  { title: "Informes", url: "/documents", icon: FileText },
+];
+
 const hiddenByArea: Record<string, string[]> = {
-  reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell"],
-  evaluar: ["/forensic", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
-  acompanar: ["/psychodiagnostic", "/dream-record", "/anxiety-record", "/junta-medica", "/apto-psicologico", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/laura", "/life-timeline", "/outcome-monitoring", "/emotional-record", "/psychobiography", "/telegram", "/notebook", "/sessions", "/professional-profile"],
+  reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell", "/judicial-case"],
+  evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
+  // 'acompanar' usa su propio menú dedicado (acompanarMenuItems), no se filtra desde allPatientMenuItems
 };
 
 const areaLabels: Record<string, string> = {
@@ -65,9 +83,19 @@ const areaLabels: Record<string, string> = {
 
 const getFilteredMenuItems = () => {
   const area = getStoredSystemArea();
+  if (area === "acompanar") return acompanarMenuItems;
   const hidden = hiddenByArea[area || ""] || [];
   return allPatientMenuItems.filter((item) => !hidden.includes(item.url));
 };
+
+// Para detectar "activo" en items de /forensic/:section
+const matchesItem = (currentPath: string, itemUrl: string) => {
+  if (itemUrl === currentPath) return true;
+  if (itemUrl.startsWith("/forensic/")) return currentPath === itemUrl;
+  if (itemUrl === "/forensic") return currentPath === "/forensic";
+  return currentPath.startsWith(itemUrl + "/");
+};
+import * as React from "react";
 
 const adminMenuItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: BarChart3 },

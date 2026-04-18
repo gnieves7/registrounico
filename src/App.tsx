@@ -19,6 +19,7 @@ import Documents from "./pages/Documents";
 
 import ProfessionalProfile from "./pages/ProfessionalProfile";
 import Forensic from "./pages/Forensic";
+import JudicialCase from "./pages/JudicialCase";
 import AnxietyRecord from "./pages/AnxietyRecord";
 import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
@@ -64,6 +65,8 @@ const App = () => (
                 <Route path="/psychobiography" element={<Psychobiography />} />
                 <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
                 <Route path="/forensic" element={<Forensic />} />
+                <Route path="/forensic/:section" element={<Forensic />} />
+                <Route path="/judicial-case" element={<JudicialCase />} />
                 <Route path="/anxiety-record" element={<AnxietyRecord />} />
                 <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
                 <Route path="/apto-psicologico" element={<AptoPsicologico />} />
