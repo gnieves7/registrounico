@@ -88,14 +88,8 @@ const getFilteredMenuItems = () => {
   return allPatientMenuItems.filter((item) => !hidden.includes(item.url));
 };
 
-// Para detectar "activo" en items de /forensic/:section
-const matchesItem = (currentPath: string, itemUrl: string) => {
-  if (itemUrl === currentPath) return true;
-  if (itemUrl.startsWith("/forensic/")) return currentPath === itemUrl;
-  if (itemUrl === "/forensic") return currentPath === "/forensic";
-  return currentPath.startsWith(itemUrl + "/");
-};
-import * as React from "react";
+
+
 
 const adminMenuItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: BarChart3 },
