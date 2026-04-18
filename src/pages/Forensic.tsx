@@ -187,15 +187,15 @@ export default function Forensic() {
             </SelectContent>
           </Select>
         ) : (
-          <TabsList className="grid h-auto w-full grid-cols-5">
+          <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 bg-muted/50 p-1">
             {RESOURCE_SECTIONS.map((s) => (
               <TabsTrigger
                 key={s.id}
                 value={s.id}
-                className="flex-col gap-0.5 py-2 text-xs"
+                className="flex-1 basis-[18%] flex-col gap-0.5 py-2 text-xs"
               >
                 <span className="opacity-60">{s.number}</span>
-                <span>{s.shortTitle}</span>
+                <span className="leading-tight">{s.shortTitle}</span>
               </TabsTrigger>
             ))}
           </TabsList>
