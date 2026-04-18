@@ -31,7 +31,7 @@ const allPatientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Personalidad", url: "/psychodiagnostic", icon: Brain },
-  { title: "Expediente Forense", url: "/forensic", icon: Scale },
+  { title: "Recursos Psicoforenses", url: "/forensic", icon: Scale },
   { title: "Cámara Gesell", url: "/camara-gesell", icon: Eye },
   { title: "Entrenamiento Cognitivo", url: "/anxiety-record", icon: Brain },
   { title: "Termómetro Emocional", url: "/emotional-thermometer", icon: Thermometer },
