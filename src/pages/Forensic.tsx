@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Library,
   Search,
@@ -12,7 +12,7 @@ import {
   AlertTriangle,
   X,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Tabs,
@@ -67,10 +67,18 @@ const TYPE_LABELS: Record<ProfessionalResource["resource_type"], string> = {
 export default function Forensic() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [activeSection, setActiveSection] = useState<ResourceSection>("protocols");
+  const { section: sectionParam } = useParams<{ section?: string }>();
+  const initial = (RESOURCE_SECTIONS.find((s) => s.id === sectionParam)?.id ?? "protocols") as ResourceSection;
+  const [activeSection, setActiveSection] = useState<ResourceSection>(initial);
   const [search, setSearch] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState<string>("");
+
+  useEffect(() => {
+    if (sectionParam && RESOURCE_SECTIONS.some((s) => s.id === sectionParam)) {
+      setActiveSection(sectionParam as ResourceSection);
+    }
+  }, [sectionParam]);
 
   const { resources, loading, getSignedUrl, logDownload } = useProfessionalResources();
 
