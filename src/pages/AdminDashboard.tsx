@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
 import { AdminUsersSection } from "@/components/admin/dashboard/AdminUsersSection";
+import { AdminProfessionalsSection } from "@/components/admin/dashboard/AdminProfessionalsSection";
 import { AdminTestsSection } from "@/components/admin/dashboard/AdminTestsSection";
 import { AdminReportsSection } from "@/components/admin/dashboard/AdminReportsSection";
 import { AdminNotificationsSection } from "@/components/admin/dashboard/AdminNotificationsSection";
@@ -17,6 +18,7 @@ export default function AdminDashboard() {
     >
       {activeSection === "dashboard" && <AdminDashboardHome />}
       {activeSection === "users" && <AdminUsersSection />}
+      {activeSection === "professionals" && <AdminProfessionalsSection />}
       {activeSection === "tests" && <AdminTestsSection />}
       {activeSection === "reports" && <AdminReportsSection />}
       {activeSection === "notifications" && <AdminNotificationsSection />}
