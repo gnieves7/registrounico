@@ -60,7 +60,7 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
-              <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate />} />
+              <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               
               {/* Protected routes with sidebar layout */}

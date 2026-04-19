@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { useProfessionalAccess } from "@/hooks/useProfessionalAccess";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export const ProfessionalAccessGate = ({ children }: Props) => {
@@ -29,7 +29,7 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
             <button onClick={() => navigate("/profesional/suscripcion")} className="underline font-semibold">Activar suscripción</button>
           </div>
         )}
-        {children}
+        {children ?? <Outlet />}
       </>
     );
   }
