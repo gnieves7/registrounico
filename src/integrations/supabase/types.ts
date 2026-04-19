@@ -1094,6 +1094,54 @@ export type Database = {
           },
         ]
       }
+      professional_consents: {
+        Row: {
+          accepted_at: string
+          created_at: string
+          dni: string
+          document_version: string
+          full_name: string
+          id: string
+          ip_address: string | null
+          license_college: string
+          license_number: string
+          pdf_storage_path: string | null
+          signature_typed: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string
+          created_at?: string
+          dni: string
+          document_version?: string
+          full_name: string
+          id?: string
+          ip_address?: string | null
+          license_college: string
+          license_number: string
+          pdf_storage_path?: string | null
+          signature_typed: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string
+          created_at?: string
+          dni?: string
+          document_version?: string
+          full_name?: string
+          id?: string
+          ip_address?: string | null
+          license_college?: string
+          license_number?: string
+          pdf_storage_path?: string | null
+          signature_typed?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       professional_profile_content: {
         Row: {
           content: Json
@@ -1238,36 +1286,102 @@ export type Database = {
         }
         Relationships: []
       }
+      professional_subscriptions: {
+        Row: {
+          amount_usd: number | null
+          created_at: string
+          id: string
+          last_payment_at: string | null
+          last_payment_id: string | null
+          paid_until: string | null
+          plan: string | null
+          status: string
+          trial_ends_at: string
+          trial_started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_usd?: number | null
+          created_at?: string
+          id?: string
+          last_payment_at?: string | null
+          last_payment_id?: string | null
+          paid_until?: string | null
+          plan?: string | null
+          status?: string
+          trial_ends_at?: string
+          trial_started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_usd?: number | null
+          created_at?: string
+          id?: string
+          last_payment_at?: string | null
+          last_payment_id?: string | null
+          paid_until?: string | null
+          plan?: string | null
+          status?: string
+          trial_ends_at?: string
+          trial_started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          account_type: string
           avatar_url: string | null
+          consent_accepted_at: string | null
+          consent_signature_name: string | null
           created_at: string
+          dni: string | null
           email: string | null
           full_name: string | null
           id: string
           is_approved: boolean
+          license_college: string | null
+          license_jurisdiction: string | null
+          license_number: string | null
           phone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          account_type?: string
           avatar_url?: string | null
+          consent_accepted_at?: string | null
+          consent_signature_name?: string | null
           created_at?: string
+          dni?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
           is_approved?: boolean
+          license_college?: string | null
+          license_jurisdiction?: string | null
+          license_number?: string | null
           phone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          account_type?: string
           avatar_url?: string | null
+          consent_accepted_at?: string | null
+          consent_signature_name?: string | null
           created_at?: string
+          dni?: string | null
           email?: string | null
           full_name?: string | null
           id?: string
           is_approved?: boolean
+          license_college?: string | null
+          license_jurisdiction?: string | null
+          license_number?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string
