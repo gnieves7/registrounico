@@ -129,7 +129,7 @@ const ProfessionalLanding = () => {
               Iniciar sesión
             </button>
             <button
-              onClick={() => setShowAccessModal(true)}
+              onClick={() => navigate("/profesional/registro")}
               className="rounded-md px-4 py-2 text-sm font-semibold text-white transition-all hover:opacity-90"
               style={{ background: "#1C3F6E", fontFamily: "'DM Sans', sans-serif", borderRadius: "6px" }}
             >
@@ -510,7 +510,7 @@ const ProfessionalLanding = () => {
               <Mail className="h-3.5 w-3.5" /> {EMPRESA_EMAIL}
             </a>
             <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity flex items-center gap-1">
-              <Globe className="h-3.5 w-3.5" /> Sitio Web
+              <Globe className="h-3.5 w-3.5" /> www.psicodiagnostico-forense.com.ar
             </a>
           </div>
           <div className="flex items-center justify-center gap-4 text-[12px]" style={{ color: "#6B6B6B" }}>

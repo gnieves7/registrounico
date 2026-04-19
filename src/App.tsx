@@ -39,6 +39,8 @@ import SymbolicAwards from "./pages/SymbolicAwards";
 import TelegramCenter from "./pages/TelegramCenter";
 import AdminDashboard from "./pages/AdminDashboard";
 import DemoEntry from "./pages/DemoEntry";
+import ProfessionalRegistration from "./pages/ProfessionalRegistration";
+import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
 
 const queryClient = new QueryClient();
 
@@ -57,10 +59,13 @@ const App = () => (
               <Route path="/pending-approval" element={<PendingApproval />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/demo" element={<DemoEntry />} />
+              <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
+              <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               
               {/* Protected routes with sidebar layout */}
 
-              <Route element={<AppLayout />}>
+              <Route element={<ProfessionalAccessGate><AppLayout /></ProfessionalAccessGate>}>
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/psychobiography" element={<Psychobiography />} />
                 <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
@@ -89,7 +94,6 @@ const App = () => (
                 <Route path="/life-timeline" element={<LifeTimeline />} />
                 <Route path="/micro-tasks" element={<MicroTasks />} />
                 <Route path="/outcome-monitoring" element={<OutcomeMonitoring />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               </Route>
               
               {/* Catch-all */}
