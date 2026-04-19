@@ -229,8 +229,8 @@ const Login = () => {
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
               <a href={EMPRESA_WEB} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#d4a332]/20 bg-[#d4a332]/5 px-4 py-2 text-sm font-medium text-[#9a7a2e] dark:text-[#d4a332] transition-all hover:bg-[#d4a332]/10 active:scale-[0.98]">
-                <Globe className="h-4 w-4" /> Sitio Web
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-[#d4a332]/20 bg-[#d4a332]/5 px-4 py-2 text-xs font-medium text-[#9a7a2e] dark:text-[#d4a332] transition-all hover:bg-[#d4a332]/10 active:scale-[0.98]">
+                <Globe className="h-4 w-4" /> www.psicodiagnostico-forense.com.ar
               </a>
             </div>
           </div>
@@ -288,8 +288,8 @@ const Login = () => {
                    <p className="text-sm md:text-base font-medium tracking-[0.15em] uppercase text-[#9a7a2e] dark:text-[#d4a332]">
                      Plataforma de Sistemas Interactivos
                    </p>
-                   <p className="text-[11px] mt-1 tracking-wide text-[#8a7a5e] dark:text-[#d4a332]/50">
-                     Herramienta clínica integrada para psicólogos · Santa Fe, Argentina
+                   <p className="text-[11px] md:text-xs mt-3 leading-relaxed text-[#5a4a1e] dark:text-[#d4a332]/70 max-w-md mx-auto px-2">
+                     Sistema de Gestión único, confidencial y seguro, destinado exclusivamente a profesionales de la salud mental matriculados y a sus pacientes, con el propósito de asistir la praxis clínica, ofrecer herramientas de psicodiagnóstico y asesorar en cuestiones psicoforense dentro del marco ético y legal vigente en la República Argentina.
                    </p>
                 </div>
 

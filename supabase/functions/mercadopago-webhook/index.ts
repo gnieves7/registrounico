@@ -139,10 +139,43 @@ serve(async (req) => {
 
       // Check if payment is approved
       if (payment.status === "approved") {
-        const documentId = payment.external_reference;
-        
-        if (documentId) {
-          // Update document as paid
+        const externalRef: string = payment.external_reference || "";
+
+        // Professional subscription
+        if (externalRef.startsWith("prof_sub:")) {
+          const [, userId, plan] = externalRef.split(":");
+          const months = plan === "annual" ? 12 : 1;
+          const now = new Date();
+          const { data: existing } = await supabase
+            .from("professional_subscriptions")
+            .select("paid_until")
+            .eq("user_id", userId)
+            .maybeSingle();
+          const baseDate = existing?.paid_until && new Date(existing.paid_until) > now
+            ? new Date(existing.paid_until)
+            : now;
+          const newPaidUntil = new Date(baseDate);
+          newPaidUntil.setMonth(newPaidUntil.getMonth() + months);
+
+          const { error: subErr } = await supabase
+            .from("professional_subscriptions")
+            .update({
+              status: "active",
+              plan,
+              paid_until: newPaidUntil.toISOString(),
+              last_payment_id: paymentId.toString(),
+              last_payment_at: now.toISOString(),
+              amount_usd: plan === "annual" ? 100 : 10,
+            })
+            .eq("user_id", userId);
+
+          if (subErr) {
+            console.error("Subscription update error:", subErr);
+            throw new Error("Error al actualizar suscripción");
+          }
+          console.log(`Subscription updated for user ${userId} until ${newPaidUntil.toISOString()}`);
+        } else if (externalRef) {
+          // Document payment (existing flow)
           const { error: updateError } = await supabase
             .from("documents")
             .update({
@@ -150,14 +183,13 @@ serve(async (req) => {
               payment_date: new Date().toISOString(),
               payment_id: paymentId.toString(),
             })
-            .eq("id", documentId);
+            .eq("id", externalRef);
 
           if (updateError) {
             console.error("Error updating document:", updateError);
             throw new Error("Error al procesar el pago");
           }
-
-          console.log(`Document ${documentId} marked as paid`);
+          console.log(`Document ${externalRef} marked as paid`);
         }
       }
     }
