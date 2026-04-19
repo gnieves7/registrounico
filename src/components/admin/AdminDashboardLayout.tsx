@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import logoPsi from "@/assets/logo_psi.png";
 
-export type AdminSection = "dashboard" | "users" | "tests" | "reports" | "notifications" | "settings";
+export type AdminSection = "dashboard" | "users" | "professionals" | "tests" | "reports" | "notifications" | "settings";
 
 interface AdminDashboardLayoutProps {
   activeSection: AdminSection;
@@ -35,6 +35,7 @@ interface AdminDashboardLayoutProps {
 const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Resumen General", icon: LayoutDashboard },
   { key: "users", label: "Usuarios Activos", icon: Users },
+  { key: "professionals", label: "Profesionales", icon: Briefcase },
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },
