@@ -464,18 +464,22 @@ const ProfessionalRegistration = () => {
                 </span>
               </div>
 
+              <p className="text-[11px] leading-relaxed" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
+                Al aceptar, se registrará la fecha, hora e identificación digital de aceptación en nuestra base de datos conforme a la Ley N° 25.506 de Firma Digital.
+              </p>
+
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button variant="outline" onClick={() => setStep(1)} className="flex-1">
                   ← Volver a datos
                 </Button>
                 <Button
                   onClick={handleSubmit}
-                  disabled={submitting || !form.accepted}
+                  disabled={submitting || !scrolledToEnd || !form.accepted || !form.licenseDeclared}
                   className="flex-1"
                   style={{ background: "#1C3F6E", color: "#fff", borderRadius: "6px" }}
                 >
                   {submitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                  Firmar y enviar
+                  Acepto y registro mi consentimiento
                 </Button>
               </div>
             </CardContent>
