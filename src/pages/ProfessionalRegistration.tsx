@@ -154,8 +154,12 @@ const ProfessionalRegistration = () => {
       toast({ title: "Faltan datos", description: "Completá nombre, DNI, matrícula y colegio.", variant: "destructive" });
       return;
     }
-    if (!form.accepted) {
-      toast({ title: "Aceptá el consentimiento", description: "Debés marcar la casilla de aceptación.", variant: "destructive" });
+    if (!scrolledToEnd) {
+      toast({ title: "Leé el documento completo", description: "Hacé scroll hasta el final del consentimiento informado.", variant: "destructive" });
+      return;
+    }
+    if (!form.accepted || !form.licenseDeclared) {
+      toast({ title: "Aceptá ambas declaraciones", description: "Debés marcar las dos casillas obligatorias.", variant: "destructive" });
       return;
     }
     if (form.signatureName.trim().toLowerCase() !== form.fullName.trim().toLowerCase()) {
