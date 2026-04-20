@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
-import { ShieldCheck, FileSignature, Loader2, ArrowLeft, BadgeCheck } from "lucide-react";
+import { ShieldCheck, FileSignature, Loader2, ArrowLeft, BadgeCheck, CheckCircle2 } from "lucide-react";
 import jsPDF from "jspdf";
 
 const CONSENT_VERSION = "1.0";
@@ -29,9 +29,29 @@ const ProfessionalRegistration = () => {
     email: "",
     phone: "",
     accepted: false,
+    licenseDeclared: false,
     signatureName: "",
     signatureDni: "",
   });
+
+  // Scroll completion detection for the consent document
+  const [scrolledToEnd, setScrolledToEnd] = useState(false);
+  const consentScrollRef = (el: HTMLDivElement | null) => {
+    if (!el) return;
+    // Find the radix scroll viewport inside ScrollArea
+    const viewport = el.querySelector<HTMLDivElement>("[data-radix-scroll-area-viewport]");
+    if (!viewport || (viewport as any).__psiBound) return;
+    (viewport as any).__psiBound = true;
+    const handler = () => {
+      const reachedEnd = viewport.scrollTop + viewport.clientHeight >= viewport.scrollHeight - 5;
+      if (reachedEnd) setScrolledToEnd(true);
+    };
+    viewport.addEventListener("scroll", handler, { passive: true });
+    // Trigger once for short documents that don't need scrolling
+    requestAnimationFrame(() => {
+      if (viewport.scrollHeight <= viewport.clientHeight + 5) setScrolledToEnd(true);
+    });
+  };
 
   useEffect(() => {
     if (!isLoading && !user) navigate("/profesional");
