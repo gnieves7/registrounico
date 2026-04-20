@@ -139,60 +139,194 @@ const ProfessionalLanding = () => {
         </div>
       </nav>
 
-      {/* [2] HERO */}
-      <section className="py-16 md:py-20 px-5">
-        <div className="mx-auto max-w-3xl text-center space-y-6">
-          <span
-            className="inline-block rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-[1.2px]"
-            style={{ background: "#EEF3FA", color: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
+      {/* [2] HERO — Gate Split-Screen Acceso Profesional */}
+      <section className="grid lg:grid-cols-2 min-h-[calc(100vh-64px)]">
+        {/* Lado izquierdo decorativo (visible solo desktop/tablet) */}
+        <div
+          className="hidden lg:flex relative flex-col justify-between p-12 text-white overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #1C3F6E 0%, #2D5A9E 100%)" }}
+        >
+          {/* Wave SVG decorativo */}
+          <svg
+            className="absolute inset-0 w-full h-full opacity-10 pointer-events-none"
+            viewBox="0 0 800 800"
+            preserveAspectRatio="none"
+            aria-hidden="true"
           >
-            Acceso Profesional
-          </span>
-          <h1
-            className="text-[28px] md:text-[36px] font-bold leading-tight"
-            style={{ fontFamily: "'DM Sans', sans-serif", color: "#1A1A1A", letterSpacing: "-0.5px" }}
-          >
-            Gestión clínica, psicodiagnóstico{" "}
-            <br className="hidden md:block" />
-            y pericia forense — en una sola plataforma.
-          </h1>
-          <p
-            className="text-[15px] leading-relaxed max-w-xl mx-auto"
-            style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif", lineHeight: "1.6" }}
-          >
-            <span style={{ color: "#A07C2E", fontFamily: "'Playfair Display', serif", fontWeight: 700 }}>.PSI.</span>{" "}
-            integra tres sistemas especializados para que cada área de tu práctica profesional dialogue con las demás.
-            Diseñada por y para psicólogos en ejercicio real.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <button
-              onClick={() => navigate("/demo")}
-              className="w-full sm:w-auto rounded-md border-2 px-6 py-3 text-sm font-semibold transition-all hover:opacity-90"
-              style={{ borderColor: "#A07C2E", color: "#A07C2E", borderRadius: "6px", fontFamily: "'DM Sans', sans-serif" }}
+            <defs>
+              <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
+              </pattern>
+            </defs>
+            <rect width="800" height="800" fill="url(#grid)" />
+            <path
+              d="M0,500 Q200,400 400,500 T800,480 L800,800 L0,800 Z"
+              fill="white"
+              fillOpacity="0.06"
+            />
+            <path
+              d="M0,600 Q200,520 400,600 T800,580 L800,800 L0,800 Z"
+              fill="white"
+              fillOpacity="0.04"
+            />
+          </svg>
+
+          <div className="relative z-10">
+            <h1
+              className="text-6xl font-bold tracking-tight leading-none"
+              style={{ fontFamily: "'DM Sans', sans-serif", letterSpacing: "-1.5px" }}
             >
-              <Eye className="inline h-4 w-4 mr-1" />
-              Probar gratis
-            </button>
-            <button
-              onClick={() => setShowAccessModal(true)}
-              className="w-full sm:w-auto rounded-md px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ background: "#1C3F6E", borderRadius: "6px", fontFamily: "'DM Sans', sans-serif" }}
-            >
-              Solicitar acceso profesional <ArrowRight className="inline h-4 w-4 ml-1" />
-            </button>
-            <a
-              href="#planes"
-              className="text-sm font-medium transition-colors hover:opacity-70"
-              style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
-            >
-              Ver planes y precios ↓
-            </a>
+              .PSI.
+            </h1>
+            <p className="text-base mt-2 text-white/85" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Plataforma de Sistemas Interactivos
+            </p>
+            <p className="text-[15px] mt-6 max-w-md text-white/75 leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Psicología clínica, psicodiagnóstico y pericia forense en un solo entorno digital.
+            </p>
           </div>
-          <div className="flex items-center justify-center gap-2 pt-4">
-            <Lock className="h-3.5 w-3.5" style={{ color: "#6B6B6B" }} />
-            <span className="text-[12px]" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
-              Datos protegidos · Ley 25.326 · Plataforma de uso exclusivo para profesionales matriculados
+
+          <div className="relative z-10 space-y-4">
+            {[
+              { icon: Heart, title: "Reflexionar", desc: "Práctica clínica integral" },
+              { icon: BarChart3, title: "Evaluar", desc: "Psicodiagnóstico estandarizado" },
+              { icon: Scale, title: "Acompañar", desc: "Asesoría psicoforense" },
+            ].map((it, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <div className="h-10 w-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
+                  <it.icon className="h-5 w-5 text-white" strokeWidth={1.8} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    {it.title}
+                  </p>
+                  <p className="text-xs text-white/70" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    {it.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="relative z-10 flex items-center gap-2 text-xs text-white/60">
+            <Lock className="h-3.5 w-3.5" />
+            <span style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              Datos protegidos · Ley 25.326 · Santa Fe, Argentina
             </span>
+          </div>
+        </div>
+
+        {/* Lado derecho — formulario de acceso */}
+        <div className="flex items-center justify-center p-6 sm:p-12 bg-white">
+          <div className="w-full max-w-md space-y-6">
+            {/* Logo móvil (oculto en desktop) */}
+            <div className="lg:hidden text-center mb-2">
+              <h1
+                className="text-4xl font-bold"
+                style={{ fontFamily: "'DM Sans', sans-serif", color: "#1C3F6E", letterSpacing: "-1px" }}
+              >
+                .PSI.
+              </h1>
+              <p className="text-xs mt-1" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
+                Plataforma de Sistemas Interactivos
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <span
+                className="inline-block rounded-md px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[1.2px]"
+                style={{ background: "#EEF3FA", color: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Acceso Profesional
+              </span>
+              <h2
+                className="text-[26px] font-bold leading-tight"
+                style={{ fontFamily: "'DM Sans', sans-serif", color: "#1A1A1A", letterSpacing: "-0.5px" }}
+              >
+                Ingresá a tu cuenta
+              </h2>
+              <p className="text-[14px]" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
+                Exclusivo para profesionales habilitados con matrícula vigente.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => signInWithGoogle()}
+                className="w-full flex items-center justify-center gap-3 rounded-md px-5 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.99]"
+                style={{ background: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Iniciar sesión con Google
+              </button>
+
+              <button
+                onClick={() => navigate("/profesional/registro")}
+                className="w-full flex items-center justify-center gap-2 rounded-md border-2 px-5 py-3 text-sm font-semibold transition-all hover:bg-[#1C3F6E]/[0.03] active:scale-[0.99]"
+                style={{ borderColor: "#1C3F6E", color: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Registrarme como profesional <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t" style={{ borderColor: "#E2DED8" }} />
+              </div>
+              <div className="relative flex justify-center">
+                <span
+                  className="px-3 text-[11px] uppercase tracking-[1.5px] bg-white"
+                  style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
+                >
+                  o continuar con
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => navigate("/demo")}
+                className="flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
+                style={{ borderColor: "#A07C2E", color: "#A07C2E", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                <Eye className="h-4 w-4" />
+                Modo demo
+              </button>
+              <button
+                onClick={() => setShowAccessModal(true)}
+                className="flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
+                style={{ borderColor: "#E2DED8", color: "#1A1A1A", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                <MessageCircle className="h-4 w-4" />
+                Consultar
+              </button>
+            </div>
+
+            <div className="text-center pt-2">
+              <a
+                href="#planes"
+                className="text-xs font-medium transition-colors hover:opacity-70"
+                style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                Ver planes y precios ↓
+              </a>
+            </div>
+
+            <div className="flex items-start gap-2 pt-2 border-t" style={{ borderColor: "#E2DED8" }}>
+              <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0" style={{ color: "#1C3F6E" }} />
+              <p className="text-[11px] leading-relaxed" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
+                Al ingresar aceptás nuestra{" "}
+                <Link to="/privacy-policy" className="underline" style={{ color: "#1C3F6E" }}>
+                  Política de Privacidad
+                </Link>{" "}
+                y el cumplimiento de la Ley N° 25.326 de Protección de Datos Personales.
+              </p>
+            </div>
           </div>
         </div>
       </section>
