@@ -1991,6 +1991,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      profile_safe_update: {
+        Args: {
+          _new: Database["public"]["Tables"]["profiles"]["Row"]
+          _old: Database["public"]["Tables"]["profiles"]["Row"]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "patient"
