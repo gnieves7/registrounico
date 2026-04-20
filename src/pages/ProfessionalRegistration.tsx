@@ -351,6 +351,7 @@ const ProfessionalRegistration = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div ref={consentScrollRef}>
               <ScrollArea className="h-72 rounded-md border p-4 text-sm leading-relaxed" style={{ borderColor: "#E2DED8", color: "#3a3a3a" }}>
                 <h3 className="font-bold text-base mb-2">CONSENTIMIENTO INFORMADO PARA PROFESIONALES</h3>
                 <p className="text-xs italic mb-3">Documento de ingreso y habilitación al uso de la plataforma — Versión 1.0 / 2025</p>
@@ -384,15 +385,52 @@ const ProfessionalRegistration = () => {
 
                 <p className="text-xs italic mt-4 text-muted-foreground">El texto completo del consentimiento está disponible en formato PDF al descargarlo después de firmar.</p>
               </ScrollArea>
+              </div>
+
+              {/* Indicador de scroll completo */}
+              <div
+                className="flex items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium transition-colors"
+                style={{
+                  borderColor: scrolledToEnd ? "#16a34a" : "#E2DED8",
+                  background: scrolledToEnd ? "#f0fdf4" : "#FAFAF8",
+                  color: scrolledToEnd ? "#166534" : "#6B6B6B",
+                  fontFamily: "'DM Sans', sans-serif",
+                }}
+              >
+                {scrolledToEnd ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Has llegado al final del documento. Ya podés aceptar.
+                  </>
+                ) : (
+                  <>
+                    <FileSignature className="h-4 w-4" />
+                    Hacé scroll hasta el final del documento para habilitar la aceptación.
+                  </>
+                )}
+              </div>
 
               <div className="flex items-start gap-3 rounded-md border p-3" style={{ borderColor: "#E2DED8", background: "#F8F7F4" }}>
                 <Checkbox
                   id="accept"
                   checked={form.accepted}
+                  disabled={!scrolledToEnd}
                   onCheckedChange={(c) => setForm({ ...form, accepted: c === true })}
                 />
                 <label htmlFor="accept" className="text-sm leading-relaxed cursor-pointer" style={{ color: "#1A1A1A" }}>
-                  Declaro haber leído, comprendido y aceptado en su totalidad el Consentimiento Informado Profesional de la plataforma .PSI. y manifiesto conocer mis derechos y obligaciones.
+                  He leído y comprendo el Consentimiento Informado Profesional de la plataforma .PSI. en su totalidad.
+                </label>
+              </div>
+
+              <div className="flex items-start gap-3 rounded-md border p-3" style={{ borderColor: "#E2DED8", background: "#F8F7F4" }}>
+                <Checkbox
+                  id="licenseDeclared"
+                  checked={form.licenseDeclared}
+                  disabled={!scrolledToEnd}
+                  onCheckedChange={(c) => setForm({ ...form, licenseDeclared: c === true })}
+                />
+                <label htmlFor="licenseDeclared" className="text-sm leading-relaxed cursor-pointer" style={{ color: "#1A1A1A" }}>
+                  Declaro poseer matrícula profesional vigente habilitante para el ejercicio.
                 </label>
               </div>
 
