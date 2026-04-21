@@ -7,6 +7,7 @@ import { AdminTestsSection } from "@/components/admin/dashboard/AdminTestsSectio
 import { AdminReportsSection } from "@/components/admin/dashboard/AdminReportsSection";
 import { AdminNotificationsSection } from "@/components/admin/dashboard/AdminNotificationsSection";
 import { AdminSettingsSection } from "@/components/admin/dashboard/AdminSettingsSection";
+import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSuggestionsSection";
 
 export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
@@ -22,6 +23,7 @@ export default function AdminDashboard() {
       {activeSection === "tests" && <AdminTestsSection />}
       {activeSection === "reports" && <AdminReportsSection />}
       {activeSection === "notifications" && <AdminNotificationsSection />}
+      {activeSection === "suggestions" && <AdminSuggestionsSection />}
       {activeSection === "settings" && <AdminSettingsSection />}
     </AdminDashboardLayout>
   );
