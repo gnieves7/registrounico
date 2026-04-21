@@ -8,6 +8,7 @@ import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
 import { getStoredSystemArea, setStoredSystemArea, applySystemTheme, systemBranding, type SystemArea } from "@/lib/systemBranding";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 import {
   User, MessageCircle, FileText, Thermometer, BookOpen, Brain, Scale, Eye,
   Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
@@ -179,12 +180,8 @@ const DashboardHome = () => {
       {/* System Welcome Banner */}
       {currentSystem && welcome && (
         <div className="system-welcome mb-6 flex items-center gap-4 rounded-2xl p-5 shadow-lg md:p-6">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white/20 overflow-hidden md:h-16 md:w-16">
-            <img
-              src={currentSystem.logo}
-              alt={currentSystem.label}
-              className="h-full w-full rounded-full object-cover"
-            />
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm md:h-20 md:w-20">
+            <PsiLogo size="sm" color="#FFFFFF" />
           </div>
           <div className="min-w-0">
             <h1 className="text-lg font-bold md:text-xl">

@@ -241,39 +241,6 @@ const ProfessionalLanding = () => {
               </button>
             </div>
 
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t" style={{ borderColor: "#E2DED8" }} />
-              </div>
-              <div className="relative flex justify-center">
-                <span
-                  className="px-3 text-[11px] uppercase tracking-[1.5px] bg-white"
-                  style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}
-                >
-                  o continuar con
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => navigate("/demo")}
-                className="flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                style={{ borderColor: "#A07C2E", color: "#A07C2E", fontFamily: "'DM Sans', sans-serif" }}
-              >
-                <Eye className="h-4 w-4" />
-                Modo demo
-              </button>
-              <button
-                onClick={() => setShowAccessModal(true)}
-                className="flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                style={{ borderColor: "#E2DED8", color: "#1A1A1A", fontFamily: "'DM Sans', sans-serif" }}
-              >
-                <MessageCircle className="h-4 w-4" />
-                Consultar
-              </button>
-            </div>
-
             <div className="text-center pt-2">
               <a
                 href="#planes"
