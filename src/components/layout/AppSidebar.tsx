@@ -6,9 +6,11 @@ import {
   Thermometer, BookOpen, Network, Handshake, Clock, ClipboardList,
   BarChart3, Eye, Award, Send, Gavel, BookMarked, AlertOctagon, ShieldAlert,
   HeartHandshake, MessageSquare, Mic, FileSignature, FileCheck2,
+  Lightbulb,
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +52,7 @@ const allPatientMenuItems = [
   { title: "Acompañante Virtual", url: "/laura", icon: MessageCircle },
   { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
+  { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
 // Items específicos del sistema Acompañar (área forense): Expediente Judicial + 9 secciones independientes
@@ -104,6 +107,7 @@ const adminMenuItems = [
   { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
   { title: "Telegram", url: "/telegram", icon: Send },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
+  { title: "Sugerencias (Admin)", url: "/suggestions", icon: Lightbulb },
 ];
 
 export function AppSidebar() {
@@ -180,13 +184,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border bg-sidebar/80 p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-sidebar-border shadow-sm overflow-hidden bg-transparent">
-            <img
-              src={currentSystem?.logo || logoPsi}
-              alt={currentSystem?.label || "PSI"}
-              className="h-full w-full shrink-0 rounded-full object-cover scale-110"
-            />
-          </div>
+          <PsiLogo size="sm" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
