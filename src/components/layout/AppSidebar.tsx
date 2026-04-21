@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
