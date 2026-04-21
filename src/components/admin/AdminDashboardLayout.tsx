@@ -16,6 +16,7 @@ import {
   Home,
   ArrowLeft,
   Briefcase,
+  Lightbulb,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import logoPsi from "@/assets/logo_psi.png";
 
-export type AdminSection = "dashboard" | "users" | "professionals" | "tests" | "reports" | "notifications" | "settings";
+export type AdminSection = "dashboard" | "users" | "professionals" | "tests" | "reports" | "notifications" | "suggestions" | "settings";
 
 interface AdminDashboardLayoutProps {
   activeSection: AdminSection;
@@ -39,6 +40,7 @@ const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType 
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },
+  { key: "suggestions", label: "Sugerencias", icon: Lightbulb },
   { key: "settings", label: "Configuración", icon: Settings },
 ];
 
