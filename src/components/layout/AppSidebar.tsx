@@ -106,6 +106,7 @@ const adminMenuItems = [
   { title: "Premios Simbólicos", url: "/symbolic-awards", icon: Award },
   { title: "Telegram", url: "/telegram", icon: Send },
   { title: "Monitoreo de Resultados", url: "/outcome-monitoring", icon: BarChart3 },
+  { title: "Sugerencias (Admin)", url: "/suggestions", icon: Lightbulb },
 ];
 
 export function AppSidebar() {
