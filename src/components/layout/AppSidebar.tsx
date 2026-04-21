@@ -6,6 +6,7 @@ import {
   Thermometer, BookOpen, Network, Handshake, Clock, ClipboardList,
   BarChart3, Eye, Award, Send, Gavel, BookMarked, AlertOctagon, ShieldAlert,
   HeartHandshake, MessageSquare, Mic, FileSignature, FileCheck2,
+  Lightbulb,
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -50,6 +51,7 @@ const allPatientMenuItems = [
   { title: "Acompañante Virtual", url: "/laura", icon: MessageCircle },
   { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
+  { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
 // Items específicos del sistema Acompañar (área forense): Expediente Judicial + 9 secciones independientes
