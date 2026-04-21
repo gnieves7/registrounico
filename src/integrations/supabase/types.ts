@@ -1097,11 +1097,14 @@ export type Database = {
       professional_consents: {
         Row: {
           accepted_at: string
+          auth_method: string | null
           created_at: string
           dni: string
+          document_text: string | null
           document_version: string
           full_name: string
           id: string
+          inactivity_clause_accepted: boolean
           ip_address: string | null
           license_college: string
           license_number: string
@@ -1112,11 +1115,14 @@ export type Database = {
         }
         Insert: {
           accepted_at?: string
+          auth_method?: string | null
           created_at?: string
           dni: string
+          document_text?: string | null
           document_version?: string
           full_name: string
           id?: string
+          inactivity_clause_accepted?: boolean
           ip_address?: string | null
           license_college: string
           license_number: string
@@ -1127,11 +1133,14 @@ export type Database = {
         }
         Update: {
           accepted_at?: string
+          auth_method?: string | null
           created_at?: string
           dni?: string
+          document_text?: string | null
           document_version?: string
           full_name?: string
           id?: string
+          inactivity_clause_accepted?: boolean
           ip_address?: string | null
           license_college?: string
           license_number?: string
@@ -1291,6 +1300,7 @@ export type Database = {
           amount_usd: number | null
           created_at: string
           id: string
+          last_activity_at: string
           last_payment_at: string | null
           last_payment_id: string | null
           paid_until: string | null
@@ -1305,6 +1315,7 @@ export type Database = {
           amount_usd?: number | null
           created_at?: string
           id?: string
+          last_activity_at?: string
           last_payment_at?: string | null
           last_payment_id?: string | null
           paid_until?: string | null
@@ -1319,6 +1330,7 @@ export type Database = {
           amount_usd?: number | null
           created_at?: string
           id?: string
+          last_activity_at?: string
           last_payment_at?: string | null
           last_payment_id?: string | null
           paid_until?: string | null
@@ -1639,6 +1651,48 @@ export type Database = {
           session_date?: string
           topic?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      suggestions: {
+        Row: {
+          admin_response: string | null
+          category: string
+          created_at: string
+          id: string
+          message: string
+          responded_at: string | null
+          responded_by: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_response?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          message: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_response?: string | null
+          category?: string
+          created_at?: string
+          id?: string
+          message?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -1983,6 +2037,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_professional_active: { Args: never; Returns: undefined }
       patient_update_session: {
         Args: {
           _patient_notes?: string
@@ -1998,6 +2053,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      suspend_inactive_professionals: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "admin" | "patient"
