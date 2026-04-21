@@ -183,13 +183,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border bg-sidebar/80 p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-sidebar-border shadow-sm overflow-hidden bg-transparent">
-            <img
-              src={currentSystem?.logo || logoPsi}
-              alt={currentSystem?.label || "PSI"}
-              className="h-full w-full shrink-0 rounded-full object-cover scale-110"
-            />
-          </div>
+          <PsiLogo size="sm" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
