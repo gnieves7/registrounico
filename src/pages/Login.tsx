@@ -184,53 +184,6 @@ const Login = () => {
     );
   };
 
-  const renderQuestionView = (qv: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
-    const map = {
-      "question-terapia": SYS.reflexionar,
-      "question-psicodiagnostico": SYS.evaluar,
-      "question-forense": SYS.acompanar,
-    };
-    const s = map[qv];
-    const Icon = s.icon;
-    return (
-      <div className="mx-auto w-full max-w-md px-5 py-6 animate-fade-in">
-        <button
-          onClick={() => setView("consulta")}
-          className="flex items-center gap-2 text-sm mb-4 transition-colors hover:opacity-70"
-          style={{ color: C.muted, fontFamily: F }}
-        >
-          <ArrowLeft className="h-4 w-4" /> Volver
-        </button>
-        <div className="rounded-lg overflow-hidden"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}>
-          <div className="h-1.5" style={{ background: s.color }} />
-          <div className="flex flex-col items-center gap-3 p-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-md" style={{ background: s.tint }}>
-              <Icon className="h-6 w-6" style={{ color: s.color }} />
-            </div>
-            <div className="text-center">
-              <h3 className="text-[15px] font-bold" style={{ color: C.text, fontFamily: F }}>{s.label}</h3>
-              <p className="text-[12px] font-semibold tracking-wide mt-0.5" style={{ color: s.color, fontFamily: F }}>{s.area}</p>
-              <p className="mt-2 text-[13px] leading-relaxed" style={{ color: C.muted, fontFamily: F }}>{s.desc}</p>
-            </div>
-            <div className="w-full space-y-2 mt-2">
-              <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: C.navy, fontFamily: F }}>
-                <Calendar className="h-4 w-4" /> Solicitar Turno
-              </a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                style={{ borderColor: C.border, color: C.text, fontFamily: F }}>
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const isMainView = view === "main";
 
   return (
