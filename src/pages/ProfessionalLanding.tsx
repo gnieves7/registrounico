@@ -20,13 +20,13 @@ import { toast } from "sonner";
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
 import { SchoolPreview } from "@/components/landing/SchoolPreview";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 
 const WHATSAPP_LINK = "https://wa.me/5493426272158";
 const EMPRESA_EMAIL = "pdf.consultas@gmail.com";
 const EMPRESA_WEB = "https://www.psicodiagnostico-forense.com.ar";
 
 const ProfessionalLanding = () => {
-  const { signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
   const [showAccessModal, setShowAccessModal] = useState(false);
