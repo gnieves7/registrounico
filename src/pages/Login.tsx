@@ -337,30 +337,13 @@ const Login = () => {
                     <ArrowRight className="h-5 w-5 text-white/70" />
                   </button>
 
-                  {/* Botones secundarios */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setView("consulta")}
-                      className="flex items-center justify-center gap-2 rounded-md border-2 px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
-                      style={{ borderColor: C.navy, color: C.navy }}
-                    >
-                      <Search className="h-4 w-4" /> Consulta
-                    </button>
-                    <button
-                      onClick={() => navigate("/profesional")}
-                      className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
-                      style={{ borderColor: C.border, color: C.text }}
-                    >
-                      <Briefcase className="h-4 w-4" style={{ color: C.gold }} /> Profesional
-                    </button>
-                  </div>
-
+                  {/* Botón Profesional */}
                   <button
-                    onClick={() => setView("empresa")}
-                    className="w-full flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                    style={{ borderColor: C.border, color: C.text }}
+                    onClick={() => navigate("/profesional")}
+                    className="w-full flex items-center justify-center gap-2 rounded-md border-2 px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
+                    style={{ borderColor: C.gold, color: C.gold, background: "rgba(160,124,46,0.04)" }}
                   >
-                    <Building2 className="h-4 w-4" /> Empresa / Institución
+                    <Briefcase className="h-4 w-4" /> Soy Profesional
                   </button>
 
                   <div className="relative py-1">
