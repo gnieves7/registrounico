@@ -8,6 +8,7 @@ import { Briefcase, Download, FileSignature, Loader2, ShieldCheck, CalendarClock
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "@/hooks/use-toast";
+import { ProfessionalActivityMonitor } from "./ProfessionalActivityMonitor";
 
 interface ProfessionalRow {
   user_id: string;
@@ -237,6 +238,8 @@ export function AdminProfessionalsSection() {
           )}
         </CardContent>
       </Card>
+
+      <ProfessionalActivityMonitor />
     </div>
   );
 }
