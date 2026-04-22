@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Send, MessageSquare } from "lucide-react";
+import { Loader2, Send, MessageSquare, ChevronDown, ChevronUp, CheckCircle2, XCircle } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface AdminSuggestion {
   id: string;
@@ -18,14 +19,24 @@ interface AdminSuggestion {
   responded_at: string | null;
   created_at: string;
   user_id: string;
+  decision_reason: string | null;
+  approved_at: string | null;
+  rejected_at: string | null;
   author?: { full_name: string | null; email: string | null } | null;
 }
 
+interface ThreadComment {
+  id: string;
+  body: string;
+  author_role: "professional" | "admin";
+  created_at: string;
+}
+
 const STATUS_OPTIONS = [
-  { value: "nueva", label: "Nueva" },
+  { value: "nueva", label: "Abierto" },
   { value: "en_revision", label: "En revisión" },
-  { value: "implementada", label: "Implementada" },
-  { value: "descartada", label: "Descartada" },
+  { value: "implementada", label: "Aprobado" },
+  { value: "descartada", label: "Rechazado" },
 ];
 
 const STATUS_COLOR: Record<string, string> = {
@@ -41,6 +52,10 @@ export function AdminSuggestionsSection() {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [threads, setThreads] = useState<Record<string, ThreadComment[]>>({});
+  const [openThread, setOpenThread] = useState<string | null>(null);
+  const [comment, setComment] = useState("");
+  const [decisionDrafts, setDecisionDrafts] = useState<Record<string, string>>({});
 
   const load = async () => {
     setLoading(true);
@@ -96,12 +111,62 @@ export function AdminSuggestionsSection() {
   };
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase.from("suggestions").update({ status }).eq("id", id);
+    const patch: any = { status };
+    if (status === "implementada") patch.approved_at = new Date().toISOString();
+    if (status === "descartada") patch.rejected_at = new Date().toISOString();
+    const { error } = await supabase.from("suggestions").update(patch).eq("id", id);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;
     }
     load();
+  };
+
+  const saveDecisionReason = async (id: string) => {
+    const reason = (decisionDrafts[id] || "").trim();
+    if (!reason) {
+      toast({ title: "Indicá el motivo", variant: "destructive" });
+      return;
+    }
+    const { error } = await supabase.from("suggestions").update({ decision_reason: reason }).eq("id", id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Motivo registrado" });
+    setDecisionDrafts((d) => ({ ...d, [id]: "" }));
+    load();
+  };
+
+  const loadThread = async (id: string) => {
+    const { data } = await supabase
+      .from("suggestion_comments")
+      .select("id, body, author_role, created_at")
+      .eq("suggestion_id", id)
+      .order("created_at", { ascending: true });
+    setThreads((t) => ({ ...t, [id]: (data as ThreadComment[]) || [] }));
+  };
+
+  const toggleThread = (id: string) => {
+    if (openThread === id) setOpenThread(null);
+    else { setOpenThread(id); if (!threads[id]) loadThread(id); }
+  };
+
+  const sendComment = async (id: string) => {
+    if (!comment.trim()) return;
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from("suggestion_comments").insert({
+      suggestion_id: id,
+      author_id: user?.id,
+      author_role: "admin",
+      body: comment.trim(),
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setComment("");
+    loadThread(id);
   };
 
   const visible = filter === "all" ? items : items.filter((s) => s.status === filter);
@@ -158,6 +223,30 @@ export function AdminSuggestionsSection() {
                   </div>
                 )}
 
+                {(s.status === "implementada" || s.status === "descartada") && (
+                  <div className={`rounded-md border p-3 space-y-2 ${s.status === "implementada" ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1">
+                      {s.status === "implementada" ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                      Motivo de decisión
+                    </p>
+                    {s.decision_reason ? (
+                      <p className="text-sm whitespace-pre-wrap">{s.decision_reason}</p>
+                    ) : (
+                      <div className="flex gap-2">
+                        <Textarea
+                          rows={2}
+                          placeholder="Dejá registrado por qué se aprobó o rechazó este ticket…"
+                          value={decisionDrafts[s.id] || ""}
+                          onChange={(e) => setDecisionDrafts((d) => ({ ...d, [s.id]: e.target.value }))}
+                        />
+                        <Button size="sm" onClick={() => saveDecisionReason(s.id)} className="self-end">
+                          Guardar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="space-y-2 pt-2 border-t">
                   <Textarea
                     placeholder={s.admin_response ? "Actualizar respuesta…" : "Responder al profesional…"}
@@ -179,6 +268,47 @@ export function AdminSuggestionsSection() {
                       Enviar respuesta
                     </Button>
                   </div>
+                </div>
+
+                <div className="pt-2 border-t">
+                  <Button variant="ghost" size="sm" onClick={() => toggleThread(s.id)} className="gap-1.5 -ml-2">
+                    {openThread === s.id ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                    <MessageSquare className="h-3.5 w-3.5" />
+                    Hilo de conversación ({(threads[s.id] || []).length})
+                  </Button>
+                  {openThread === s.id && (
+                    <div className="mt-3 space-y-3">
+                      {(threads[s.id] || []).length === 0 ? (
+                        <p className="text-xs text-muted-foreground italic">Sin comentarios todavía.</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {(threads[s.id] || []).map((c) => (
+                            <div
+                              key={c.id}
+                              className={`rounded-md p-2.5 text-sm ${c.author_role === "admin" ? "bg-primary/5 border border-primary/15" : "bg-muted/50 border border-border"}`}
+                            >
+                              <p className="text-[10px] font-semibold uppercase tracking-wider mb-1">
+                                {c.author_role === "admin" ? "Vos (admin)" : "Profesional"} · {new Date(c.created_at).toLocaleString("es-AR")}
+                              </p>
+                              <p className="whitespace-pre-wrap">{c.body}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex gap-2">
+                        <Textarea
+                          value={openThread === s.id ? comment : ""}
+                          onChange={(e) => setComment(e.target.value)}
+                          placeholder="Comentar en el hilo…"
+                          rows={2}
+                          className="text-sm"
+                        />
+                        <Button onClick={() => sendComment(s.id)} disabled={!comment.trim()} size="sm" className="gap-1.5 self-end">
+                          <Send className="h-3.5 w-3.5" /> Enviar
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
