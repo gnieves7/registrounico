@@ -545,6 +545,7 @@ const SystemTabs = () => {
               </p>
             </div>
           </div>
+
           <div className="mt-6 space-y-2.5 pl-14">
             <p className="text-[11px] font-semibold uppercase tracking-[1.2px]" style={{ color: C.muted, fontFamily: F }}>
               Incluye
@@ -556,6 +557,60 @@ const SystemTabs = () => {
               </div>
             ))}
           </div>
+
+          {/* Modalidades específicas por sistema */}
+          {tab === "reflexionar" && (
+            <div className="mt-8 pl-14 animate-fade-in">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.2px] mb-3" style={{ color: s.color, fontFamily: F }}>
+                Modalidades terapéuticas (5 escuelas)
+              </p>
+              <p className="text-[13px] mb-4 leading-relaxed" style={{ color: C.muted, fontFamily: F }}>
+                El paciente, junto a su terapeuta, puede elegir el marco clínico que mejor acompañe su proceso:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { n: "Psicoanalítica", d: "Freud, Lacan, Bion, Kohut. Trabajo con el inconsciente, sueños y transferencia." },
+                  { n: "Conductual", d: "Pavlov, Skinner, Wolpe. Modificación de conductas observables y aprendizajes." },
+                  { n: "Cognitivo-Conductual (TCC)", d: "Beck, Ellis, Young. Reestructuración de pensamientos y creencias (1ª, 2ª y 3ª generación)." },
+                  { n: "Humanista", d: "Rogers, Maslow, Frankl. Enfoque fenomenológico y existencial centrado en la persona." },
+                  { n: "Sistémica", d: "Bateson, Watzlawick, White. Cibernética, constructivismo y narrativa relacional." },
+                ].map((esc) => (
+                  <div key={esc.n} className="rounded-md border p-3" style={{ borderColor: C.border, background: C.card }}>
+                    <p className="text-[13px] font-bold" style={{ color: s.color, fontFamily: F }}>{esc.n}</p>
+                    <p className="text-[12px] mt-1 leading-snug" style={{ color: C.muted, fontFamily: F }}>{esc.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === "evaluar" && (
+            <div className="mt-8 pl-14 animate-fade-in">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.2px] mb-3" style={{ color: s.color, fontFamily: F }}>
+                Modalidades de evaluación
+              </p>
+              <p className="text-[13px] mb-4 leading-relaxed" style={{ color: C.muted, fontFamily: F }}>
+                El sistema Evaluar ofrece dos áreas de trabajo psicodiagnóstico:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  {
+                    n: "Junta Médica Laboral",
+                    d: "Evaluación de aptitud psicológica para empleados públicos y privados. Incluye apto laboral, certificados de salud mental y seguimiento de licencias.",
+                  },
+                  {
+                    n: "Estudio de Personalidad",
+                    d: "Administración de tests estandarizados (MMPI-2, MBTI, MCMI-III, SCL-90-R) con perfiles, baremos e informes clínicos en PDF.",
+                  },
+                ].map((mod) => (
+                  <div key={mod.n} className="rounded-md border p-3" style={{ borderColor: C.border, background: C.card }}>
+                    <p className="text-[13px] font-bold" style={{ color: s.color, fontFamily: F }}>{mod.n}</p>
+                    <p className="text-[12px] mt-1 leading-snug" style={{ color: C.muted, fontFamily: F }}>{mod.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
