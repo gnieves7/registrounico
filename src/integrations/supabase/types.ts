@@ -1109,6 +1109,11 @@ export type Database = {
           license_college: string
           license_number: string
           pdf_storage_path: string | null
+          review_decision: string | null
+          review_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          signature_hash: string | null
           signature_typed: string
           user_agent: string | null
           user_id: string
@@ -1127,6 +1132,11 @@ export type Database = {
           license_college: string
           license_number: string
           pdf_storage_path?: string | null
+          review_decision?: string | null
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          signature_hash?: string | null
           signature_typed: string
           user_agent?: string | null
           user_id: string
@@ -1145,6 +1155,11 @@ export type Database = {
           license_college?: string
           license_number?: string
           pdf_storage_path?: string | null
+          review_decision?: string | null
+          review_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          signature_hash?: string | null
           signature_typed?: string
           user_agent?: string | null
           user_id?: string
@@ -1346,6 +1361,10 @@ export type Database = {
       profiles: {
         Row: {
           account_type: string
+          approval_decided_at: string | null
+          approval_decided_by: string | null
+          approval_decision: string | null
+          approval_reason: string | null
           avatar_url: string | null
           consent_accepted_at: string | null
           consent_signature_name: string | null
@@ -1364,6 +1383,10 @@ export type Database = {
         }
         Insert: {
           account_type?: string
+          approval_decided_at?: string | null
+          approval_decided_by?: string | null
+          approval_decision?: string | null
+          approval_reason?: string | null
           avatar_url?: string | null
           consent_accepted_at?: string | null
           consent_signature_name?: string | null
@@ -1382,6 +1405,10 @@ export type Database = {
         }
         Update: {
           account_type?: string
+          approval_decided_at?: string | null
+          approval_decided_by?: string | null
+          approval_decision?: string | null
+          approval_reason?: string | null
           avatar_url?: string | null
           consent_accepted_at?: string | null
           consent_signature_name?: string | null
@@ -1612,6 +1639,54 @@ export type Database = {
         }
         Relationships: []
       }
+      secure_pdf_codes: {
+        Row: {
+          code: string
+          consumed_at: string | null
+          consumed_ip: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          issued_at: string
+          issued_by: string
+          metadata: Json
+          patient_id: string | null
+          resource_type: string
+          storage_bucket: string
+          storage_path: string
+        }
+        Insert: {
+          code: string
+          consumed_at?: string | null
+          consumed_ip?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          issued_by: string
+          metadata?: Json
+          patient_id?: string | null
+          resource_type: string
+          storage_bucket: string
+          storage_path: string
+        }
+        Update: {
+          code?: string
+          consumed_at?: string | null
+          consumed_ip?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          issued_at?: string
+          issued_by?: string
+          metadata?: Json
+          patient_id?: string | null
+          resource_type?: string
+          storage_bucket?: string
+          storage_path?: string
+        }
+        Relationships: []
+      }
       sessions: {
         Row: {
           calendar_link: string | null
@@ -1654,13 +1729,51 @@ export type Database = {
         }
         Relationships: []
       }
+      suggestion_comments: {
+        Row: {
+          author_id: string
+          author_role: string
+          body: string
+          created_at: string
+          id: string
+          suggestion_id: string
+        }
+        Insert: {
+          author_id: string
+          author_role: string
+          body: string
+          created_at?: string
+          id?: string
+          suggestion_id: string
+        }
+        Update: {
+          author_id?: string
+          author_role?: string
+          body?: string
+          created_at?: string
+          id?: string
+          suggestion_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "suggestion_comments_suggestion_id_fkey"
+            columns: ["suggestion_id"]
+            isOneToOne: false
+            referencedRelation: "suggestions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suggestions: {
         Row: {
           admin_response: string | null
+          approved_at: string | null
           category: string
           created_at: string
+          decision_reason: string | null
           id: string
           message: string
+          rejected_at: string | null
           responded_at: string | null
           responded_by: string | null
           status: string
@@ -1670,10 +1783,13 @@ export type Database = {
         }
         Insert: {
           admin_response?: string | null
+          approved_at?: string | null
           category?: string
           created_at?: string
+          decision_reason?: string | null
           id?: string
           message: string
+          rejected_at?: string | null
           responded_at?: string | null
           responded_by?: string | null
           status?: string
@@ -1683,10 +1799,13 @@ export type Database = {
         }
         Update: {
           admin_response?: string | null
+          approved_at?: string | null
           category?: string
           created_at?: string
+          decision_reason?: string | null
           id?: string
           message?: string
+          rejected_at?: string | null
           responded_at?: string | null
           responded_by?: string | null
           status?: string
