@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import logoPsi from "@/assets/logo_psi.png";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 
 export type AdminSection = "dashboard" | "users" | "professionals" | "tests" | "reports" | "notifications" | "suggestions" | "settings";
 
@@ -76,7 +76,7 @@ export function AdminDashboardLayout({
       >
         {/* Header */}
         <div className="flex items-center gap-3 border-b border-border px-4 py-4">
-          <img src={logoPsi} alt=".PSI." className="h-8 w-8 rounded-full object-cover" />
+          <PsiLogo size="sm" noShimmer={collapsed} />
           {!collapsed && (
             <div className="flex flex-col leading-none">
               <span className="text-sm font-bold text-foreground">Panel Admin</span>

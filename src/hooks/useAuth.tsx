@@ -17,6 +17,8 @@ interface AuthContextType {
     is_approved: boolean;
   } | null;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, fullName: string) => Promise<{ needsEmailVerification: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -124,6 +126,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  };
+
+  const signUpWithEmail = async (email: string, password: string, fullName: string) => {
+    const redirectUrl = `${window.location.origin}/profesional/registro`;
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: { full_name: fullName },
+      },
+    });
+    if (error) throw error;
+    // If user has identity but no session => email confirmation pending
+    return { needsEmailVerification: !data.session };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -147,6 +169,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isApproved,
         profile,
         signInWithGoogle,
+        signInWithEmail,
+        signUpWithEmail,
         signOut,
       }}
     >
