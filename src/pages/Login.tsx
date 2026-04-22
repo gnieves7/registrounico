@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 import {
   applySystemTheme, getStoredSystemArea, setStoredSystemArea,
   type SystemArea
@@ -266,8 +267,8 @@ const Login = () => {
                 </svg>
 
                 <div className="relative z-10">
-                  <h1 className="text-6xl font-bold tracking-tight leading-none" style={{ letterSpacing: "-1.5px" }}>.PSI.</h1>
-                  <p className="text-base mt-2 text-white/85">Plataforma de Sistemas Interactivos</p>
+                  <PsiLogo size="lg" className="!items-start" />
+                  <p className="text-base mt-3 text-white/85">Plataforma de Sistemas Interactivos</p>
                   <p className="text-[15px] mt-6 max-w-md text-white/75 leading-relaxed">
                     Un entorno único, confidencial y seguro para acompañar tu proceso clínico, psicodiagnóstico o forense.
                   </p>
@@ -303,8 +304,8 @@ const Login = () => {
                 <div className="w-full max-w-md space-y-6 animate-fade-in">
                   {/* Logo móvil */}
                   <div className="lg:hidden text-center mb-2">
-                    <h1 className="text-4xl font-bold" style={{ color: C.navy, letterSpacing: "-1px" }}>.PSI.</h1>
-                    <p className="text-xs mt-1" style={{ color: C.muted }}>Plataforma de Sistemas Interactivos</p>
+                    <PsiLogo size="md" />
+                    <p className="text-xs mt-2" style={{ color: C.muted }}>Plataforma de Sistemas Interactivos</p>
                   </div>
 
                   <div className="space-y-1.5">
@@ -479,8 +480,8 @@ const Login = () => {
             <section className="w-full" style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
               <div className="mx-auto max-w-2xl px-5 pt-10 pb-8">
                 <div className="text-center mb-6 animate-fade-in">
-                  <h1 className="text-4xl md:text-5xl font-bold" style={{ color: C.navy, letterSpacing: "-1px" }}>.PSI.</h1>
-                  <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase mt-1" style={{ color: C.gold }}>
+                  <PsiLogo size="lg" />
+                  <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase mt-2" style={{ color: C.gold }}>
                     Plataforma de Sistemas Interactivos
                   </p>
                 </div>
