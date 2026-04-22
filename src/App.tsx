@@ -40,6 +40,7 @@ import TelegramCenter from "./pages/TelegramCenter";
 import AdminDashboard from "./pages/AdminDashboard";
 import DemoEntry from "./pages/DemoEntry";
 import ProfessionalRegistration from "./pages/ProfessionalRegistration";
+import ProfessionalLogin from "./pages/ProfessionalLogin";
 import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
+              <Route path="/profesional/login" element={<ProfessionalLogin />} />
               <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               
