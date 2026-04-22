@@ -50,7 +50,7 @@ const SYS = {
     desc: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses." },
 } as const;
 
-type View = "main" | "paciente" | "consulta" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
+type View = "main" | "paciente";
 
 const faqItems = [
   { q: "¿Cómo accedo por primera vez a la plataforma?", a: "Seleccioná \"Soy Paciente\", elegí el sistema que te indicó tu profesional y autenticáte con tu cuenta de Google. Tu acceso será revisado y aprobado antes de ingresar." },
