@@ -13,7 +13,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import {
   Lightbulb, Bug, Wrench, Sparkles, Send, Clock, CheckCircle2,
-  XCircle, MessageSquare, Loader2,
+  XCircle, MessageSquare, Loader2, ChevronDown, ChevronUp, Shield,
 } from "lucide-react";
 
 interface Suggestion {
@@ -25,6 +25,17 @@ interface Suggestion {
   admin_response: string | null;
   responded_at: string | null;
   created_at: string;
+  decision_reason?: string | null;
+  approved_at?: string | null;
+  rejected_at?: string | null;
+}
+
+interface ThreadComment {
+  id: string;
+  suggestion_id: string;
+  body: string;
+  author_role: "professional" | "admin";
+  created_at: string;
 }
 
 const CATEGORIES = [
@@ -35,10 +46,10 @@ const CATEGORIES = [
 ];
 
 const STATUS = {
-  nueva:        { label: "Nueva",         icon: Clock,        color: "bg-slate-100 text-slate-700" },
+  nueva:        { label: "Abierto",       icon: Clock,         color: "bg-slate-100 text-slate-700" },
   en_revision:  { label: "En revisión",   icon: MessageSquare, color: "bg-amber-100 text-amber-700" },
-  implementada: { label: "Implementada",  icon: CheckCircle2, color: "bg-emerald-100 text-emerald-700" },
-  descartada:   { label: "Descartada",    icon: XCircle,      color: "bg-rose-100 text-rose-700" },
+  implementada: { label: "Aprobado",      icon: CheckCircle2,  color: "bg-emerald-100 text-emerald-700" },
+  descartada:   { label: "Rechazado",     icon: XCircle,       color: "bg-rose-100 text-rose-700" },
 } as const;
 
 export default function Suggestions() {
@@ -47,6 +58,10 @@ export default function Suggestions() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ title: "", message: "", category: "mejora" });
+  const [threads, setThreads] = useState<Record<string, ThreadComment[]>>({});
+  const [openThread, setOpenThread] = useState<string | null>(null);
+  const [reply, setReply] = useState("");
+  const [sending, setSending] = useState(false);
 
   const load = async () => {
     if (!user) return;
@@ -65,6 +80,47 @@ export default function Suggestions() {
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user]);
+
+  const loadThread = async (suggestionId: string) => {
+    const { data, error } = await supabase
+      .from("suggestion_comments")
+      .select("*")
+      .eq("suggestion_id", suggestionId)
+      .order("created_at", { ascending: true });
+    if (error) {
+      toast({ title: "Error al cargar comentarios", description: error.message, variant: "destructive" });
+      return;
+    }
+    setThreads((t) => ({ ...t, [suggestionId]: (data as ThreadComment[]) || [] }));
+  };
+
+  const toggleThread = (id: string) => {
+    if (openThread === id) {
+      setOpenThread(null);
+    } else {
+      setOpenThread(id);
+      if (!threads[id]) loadThread(id);
+    }
+  };
+
+  const sendReply = async (suggestionId: string) => {
+    if (!user || !reply.trim()) return;
+    setSending(true);
+    const { error } = await supabase.from("suggestion_comments").insert({
+      suggestion_id: suggestionId,
+      author_id: user.id,
+      author_role: "professional",
+      body: reply.trim(),
+    });
+    setSending(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setReply("");
+    loadThread(suggestionId);
+    toast({ title: "Comentario enviado" });
+  };
 
   const submit = async () => {
     if (!user) return;
@@ -92,9 +148,9 @@ export default function Suggestions() {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-6 md:py-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Sugerencias y comentarios</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Tickets de sugerencias</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Canal directo con el administrador. Proponé mejoras, reportá errores o pedí cambios.
+          Canal directo con el administrador. Cada ticket tiene estado (abierto, en revisión, aprobado, rechazado), historial y comentarios.
         </p>
       </header>
 
@@ -156,7 +212,7 @@ export default function Suggestions() {
         <div className="flex justify-center py-10"><Loader2 className="h-5 w-5 animate-spin text-primary" /></div>
       ) : items.length === 0 ? (
         <Card><CardContent className="text-sm text-muted-foreground py-10 text-center">
-          Todavía no enviaste sugerencias.
+          Todavía no enviaste tickets.
         </CardContent></Card>
       ) : (
         <div className="space-y-3">
@@ -165,6 +221,8 @@ export default function Suggestions() {
             const st = STATUS[s.status as keyof typeof STATUS] || STATUS.nueva;
             const CatIcon = cat.icon;
             const StIcon = st.icon;
+            const isOpen = openThread === s.id;
+            const thread = threads[s.id] || [];
             return (
               <Card key={s.id}>
                 <CardContent className="p-4 space-y-3">
@@ -172,7 +230,7 @@ export default function Suggestions() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-sm">{s.title}</h3>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {new Date(s.created_at).toLocaleString("es-AR")}
+                        Abierto el {new Date(s.created_at).toLocaleString("es-AR")}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5">
@@ -198,6 +256,57 @@ export default function Suggestions() {
                       )}
                     </div>
                   )}
+                  {s.decision_reason && (s.status === "implementada" || s.status === "descartada") && (
+                    <div className={`rounded-md border p-3 ${s.status === "implementada" ? "bg-emerald-50 border-emerald-200" : "bg-rose-50 border-rose-200"}`}>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Shield className="h-3 w-3" />
+                        {s.status === "implementada" ? "Motivo de aprobación" : "Motivo de rechazo"}
+                      </p>
+                      <p className="text-sm whitespace-pre-wrap">{s.decision_reason}</p>
+                    </div>
+                  )}
+
+                  <div className="pt-2 border-t">
+                    <Button variant="ghost" size="sm" onClick={() => toggleThread(s.id)} className="gap-1.5 -ml-2">
+                      {isOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                      <MessageSquare className="h-3.5 w-3.5" />
+                      Conversación ({thread.length})
+                    </Button>
+                    {isOpen && (
+                      <div className="mt-3 space-y-3">
+                        {thread.length === 0 ? (
+                          <p className="text-xs text-muted-foreground italic">Aún no hay comentarios en este hilo.</p>
+                        ) : (
+                          <div className="space-y-2">
+                            {thread.map((c) => (
+                              <div
+                                key={c.id}
+                                className={`rounded-md p-2.5 text-sm ${c.author_role === "admin" ? "bg-primary/5 border border-primary/15" : "bg-muted/50 border border-border"}`}
+                              >
+                                <p className="text-[10px] font-semibold uppercase tracking-wider mb-1">
+                                  {c.author_role === "admin" ? "Administrador" : "Vos"} · {new Date(c.created_at).toLocaleString("es-AR")}
+                                </p>
+                                <p className="whitespace-pre-wrap">{c.body}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <div className="flex gap-2">
+                          <Textarea
+                            value={openThread === s.id ? reply : ""}
+                            onChange={(e) => setReply(e.target.value)}
+                            placeholder="Agregar un comentario al ticket…"
+                            rows={2}
+                            className="text-sm"
+                          />
+                          <Button onClick={() => sendReply(s.id)} disabled={sending || !reply.trim()} size="sm" className="gap-1.5 self-end">
+                            {sending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                            Enviar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             );
