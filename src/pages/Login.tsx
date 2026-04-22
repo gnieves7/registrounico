@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 
 import logoALPJF from "@/assets/logo_ALPJF.png";
 import logoAPFRA from "@/assets/logo_APFRA.png";
+import { PsiLogo } from "@/components/ui/PsiLogo";
 import {
   applySystemTheme, getStoredSystemArea, setStoredSystemArea,
   type SystemArea
@@ -49,7 +50,7 @@ const SYS = {
     desc: "Problemática judicial, pericias, análisis del testimonio en Cámara Gesell y prácticas psico-forenses." },
 } as const;
 
-type View = "main" | "paciente" | "consulta" | "question-terapia" | "question-psicodiagnostico" | "question-forense" | "profesional" | "empresa";
+type View = "main" | "paciente";
 
 const faqItems = [
   { q: "¿Cómo accedo por primera vez a la plataforma?", a: "Seleccioná \"Soy Paciente\", elegí el sistema que te indicó tu profesional y autenticáte con tu cuenta de Google. Tu acceso será revisado y aprobado antes de ingresar." },
@@ -183,53 +184,6 @@ const Login = () => {
     );
   };
 
-  const renderQuestionView = (qv: "question-terapia" | "question-psicodiagnostico" | "question-forense") => {
-    const map = {
-      "question-terapia": SYS.reflexionar,
-      "question-psicodiagnostico": SYS.evaluar,
-      "question-forense": SYS.acompanar,
-    };
-    const s = map[qv];
-    const Icon = s.icon;
-    return (
-      <div className="mx-auto w-full max-w-md px-5 py-6 animate-fade-in">
-        <button
-          onClick={() => setView("consulta")}
-          className="flex items-center gap-2 text-sm mb-4 transition-colors hover:opacity-70"
-          style={{ color: C.muted, fontFamily: F }}
-        >
-          <ArrowLeft className="h-4 w-4" /> Volver
-        </button>
-        <div className="rounded-lg overflow-hidden"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}>
-          <div className="h-1.5" style={{ background: s.color }} />
-          <div className="flex flex-col items-center gap-3 p-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-md" style={{ background: s.tint }}>
-              <Icon className="h-6 w-6" style={{ color: s.color }} />
-            </div>
-            <div className="text-center">
-              <h3 className="text-[15px] font-bold" style={{ color: C.text, fontFamily: F }}>{s.label}</h3>
-              <p className="text-[12px] font-semibold tracking-wide mt-0.5" style={{ color: s.color, fontFamily: F }}>{s.area}</p>
-              <p className="mt-2 text-[13px] leading-relaxed" style={{ color: C.muted, fontFamily: F }}>{s.desc}</p>
-            </div>
-            <div className="w-full space-y-2 mt-2">
-              <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
-                style={{ background: C.navy, fontFamily: F }}>
-                <Calendar className="h-4 w-4" /> Solicitar Turno
-              </a>
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                style={{ borderColor: C.border, color: C.text, fontFamily: F }}>
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const isMainView = view === "main";
 
   return (
@@ -266,8 +220,8 @@ const Login = () => {
                 </svg>
 
                 <div className="relative z-10">
-                  <h1 className="text-6xl font-bold tracking-tight leading-none" style={{ letterSpacing: "-1.5px" }}>.PSI.</h1>
-                  <p className="text-base mt-2 text-white/85">Plataforma de Sistemas Interactivos</p>
+                  <PsiLogo size="lg" className="!items-start" />
+                  <p className="text-base mt-3 text-white/85">Plataforma de Sistemas Interactivos</p>
                   <p className="text-[15px] mt-6 max-w-md text-white/75 leading-relaxed">
                     Un entorno único, confidencial y seguro para acompañar tu proceso clínico, psicodiagnóstico o forense.
                   </p>
@@ -303,8 +257,8 @@ const Login = () => {
                 <div className="w-full max-w-md space-y-6 animate-fade-in">
                   {/* Logo móvil */}
                   <div className="lg:hidden text-center mb-2">
-                    <h1 className="text-4xl font-bold" style={{ color: C.navy, letterSpacing: "-1px" }}>.PSI.</h1>
-                    <p className="text-xs mt-1" style={{ color: C.muted }}>Plataforma de Sistemas Interactivos</p>
+                    <PsiLogo size="md" />
+                    <p className="text-xs mt-2" style={{ color: C.muted }}>Plataforma de Sistemas Interactivos</p>
                   </div>
 
                   <div className="space-y-1.5">
@@ -336,30 +290,13 @@ const Login = () => {
                     <ArrowRight className="h-5 w-5 text-white/70" />
                   </button>
 
-                  {/* Botones secundarios */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setView("consulta")}
-                      className="flex items-center justify-center gap-2 rounded-md border-2 px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
-                      style={{ borderColor: C.navy, color: C.navy }}
-                    >
-                      <Search className="h-4 w-4" /> Consulta
-                    </button>
-                    <button
-                      onClick={() => navigate("/profesional")}
-                      className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
-                      style={{ borderColor: C.border, color: C.text }}
-                    >
-                      <Briefcase className="h-4 w-4" style={{ color: C.gold }} /> Profesional
-                    </button>
-                  </div>
-
+                  {/* Botón Profesional */}
                   <button
-                    onClick={() => setView("empresa")}
-                    className="w-full flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium transition-all hover:opacity-80"
-                    style={{ borderColor: C.border, color: C.text }}
+                    onClick={() => navigate("/profesional")}
+                    className="w-full flex items-center justify-center gap-2 rounded-md border-2 px-4 py-3 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.98]"
+                    style={{ borderColor: C.gold, color: C.gold, background: "rgba(160,124,46,0.04)" }}
                   >
-                    <Building2 className="h-4 w-4" /> Empresa / Institución
+                    <Briefcase className="h-4 w-4" /> Soy Profesional
                   </button>
 
                   <div className="relative py-1">
@@ -479,8 +416,8 @@ const Login = () => {
             <section className="w-full" style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
               <div className="mx-auto max-w-2xl px-5 pt-10 pb-8">
                 <div className="text-center mb-6 animate-fade-in">
-                  <h1 className="text-4xl md:text-5xl font-bold" style={{ color: C.navy, letterSpacing: "-1px" }}>.PSI.</h1>
-                  <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase mt-1" style={{ color: C.gold }}>
+                  <PsiLogo size="lg" />
+                  <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase mt-2" style={{ color: C.gold }}>
                     Plataforma de Sistemas Interactivos
                   </p>
                 </div>
@@ -517,64 +454,6 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-            </section>
-
-            {/* Sub-vistas */}
-            <section className="mx-auto w-full max-w-4xl px-5 py-10">
-              {view === "consulta" && (
-                <div className="animate-fade-in">
-                  <h3 className="text-center text-[20px] font-semibold mb-6" style={{ color: C.text }}>
-                    Contame, ¿qué necesitás?
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                    {[
-                      { v: "question-terapia" as const, s: SYS.reflexionar, q: "¿Necesitás terapia?", d: "Comenzá tu proceso terapéutico" },
-                      { v: "question-psicodiagnostico" as const, s: SYS.evaluar, q: "¿Te solicitan un psicodiagnóstico?", d: "Evaluación de personalidad y aptitud" },
-                      { v: "question-forense" as const, s: SYS.acompanar, q: "¿Asesoramiento judicial?", d: "Pericias y prácticas psico-forenses" },
-                    ].map(({ v, s, q, d }) => {
-                      const Icon = s.icon;
-                      return (
-                        <button key={v} onClick={() => setView(v)}
-                          className="group flex flex-col items-center gap-3 rounded-lg p-6 transition-all hover:-translate-y-0.5 hover:shadow-md text-center"
-                          style={{ background: C.card, border: `1px solid ${C.border}` }}>
-                          <div className="h-12 w-12 rounded-md flex items-center justify-center" style={{ background: s.tint }}>
-                            <Icon className="h-6 w-6" style={{ color: s.color }} />
-                          </div>
-                          <span className="text-[14px] font-semibold" style={{ color: C.text }}>{q}</span>
-                          <span className="text-[12px]" style={{ color: C.muted }}>{d}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") && renderQuestionView(view)}
-
-              {view === "empresa" && (
-                <div className="animate-fade-in">
-                  <h3 className="text-center text-[20px] font-semibold mb-6" style={{ color: C.text }}>
-                    Contactanos
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                    {[
-                      { href: EMPRESA_EMAIL, icon: Mail, t: "Email", d: "Consultas corporativas e institucionales", ext: false },
-                      { href: WHATSAPP_LINK, icon: MessageCircle, t: "WhatsApp", d: "Respuesta rápida y personalizada", ext: true },
-                      { href: EMPRESA_WEB, icon: Globe, t: "Sitio Web", d: "Conocé nuestros servicios", ext: true },
-                    ].map((c, i) => (
-                      <a key={i} href={c.href} target={c.ext ? "_blank" : undefined} rel={c.ext ? "noopener noreferrer" : undefined}
-                        className="group flex flex-col items-center gap-3 rounded-lg p-6 transition-all hover:-translate-y-0.5 hover:shadow-md text-center"
-                        style={{ background: C.card, border: `1px solid ${C.border}` }}>
-                        <div className="h-12 w-12 rounded-md flex items-center justify-center" style={{ background: C.bgTint }}>
-                          <c.icon className="h-6 w-6" style={{ color: C.navy }} />
-                        </div>
-                        <span className="text-[14px] font-semibold" style={{ color: C.text }}>{c.t}</span>
-                        <span className="text-[12px]" style={{ color: C.muted }}>{c.d}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
             </section>
 
             {/* Privacy footer */}
@@ -666,6 +545,7 @@ const SystemTabs = () => {
               </p>
             </div>
           </div>
+
           <div className="mt-6 space-y-2.5 pl-14">
             <p className="text-[11px] font-semibold uppercase tracking-[1.2px]" style={{ color: C.muted, fontFamily: F }}>
               Incluye
@@ -677,6 +557,60 @@ const SystemTabs = () => {
               </div>
             ))}
           </div>
+
+          {/* Modalidades específicas por sistema */}
+          {tab === "reflexionar" && (
+            <div className="mt-8 pl-14 animate-fade-in">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.2px] mb-3" style={{ color: s.color, fontFamily: F }}>
+                Modalidades terapéuticas (5 escuelas)
+              </p>
+              <p className="text-[13px] mb-4 leading-relaxed" style={{ color: C.muted, fontFamily: F }}>
+                El paciente, junto a su terapeuta, puede elegir el marco clínico que mejor acompañe su proceso:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { n: "Psicoanalítica", d: "Freud, Lacan, Bion, Kohut. Trabajo con el inconsciente, sueños y transferencia." },
+                  { n: "Conductual", d: "Pavlov, Skinner, Wolpe. Modificación de conductas observables y aprendizajes." },
+                  { n: "Cognitivo-Conductual (TCC)", d: "Beck, Ellis, Young. Reestructuración de pensamientos y creencias (1ª, 2ª y 3ª generación)." },
+                  { n: "Humanista", d: "Rogers, Maslow, Frankl. Enfoque fenomenológico y existencial centrado en la persona." },
+                  { n: "Sistémica", d: "Bateson, Watzlawick, White. Cibernética, constructivismo y narrativa relacional." },
+                ].map((esc) => (
+                  <div key={esc.n} className="rounded-md border p-3" style={{ borderColor: C.border, background: C.card }}>
+                    <p className="text-[13px] font-bold" style={{ color: s.color, fontFamily: F }}>{esc.n}</p>
+                    <p className="text-[12px] mt-1 leading-snug" style={{ color: C.muted, fontFamily: F }}>{esc.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {tab === "evaluar" && (
+            <div className="mt-8 pl-14 animate-fade-in">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.2px] mb-3" style={{ color: s.color, fontFamily: F }}>
+                Modalidades de evaluación
+              </p>
+              <p className="text-[13px] mb-4 leading-relaxed" style={{ color: C.muted, fontFamily: F }}>
+                El sistema Evaluar ofrece dos áreas de trabajo psicodiagnóstico:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  {
+                    n: "Junta Médica Laboral",
+                    d: "Evaluación de aptitud psicológica para empleados públicos y privados. Incluye apto laboral, certificados de salud mental y seguimiento de licencias.",
+                  },
+                  {
+                    n: "Estudio de Personalidad",
+                    d: "Administración de tests estandarizados (MMPI-2, MBTI, MCMI-III, SCL-90-R) con perfiles, baremos e informes clínicos en PDF.",
+                  },
+                ].map((mod) => (
+                  <div key={mod.n} className="rounded-md border p-3" style={{ borderColor: C.border, background: C.card }}>
+                    <p className="text-[13px] font-bold" style={{ color: s.color, fontFamily: F }}>{mod.n}</p>
+                    <p className="text-[12px] mt-1 leading-snug" style={{ color: C.muted, fontFamily: F }}>{mod.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

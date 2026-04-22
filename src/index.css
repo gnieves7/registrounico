@@ -400,36 +400,34 @@ body.system-ready {
   }
 }
 
-/* ── PSI logo shimmer / brillo ── */
-.psi-logo-shimmer {
+/* ── PSI logo: dorado clásico con barrido de luz ── */
+.psi-gold-sweep {
   background-image: linear-gradient(
     100deg,
-    transparent 0%,
-    transparent 35%,
-    rgba(232, 212, 138, 0.85) 48%,
-    rgba(255, 255, 255, 0.95) 50%,
-    rgba(232, 212, 138, 0.85) 52%,
-    transparent 65%,
-    transparent 100%
+    #8a6822 0%,
+    #A07C2E 30%,
+    #E8D48A 48%,
+    #FFF6D6 50%,
+    #E8D48A 52%,
+    #A07C2E 70%,
+    #8a6822 100%
   );
   background-size: 250% 100%;
   background-position: 200% 0;
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: currentColor;
-  animation: psi-shimmer 3.6s ease-in-out 0.4s infinite;
+  -webkit-text-fill-color: transparent;
+  animation: psi-gold-sweep 4s ease-in-out infinite;
+  text-shadow: 0 1px 0 rgba(160, 124, 46, 0.08);
 }
 
-.psi-logo-shimmer--off {
+.psi-gold-sweep--off {
   animation: none;
   background: none;
   -webkit-text-fill-color: currentColor;
 }
 
-@keyframes psi-shimmer {
-  0% { background-position: 200% 0; -webkit-text-fill-color: currentColor; }
-  35% { -webkit-text-fill-color: transparent; }
-  60% { background-position: -50% 0; -webkit-text-fill-color: transparent; }
-  62% { -webkit-text-fill-color: currentColor; }
-  100% { background-position: -50% 0; -webkit-text-fill-color: currentColor; }
+@keyframes psi-gold-sweep {
+  0% { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
 }

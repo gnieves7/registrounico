@@ -21,14 +21,14 @@ const SIZE = {
 } as const;
 
 /**
- * Animated .PSI. wordmark.
- * Uses Playfair Display (serif) with a shimmer/brillo overlay that travels
- * across the letters on mount and replays slowly on hover.
+ * Animated .PSI. wordmark — dorado clásico con barrido de luz.
+ * Tipografía Playfair Display (serif) sobre color dorado institucional,
+ * con animación de "sweep" / brillo continuo que recorre las letras.
  */
 export function PsiLogo({
   className,
   size = "lg",
-  color = "#1C3F6E",
+  color = "#A07C2E",
   subtitle,
   noShimmer,
 }: PsiLogoProps) {
@@ -36,9 +36,9 @@ export function PsiLogo({
     <div className={cn("inline-flex flex-col items-center select-none", className)}>
       <span
         className={cn(
-          "psi-logo-shimmer relative font-bold leading-none tracking-tight",
+          "psi-gold-sweep relative font-bold leading-none tracking-tight",
           SIZE[size],
-          noShimmer && "psi-logo-shimmer--off"
+          noShimmer && "psi-gold-sweep--off"
         )}
         style={{
           fontFamily: "'Playfair Display', serif",
