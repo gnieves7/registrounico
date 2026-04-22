@@ -456,64 +456,6 @@ const Login = () => {
               </div>
             </section>
 
-            {/* Sub-vistas */}
-            <section className="mx-auto w-full max-w-4xl px-5 py-10">
-              {view === "consulta" && (
-                <div className="animate-fade-in">
-                  <h3 className="text-center text-[20px] font-semibold mb-6" style={{ color: C.text }}>
-                    Contame, ¿qué necesitás?
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                    {[
-                      { v: "question-terapia" as const, s: SYS.reflexionar, q: "¿Necesitás terapia?", d: "Comenzá tu proceso terapéutico" },
-                      { v: "question-psicodiagnostico" as const, s: SYS.evaluar, q: "¿Te solicitan un psicodiagnóstico?", d: "Evaluación de personalidad y aptitud" },
-                      { v: "question-forense" as const, s: SYS.acompanar, q: "¿Asesoramiento judicial?", d: "Pericias y prácticas psico-forenses" },
-                    ].map(({ v, s, q, d }) => {
-                      const Icon = s.icon;
-                      return (
-                        <button key={v} onClick={() => setView(v)}
-                          className="group flex flex-col items-center gap-3 rounded-lg p-6 transition-all hover:-translate-y-0.5 hover:shadow-md text-center"
-                          style={{ background: C.card, border: `1px solid ${C.border}` }}>
-                          <div className="h-12 w-12 rounded-md flex items-center justify-center" style={{ background: s.tint }}>
-                            <Icon className="h-6 w-6" style={{ color: s.color }} />
-                          </div>
-                          <span className="text-[14px] font-semibold" style={{ color: C.text }}>{q}</span>
-                          <span className="text-[12px]" style={{ color: C.muted }}>{d}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {(view === "question-terapia" || view === "question-psicodiagnostico" || view === "question-forense") && renderQuestionView(view)}
-
-              {view === "empresa" && (
-                <div className="animate-fade-in">
-                  <h3 className="text-center text-[20px] font-semibold mb-6" style={{ color: C.text }}>
-                    Contactanos
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-                    {[
-                      { href: EMPRESA_EMAIL, icon: Mail, t: "Email", d: "Consultas corporativas e institucionales", ext: false },
-                      { href: WHATSAPP_LINK, icon: MessageCircle, t: "WhatsApp", d: "Respuesta rápida y personalizada", ext: true },
-                      { href: EMPRESA_WEB, icon: Globe, t: "Sitio Web", d: "Conocé nuestros servicios", ext: true },
-                    ].map((c, i) => (
-                      <a key={i} href={c.href} target={c.ext ? "_blank" : undefined} rel={c.ext ? "noopener noreferrer" : undefined}
-                        className="group flex flex-col items-center gap-3 rounded-lg p-6 transition-all hover:-translate-y-0.5 hover:shadow-md text-center"
-                        style={{ background: C.card, border: `1px solid ${C.border}` }}>
-                        <div className="h-12 w-12 rounded-md flex items-center justify-center" style={{ background: C.bgTint }}>
-                          <c.icon className="h-6 w-6" style={{ color: C.navy }} />
-                        </div>
-                        <span className="text-[14px] font-semibold" style={{ color: C.text }}>{c.t}</span>
-                        <span className="text-[12px]" style={{ color: C.muted }}>{c.d}</span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </section>
-
             {/* Privacy footer */}
             <div className="mx-auto mb-10 mt-2 flex max-w-2xl items-start gap-2 rounded-md px-5 py-3 mx-5"
               style={{ background: C.card, border: `1px solid ${C.border}` }}>
