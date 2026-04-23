@@ -17,6 +17,9 @@ import {
   ArrowLeft,
   Briefcase,
   Lightbulb,
+  ShieldAlert,
+  CreditCard,
+  Activity,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,19 +27,34 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 
-export type AdminSection = "dashboard" | "users" | "professionals" | "tests" | "reports" | "notifications" | "suggestions" | "settings";
+export type AdminSection =
+  | "dashboard"
+  | "users"
+  | "professionals"
+  | "authorizations"
+  | "subscriptions"
+  | "activity"
+  | "tests"
+  | "reports"
+  | "notifications"
+  | "suggestions"
+  | "settings";
 
 interface AdminDashboardLayoutProps {
   activeSection: AdminSection;
   onSectionChange: (section: AdminSection) => void;
   children: React.ReactNode;
   notificationCount?: number;
+  pendingAuthCount?: number;
 }
 
 const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType }[] = [
   { key: "dashboard", label: "Resumen General", icon: LayoutDashboard },
   { key: "users", label: "Usuarios Activos", icon: Users },
   { key: "professionals", label: "Profesionales", icon: Briefcase },
+  { key: "authorizations", label: "Autorizaciones", icon: ShieldAlert },
+  { key: "subscriptions", label: "Suscripciones", icon: CreditCard },
+  { key: "activity", label: "Actividad", icon: Activity },
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },
@@ -49,6 +67,7 @@ export function AdminDashboardLayout({
   onSectionChange,
   children,
   notificationCount = 0,
+  pendingAuthCount = 0,
 }: AdminDashboardLayoutProps) {
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const { isDemoMode, demoProfile } = useDemoMode();
@@ -103,6 +122,11 @@ export function AdminDashboardLayout({
               {!collapsed && item.key === "notifications" && notificationCount > 0 && (
                 <Badge variant="destructive" className="ml-auto text-[10px] px-1.5 py-0">
                   {notificationCount}
+                </Badge>
+              )}
+              {!collapsed && item.key === "authorizations" && pendingAuthCount > 0 && (
+                <Badge variant="destructive" className="ml-auto text-[10px] px-1.5 py-0">
+                  {pendingAuthCount}
                 </Badge>
               )}
             </button>
