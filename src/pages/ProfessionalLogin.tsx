@@ -10,15 +10,21 @@ import { Loader2, ArrowLeft, Mail, Lock, ShieldCheck } from "lucide-react";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 
 const ProfessionalLogin = () => {
-  const { user, isLoading, signInWithEmail, signUpWithEmail } = useAuth();
+  const { user, isLoading, isAdmin, signInWithEmail, signUpWithEmail } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ email: "", password: "", fullName: "" });
 
   useEffect(() => {
-    if (!isLoading && user) navigate("/profesional/registro");
-  }, [user, isLoading, navigate]);
+    if (isLoading || !user) return;
+    // 1° admin siempre va al panel admin
+    if (isAdmin) {
+      navigate("/admin/dashboard", { replace: true });
+      return;
+    }
+    navigate("/profesional/registro", { replace: true });
+  }, [user, isLoading, isAdmin, navigate]);
 
   const handleSubmit = async () => {
     if (!form.email || !form.password) {
@@ -37,7 +43,8 @@ const ProfessionalLogin = () => {
     try {
       if (mode === "login") {
         await signInWithEmail(form.email, form.password);
-        navigate("/profesional/registro");
+        // No navegamos aquí: el useEffect de arriba detecta el rol
+        // (admin → /admin/dashboard, otros → /profesional/registro)
       } else {
         const { needsEmailVerification } = await signUpWithEmail(form.email, form.password, form.fullName.trim());
         if (needsEmailVerification) {

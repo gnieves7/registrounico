@@ -66,14 +66,23 @@ const faqItems = [
 const F = "'DM Sans', sans-serif";
 
 const Login = () => {
-  const { user, isLoading, isApproved, signInWithGoogle, signOut } = useAuth();
+  const { user, isLoading, isApproved, isAdmin, signInWithGoogle, signOut } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("main");
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
   const heroRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (user && !isLoading && isApproved) {
+    if (!user || isLoading) {
+      applySystemTheme(null);
+      return;
+    }
+    // 1° admin siempre va al panel admin (fuente de verdad: tabla user_roles)
+    if (isAdmin) {
+      navigate("/admin/dashboard", { replace: true });
+      return;
+    }
+    if (isApproved) {
       applySystemTheme(getStoredSystemArea());
       const redirectTo = sessionStorage.getItem("login_redirect");
       if (redirectTo) {
@@ -85,7 +94,7 @@ const Login = () => {
       return;
     }
     applySystemTheme(null);
-  }, [user, isLoading, isApproved, navigate]);
+  }, [user, isLoading, isApproved, isAdmin, navigate]);
 
   const toggleDark = () => {
     const next = !isDark;
