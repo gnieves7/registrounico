@@ -42,6 +42,8 @@ import DemoEntry from "./pages/DemoEntry";
 import ProfessionalRegistration from "./pages/ProfessionalRegistration";
 import ProfessionalLogin from "./pages/ProfessionalLogin";
 import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
+import { PatientOnlyRoute } from "@/components/professional/PatientOnlyRoute";
+import DescargarPdf from "./pages/DescargarPdf";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,7 @@ const App = () => (
               <Route path="/profesional/login" element={<ProfessionalLogin />} />
               <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/descargar" element={<DescargarPdf />} />
               
               {/* Protected routes with sidebar layout */}
 
@@ -74,17 +77,17 @@ const App = () => (
                 <Route path="/forensic" element={<Forensic />} />
                 <Route path="/forensic/:section" element={<Forensic />} />
                 <Route path="/judicial-case" element={<JudicialCase />} />
-                <Route path="/anxiety-record" element={<AnxietyRecord />} />
+                <Route path="/anxiety-record" element={<PatientOnlyRoute><AnxietyRecord /></PatientOnlyRoute>} />
                 <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
                 <Route path="/apto-psicologico" element={<AptoPsicologico />} />
                 <Route path="/camara-gesell" element={<CamaraGesell />} />
-                <Route path="/notebook" element={<Notebook />} />
-                <Route path="/dream-record" element={<DreamRecord />} />
-                <Route path="/sessions" element={<Sessions />} />
-                <Route path="/laura" element={<LauraChat />} />
-                <Route path="/documents" element={<Documents />} />
+                <Route path="/notebook" element={<PatientOnlyRoute><Notebook /></PatientOnlyRoute>} />
+                <Route path="/dream-record" element={<PatientOnlyRoute><DreamRecord /></PatientOnlyRoute>} />
+                <Route path="/sessions" element={<PatientOnlyRoute><Sessions /></PatientOnlyRoute>} />
+                <Route path="/laura" element={<PatientOnlyRoute><LauraChat /></PatientOnlyRoute>} />
+                <Route path="/documents" element={<PatientOnlyRoute><Documents /></PatientOnlyRoute>} />
                 <Route path="/professional-profile" element={<ProfessionalProfile />} />
-                <Route path="/symbolic-awards" element={<SymbolicAwards />} />
+                <Route path="/symbolic-awards" element={<PatientOnlyRoute><SymbolicAwards /></PatientOnlyRoute>} />
                 <Route path="/telegram" element={<TelegramCenter />} />
                 {/* Admin routes */}
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />

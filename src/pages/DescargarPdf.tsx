@@ -96,7 +96,7 @@ export default function DescargarPdf() {
           {status !== "idle" && status !== "loading" && (
             <div className={`mt-4 rounded-md border border-border p-4 ${cfg.tone}`}>
               <div className="flex items-start gap-2">
-                <Icon className={`h-5 w-5 mt-0.5 ${status === "loading" ? "animate-spin" : ""}`} />
+                <Icon className="h-5 w-5 mt-0.5" />
                 <div className="flex-1">
                   <p className="font-medium">{cfg.title}</p>
                   {message && <p className="text-sm text-muted-foreground mt-1">{message}</p>}
