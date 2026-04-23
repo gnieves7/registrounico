@@ -2149,12 +2149,35 @@ export type Database = {
       }
     }
     Functions: {
+      consume_pdf_code: {
+        Args: { _code: string; _ip?: string }
+        Returns: {
+          message: string
+          resource_type: string
+          status: string
+          storage_bucket: string
+          storage_path: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      issue_pdf_code: {
+        Args: {
+          _hours_valid?: number
+          _patient_id?: string
+          _resource_type: string
+          _storage_bucket: string
+          _storage_path: string
+        }
+        Returns: {
+          code: string
+          expires_at: string
+        }[]
       }
       mark_professional_active: { Args: never; Returns: undefined }
       patient_update_session: {
