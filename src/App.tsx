@@ -44,6 +44,7 @@ import ProfessionalLogin from "./pages/ProfessionalLogin";
 import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
 import { PatientOnlyRoute } from "@/components/professional/PatientOnlyRoute";
 import DescargarPdf from "./pages/DescargarPdf";
+import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
               <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/descargar" element={<DescargarPdf />} />
+              <Route path="/diagnostico-acceso" element={<DiagnosticoAcceso />} />
               
               {/* Protected routes with sidebar layout */}
 

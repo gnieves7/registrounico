@@ -1,8 +1,9 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { useProfessionalAccess } from "@/hooks/useProfessionalAccess";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin } from "lucide-react";
+import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -13,7 +14,8 @@ interface Props {
 
 export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
-  const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe } = useProfessionalAccess();
+  const { user, isApproved } = useAuth();
+  const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
   const [paying, setPaying] = useState(false);
 
   if (loading) {
@@ -34,25 +36,22 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     );
   }
 
+  // Profesional sin aprobación del admin
+  if (isProfessional && !isApproved && !needsConsent) {
+    return (
+      <GateShell icon={<ShieldAlert className="h-6 w-6 text-amber-600" />} title="Pendiente de aprobación" description="Tu cuenta profesional está esperando la aprobación del administrador. Recibirás un aviso apenas se decida.">
+        <Button variant="outline" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico de acceso</Button>
+      </GateShell>
+    );
+  }
+
   // Needs consent
   if (needsConsent) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-background">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">
-              <FileSignature className="h-6 w-6 text-primary" />
-            </div>
-            <CardTitle>Consentimiento pendiente</CardTitle>
-            <CardDescription>Para continuar, necesitás completar el registro profesional y firmar el consentimiento informado.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => navigate("/profesional/registro")}>
-              Completar registro
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <GateShell icon={<FileSignature className="h-6 w-6 text-primary" />} title="Consentimiento pendiente" description="Para continuar, necesitás completar el registro profesional y firmar el consentimiento informado (nombre completo + DNI).">
+        <Button className="w-full" onClick={() => navigate("/profesional/registro")}>Completar registro</Button>
+        <Button variant="outline" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico</Button>
+      </GateShell>
     );
   }
 
@@ -85,10 +84,14 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
             <CardTitle>Suscripción requerida</CardTitle>
             <CardDescription>
               .PSI. es gratuito para psicólogos matriculados en la provincia de Santa Fe.
-              Para profesionales de otras jurisdicciones, el acceso tiene un costo de
+              Tu jurisdicción registrada es <strong>{jurisdiction || "(sin definir)"}</strong>, por lo que el acceso tiene un costo de
               <strong> USD 5 por mes</strong>, sin permanencia.
             </CardDescription>
           </CardHeader>
+          <CardContent className="text-xs text-muted-foreground space-y-2">
+            <p className="flex items-start gap-2"><Stethoscope className="h-3.5 w-3.5 mt-0.5 shrink-0" /> Si sos de Santa Fe, actualizá tu jurisdicción en el perfil profesional para acceso gratis.</p>
+            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico de acceso</Button>
+          </CardContent>
         </Card>
 
         <Card className="border-2 border-primary">
@@ -117,3 +120,18 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     </div>
   );
 };
+
+function GateShell({ icon, title, description, children }: { icon: React.ReactNode; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+      <Card className="max-w-md w-full">
+        <CardHeader>
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-3">{icon}</div>
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">{children}</CardContent>
+      </Card>
+    </div>
+  );
+}
