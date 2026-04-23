@@ -217,7 +217,10 @@ const ProfessionalRegistration = () => {
 
       toast({
         title: "Registro completado",
-        description: "Tenés 3 meses gratis. El administrador revisará tu acceso.",
+        description:
+          form.licenseJurisdiction.trim().toLowerCase() === "santa fe"
+            ? "Acceso gratuito habilitado. El administrador revisará tu cuenta."
+            : "Tu acceso requiere suscripción de USD 5/mes. El administrador revisará tu cuenta.",
       });
       navigate("/pending-approval");
     } catch (err: any) {
@@ -248,14 +251,14 @@ const ProfessionalRegistration = () => {
             className="inline-block rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-[1.2px] mb-3"
             style={{ background: "#EEF3FA", color: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
           >
-            Registro Profesional · 3 meses gratis
+            Registro Profesional · Gratis para Santa Fe
           </span>
           <h1 className="text-[28px] md:text-[34px] font-bold leading-tight" style={{ fontFamily: "'DM Sans', sans-serif", color: "#1A1A1A" }}>
             Habilitá tu acceso profesional a{" "}
             <span style={{ color: "#A07C2E", fontFamily: "'Playfair Display', serif" }}>.PSI.</span>
           </h1>
           <p className="text-[15px] mt-3 max-w-xl mx-auto" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
-            Acreditá tu matrícula y firmá digitalmente el consentimiento informado. Luego de los 3 meses gratuitos podrás continuar con USD 10/mes o USD 100/año.
+            Acreditá tu matrícula y firmá digitalmente el consentimiento informado. El acceso es <strong>gratuito</strong> para psicólogos matriculados en la provincia de Santa Fe. Para otras jurisdicciones el costo es de <strong>USD 5/mes</strong>, sin permanencia.
           </p>
         </div>
 

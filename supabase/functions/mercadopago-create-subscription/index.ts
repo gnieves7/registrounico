@@ -7,8 +7,7 @@ const corsHeaders = {
 };
 
 const PLANS = {
-  monthly: { title: "Suscripción Profesional .PSI. — Mensual", usd: 10, months: 1 },
-  annual: { title: "Suscripción Profesional .PSI. — Anual", usd: 100, months: 12 },
+  monthly: { title: "Suscripción Profesional .PSI. — Mensual", usd: 5, months: 1 },
 };
 
 // Approximate USD→ARS rate (will be quoted in ARS by MercadoPago)
@@ -43,8 +42,8 @@ serve(async (req) => {
       });
     }
 
-    const body = await req.json();
-    const plan = body.plan as "monthly" | "annual";
+    const body = await req.json().catch(() => ({}));
+    const plan = (body.plan ?? "monthly") as "monthly";
     if (!PLANS[plan]) {
       return new Response(JSON.stringify({ error: "Invalid plan" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -53,9 +52,18 @@ serve(async (req) => {
 
     const { data: profile } = await supabaseAdmin
       .from("profiles")
-      .select("email, full_name")
+      .select("email, full_name, license_jurisdiction, account_type")
       .eq("user_id", user.id)
       .single();
+
+    // Santa Fe = acceso gratuito, no debe pagar
+    if ((profile?.license_jurisdiction || "").trim().toLowerCase() === "santa fe") {
+      return new Response(JSON.stringify({
+        error: "Los psicólogos matriculados en Santa Fe tienen acceso gratuito.",
+      }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const planConfig = PLANS[plan];
     const priceArs = Math.round(planConfig.usd * USD_TO_ARS);

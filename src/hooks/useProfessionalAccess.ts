@@ -24,6 +24,8 @@ interface AccessState {
   trialDaysLeft: number;
   needsPayment: boolean;
   needsConsent: boolean;
+  isSantaFe: boolean;
+  jurisdiction: string | null;
 }
 
 export function useProfessionalAccess() {
@@ -37,6 +39,8 @@ export function useProfessionalAccess() {
     trialDaysLeft: 0,
     needsPayment: false,
     needsConsent: false,
+    isSantaFe: false,
+    jurisdiction: null,
   });
 
   const refresh = useCallback(async () => {
@@ -56,13 +60,15 @@ export function useProfessionalAccess() {
         trialDaysLeft: 0,
         needsPayment: false,
         needsConsent: false,
+        isSantaFe: true,
+        jurisdiction: "Santa Fe",
       });
       return;
     }
 
     const { data: prof } = await supabase
       .from("profiles")
-      .select("account_type, license_number, consent_accepted_at")
+      .select("account_type, license_number, consent_accepted_at, license_jurisdiction")
       .eq("user_id", user.id)
       .maybeSingle();
 
@@ -78,11 +84,15 @@ export function useProfessionalAccess() {
         trialDaysLeft: 0,
         needsPayment: false,
         needsConsent: false,
+        isSantaFe: false,
+        jurisdiction: null,
       });
       return;
     }
 
     const needsConsent = !(prof as any)?.consent_accepted_at;
+    const jurisdiction: string | null = (prof as any)?.license_jurisdiction ?? null;
+    const isSantaFe = (jurisdiction || "").trim().toLowerCase() === "santa fe";
 
     const { data: sub } = await supabase
       .from("professional_subscriptions")
@@ -98,8 +108,10 @@ export function useProfessionalAccess() {
     const isPaid = !!sub && paidUntil > now;
     const trialDaysLeft = Math.max(0, Math.ceil((trialEnds - now) / (1000 * 60 * 60 * 24)));
 
-    const hasAccess = !needsConsent && (isOnTrial || isPaid);
-    const needsPayment = !needsConsent && !isOnTrial && !isPaid;
+    // Psicólogos de Santa Fe: acceso gratuito tras firmar consentimiento.
+    // Resto: deben pagar USD 5/mes (sin trial ni plan anual).
+    const hasAccess = !needsConsent && (isSantaFe || isPaid);
+    const needsPayment = !needsConsent && !isSantaFe && !isPaid;
 
     setState({
       loading: false,
@@ -110,6 +122,8 @@ export function useProfessionalAccess() {
       trialDaysLeft,
       needsPayment,
       needsConsent,
+      isSantaFe,
+      jurisdiction,
     });
   }, [user, isAdmin]);
 
