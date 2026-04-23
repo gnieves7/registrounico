@@ -67,14 +67,40 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // INITIAL load — controls isLoading
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        // JWT corrupto / inválido (bad_jwt, missing sub claim, etc.)
+        // → limpiamos la sesión local para que el usuario pueda volver a loguearse
+        if (sessionError) {
+          console.warn("Sesión inválida detectada, limpiando:", sessionError.message);
+          await supabase.auth.signOut().catch(() => {});
+          if (isMounted) {
+            setSession(null);
+            setUser(null);
+            setProfile(null);
+            setIsAdmin(false);
+            setIsApproved(false);
+          }
+          return;
+        }
+
         if (!isMounted) return;
 
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          await fetchUserData(session.user.id);
+          try {
+            await fetchUserData(session.user.id);
+          } catch (e: any) {
+            // Si falla por JWT inválido, forzamos signOut local
+            if (e?.message?.includes("JWT") || e?.code === "PGRST301") {
+              console.warn("Token inválido al cargar perfil, cerrando sesión");
+              await supabase.auth.signOut().catch(() => {});
+              setSession(null);
+              setUser(null);
+            }
+          }
         }
       } finally {
         if (isMounted) setIsLoading(false);
