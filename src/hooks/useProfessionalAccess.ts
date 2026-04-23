@@ -24,6 +24,8 @@ interface AccessState {
   trialDaysLeft: number;
   needsPayment: boolean;
   needsConsent: boolean;
+  isSantaFe: boolean;
+  jurisdiction: string | null;
 }
 
 export function useProfessionalAccess() {
@@ -37,6 +39,8 @@ export function useProfessionalAccess() {
     trialDaysLeft: 0,
     needsPayment: false,
     needsConsent: false,
+    isSantaFe: false,
+    jurisdiction: null,
   });
 
   const refresh = useCallback(async () => {
