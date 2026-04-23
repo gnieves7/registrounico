@@ -217,7 +217,10 @@ const ProfessionalRegistration = () => {
 
       toast({
         title: "Registro completado",
-        description: "Tenés 3 meses gratis. El administrador revisará tu acceso.",
+        description:
+          form.licenseJurisdiction.trim().toLowerCase() === "santa fe"
+            ? "Acceso gratuito habilitado. El administrador revisará tu cuenta."
+            : "Tu acceso requiere suscripción de USD 5/mes. El administrador revisará tu cuenta.",
       });
       navigate("/pending-approval");
     } catch (err: any) {
