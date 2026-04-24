@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
 import { AdminDashboardSixMetrics } from "@/components/admin/dashboard/AdminDashboardSixMetrics";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
@@ -12,11 +13,14 @@ import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSugge
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
 import { AdminSubscriptionsSection } from "@/components/admin/dashboard/AdminSubscriptionsSection";
 import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
+import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminDashboard() {
-  const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
+  const [searchParams] = useSearchParams();
+  const initialSection = (searchParams.get("section") as AdminSection) || "dashboard";
+  const [activeSection, setActiveSection] = useState<AdminSection>(initialSection);
   const [pendingAuthCount, setPendingAuthCount] = useState(0);
 
   useEffect(() => {
@@ -50,6 +54,7 @@ export default function AdminDashboard() {
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
         {activeSection === "subscriptions" && <AdminSubscriptionsSection />}
         {activeSection === "activity" && <AdminActivitySection />}
+        {activeSection === "audit_consents" && <AdminAuditConsentsSection />}
         {activeSection === "tests" && <AdminTestsSection />}
         {activeSection === "reports" && <AdminReportsSection />}
         {activeSection === "notifications" && <AdminNotificationsSection />}

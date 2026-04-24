@@ -18,6 +18,7 @@ import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvoluti
 import { demoSessions, demoEmotionalRecords } from "@/data/demoData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";
+import { ConsentStatusBanner } from "@/components/professional/ConsentStatusBanner";
 
 interface TodayRecord {
   id: string;
@@ -177,6 +178,10 @@ const DashboardHome = () => {
 
   return (
     <div className="container mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-8">
+      {/* Banner de estado del consentimiento profesional */}
+      <div className="mb-4">
+        <ConsentStatusBanner />
+      </div>
       {/* System Welcome Banner */}
       {currentSystem && welcome && (
         <div className="system-welcome mb-6 flex items-center gap-4 rounded-2xl p-5 shadow-lg md:p-6">

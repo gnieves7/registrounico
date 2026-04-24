@@ -1,9 +1,10 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { useProfessionalAccess } from "@/hooks/useProfessionalAccess";
 import { useAuth } from "@/hooks/useAuth";
+import { useConsentVersion } from "@/hooks/useConsentVersion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope } from "lucide-react";
+import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope, Download, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -16,7 +17,15 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
   const { user, isApproved, isAdmin } = useAuth();
   const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
+  const {
+    loading: consentLoading,
+    consentOutdated,
+    currentVersion,
+    signedVersion,
+    signedPdfPath,
+  } = useConsentVersion();
   const [paying, setPaying] = useState(false);
+  const [downloadingPrev, setDownloadingPrev] = useState(false);
 
   // Auto-redirect a la pantalla unificada de consentimiento si está pendiente
   // (excepto admins, que pueden navegar libremente)
@@ -31,7 +40,7 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     }
   }, [loading, isAdmin, isProfessional, needsConsent, navigate]);
 
-  if (loading) {
+  if (loading || consentLoading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
 
@@ -46,8 +55,65 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
             Acceso administrativo — tu consentimiento profesional está pendiente de firma.
           </div>
         )}
+        {isProfessional && !needsConsent && consentOutdated && (
+          <div className="bg-rose-50 dark:bg-rose-950/30 border-b border-rose-200 dark:border-rose-800 px-4 py-2 text-center text-xs text-rose-900 dark:text-rose-200 flex items-center justify-center gap-2">
+            <RefreshCw className="h-3.5 w-3.5" />
+            Acceso administrativo — hay una nueva versión del consentimiento (v{currentVersion}). Firmaste v{signedVersion}.
+          </div>
+        )}
         {children ?? <Outlet />}
       </>
+    );
+  }
+
+  // Profesional con consentimiento desactualizado: bloqueo total con pantalla intermedia.
+  if (isProfessional && !needsConsent && consentOutdated) {
+    const handleDownloadPrev = async () => {
+      if (!signedPdfPath) return;
+      setDownloadingPrev(true);
+      try {
+        const { data, error } = await supabase.storage
+          .from("consentimientos-profesionales")
+          .createSignedUrl(signedPdfPath, 60);
+        if (error) throw error;
+        window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+      } catch (err: any) {
+        toast({ title: "No se pudo descargar", description: err.message, variant: "destructive" });
+      } finally {
+        setDownloadingPrev(false);
+      }
+    };
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <div className="h-12 w-12 rounded-full bg-rose-100 dark:bg-rose-950/40 flex items-center justify-center mb-3">
+              <RefreshCw className="h-6 w-6 text-rose-600" />
+            </div>
+            <CardTitle>Nueva versión del consentimiento</CardTitle>
+            <CardDescription>
+              Se publicó una nueva versión del Consentimiento Informado Profesional
+              (<strong>v{currentVersion}</strong>). Firmaste la versión <strong>v{signedVersion}</strong>.
+              Para continuar usando la plataforma necesitás aceptar la versión vigente.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Button className="w-full" onClick={() => navigate("/profesional/consentimiento")}>
+              <FileSignature className="h-4 w-4 mr-2" />
+              Firmar nueva versión (v{currentVersion})
+            </Button>
+            {signedPdfPath && (
+              <Button variant="outline" className="w-full" onClick={handleDownloadPrev} disabled={downloadingPrev}>
+                {downloadingPrev ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+                Descargar constancia previa (v{signedVersion})
+              </Button>
+            )}
+            <p className="text-xs text-muted-foreground pt-2 text-center">
+              Tu firma anterior queda archivada para auditoría.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
