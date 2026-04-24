@@ -64,6 +64,7 @@ const App = () => (
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
+              <Route path="/profesional/consentimiento" element={<ProfessionalRegistration />} />
               <Route path="/profesional/login" element={<ProfessionalLogin />} />
               <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

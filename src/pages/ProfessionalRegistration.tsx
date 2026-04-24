@@ -215,6 +215,24 @@ const ProfessionalRegistration = () => {
         { onConflict: "user_id", ignoreDuplicates: true } as any
       );
 
+      // Registro de auditoría: firma de consentimiento profesional
+      // Guardado en activity_log para trazabilidad clínica/ética y descarga desde panel admin.
+      await supabase.from("activity_log").insert({
+        user_id: user.id,
+        event_type: "professional_consent_signed",
+        event_detail: {
+          document_version: CONSENT_VERSION,
+          signed_at: new Date().toISOString(),
+          full_name: form.fullName.trim(),
+          dni: form.dni.trim(),
+          license_number: form.licenseNumber.trim(),
+          license_college: form.licenseCollege.trim(),
+          license_jurisdiction: form.licenseJurisdiction.trim(),
+          pdf_storage_path: path,
+          user_agent: navigator.userAgent,
+        } as any,
+      }).then();
+
       toast({
         title: "Registro completado",
         description:
