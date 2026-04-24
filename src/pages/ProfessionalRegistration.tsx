@@ -117,7 +117,7 @@ const ProfessionalRegistration = () => {
     y += 5;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.text(`Versión ${CONSENT_VERSION} — Documento firmado digitalmente`, margin, y);
+    doc.text(`Versión ${consentVersion} — Documento firmado digitalmente`, margin, y);
     y += 8;
 
     doc.setFontSize(10);
@@ -220,7 +220,7 @@ const ProfessionalRegistration = () => {
         license_college: form.licenseCollege.trim(),
         signature_typed: form.signatureName.trim(),
         pdf_storage_path: path,
-        document_version: CONSENT_VERSION,
+        document_version: consentVersion,
         user_agent: navigator.userAgent,
       } as any);
       if (consErr) throw consErr;
@@ -253,7 +253,7 @@ const ProfessionalRegistration = () => {
         user_id: user.id,
         event_type: "professional_consent_signed",
         event_detail: {
-          document_version: CONSENT_VERSION,
+          document_version: consentVersion,
           signed_at: new Date().toISOString(),
           full_name: form.fullName.trim(),
           dni: form.dni.trim(),
@@ -264,6 +264,41 @@ const ProfessionalRegistration = () => {
           user_agent: navigator.userAgent,
         } as any,
       }).then();
+
+      // Notificar al admin: nueva firma de consentimiento profesional.
+      // Incluye nombre, DNI parcializado, matrícula y enlace directo al panel admin.
+      try {
+        const { data: admins } = await supabase
+          .from("user_roles")
+          .select("user_id")
+          .eq("role", "admin");
+        const dniMasked = form.dni.trim().length >= 4
+          ? `••••${form.dni.trim().slice(-4)}`
+          : "••••";
+        if (admins && admins.length > 0) {
+          const notifications = admins.map((a: any) => ({
+            recipient_user_id: a.user_id,
+            notification_type: "professional_consent_signed",
+            title: "Nueva firma de consentimiento profesional",
+            message: `${form.fullName.trim()} (DNI ${dniMasked}, Mat. ${form.licenseNumber.trim()} — ${form.licenseJurisdiction.trim()}) firmó la versión ${consentVersion}.`,
+            related_table: "professional_consents",
+            related_record_id: null,
+            route: "/admin/dashboard?section=authorizations",
+            metadata: {
+              full_name: form.fullName.trim(),
+              dni_masked: dniMasked,
+              license_number: form.licenseNumber.trim(),
+              license_college: form.licenseCollege.trim(),
+              license_jurisdiction: form.licenseJurisdiction.trim(),
+              document_version: consentVersion,
+              signed_user_id: user.id,
+            },
+          }));
+          await supabase.from("app_notifications").insert(notifications as any);
+        }
+      } catch (notifErr) {
+        console.error("No se pudo notificar al admin:", notifErr);
+      }
 
       toast({
         title: "Registro completado",
