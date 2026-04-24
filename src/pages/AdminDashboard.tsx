@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
 import { AdminDashboardSixMetrics } from "@/components/admin/dashboard/AdminDashboardSixMetrics";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
@@ -17,7 +18,9 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminDashboard() {
-  const [activeSection, setActiveSection] = useState<AdminSection>("dashboard");
+  const [searchParams] = useSearchParams();
+  const initialSection = (searchParams.get("section") as AdminSection) || "dashboard";
+  const [activeSection, setActiveSection] = useState<AdminSection>(initialSection);
   const [pendingAuthCount, setPendingAuthCount] = useState(0);
 
   useEffect(() => {
