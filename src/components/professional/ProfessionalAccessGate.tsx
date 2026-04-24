@@ -1,9 +1,10 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { useProfessionalAccess } from "@/hooks/useProfessionalAccess";
 import { useAuth } from "@/hooks/useAuth";
+import { useConsentVersion } from "@/hooks/useConsentVersion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope } from "lucide-react";
+import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope, Download, RefreshCw } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -16,7 +17,15 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
   const { user, isApproved, isAdmin } = useAuth();
   const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
+  const {
+    loading: consentLoading,
+    consentOutdated,
+    currentVersion,
+    signedVersion,
+    signedPdfPath,
+  } = useConsentVersion();
   const [paying, setPaying] = useState(false);
+  const [downloadingPrev, setDownloadingPrev] = useState(false);
 
   // Auto-redirect a la pantalla unificada de consentimiento si está pendiente
   // (excepto admins, que pueden navegar libremente)
@@ -31,7 +40,7 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     }
   }, [loading, isAdmin, isProfessional, needsConsent, navigate]);
 
-  if (loading) {
+  if (loading || consentLoading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
   }
 
