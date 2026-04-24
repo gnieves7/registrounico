@@ -12,6 +12,7 @@ import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSugge
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
 import { AdminSubscriptionsSection } from "@/components/admin/dashboard/AdminSubscriptionsSection";
 import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
+import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
         {activeSection === "subscriptions" && <AdminSubscriptionsSection />}
         {activeSection === "activity" && <AdminActivitySection />}
+        {activeSection === "audit_consents" && <AdminAuditConsentsSection />}
         {activeSection === "tests" && <AdminTestsSection />}
         {activeSection === "reports" && <AdminReportsSection />}
         {activeSection === "notifications" && <AdminNotificationsSection />}

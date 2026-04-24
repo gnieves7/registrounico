@@ -20,6 +20,7 @@ import {
   ShieldAlert,
   CreditCard,
   Activity,
+  ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ export type AdminSection =
   | "authorizations"
   | "subscriptions"
   | "activity"
+  | "audit_consents"
   | "tests"
   | "reports"
   | "notifications"
@@ -55,6 +57,7 @@ const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType 
   { key: "authorizations", label: "Autorizaciones", icon: ShieldAlert },
   { key: "subscriptions", label: "Suscripciones", icon: CreditCard },
   { key: "activity", label: "Actividad", icon: Activity },
+  { key: "audit_consents", label: "Auditoría Consentimientos", icon: ShieldCheck },
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },
