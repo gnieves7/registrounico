@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -14,12 +14,41 @@ interface Props {
 
 export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
-  const { user, isApproved } = useAuth();
+  const { user, isApproved, isAdmin } = useAuth();
   const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
   const [paying, setPaying] = useState(false);
 
+  // Auto-redirect a la pantalla unificada de consentimiento si está pendiente
+  // (excepto admins, que pueden navegar libremente)
+  useEffect(() => {
+    if (loading) return;
+    if (isAdmin) return;
+    if (isProfessional && needsConsent) {
+      const here = window.location.pathname;
+      if (!here.startsWith("/profesional/consentimiento") && !here.startsWith("/profesional/registro")) {
+        navigate("/profesional/consentimiento", { replace: true });
+      }
+    }
+  }, [loading, isAdmin, isProfessional, needsConsent, navigate]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  }
+
+  // Admin siempre tiene acceso. Si visita rutas profesionales con consentimiento pendiente,
+  // mostramos un aviso de estado en banner pero no bloqueamos.
+  if (isAdmin) {
+    return (
+      <>
+        {isProfessional && needsConsent && (
+          <div className="bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-800 px-4 py-2 text-center text-xs text-amber-900 dark:text-amber-200 flex items-center justify-center gap-2">
+            <ShieldAlert className="h-3.5 w-3.5" />
+            Acceso administrativo — tu consentimiento profesional está pendiente de firma.
+          </div>
+        )}
+        {children ?? <Outlet />}
+      </>
+    );
   }
 
   if (!isProfessional || hasAccess) {
@@ -49,7 +78,7 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
   if (needsConsent) {
     return (
       <GateShell icon={<FileSignature className="h-6 w-6 text-primary" />} title="Consentimiento pendiente" description="Para continuar, necesitás completar el registro profesional y firmar el consentimiento informado (nombre completo + DNI).">
-        <Button className="w-full" onClick={() => navigate("/profesional/registro")}>Completar registro</Button>
+        <Button className="w-full" onClick={() => navigate("/profesional/consentimiento")}>Completar registro y firmar</Button>
         <Button variant="outline" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico</Button>
       </GateShell>
     );
