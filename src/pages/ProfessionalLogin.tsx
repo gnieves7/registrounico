@@ -8,12 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "@/hooks/use-toast";
 import { Loader2, ArrowLeft, Mail, Lock, ShieldCheck } from "lucide-react";
 import { PsiLogo } from "@/components/ui/PsiLogo";
+import { lovable } from "@/integrations/lovable/index";
 
 const ProfessionalLogin = () => {
   const { user, isLoading, isAdmin, signInWithEmail, signUpWithEmail } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [submitting, setSubmitting] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "", fullName: "" });
 
   useEffect(() => {
@@ -60,6 +62,28 @@ const ProfessionalLogin = () => {
       toast({ title: "Error", description: err.message || "Intentá nuevamente", variant: "destructive" });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/profesional/login`,
+      });
+      if (result.error) {
+        toast({
+          title: "No se pudo iniciar sesión con Google",
+          description: (result.error as any)?.message || "Intentá nuevamente.",
+          variant: "destructive",
+        });
+        setGoogleLoading(false);
+        return;
+      }
+      // Si redirige al proveedor, el navegador toma control. Si no, el useEffect maneja la redirección post-login.
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message || "Intentá nuevamente", variant: "destructive" });
+      setGoogleLoading(false);
     }
   };
 
