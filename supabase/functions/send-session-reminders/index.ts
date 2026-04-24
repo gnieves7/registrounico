@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Resend } from "npm:resend@2.0.0";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -164,7 +164,7 @@ const handler = async (req: Request): Promise<Response> => {
       try {
         const emailResponse = await resend.emails.send({
           from: "Recordatorios <noreply@tudominio.com>",
-          to: [patientProfile.email],
+          to: [patientProfile.email!],
           subject: `Recordatorio: Tu sesión es mañana - ${formattedDate}`,
           html: `
             <!DOCTYPE html>
@@ -193,7 +193,7 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         console.log(`Email sent successfully to ${patientProfile.email}:`, emailResponse);
-        emailResults.push({ sessionId: session.id, email: patientProfile.email, success: true, messageId: emailResponse.id });
+        emailResults.push({ sessionId: session.id, email: patientProfile.email, success: true, messageId: (emailResponse as any).data?.id ?? null });
       } catch (emailError: any) {
         console.error(`Failed to send email to ${patientProfile.email}:`, emailError);
         emailResults.push({ sessionId: session.id, email: patientProfile.email, success: false, error: emailError.message });
