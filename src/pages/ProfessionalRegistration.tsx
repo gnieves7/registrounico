@@ -12,13 +12,14 @@ import { toast } from "@/hooks/use-toast";
 import { ShieldCheck, FileSignature, Loader2, ArrowLeft, BadgeCheck, CheckCircle2 } from "lucide-react";
 import jsPDF from "jspdf";
 
-const CONSENT_VERSION = "1.0";
+const FALLBACK_CONSENT_VERSION = "1.0";
 
 const ProfessionalRegistration = () => {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
+  const [consentVersion, setConsentVersion] = useState<string>(FALLBACK_CONSENT_VERSION);
 
   const [form, setForm] = useState({
     fullName: "",
