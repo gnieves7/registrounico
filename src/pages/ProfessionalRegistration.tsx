@@ -66,8 +66,39 @@ const ProfessionalRegistration = () => {
         .maybeSingle()
         .then(({ data }) => {
           if ((data as any)?.account_type === "professional" && (data as any)?.consent_accepted_at) {
-            navigate("/dashboard");
+            // Si la versión vigente cambió respecto a la firmada, NO redirigir:
+            // permitir que el profesional firme la nueva versión.
+            supabase
+              .from("app_settings")
+              .select("value")
+              .eq("key", "consent_version")
+              .maybeSingle()
+              .then(async ({ data: setting }) => {
+                const current = ((setting as any)?.value || FALLBACK_CONSENT_VERSION).trim();
+                const { data: lastConsent } = await supabase
+                  .from("professional_consents")
+                  .select("document_version")
+                  .eq("user_id", user.id)
+                  .order("accepted_at", { ascending: false })
+                  .limit(1)
+                  .maybeSingle();
+                const signed = ((lastConsent as any)?.document_version || "").trim();
+                if (signed === current) {
+                  navigate("/dashboard");
+                }
+              });
           }
+        });
+
+      // Cargar la versión vigente del consentimiento desde app_settings.
+      supabase
+        .from("app_settings")
+        .select("value")
+        .eq("key", "consent_version")
+        .maybeSingle()
+        .then(({ data }) => {
+          const v = (data as any)?.value;
+          if (v && typeof v === "string") setConsentVersion(v.trim());
         });
     }
   }, [user, isLoading, navigate]);
