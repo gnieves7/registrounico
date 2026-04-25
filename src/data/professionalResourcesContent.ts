@@ -14,7 +14,8 @@ export type ResourceSection =
   | 'bibliography'
   | 'informed_consent'
   | 'report_models'
-  | 'testimony_psychology';
+  | 'testimony_psychology'
+  | 'psychological_autopsy';
 
 export interface AuthorRef {
   name: string;
@@ -227,5 +228,28 @@ export const RESOURCE_SECTIONS: SectionDefinition[] = [
     ],
     lauraContext:
       'El profesional consulta sobre psicología del testimonio (SVA/CBCA, NICHD, GSS, sugestionabilidad). Orientá distinguiendo evaluación de credibilidad (probabilística) de la determinación de verdad (judicial). Citá Lamb, Steller-Köhnken, Manzanero, Intebi y la normativa procesal de Santa Fe (Ley 12.734).',
+  },
+  {
+    id: 'psychological_autopsy',
+    number: '11',
+    title: 'Autopsia Psicológica',
+    shortTitle: 'Autopsia Psic.',
+    accentHsl: '348 60% 32%', // borravino profundo
+    introduction:
+      'La Autopsia Psicológica (AP) es un procedimiento pericial retrospectivo y multifuente que reconstruye el estado mental, los factores de riesgo y la trayectoria vital del fallecido en muertes equívocas, suicidios, homicidios sospechosos, accidentes con dudas y muertes en custodia. Articulada con el CPPN y el CPP Santa Fe (Ley 12.734), aporta indicadores probabilístico-orientativos al magistrado sin sustituir su determinación. La sección integra fundamentos tanatológicos y suicidológicos (Shneidman, Joiner, Baumeister), psicopatológicos (estudios AP que documentan trastorno mental en > 90 % de los suicidios consumados — Cavanagh et al., 2003) y metodológicos (triangulación, fiabilidad inter-jueces, sesgos retrospectivos — Hawton et al., 1998; Conner et al., 2011). Distinción crítica: el psicólogo no determina la modalidad legal de muerte (NASH); su informe debe explicitar fuentes, método y nivel de convergencia.',
+    authors: [
+      { name: 'Edwin S. Shneidman & Norman Farberow', contribution: 'Origen del término "autopsia psicológica" (Los Angeles Suicide Prevention Center, 1958). Suicidología moderna y psychache.' },
+      { name: 'Robert E. Litman', contribution: 'Sistematización del protocolo inicial de AP.' },
+      { name: 'Antoon A. Leenaars', contribution: 'AP y análisis de notas suicidas; reelaboración del modelo shneidmaniano.' },
+      { name: 'Diego De Leo', contribution: 'AP multicéntrica y crítica metodológica (Pouliot & De Leo, 2006).' },
+      { name: 'Keith Hawton (Oxford)', contribution: 'Revisión metodológica clásica; trastorno mental, métodos letales y restricción de medios.' },
+      { name: 'Danuta Wasserman', contribution: 'AP transcultural y prevención comunitaria del suicidio.' },
+      { name: 'Thomas Joiner', contribution: 'Teoría Interpersonal-Psicológica del suicidio (TIP).' },
+      { name: 'Teresita García Pérez (Cuba)', contribution: 'Modelo de Autopsia Psicológica Integrada con fines forenses (MAPI).' },
+      { name: 'Sergio Pérez Barrero (Cuba)', contribution: 'Suicidología hispanoamericana; manuales de prevención y AP.' },
+      { name: 'Línea argentina (CONICET / UBA / UNLP)', contribution: 'Aportes locales en suicidología y peritaje psicológico forense.' },
+    ],
+    lauraContext:
+      'El profesional consulta sobre Autopsia Psicológica forense. Orientá desde Shneidman, Joiner, Hawton y la línea cubano-latinoamericana (García Pérez — MAPI). Subrayá la distinción entre indicadores probabilístico-orientativos y la determinación judicial de modalidad de muerte (NASH). Citá Ley 27.130, Ley 26.657 y CPP Santa Fe (Ley 12.734).',
   },
 ];
