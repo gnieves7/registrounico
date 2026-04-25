@@ -53,6 +53,7 @@ import {
 import { TestimonyPsychologyExtended } from "@/components/forensic/TestimonyPsychologyExtended";
 import { PsychologicalAutopsyExtended } from "@/components/forensic/PsychologicalAutopsyExtended";
 import { useUserRole } from "@/hooks/useUserRole";
+import { SessionProposalWidget } from "@/components/patient/SessionProposalWidget";
 import { Info } from "lucide-react";
 
 const ROLE_BADGES: Record<ProfessionalResource["role_tag"], { label: string; className: string }> = {
@@ -322,6 +323,14 @@ export default function Forensic() {
                   </div>
                 </div>
               </Card>
+            )}
+
+            {/* Widget para pacientes: dejar tema/pregunta para próxima sesión */}
+            {isPatient && (
+              <SessionProposalWidget
+                sectionKey={section.id}
+                sectionLabel={`Acompañar · ${section.shortTitle}`}
+              />
             )}
 
             {/* Resources list */}

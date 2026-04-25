@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { getStoredSystemArea, systemBranding } from "@/lib/systemBranding";
 import { useActiveSchool } from "@/hooks/useActiveSchool";
 import { MENU_BY_SCHOOL, SCHOOL_HEADER } from "@/config/menuBySchool";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
@@ -74,6 +75,20 @@ const acompanarMenuItems = [
   { title: "Informes", url: "/documents", icon: FileText },
 ];
 
+/**
+ * URLs del módulo Acompañar que están reservadas a profesionales.
+ * Los pacientes no las ven en el sidebar y, si llegan por URL directa,
+ * la propia página les muestra una versión informativa simplificada
+ * (ver `Forensic.tsx` y `useUserRole`).
+ */
+const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
+  "/forensic/protocols",
+  "/forensic/bibliography",
+  "/forensic/informed_consent",
+  "/forensic/report_models",
+  "/judicial-case",
+]);
+
 const hiddenByArea: Record<string, string[]> = {
   reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell", "/judicial-case"],
   evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
@@ -121,6 +136,7 @@ export function AppSidebar() {
   const { isDemoMode, demoProfile, exitDemoMode } = useDemoMode();
   const [pendingCount, setPendingCount] = useState(0);
   const { schoolId } = useActiveSchool();
+  const { isPatient } = useUserRole();
 
   const currentPath = location.pathname;
   const currentArea = getStoredSystemArea();
@@ -136,6 +152,13 @@ export function AppSidebar() {
     const hidden = hiddenByArea["reflexionar"] || [];
     return items.filter((item) => !hidden.includes(item.url));
   }, [useSchoolMenu, schoolId]);
+
+  // Filtra del menú lateral los enlaces a recursos técnicos cuando el usuario es paciente.
+  const filteredFallbackItems = useMemo(() => {
+    const items = getFilteredMenuItems();
+    if (!isPatient) return items;
+    return items.filter((item) => !PROFESSIONAL_ONLY_FORENSIC_URLS.has(item.url));
+  }, [isPatient, currentArea]);
 
   const headerSubtitle = useMemo(() => {
     if (useSchoolMenu && SCHOOL_HEADER[schoolId]) {
@@ -244,7 +267,7 @@ export function AppSidebar() {
                   ))
                 ) : (
                   // Fallback menu
-                  getFilteredMenuItems().map((item) => (
+                  filteredFallbackItems.map((item) => (
                     <SidebarMenuItem key={item.url}>
                       <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                         <NavLink

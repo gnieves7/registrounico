@@ -18,6 +18,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NotificationCenter } from "./NotificationCenter";
+import { SessionProposalFloating } from "@/components/patient/SessionProposalFloating";
 
 const routeLabels: Record<string, string> = {
   "/dashboard": "Inicio",
@@ -155,6 +156,7 @@ export function AppLayout() {
           </main>
 
           <Footer />
+          <SessionProposalFloating />
         </SidebarInset>
         </div>
       </div>

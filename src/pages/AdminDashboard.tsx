@@ -10,6 +10,7 @@ import { AdminReportsSection } from "@/components/admin/dashboard/AdminReportsSe
 import { AdminNotificationsSection } from "@/components/admin/dashboard/AdminNotificationsSection";
 import { AdminSettingsSection } from "@/components/admin/dashboard/AdminSettingsSection";
 import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSuggestionsSection";
+import { AdminPatientProposalsSection } from "@/components/admin/dashboard/AdminPatientProposalsSection";
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
 import { AdminSubscriptionsSection } from "@/components/admin/dashboard/AdminSubscriptionsSection";
 import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
@@ -58,6 +59,7 @@ export default function AdminDashboard() {
         {activeSection === "tests" && <AdminTestsSection />}
         {activeSection === "reports" && <AdminReportsSection />}
         {activeSection === "notifications" && <AdminNotificationsSection />}
+        {activeSection === "patient_proposals" && <AdminPatientProposalsSection />}
         {activeSection === "suggestions" && <AdminSuggestionsSection />}
         {activeSection === "settings" && <AdminSettingsSection />}
       </AdminDashboardLayout>
