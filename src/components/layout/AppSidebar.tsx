@@ -6,7 +6,7 @@ import {
   Thermometer, BookOpen, Network, Handshake, Clock, ClipboardList,
   BarChart3, Eye, Award, Send, Gavel, BookMarked, AlertOctagon, ShieldAlert,
   HeartHandshake, MessageSquare, Mic, FileSignature, FileCheck2,
-  Lightbulb,
+  Lightbulb, MessageCircleQuestion, Skull,
 } from "lucide-react";
 import logoPsi from "@/assets/logo_psi.png";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -66,6 +66,8 @@ const acompanarMenuItems = [
   { title: "Sospecha de Abuso Sexual", url: "/forensic/sexual_abuse", icon: ShieldAlert },
   { title: "Régimen Comunicacional", url: "/forensic/communication_regime", icon: MessageSquare },
   { title: "Consejos para Audiencias", url: "/forensic/audience_tips", icon: Mic },
+  { title: "Psicología del Testimonio", url: "/forensic/testimony_psychology", icon: MessageCircleQuestion },
+  { title: "Autopsia Psicológica", url: "/forensic/psychological_autopsy", icon: Skull },
   { title: "Bibliografía Recomendada", url: "/forensic/bibliography", icon: BookMarked },
   { title: "Consentimiento Informado", url: "/forensic/informed_consent", icon: FileSignature },
   { title: "Modelos de Informes", url: "/forensic/report_models", icon: FileText },
