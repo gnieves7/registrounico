@@ -52,6 +52,8 @@ import {
 } from "@/hooks/useProfessionalResources";
 import { TestimonyPsychologyExtended } from "@/components/forensic/TestimonyPsychologyExtended";
 import { PsychologicalAutopsyExtended } from "@/components/forensic/PsychologicalAutopsyExtended";
+import { useUserRole } from "@/hooks/useUserRole";
+import { Info } from "lucide-react";
 
 const ROLE_BADGES: Record<ProfessionalResource["role_tag"], { label: string; className: string }> = {
   clinical: { label: "Clínica", className: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-300" },
@@ -70,6 +72,7 @@ export default function Forensic() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { section: sectionParam } = useParams<{ section?: string }>();
+  const { isPatient, loading: roleLoading } = useUserRole();
   const initial = (RESOURCE_SECTIONS.find((s) => s.id === sectionParam)?.id ?? "protocols") as ResourceSection;
   const [activeSection, setActiveSection] = useState<ResourceSection>(initial);
   const [search, setSearch] = useState("");
@@ -91,7 +94,12 @@ export default function Forensic() {
 
     return RESOURCE_SECTIONS.reduce<Record<ResourceSection, ProfessionalResource[]>>(
       (acc, sec) => {
-        const items = resources.filter((r) => r.section === sec.id);
+        const items = resources.filter((r) => {
+          if (r.section !== sec.id) return false;
+          // Pacientes solo ven recursos clínicos divulgativos
+          if (isPatient && r.role_tag !== "clinical") return false;
+          return true;
+        });
         acc[sec.id] = q
           ? items.filter((r) =>
               [r.title, r.description, r.author, r.source]
@@ -103,7 +111,7 @@ export default function Forensic() {
       },
       {} as Record<ResourceSection, ProfessionalResource[]>
     );
-  }, [resources, search]);
+  }, [resources, search, isPatient]);
 
   const handleOpenPdf = async (resource: ProfessionalResource) => {
     if (!resource.storage_path) return;
@@ -290,10 +298,31 @@ export default function Forensic() {
             </Card>
 
             {/* Extended content for testimony psychology */}
-            {section.id === "testimony_psychology" && <TestimonyPsychologyExtended />}
+            {section.id === "testimony_psychology" && (
+              <TestimonyPsychologyExtended viewMode={isPatient ? "patient" : "professional"} />
+            )}
 
             {/* Extended content for psychological autopsy */}
-            {section.id === "psychological_autopsy" && <PsychologicalAutopsyExtended />}
+            {section.id === "psychological_autopsy" && (
+              <PsychologicalAutopsyExtended viewMode={isPatient ? "patient" : "professional"} />
+            )}
+
+            {/* Aviso para pacientes en secciones técnicas */}
+            {isPatient && (section.id === "testimony_psychology" || section.id === "psychological_autopsy") && (
+              <Card className="border border-primary/20 bg-primary/5 p-4">
+                <div className="flex items-start gap-2.5">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  <div className="space-y-1 text-xs text-foreground/80 md:text-sm">
+                    <p className="font-medium">Vista informativa</p>
+                    <p>
+                      Estás viendo una versión divulgativa de esta sección. Los instrumentos
+                      técnicos, plantillas periciales y descargas profesionales están reservados
+                      al equipo clínico-forense.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
             {/* Resources list */}
             <Card className="p-4 md:p-5">

@@ -65,7 +65,14 @@ interface PendingDownload {
   label: string;
 }
 
-export const TestimonyPsychologyExtended = () => {
+interface TestimonyPsychologyExtendedProps {
+  viewMode?: 'patient' | 'professional';
+}
+
+export const TestimonyPsychologyExtended = ({
+  viewMode = 'professional',
+}: TestimonyPsychologyExtendedProps = {}) => {
+  const isPatientView = viewMode === 'patient';
   const { profile } = useAuth();
   const [pending, setPending] = useState<PendingDownload | null>(null);
   const [fullName, setFullName] = useState(profile?.full_name ?? '');
@@ -141,6 +148,9 @@ export const TestimonyPsychologyExtended = () => {
         </Accordion>
       </Card>
 
+      {/* Bloques técnicos para profesionales: investigaciones e instrumentos */}
+      {!isPatientView && (
+      <>
       {/* [4] Investigaciones relevantes */}
       <Card className="p-4 md:p-5">
         <h3 className="mb-4 flex items-center gap-2 text-base font-semibold md:text-lg">
@@ -312,6 +322,8 @@ export const TestimonyPsychologyExtended = () => {
           </div>
         </div>
       </Card>
+      </>
+      )}
 
       {/* Marco normativo Santa Fe */}
       <Card className="border-l-4 p-4 md:p-5" style={{ borderLeftColor: `hsl(${ACCENT})` }}>
@@ -364,7 +376,8 @@ export const TestimonyPsychologyExtended = () => {
         </ul>
       </Card>
 
-      {/* [6] Plantillas de fichas */}
+      {/* [6] Plantillas de fichas (exclusivas del profesional) */}
+      {!isPatientView && (
       <Card className="p-4 md:p-5">
         <h3 className="mb-4 flex items-center gap-2 text-base font-semibold md:text-lg">
           <ClipboardList className="h-5 w-5" style={{ color: `hsl(${ACCENT})` }} />
@@ -514,6 +527,7 @@ export const TestimonyPsychologyExtended = () => {
           </AccordionItem>
         </Accordion>
       </Card>
+      )}
 
       {/* Aviso epistemológico repetido al final */}
       <Card className="flex items-start gap-3 border-amber-500/40 bg-amber-500/5 p-4 text-xs md:text-sm">
@@ -527,12 +541,15 @@ export const TestimonyPsychologyExtended = () => {
         </p>
       </Card>
 
+      {!isPatientView && (
       <p className="text-center text-[11px] italic text-muted-foreground">
         <BookOpen className="mr-1 inline h-3 w-3" />
         Referencias bibliográficas detalladas disponibles en la sección
         "Documentos y enlaces".
       </p>
+      )}
 
+      {!isPatientView && (
       <Dialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -605,6 +622,7 @@ export const TestimonyPsychologyExtended = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      )}
     </div>
   );
 };
