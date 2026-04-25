@@ -50,6 +50,7 @@ import {
   useProfessionalResources,
   type ProfessionalResource,
 } from "@/hooks/useProfessionalResources";
+import { TestimonyPsychologyExtended } from "@/components/forensic/TestimonyPsychologyExtended";
 
 const ROLE_BADGES: Record<ProfessionalResource["role_tag"], { label: string; className: string }> = {
   clinical: { label: "Clínica", className: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-300" },
