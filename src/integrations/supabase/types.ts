@@ -1797,6 +1797,8 @@ export type Database = {
           rejected_at: string | null
           responded_at: string | null
           responded_by: string | null
+          section_key: string | null
+          section_label: string | null
           status: string
           title: string
           updated_at: string
@@ -1813,6 +1815,8 @@ export type Database = {
           rejected_at?: string | null
           responded_at?: string | null
           responded_by?: string | null
+          section_key?: string | null
+          section_label?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -1829,6 +1833,8 @@ export type Database = {
           rejected_at?: string | null
           responded_at?: string | null
           responded_by?: string | null
+          section_key?: string | null
+          section_label?: string | null
           status?: string
           title?: string
           updated_at?: string
