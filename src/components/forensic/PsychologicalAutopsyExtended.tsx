@@ -5,6 +5,19 @@
  */
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Accordion,
   AccordionContent,
@@ -21,6 +34,7 @@ import {
   FileText,
   Users,
   ShieldAlert,
+  Download,
 } from 'lucide-react';
 import {
   AP_OVERVIEW,
@@ -31,15 +45,77 @@ import {
   AP_BIBLIOGRAPHY,
   AP_ETHICS,
 } from '@/data/psychologicalAutopsyContent';
+import { useAuth } from '@/hooks/useAuth';
+import { downloadPsychologicalAutopsyPdf } from '@/lib/pdf/psychologicalAutopsyPdf';
+import { toast } from 'sonner';
 
 const ACCENT = '348 60% 32%';
 
 export const PsychologicalAutopsyExtended = () => {
+  const { profile } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [fullName, setFullName] = useState(profile?.full_name ?? '');
+  const [license, setLicense] = useState('');
+  const [role, setRole] = useState('Perito de parte');
+  const [accepted, setAccepted] = useState(false);
+
+  const openDialog = () => {
+    setFullName(profile?.full_name ?? '');
+    setAccepted(false);
+    setOpen(true);
+  };
+
+  const confirmDownload = () => {
+    if (!fullName.trim() || !license.trim() || !accepted) {
+      toast.error('Completá nombre, matrícula y aceptación de uso orientativo');
+      return;
+    }
+    try {
+      downloadPsychologicalAutopsyPdf({
+        professionalName: fullName.trim(),
+        professionalLicense: license.trim(),
+        professionalRole: role.trim() || null,
+        professionalCollege: 'Colegio de Psicólogos de la Provincia de Santa Fe',
+      });
+      toast.success('Compendio de Autopsia Psicológica descargado');
+      setOpen(false);
+    } catch (e) {
+      console.error(e);
+      toast.error('No se pudo generar el PDF');
+    }
+  };
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" role="region" aria-label="Sección Autopsia Psicológica">
+      {/* Acción principal: descarga del compendio */}
+      <Card className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-sm font-semibold">Compendio académico-pericial completo</p>
+          <p className="text-xs text-muted-foreground">
+            Descargá el contenido íntegro de la sección en PDF, con tu identidad
+            profesional y pie de página con aviso ético orientativo.
+          </p>
+        </div>
+        <Button
+          onClick={openDialog}
+          className="gap-1.5"
+          aria-label="Descargar compendio de Autopsia Psicológica en PDF"
+        >
+          <Download className="h-4 w-4" aria-hidden="true" />
+          Descargar compendio en PDF
+        </Button>
+      </Card>
+
       {/* Aviso epistemológico */}
-      <Card className="flex items-start gap-3 border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+      <Card
+        role="note"
+        aria-label="Aviso epistemológico"
+        className="flex items-start gap-3 border-amber-500/40 bg-amber-500/5 p-4 text-sm"
+      >
+        <AlertTriangle
+          className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400"
+          aria-hidden="true"
+        />
         <p className="text-amber-900 dark:text-amber-200">
           <strong>Distinción crítica:</strong> la Autopsia Psicológica aporta
           indicadores <em>probabilístico-orientativos</em> sobre el estado
@@ -306,10 +382,83 @@ export const PsychologicalAutopsyExtended = () => {
       </Card>
 
       <p className="text-center text-[11px] italic text-muted-foreground">
-        <BookOpen className="mr-1 inline h-3 w-3" />
+        <BookOpen className="mr-1 inline h-3 w-3" aria-hidden="true" />
         Referencias bibliográficas adicionales y enlaces verificables disponibles
         en la sección "Documentos y enlaces".
       </p>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Datos del profesional firmante</DialogTitle>
+            <DialogDescription>
+              Estos datos se incorporarán al pie del compendio PDF de Autopsia
+              Psicológica. Confirmá la aceptación del uso probabilístico-orientativo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="ap-pdf-name">Nombre y apellido</Label>
+              <Input
+                id="ap-pdf-name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Lic. Nombre Apellido"
+                autoFocus
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="ap-pdf-license">Matrícula profesional</Label>
+              <Input
+                id="ap-pdf-license"
+                value={license}
+                onChange={(e) => setLicense(e.target.value)}
+                placeholder="Mat. ___ — Colegio de Psicólogos Santa Fe"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="ap-pdf-role">Rol pericial</Label>
+              <Input
+                id="ap-pdf-role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Perito de parte / Consultor técnico / Perito oficial"
+              />
+            </div>
+            <label
+              htmlFor="ap-pdf-accept"
+              className="flex cursor-pointer items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200"
+            >
+              <Checkbox
+                id="ap-pdf-accept"
+                checked={accepted}
+                onCheckedChange={(v) => setAccepted(v === true)}
+                className="mt-0.5"
+              />
+              <span>
+                Declaro conocer que la Autopsia Psicológica rinde indicadores{' '}
+                <strong>probabilístico-orientativos</strong> y que la
+                determinación de la modalidad legal de muerte (NASH) corresponde
+                exclusivamente al órgano jurisdiccional (CPP Santa Fe — Ley 12.734).
+              </span>
+            </label>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={confirmDownload}
+              disabled={!fullName.trim() || !license.trim() || !accepted}
+              className="gap-1.5"
+              aria-label="Generar y descargar PDF firmado"
+            >
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Generar PDF firmado
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
