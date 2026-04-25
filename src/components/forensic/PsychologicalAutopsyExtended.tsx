@@ -51,7 +51,14 @@ import { toast } from 'sonner';
 
 const ACCENT = '348 60% 32%';
 
-export const PsychologicalAutopsyExtended = () => {
+interface PsychologicalAutopsyExtendedProps {
+  viewMode?: 'patient' | 'professional';
+}
+
+export const PsychologicalAutopsyExtended = ({
+  viewMode = 'professional',
+}: PsychologicalAutopsyExtendedProps) => {
+  const isPatientView = viewMode === 'patient';
   const { profile } = useAuth();
   const [open, setOpen] = useState(false);
   const [fullName, setFullName] = useState(profile?.full_name ?? '');
@@ -87,7 +94,8 @@ export const PsychologicalAutopsyExtended = () => {
 
   return (
     <div className="space-y-5" role="region" aria-label="Sección Autopsia Psicológica">
-      {/* Acción principal: descarga del compendio */}
+      {/* Acción principal: descarga del compendio (solo profesionales) */}
+      {!isPatientView && (
       <Card className="flex flex-col gap-3 p-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm font-semibold">Compendio académico-pericial completo</p>
@@ -105,6 +113,7 @@ export const PsychologicalAutopsyExtended = () => {
           Descargar compendio en PDF
         </Button>
       </Card>
+      )}
 
       {/* Aviso epistemológico */}
       <Card
@@ -209,6 +218,9 @@ export const PsychologicalAutopsyExtended = () => {
         </Accordion>
       </Card>
 
+      {/* Bloques 3–6: técnicos, exclusivos del profesional */}
+      {!isPatientView && (
+      <>
       {/* 3. Referentes */}
       <Card className="p-4 md:p-5">
         <h3 className="mb-4 flex items-center gap-2 text-base font-semibold md:text-lg">
@@ -344,6 +356,8 @@ export const PsychologicalAutopsyExtended = () => {
           </div>
         </div>
       </Card>
+      </>
+      )}
 
       {/* Marco normativo Santa Fe */}
       <Card className="border-l-4 p-4 md:p-5" style={{ borderLeftColor: `hsl(${ACCENT})` }}>
@@ -372,7 +386,8 @@ export const PsychologicalAutopsyExtended = () => {
         </ul>
       </Card>
 
-      {/* Ética */}
+      {/* Ética profesional (oculta para pacientes) */}
+      {!isPatientView && (
       <Card className="border-l-4 border-l-amber-500 p-4 md:p-5">
         <h3 className="mb-3 flex items-center gap-2 text-base font-semibold md:text-lg">
           <ShieldAlert className="h-5 w-5 text-amber-600 dark:text-amber-400" />
@@ -380,13 +395,17 @@ export const PsychologicalAutopsyExtended = () => {
         </h3>
         <p className="text-sm leading-relaxed text-muted-foreground">{AP_ETHICS}</p>
       </Card>
+      )}
 
+      {!isPatientView && (
       <p className="text-center text-[11px] italic text-muted-foreground">
         <BookOpen className="mr-1 inline h-3 w-3" aria-hidden="true" />
         Referencias bibliográficas adicionales y enlaces verificables disponibles
         en la sección "Documentos y enlaces".
       </p>
+      )}
 
+      {!isPatientView && (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -459,6 +478,7 @@ export const PsychologicalAutopsyExtended = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      )}
     </div>
   );
 };
