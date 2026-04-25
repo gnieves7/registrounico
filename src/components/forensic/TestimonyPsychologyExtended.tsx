@@ -26,7 +26,10 @@ import {
   ClipboardList,
   AlertTriangle,
   CheckCircle2,
+  Download,
+  Scale,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   TESTIMONY_THEORY,
   TESTIMONY_RESEARCH,
@@ -36,10 +39,31 @@ import {
   TESTIMONY_INSTRUMENTS,
   FORM_TEMPLATES,
 } from '@/data/testimonyPsychologyContent';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  downloadTestimonyTemplate,
+  type TestimonyTemplateKind,
+} from '@/lib/pdf/testimonyTemplatesPdf';
+import { toast } from 'sonner';
 
 const ACCENT = '244 55% 38%';
 
 export const TestimonyPsychologyExtended = () => {
+  const { profile } = useAuth();
+
+  const handleDownload = (kind: TestimonyTemplateKind, label: string) => {
+    try {
+      downloadTestimonyTemplate(kind, {
+        professionalName: profile?.full_name ?? null,
+        professionalCollege: 'Colegio de Psicólogos de la Provincia de Santa Fe',
+      });
+      toast.success(`${label} descargada`);
+    } catch (e) {
+      console.error(e);
+      toast.error('No se pudo generar el PDF');
+    }
+  };
+
   return (
     <div className="space-y-5">
       {/* Aviso epistemológico */}
@@ -49,7 +73,8 @@ export const TestimonyPsychologyExtended = () => {
           <strong>Distinción crítica:</strong> el psicólogo evalúa indicadores
           de credibilidad con valor <em>probabilístico-orientativo</em>, nunca
           diagnóstico absoluto. La determinación de la verdad procesal
-          corresponde exclusivamente al órgano judicial.
+          corresponde exclusivamente al órgano judicial (CPP Santa Fe — Ley
+          12.734).
         </p>
       </Card>
 
@@ -252,12 +277,72 @@ export const TestimonyPsychologyExtended = () => {
         </div>
       </Card>
 
+      {/* Marco normativo Santa Fe */}
+      <Card className="border-l-4 p-4 md:p-5" style={{ borderLeftColor: `hsl(${ACCENT})` }}>
+        <h3 className="mb-3 flex items-center gap-2 text-base font-semibold md:text-lg">
+          <Scale className="h-5 w-5" style={{ color: `hsl(${ACCENT})` }} />
+          Marco normativo procesal — Provincia de Santa Fe
+        </h3>
+        <ul className="space-y-2 text-sm">
+          <li>
+            <a
+              href="https://www.santafe.gov.ar/normativa/getFile.php?id=219070&item=109564&cod=2c1c4afc8b8f9bcf1c8b9ad5cf6a86b1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Ley provincial 12.734 — Código Procesal Penal de Santa Fe
+            </a>
+            <p className="text-xs text-muted-foreground">
+              Encuadre del peritaje psicológico, prueba pericial y resguardos
+              para testigos vulnerables.
+            </p>
+          </li>
+          <li>
+            <a
+              href="https://www.santafe.gob.ar/normativa/item.php?id=109563&cod=cffd80a3a4d2b5a55fb12e0d47c8a58a"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Código Procesal Civil y Comercial (CPCC) Santa Fe
+            </a>
+            <p className="text-xs text-muted-foreground">
+              Régimen pericial en fueros civil, familia y laboral.
+            </p>
+          </li>
+          <li>
+            <a
+              href="https://www.mpa.santafe.gov.ar/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary underline-offset-2 hover:underline"
+            >
+              Resolución MPA 147/2020 — 100 Reglas de Brasilia (víctimas vulnerables)
+            </a>
+            <p className="text-xs text-muted-foreground">
+              Estándares reforzados para entrevistas a NNyA, personas con
+              discapacidad y víctimas de violencia de género.
+            </p>
+          </li>
+        </ul>
+      </Card>
+
       {/* [6] Plantillas de fichas */}
       <Card className="p-4 md:p-5">
         <h3 className="mb-4 flex items-center gap-2 text-base font-semibold md:text-lg">
           <ClipboardList className="h-5 w-5" style={{ color: `hsl(${ACCENT})` }} />
           Planillas y fichas profesionales
         </h3>
+
+        <div className="mb-4 flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <p>
+            Las plantillas son <strong>instrumentos de registro orientativos</strong>;
+            los resultados deben interpretarse en clave probabilística y nunca
+            sustituyen la valoración judicial.
+          </p>
+        </div>
 
         <Accordion type="multiple" className="w-full">
           {/* Ficha CBCA */}
@@ -269,6 +354,14 @@ export const TestimonyPsychologyExtended = () => {
               <p className="text-sm text-muted-foreground">
                 {FORM_TEMPLATES.cbcaForm.description}
               </p>
+              <Button
+                size="sm"
+                onClick={() => handleDownload('cbca', 'Ficha CBCA')}
+                className="gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Descargar ficha en PDF
+              </Button>
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
@@ -320,6 +413,14 @@ export const TestimonyPsychologyExtended = () => {
               <p className="text-sm text-muted-foreground">
                 {FORM_TEMPLATES.validityChecklist.description}
               </p>
+              <Button
+                size="sm"
+                onClick={() => handleDownload('validity', 'Checklist SVA')}
+                className="gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Descargar checklist en PDF
+              </Button>
               <div className="space-y-3">
                 {SVA_VALIDITY_CHECKLIST.map((block) => (
                   <div key={block.section} className="rounded-md border border-border p-3">
@@ -349,6 +450,14 @@ export const TestimonyPsychologyExtended = () => {
               <p className="text-sm text-muted-foreground">
                 {FORM_TEMPLATES.reportSynthesis.description}
               </p>
+              <Button
+                size="sm"
+                onClick={() => handleDownload('report', 'Informe-síntesis')}
+                className="gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Descargar plantilla de informe en PDF
+              </Button>
               <ol className="space-y-2">
                 {TESTIMONY_REPORT_TEMPLATE.map((s, i) => (
                   <li
@@ -365,6 +474,18 @@ export const TestimonyPsychologyExtended = () => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+      </Card>
+
+      {/* Aviso epistemológico repetido al final */}
+      <Card className="flex items-start gap-3 border-amber-500/40 bg-amber-500/5 p-4 text-xs md:text-sm">
+        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+        <p className="text-amber-900 dark:text-amber-200">
+          <strong>Recordatorio ético:</strong> SVA, CBCA y GSS rinden indicadores
+          probabilístico-orientativos. No corresponden al psicólogo
+          pronunciamientos sobre verdad/falsedad de los hechos investigados;
+          esa función es exclusivamente jurisdiccional (CPP Santa Fe — Ley
+          12.734; Código de Ética FePRA).
+        </p>
       </Card>
 
       <p className="text-center text-[11px] italic text-muted-foreground">
