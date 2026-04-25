@@ -325,6 +325,14 @@ export default function Forensic() {
               </Card>
             )}
 
+            {/* Widget para pacientes: dejar tema/pregunta para próxima sesión */}
+            {isPatient && (
+              <SessionProposalWidget
+                sectionKey={section.id}
+                sectionLabel={`Acompañar · ${section.shortTitle}`}
+              />
+            )}
+
             {/* Resources list */}
             <Card className="p-4 md:p-5">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold md:text-base">
