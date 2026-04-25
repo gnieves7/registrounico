@@ -4,6 +4,18 @@
  */
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Accordion,
   AccordionContent,
@@ -48,16 +60,40 @@ import { toast } from 'sonner';
 
 const ACCENT = '244 55% 38%';
 
+interface PendingDownload {
+  kind: TestimonyTemplateKind;
+  label: string;
+}
+
 export const TestimonyPsychologyExtended = () => {
   const { profile } = useAuth();
+  const [pending, setPending] = useState<PendingDownload | null>(null);
+  const [fullName, setFullName] = useState(profile?.full_name ?? '');
+  const [license, setLicense] = useState('');
+  const [role, setRole] = useState('Perito de parte');
+  const [accepted, setAccepted] = useState(false);
 
-  const handleDownload = (kind: TestimonyTemplateKind, label: string) => {
+  const openDownloadDialog = (kind: TestimonyTemplateKind, label: string) => {
+    setFullName(profile?.full_name ?? '');
+    setAccepted(false);
+    setPending({ kind, label });
+  };
+
+  const confirmDownload = () => {
+    if (!pending) return;
+    if (!fullName.trim() || !license.trim() || !accepted) {
+      toast.error('Completá nombre, matrícula y aceptación de uso orientativo');
+      return;
+    }
     try {
-      downloadTestimonyTemplate(kind, {
-        professionalName: profile?.full_name ?? null,
+      downloadTestimonyTemplate(pending.kind, {
+        professionalName: fullName.trim(),
+        professionalLicense: license.trim(),
+        professionalRole: role.trim() || null,
         professionalCollege: 'Colegio de Psicólogos de la Provincia de Santa Fe',
       });
-      toast.success(`${label} descargada`);
+      toast.success(`${pending.label} descargada`);
+      setPending(null);
     } catch (e) {
       console.error(e);
       toast.error('No se pudo generar el PDF');
@@ -356,8 +392,9 @@ export const TestimonyPsychologyExtended = () => {
               </p>
               <Button
                 size="sm"
-                onClick={() => handleDownload('cbca', 'Ficha CBCA')}
+                onClick={() => openDownloadDialog('cbca', 'Ficha CBCA')}
                 className="gap-1.5"
+                aria-label="Descargar Ficha CBCA en formato PDF"
               >
                 <Download className="h-3.5 w-3.5" />
                 Descargar ficha en PDF
@@ -415,8 +452,9 @@ export const TestimonyPsychologyExtended = () => {
               </p>
               <Button
                 size="sm"
-                onClick={() => handleDownload('validity', 'Checklist SVA')}
+                onClick={() => openDownloadDialog('validity', 'Checklist SVA')}
                 className="gap-1.5"
+                aria-label="Descargar Checklist de Validez SVA en formato PDF"
               >
                 <Download className="h-3.5 w-3.5" />
                 Descargar checklist en PDF
@@ -452,8 +490,9 @@ export const TestimonyPsychologyExtended = () => {
               </p>
               <Button
                 size="sm"
-                onClick={() => handleDownload('report', 'Informe-síntesis')}
+                onClick={() => openDownloadDialog('report', 'Informe-síntesis')}
                 className="gap-1.5"
+                aria-label="Descargar plantilla de Informe-síntesis en formato PDF"
               >
                 <Download className="h-3.5 w-3.5" />
                 Descargar plantilla de informe en PDF
@@ -493,6 +532,79 @@ export const TestimonyPsychologyExtended = () => {
         Referencias bibliográficas detalladas disponibles en la sección
         "Documentos y enlaces".
       </p>
+
+      <Dialog open={!!pending} onOpenChange={(o) => !o && setPending(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Datos del profesional firmante</DialogTitle>
+            <DialogDescription>
+              Estos datos se incorporarán al pie del PDF de{' '}
+              <strong>{pending?.label}</strong>. Confirmá la aceptación del uso
+              probabilístico-orientativo del instrumento.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label htmlFor="pdf-name">Nombre y apellido</Label>
+              <Input
+                id="pdf-name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Lic. Nombre Apellido"
+                autoFocus
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pdf-license">Matrícula profesional</Label>
+              <Input
+                id="pdf-license"
+                value={license}
+                onChange={(e) => setLicense(e.target.value)}
+                placeholder="Mat. ___ — Colegio de Psicólogos Santa Fe"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="pdf-role">Rol pericial</Label>
+              <Input
+                id="pdf-role"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                placeholder="Perito de parte / Consultor técnico / Perito oficial"
+              />
+            </div>
+            <label
+              htmlFor="pdf-accept"
+              className="flex cursor-pointer items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-900 dark:text-amber-200"
+            >
+              <Checkbox
+                id="pdf-accept"
+                checked={accepted}
+                onCheckedChange={(v) => setAccepted(v === true)}
+                className="mt-0.5"
+              />
+              <span>
+                Declaro conocer que SVA/CBCA/GSS rinden indicadores{' '}
+                <strong>probabilístico-orientativos</strong> y que la
+                determinación de verdad/falsedad corresponde exclusivamente al
+                órgano jurisdiccional (CPP Santa Fe — Ley 12.734).
+              </span>
+            </label>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setPending(null)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={confirmDownload}
+              disabled={!fullName.trim() || !license.trim() || !accepted}
+              className="gap-1.5"
+            >
+              <Download className="h-4 w-4" />
+              Generar PDF firmado
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
