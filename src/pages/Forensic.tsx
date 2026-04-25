@@ -288,6 +288,9 @@ export default function Forensic() {
               </div>
             </Card>
 
+            {/* Extended content for testimony psychology */}
+            {section.id === "testimony_psychology" && <TestimonyPsychologyExtended />}
+
             {/* Resources list */}
             <Card className="p-4 md:p-5">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold md:text-base">
