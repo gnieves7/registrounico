@@ -13,7 +13,8 @@ export type ResourceSection =
   | 'audience_tips'
   | 'bibliography'
   | 'informed_consent'
-  | 'report_models';
+  | 'report_models'
+  | 'testimony_psychology';
 
 export interface AuthorRef {
   name: string;
