@@ -21,6 +21,7 @@ import {
   CreditCard,
   Activity,
   ShieldCheck,
+  MessageSquarePlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ export type AdminSection =
   | "tests"
   | "reports"
   | "notifications"
+  | "patient_proposals"
   | "suggestions"
   | "settings";
 
@@ -61,6 +63,7 @@ const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType 
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },
+  { key: "patient_proposals", label: "Preguntas de pacientes", icon: MessageSquarePlus },
   { key: "suggestions", label: "Sugerencias", icon: Lightbulb },
   { key: "settings", label: "Configuración", icon: Settings },
 ];
