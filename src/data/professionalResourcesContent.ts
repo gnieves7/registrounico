@@ -13,7 +13,8 @@ export type ResourceSection =
   | 'audience_tips'
   | 'bibliography'
   | 'informed_consent'
-  | 'report_models';
+  | 'report_models'
+  | 'testimony_psychology';
 
 export interface AuthorRef {
   name: string;
@@ -204,5 +205,27 @@ export const RESOURCE_SECTIONS: SectionDefinition[] = [
     ],
     lauraContext:
       'El profesional necesita ayuda para estructurar un informe pericial. Orientá sobre las secciones imprescindibles según el tipo de causa.',
+  },
+  {
+    id: 'testimony_psychology',
+    number: '10',
+    title: 'Psicología del Testimonio',
+    shortTitle: 'Psic. Testimonio',
+    accentHsl: '244 55% 38%', // índigo profundo
+    introduction:
+      'La psicología del testimonio es la disciplina científica que estudia los procesos cognitivos, emocionales y sociales involucrados en la producción, mantenimiento y recuperación del recuerdo de un hecho de relevancia judicial. En el proceso penal argentino —y particularmente en el sistema acusatorio de Santa Fe (Ley 12.734)— provee al psicólogo forense, sea perito oficial o consultor técnico de parte, herramientas validadas para evaluar la calidad del relato (no su verdad fáctica). Su aplicación se articula con el Código Procesal Penal de la Nación (CPPN) y el CPCC provincial, así como con las 100 Reglas de Brasilia (Resolución MPA 147/2020). Distinción crítica: el psicólogo evalúa indicadores de credibilidad —probabilísticos y orientativos—; la determinación de verdad procesal corresponde exclusivamente al órgano judicial.',
+    authors: [
+      { name: 'Michael Lamb', contribution: 'Protocolo NICHD — entrevista forense estructurada basada en evidencia.' },
+      { name: 'Stephen Ceci & Maggie Bruck', contribution: 'Sugestionabilidad infantil; efectos de preguntas sugestivas y entrevistas repetidas.' },
+      { name: 'Gisli Gudjonsson', contribution: 'GSS-1/GSS-2 — sugestionabilidad interrogativa; confesiones falsas.' },
+      { name: 'Max Steller & Günter Köhnken', contribution: 'SVA/CBCA — sistema de análisis de validez de la declaración.' },
+      { name: 'Antonio Manzanero', contribution: 'Psicología del testimonio iberoamericana; memoria y testimonio.' },
+      { name: 'Enrique Echeburúa', contribution: 'Evaluación pericial en víctimas de violencia y daño psíquico.' },
+      { name: 'Irene Intebi (Argentina)', contribution: 'Entrevistas forenses en abuso sexual infantil; Cámara Gesell.' },
+      { name: 'Eva Giberti (Argentina)', contribution: 'Cámara Gesell; perspectiva de género en intervención forense.' },
+      { name: 'Mirta Maffeo (Argentina)', contribution: 'Credibilidad testimonial y peritaje psicológico en el proceso penal argentino.' },
+    ],
+    lauraContext:
+      'El profesional consulta sobre psicología del testimonio (SVA/CBCA, NICHD, GSS, sugestionabilidad). Orientá distinguiendo evaluación de credibilidad (probabilística) de la determinación de verdad (judicial). Citá Lamb, Steller-Köhnken, Manzanero, Intebi y la normativa procesal de Santa Fe (Ley 12.734).',
   },
 ];

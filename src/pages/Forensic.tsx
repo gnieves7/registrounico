@@ -50,6 +50,7 @@ import {
   useProfessionalResources,
   type ProfessionalResource,
 } from "@/hooks/useProfessionalResources";
+import { TestimonyPsychologyExtended } from "@/components/forensic/TestimonyPsychologyExtended";
 
 const ROLE_BADGES: Record<ProfessionalResource["role_tag"], { label: string; className: string }> = {
   clinical: { label: "Clínica", className: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 dark:text-emerald-300" },
@@ -286,6 +287,9 @@ export default function Forensic() {
                 </Table>
               </div>
             </Card>
+
+            {/* Extended content for testimony psychology */}
+            {section.id === "testimony_psychology" && <TestimonyPsychologyExtended />}
 
             {/* Resources list */}
             <Card className="p-4 md:p-5">
