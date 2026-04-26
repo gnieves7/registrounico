@@ -139,7 +139,7 @@ const ProfessionalLanding = () => {
           </svg>
 
           <div className="relative z-10">
-            <PsiLogo size="lg" className="!items-start" />
+            <PsiLogo size="2xl" className="!items-start" />
             <p className="text-base mt-3 text-white/85" style={{ fontFamily: "'DM Sans', sans-serif" }}>
               Plataforma de Sistemas Interactivos
             </p>
@@ -183,7 +183,7 @@ const ProfessionalLanding = () => {
           <div className="w-full max-w-md space-y-6">
             {/* Logo móvil (oculto en desktop) */}
             <div className="lg:hidden text-center mb-2">
-              <PsiLogo size="md" />
+              <PsiLogo size="lg" />
               <p className="text-xs mt-2" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
                 Plataforma de Sistemas Interactivos
               </p>
