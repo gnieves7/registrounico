@@ -155,6 +155,13 @@ export function ReportStepperForm() {
           storage_path: storagePath,
           generated_by: user.id,
         });
+        const { logReportEvent } = await import("@/lib/activityLogger");
+        await logReportEvent(user.id, "report_created", {
+          report_type: REPORT_TYPE_LABELS[reportType],
+          patient_id: selectedPatient,
+          storage_path: storagePath,
+          draft_id: draftId ?? null,
+        });
       }
 
       // Update draft status

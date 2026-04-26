@@ -66,3 +66,39 @@ export const logTestStart = async (
 ) => {
   await logActivity(userId, "test_start", { test_type: testType, test_id: testId });
 };
+
+/**
+ * Auditoría mínima de informes para el rol psicólogo/admin.
+ * No expone contenido clínico sensible: solo metadata operativa
+ * (tipo de informe, paciente referenciado, ruta hashed, timestamp).
+ */
+const hashPath = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return `h${Math.abs(h).toString(36)}`;
+};
+
+export const logReportEvent = async (
+  actorUserId: string,
+  event:
+    | "report_created"
+    | "report_downloaded"
+    | "report_draft_edited"
+    | "pdf_code_issued_ui"
+    | "pdf_code_consumed_ui",
+  payload: {
+    report_type?: string;
+    patient_id?: string | null;
+    storage_path?: string | null;
+    draft_id?: string | null;
+    code_id?: string | null;
+  } = {}
+) => {
+  await logActivity(actorUserId, event, {
+    report_type: payload.report_type ?? null,
+    patient_id: payload.patient_id ?? null,
+    storage_path_hash: payload.storage_path ? hashPath(payload.storage_path) : null,
+    draft_id: payload.draft_id ?? null,
+    code_id: payload.code_id ?? null,
+  });
+};

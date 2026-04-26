@@ -37,6 +37,7 @@ export type AdminSection =
   | "subscriptions"
   | "activity"
   | "audit_consents"
+  | "audit_reports"
   | "tests"
   | "reports"
   | "notifications"
@@ -60,6 +61,7 @@ const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType 
   { key: "subscriptions", label: "Suscripciones", icon: CreditCard },
   { key: "activity", label: "Actividad", icon: Activity },
   { key: "audit_consents", label: "Auditoría Consentimientos", icon: ShieldCheck },
+  { key: "audit_reports", label: "Auditoría Informes", icon: ShieldCheck },
   { key: "tests", label: "Tests", icon: ClipboardList },
   { key: "reports", label: "Informes PDF", icon: FileText },
   { key: "notifications", label: "Notificaciones", icon: Bell },

@@ -36,6 +36,7 @@ import {
   ShieldAlert,
   Download,
 } from 'lucide-react';
+import { MpaResourceDownload, MPA_RESOURCES } from './MpaResourceDownload';
 import {
   AP_OVERVIEW,
   AP_THEORY,
@@ -380,8 +381,30 @@ export const PsychologicalAutopsyExtended = ({
             del peritaje psicológico en el sistema acusatorio provincial.
           </li>
           <li>
-            <strong>Resolución MPA 147/2020</strong> — 100 Reglas de Brasilia
-            para informantes en condición de vulnerabilidad.
+            <div className="flex flex-wrap items-center gap-2">
+              <span>
+                <strong>Resolución MPA 147/2020</strong> — 100 Reglas de
+                Brasilia para informantes en condición de vulnerabilidad.
+              </span>
+              <MpaResourceDownload
+                storagePath={MPA_RESOURCES.res147.storagePath}
+                label={MPA_RESOURCES.res147.label}
+                resourceId={MPA_RESOURCES.res147.id}
+              />
+            </div>
+          </li>
+          <li>
+            <div className="flex flex-wrap items-center gap-2">
+              <span>
+                <strong>Resolución MPA N° 417</strong> — Protocolo para la
+                investigación y litigio de casos de femicidio.
+              </span>
+              <MpaResourceDownload
+                storagePath={MPA_RESOURCES.res417.storagePath}
+                label={MPA_RESOURCES.res417.label}
+                resourceId={MPA_RESOURCES.res417.id}
+              />
+            </div>
           </li>
         </ul>
       </Card>
