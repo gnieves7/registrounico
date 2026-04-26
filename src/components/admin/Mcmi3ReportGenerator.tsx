@@ -280,6 +280,11 @@ ${page2}
           test_record_id: testId,
           generated_by: user.id,
         });
+        const { logReportEvent } = await import("@/lib/activityLogger");
+        await logReportEvent(user.id, "report_created", {
+          report_type: "MCMI-III",
+          patient_id: patientId,
+        });
       }
 
       // Notify patient

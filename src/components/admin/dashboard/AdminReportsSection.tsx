@@ -56,6 +56,15 @@ export function AdminReportsSection() {
     a.download = path.split("/").pop() || "informe.pdf";
     a.click();
     URL.revokeObjectURL(url);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { logReportEvent } = await import("@/lib/activityLogger");
+        await logReportEvent(user.id, "report_downloaded", { storage_path: path });
+      }
+    } catch (e) {
+      console.error("audit log failed", e);
+    }
   };
 
   if (showForm) {
