@@ -22,8 +22,12 @@ const Footer = () => {
           </a>
         </p>
         <p className="text-xs text-muted-foreground mt-2">
+          <Link to="/paciente/privacidad" className="text-primary hover:underline">
+            Tu privacidad, en palabras claras
+          </Link>
+          {" · "}
           <Link to="/privacy-policy" className="text-primary hover:underline">
-            Aviso Legal, Términos y Privacidad
+            Aviso Legal y Términos
           </Link>
         </p>
         <p className="text-xs text-muted-foreground mt-3 italic">
