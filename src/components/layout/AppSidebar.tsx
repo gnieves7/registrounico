@@ -209,13 +209,10 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border bg-sidebar/80 p-3 md:p-4">
         <div className="flex items-center gap-2 md:gap-3">
-          <PsiLogo size="sm" />
+          <PsiLogo size="md" />
           {!collapsed && (
             <div className="flex flex-col">
               <span className="font-serif text-xs font-semibold text-sidebar-foreground md:text-sm">
-                {currentSystem?.label || areaLabels[currentArea || ""] || "PSI"}
-              </span>
-              <span className="text-[10px] text-sidebar-foreground/60 md:text-xs">
                 {headerSubtitle}
               </span>
             </div>
