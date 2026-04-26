@@ -57,6 +57,7 @@ import {
   type TestimonyTemplateKind,
 } from '@/lib/pdf/testimonyTemplatesPdf';
 import { toast } from 'sonner';
+import { MpaResourceDownload, MPA_RESOURCES } from './MpaResourceDownload';
 
 const ACCENT = '244 55% 38%';
 
@@ -360,14 +361,16 @@ export const TestimonyPsychologyExtended = ({
             </p>
           </li>
           <li>
-            <a
-              href="https://www.mpa.santafe.gov.ar/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-primary underline-offset-2 hover:underline"
-            >
-              Resolución MPA 147/2020 — 100 Reglas de Brasilia (víctimas vulnerables)
-            </a>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-medium">
+                Resolución MPA 147/2020 — 100 Reglas de Brasilia (víctimas vulnerables)
+              </span>
+              <MpaResourceDownload
+                storagePath={MPA_RESOURCES.res147.storagePath}
+                label={MPA_RESOURCES.res147.label}
+                resourceId={MPA_RESOURCES.res147.id}
+              />
+            </div>
             <p className="text-xs text-muted-foreground">
               Estándares reforzados para entrevistas a NNyA, personas con
               discapacidad y víctimas de violencia de género.

@@ -24,6 +24,7 @@ import AnxietyRecord from "./pages/AnxietyRecord";
 import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import PatientPrivacy from "./pages/PatientPrivacy";
 import PendingApproval from "./pages/PendingApproval";
 import NotFound from "./pages/NotFound";
 import CaseFormulation from "./pages/CaseFormulation";
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/profesional/login" element={<ProfessionalLogin />} />
               <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/paciente/privacidad" element={<PatientPrivacy />} />
               <Route path="/descargar" element={<DescargarPdf />} />
               <Route path="/diagnostico-acceso" element={<DiagnosticoAcceso />} />
               
