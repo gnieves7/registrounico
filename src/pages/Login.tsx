@@ -229,7 +229,7 @@ const Login = () => {
                 </svg>
 
                 <div className="relative z-10">
-                  <PsiLogo size="lg" className="!items-start" />
+                  <PsiLogo size="2xl" className="!items-start" />
                   <p className="text-base mt-3 text-white/85">Plataforma de Sistemas Interactivos</p>
                   <p className="text-[15px] mt-6 max-w-md text-white/75 leading-relaxed">
                     Un entorno único, confidencial y seguro para acompañar tu proceso clínico, psicodiagnóstico o forense.
@@ -266,7 +266,7 @@ const Login = () => {
                 <div className="w-full max-w-md space-y-6 animate-fade-in">
                   {/* Logo móvil */}
                   <div className="lg:hidden text-center mb-2">
-                    <PsiLogo size="md" />
+                    <PsiLogo size="lg" />
                     <p className="text-xs mt-2" style={{ color: C.muted }}>Plataforma de Sistemas Interactivos</p>
                   </div>
 
@@ -425,7 +425,7 @@ const Login = () => {
             <section className="w-full" style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
               <div className="mx-auto max-w-2xl px-5 pt-10 pb-8">
                 <div className="text-center mb-6 animate-fade-in">
-                  <PsiLogo size="lg" />
+                  <PsiLogo size="2xl" />
                   <p className="text-xs md:text-sm font-medium tracking-[0.15em] uppercase mt-2" style={{ color: C.gold }}>
                     Plataforma de Sistemas Interactivos
                   </p>
