@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { NotificationCenter } from "./NotificationCenter";
 import { SessionProposalFloating } from "@/components/patient/SessionProposalFloating";
+import { IdleTimeoutGuard } from "./IdleTimeoutGuard";
 
 const routeLabels: Record<string, string> = {
   "/dashboard": "Inicio",
@@ -157,6 +158,7 @@ export function AppLayout() {
 
           <Footer />
           <SessionProposalFloating />
+          <IdleTimeoutGuard />
         </SidebarInset>
         </div>
       </div>
