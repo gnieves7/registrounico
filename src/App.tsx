@@ -101,7 +101,7 @@ const App = () => (
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
                 <Route path="/case-formulation" element={<ProfessionalOnlyRoute><CaseFormulation /></ProfessionalOnlyRoute>} />
-                <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
+                <Route path="/emotional-thermometer" element={<PatientOnlyRoute><EmotionalThermometer /></PatientOnlyRoute>} />
                 <Route path="/narrative-analysis" element={<ProfessionalOnlyRoute><NarrativeAnalysis /></ProfessionalOnlyRoute>} />
                 <Route path="/symptom-network" element={<ProfessionalOnlyRoute><SymptomNetwork /></ProfessionalOnlyRoute>} />
                 <Route path="/therapeutic-alliance" element={<ProfessionalOnlyRoute><TherapeuticAlliance /></ProfessionalOnlyRoute>} />
