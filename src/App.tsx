@@ -44,6 +44,9 @@ import ProfessionalRegistration from "./pages/ProfessionalRegistration";
 import ProfessionalLogin from "./pages/ProfessionalLogin";
 import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
 import { PatientOnlyRoute } from "@/components/professional/PatientOnlyRoute";
+import { ProfessionalOnlyRoute } from "@/components/professional/ProfessionalOnlyRoute";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import DescargarPdf from "./pages/DescargarPdf";
 import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 
@@ -51,6 +54,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+   <ErrorBoundary>
     <AuthProvider>
       <DemoProvider>
         <TooltipProvider>
@@ -62,7 +66,6 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/profesional" element={<ProfessionalLanding />} />
               <Route path="/pending-approval" element={<PendingApproval />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
               <Route path="/profesional/consentimiento" element={<ProfessionalRegistration />} />
@@ -79,31 +82,32 @@ const App = () => (
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/psychobiography" element={<Psychobiography />} />
                 <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
-                <Route path="/forensic" element={<Forensic />} />
-                <Route path="/forensic/:section" element={<Forensic />} />
-                <Route path="/judicial-case" element={<JudicialCase />} />
+                <Route path="/forensic" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
+                <Route path="/forensic/:section" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
+                <Route path="/judicial-case" element={<ProfessionalOnlyRoute><JudicialCase /></ProfessionalOnlyRoute>} />
                 <Route path="/anxiety-record" element={<PatientOnlyRoute><AnxietyRecord /></PatientOnlyRoute>} />
-                <Route path="/junta-medica" element={<JuntaMedicaLaboral />} />
-                <Route path="/apto-psicologico" element={<AptoPsicologico />} />
-                <Route path="/camara-gesell" element={<CamaraGesell />} />
+                <Route path="/junta-medica" element={<ProfessionalOnlyRoute><JuntaMedicaLaboral /></ProfessionalOnlyRoute>} />
+                <Route path="/apto-psicologico" element={<ProfessionalOnlyRoute><AptoPsicologico /></ProfessionalOnlyRoute>} />
+                <Route path="/camara-gesell" element={<ProfessionalOnlyRoute><CamaraGesell /></ProfessionalOnlyRoute>} />
                 <Route path="/notebook" element={<PatientOnlyRoute><Notebook /></PatientOnlyRoute>} />
                 <Route path="/dream-record" element={<PatientOnlyRoute><DreamRecord /></PatientOnlyRoute>} />
                 <Route path="/sessions" element={<PatientOnlyRoute><Sessions /></PatientOnlyRoute>} />
                 <Route path="/laura" element={<PatientOnlyRoute><LauraChat /></PatientOnlyRoute>} />
                 <Route path="/documents" element={<PatientOnlyRoute><Documents /></PatientOnlyRoute>} />
-                <Route path="/professional-profile" element={<ProfessionalProfile />} />
+                <Route path="/professional-profile" element={<ProfessionalOnlyRoute><ProfessionalProfile /></ProfessionalOnlyRoute>} />
                 <Route path="/symbolic-awards" element={<PatientOnlyRoute><SymbolicAwards /></PatientOnlyRoute>} />
-                <Route path="/telegram" element={<TelegramCenter />} />
+                <Route path="/telegram" element={<ProfessionalOnlyRoute><TelegramCenter /></ProfessionalOnlyRoute>} />
                 {/* Admin routes */}
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="/case-formulation" element={<CaseFormulation />} />
+                <Route path="/admin/dashboard" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+                <Route path="/case-formulation" element={<ProfessionalOnlyRoute><CaseFormulation /></ProfessionalOnlyRoute>} />
                 <Route path="/emotional-thermometer" element={<EmotionalThermometer />} />
-                <Route path="/narrative-analysis" element={<NarrativeAnalysis />} />
-                <Route path="/symptom-network" element={<SymptomNetwork />} />
-                <Route path="/therapeutic-alliance" element={<TherapeuticAlliance />} />
-                <Route path="/life-timeline" element={<LifeTimeline />} />
-                <Route path="/micro-tasks" element={<MicroTasks />} />
-                <Route path="/outcome-monitoring" element={<OutcomeMonitoring />} />
+                <Route path="/narrative-analysis" element={<ProfessionalOnlyRoute><NarrativeAnalysis /></ProfessionalOnlyRoute>} />
+                <Route path="/symptom-network" element={<ProfessionalOnlyRoute><SymptomNetwork /></ProfessionalOnlyRoute>} />
+                <Route path="/therapeutic-alliance" element={<ProfessionalOnlyRoute><TherapeuticAlliance /></ProfessionalOnlyRoute>} />
+                <Route path="/life-timeline" element={<ProfessionalOnlyRoute><LifeTimeline /></ProfessionalOnlyRoute>} />
+                <Route path="/micro-tasks" element={<ProfessionalOnlyRoute><MicroTasks /></ProfessionalOnlyRoute>} />
+                <Route path="/outcome-monitoring" element={<ProfessionalOnlyRoute><OutcomeMonitoring /></ProfessionalOnlyRoute>} />
               </Route>
               
               {/* Catch-all */}
@@ -113,6 +117,7 @@ const App = () => (
         </TooltipProvider>
       </DemoProvider>
     </AuthProvider>
+   </ErrorBoundary>
   </QueryClientProvider>
 );
 
