@@ -1,31 +1,13 @@
 import { InformedConsentTemplates, type ConsentTemplate } from "@/components/forensic/InformedConsentTemplates";
+import { REFLEXIONAR_MODELS } from "@/lib/consentTemplates";
 
-const REFLEXIONAR_TEMPLATES: ConsentTemplate[] = [
-  {
-    id: "ci-01",
-    title: "CI-01 · Terapia Psicológica — Adultos",
-    description:
-      "Modelo de consentimiento informado para procesos psicoterapéuticos con personas adultas.",
-    file: "/templates/CI-01_Terapia_Adulto.docx",
-    filename: "CI-01_Terapia_Adulto.docx",
-  },
-  {
-    id: "ci-02",
-    title: "CI-02 · Terapia Psicológica — Niñas, Niños y Adolescentes (NNA)",
-    description:
-      "Modelo para procesos terapéuticos con NNA, con autorización de progenitores o tutores.",
-    file: "/templates/CI-02_Terapia_NNA.docx",
-    filename: "CI-02_Terapia_NNA.docx",
-  },
-  {
-    id: "ci-03",
-    title: "CI-03 · Terapia con Indicadores de Riesgo",
-    description:
-      "Modelo específico para tratamientos con indicadores clínicos de riesgo (ideación suicida, autolesiones, etc.).",
-    file: "/templates/CI-03_Terapia_Riesgo.docx",
-    filename: "CI-03_Terapia_Riesgo.docx",
-  },
-];
+const REFLEXIONAR_TEMPLATES: ConsentTemplate[] = REFLEXIONAR_MODELS.map((m) => ({
+  id: m.id,
+  title: m.title,
+  description: m.description,
+  file: m.file,
+  filename: m.filename,
+}));
 
 export default function ReflexionarInformedConsent() {
   return (
@@ -33,7 +15,10 @@ export default function ReflexionarInformedConsent() {
       <div>
         <h1 className="text-xl font-bold md:text-3xl">Consentimiento Informado</h1>
         <p className="text-sm text-muted-foreground md:text-base">
-          Modelos descargables para encuadres terapéuticos clínicos.
+          Modelos descargables para encuadres terapéuticos clínicos. Cada tarjeta incluye una guía
+          contextual sobre <strong>qué incluye</strong>, <strong>cómo adaptarlo</strong> y{" "}
+          <strong>cuándo corresponde usarlo</strong>, además de la opción de pre-llenar y firmar
+          el documento desde la plataforma.
         </p>
       </div>
 
