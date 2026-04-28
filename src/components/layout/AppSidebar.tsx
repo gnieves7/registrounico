@@ -53,6 +53,7 @@ const allPatientMenuItems = [
   { title: "Acompañante Virtual", url: "/laura", icon: MessageCircle },
   { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
+  { title: "Consentimiento Informado", url: "/reflexionar/informed-consent", icon: FileSignature },
   { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
@@ -87,6 +88,7 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
   "/forensic/informed_consent",
   "/forensic/report_models",
   "/judicial-case",
+  "/reflexionar/informed-consent",
 ]);
 
 const hiddenByArea: Record<string, string[]> = {

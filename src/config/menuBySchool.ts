@@ -7,6 +7,7 @@ import {
   Activity, StickyNote, Hexagon, FolderOpen, Network, GitMerge, CloudSun,
   RefreshCw, Share2, Repeat, Sparkles, Users, BookMarked, FileBarChart,
   Hourglass, FileEdit,
+  FileSignature,
 } from 'lucide-react';
 import type { SchoolType } from './schools';
 
@@ -40,6 +41,7 @@ const ROUTE_MAP: Record<string, string> = {
   assistant: '/laura',
   reports: '/documents',
   profile: '/professional-profile',
+  informed_consent: '/reflexionar/informed-consent',
 };
 
 function r(id: string) { return ROUTE_MAP[id] || '/dashboard'; }
@@ -70,6 +72,7 @@ export const MENU_BY_SCHOOL: Record<SchoolType, SchoolMenuItem[]> = {
     { id: 'notebook', label: 'Diario de Sueños y Asociaciones', icon: BookOpen, url: r('notebook'), tooltip: 'Sueños, asociaciones libres, recuerdos encubridores y material onírico' },
     { id: 'assistant', label: 'Laura — Escucha Analítica', icon: MessageCircle, url: r('assistant') },
     { id: 'reports', label: 'Informes Clínicos', icon: ScrollText, url: r('reports') },
+    { id: 'informed_consent', label: 'Consentimiento Informado', icon: FileSignature, url: r('informed_consent'), tooltip: 'Modelos editables de consentimiento informado para procesos terapéuticos (adultos, NNA, riesgo). Adaptables por el profesional.' },
     { id: 'profile', label: 'Perfil del Profesional', icon: User, url: r('profile') },
   ],
 
@@ -89,6 +92,7 @@ export const MENU_BY_SCHOOL: Record<SchoolType, SchoolMenuItem[]> = {
     { id: 'notebook', label: 'Cuaderno de Autorregistros', icon: Clipboard, url: r('notebook'), tooltip: 'Registro conductual diario: ABC, SUDs, cadenas conductuales, práctica de habilidades. El autoregistro en sí mismo produce cambio (Kanfer, 1970).' },
     { id: 'assistant', label: 'Laura — Asistente Conductual', icon: MessageCircle, url: r('assistant'), tooltip: 'Análisis funcional conversacional, psicoeducación conductual, reforzamiento de aproximaciones. Laura como SD de conductas adaptativas (Kohlenberg & Tsai/FAP). Orientación a la acción y registros.' },
     { id: 'reports', label: 'Informes de Intervención', icon: FileBarChart, url: r('reports') },
+    { id: 'informed_consent', label: 'Consentimiento Informado', icon: FileSignature, url: r('informed_consent'), tooltip: 'Modelos editables de consentimiento informado para procesos terapéuticos (adultos, NNA, riesgo). Adaptables por el profesional.' },
     { id: 'profile', label: 'Perfil del Profesional', icon: User, url: r('profile') },
   ],
 
@@ -108,6 +112,7 @@ export const MENU_BY_SCHOOL: Record<SchoolType, SchoolMenuItem[]> = {
     { id: 'notebook', label: 'Diario Vivencial', icon: BookOpen, url: r('notebook'), tooltip: 'Espacio de escritura libre para explorar la experiencia presente. La escritura transforma la experiencia en comprensión (Pennebaker).' },
     { id: 'assistant', label: 'Laura — Acompañante', icon: MessageCircle, url: r('assistant'), tooltip: 'Asistente humanista-existencial: congruencia, aceptación incondicional y comprensión empática (Rogers). Reflejo activo y focalización suave (Gendlin).' },
     { id: 'reports', label: 'Informes de Proceso', icon: FileText, url: r('reports') },
+    { id: 'informed_consent', label: 'Consentimiento Informado', icon: FileSignature, url: r('informed_consent'), tooltip: 'Modelos editables de consentimiento informado para procesos terapéuticos (adultos, NNA, riesgo). Adaptables por el profesional.' },
     { id: 'profile', label: 'Perfil del Profesional', icon: User, url: r('profile') },
   ],
 
@@ -127,6 +132,7 @@ export const MENU_BY_SCHOOL: Record<SchoolType, SchoolMenuItem[]> = {
     { id: 'notebook', label: 'Cuaderno de Trabajo', icon: ClipboardList, url: r('notebook'), tooltip: 'Pensamientos, experimentos conductuales y práctica de técnicas' },
     { id: 'assistant', label: 'Laura — Asistente Cognitivo', icon: MessageCircle, url: r('assistant') },
     { id: 'reports', label: 'Informes Clínicos', icon: ClipboardList, url: r('reports') },
+    { id: 'informed_consent', label: 'Consentimiento Informado', icon: FileSignature, url: r('informed_consent'), tooltip: 'Modelos editables de consentimiento informado para procesos terapéuticos (adultos, NNA, riesgo). Adaptables por el profesional.' },
     { id: 'profile', label: 'Perfil del Profesional', icon: User, url: r('profile') },
   ],
 
@@ -146,6 +152,7 @@ export const MENU_BY_SCHOOL: Record<SchoolType, SchoolMenuItem[]> = {
     { id: 'notebook', label: 'Cuaderno del Sistema', icon: BookMarked, url: r('notebook'), tooltip: 'Pautas observadas, secuencias circulares, hipótesis sistémicas y comunicación familiar.' },
     { id: 'assistant', label: 'Laura — Observadora del Sistema', icon: MessageCircle, url: r('assistant'), tooltip: 'Curiosidad circular (Cecchin), preguntas que perturban la puntuación lineal, perspectiva del ausente, externalización (White). Nunca toma partido.' },
     { id: 'reports', label: 'Informes del Sistema', icon: Network, url: r('reports') },
+    { id: 'informed_consent', label: 'Consentimiento Informado', icon: FileSignature, url: r('informed_consent'), tooltip: 'Modelos editables de consentimiento informado para procesos terapéuticos (adultos, NNA, riesgo). Adaptables por el profesional.' },
     { id: 'profile', label: 'Perfil del Profesional', icon: User, url: r('profile') },
   ],
 };
