@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Brain, FileText, Clock, CheckCircle2, Activity, UserCheck, Plus, History, Trash2 } from "lucide-react";
+import { Brain, FileText, Clock, CheckCircle2, Activity, UserCheck, Plus, History, Trash2, FileSignature } from "lucide-react";
 import { MbtiTest } from "@/components/psychodiagnostic/MbtiTest";
 import { Mmpi2Test } from "@/components/psychodiagnostic/Mmpi2Test";
 import { Mcmi3Test } from "@/components/psychodiagnostic/Mcmi3Test";
 import { Scl90rTest } from "@/components/psychodiagnostic/Scl90rTest";
 import { InformedConsent } from "@/components/psychodiagnostic/InformedConsent";
+import { InformedConsentTemplates, type ConsentTemplate } from "@/components/forensic/InformedConsentTemplates";
 import { usePsychodiagnostic } from "@/hooks/usePsychodiagnostic";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -94,6 +95,41 @@ const Psychodiagnostic = () => {
     scl90r: "SCL-90-R",
   };
 
+  const evaluarConsentTemplates: ConsentTemplate[] = [
+    {
+      id: "ci-04",
+      title: "CI-04 · Psicodiagnóstico de Adultos",
+      description:
+        "Modelo de consentimiento para evaluaciones psicodiagnósticas en población adulta.",
+      file: "/templates/CI-04_Psicodiag_Adulto.docx",
+      filename: "CI-04_Psicodiag_Adulto.docx",
+    },
+    {
+      id: "ci-05",
+      title: "CI-05 · Psicodiagnóstico de Niñas, Niños y Adolescentes (NNA)",
+      description:
+        "Modelo para evaluaciones en NNA con autorización de progenitores/tutores.",
+      file: "/templates/CI-05_Psicodiag_NNA.docx",
+      filename: "CI-05_Psicodiag_NNA.docx",
+    },
+    {
+      id: "ci-06",
+      title: "CI-06 · Evaluación Neuropsicológica",
+      description:
+        "Modelo orientado a evaluaciones neuropsicológicas (atención, memoria, funciones ejecutivas, etc.).",
+      file: "/templates/CI-06_Neuropsicologica.docx",
+      filename: "CI-06_Neuropsicologica.docx",
+    },
+    {
+      id: "ci-07",
+      title: "CI-07 · Aptitud Psicológica para Portación de Arma Reglamentaria",
+      description:
+        "Modelo para evaluaciones de aptitud psicológica en personal con porte de arma reglamentaria.",
+      file: "/templates/CI-07_Arma_Reglamentaria.docx",
+      filename: "CI-07_Arma_Reglamentaria.docx",
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6 space-y-4 md:space-y-6">
       <div>
@@ -104,7 +140,7 @@ const Psychodiagnostic = () => {
       </div>
 
       <Tabs defaultValue="personalidad" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="personalidad" className="transition-all duration-200 hover:scale-105 active:scale-95">
             <UserCheck className="h-4 w-4 mr-2" />
             Personalidad
@@ -112,6 +148,10 @@ const Psychodiagnostic = () => {
           <TabsTrigger value="sintomas" className="transition-all duration-200 hover:scale-105 active:scale-95">
             <Activity className="h-4 w-4 mr-2" />
             Síntomas
+          </TabsTrigger>
+          <TabsTrigger value="consentimiento" className="transition-all duration-200 hover:scale-105 active:scale-95">
+            <FileSignature className="h-4 w-4 mr-2" />
+            Consentimiento
           </TabsTrigger>
         </TabsList>
 
@@ -316,6 +356,15 @@ const Psychodiagnostic = () => {
               onComplete={() => setSelectedScl90rTest(null)}
             />
           )}
+        </TabsContent>
+
+        {/* ========== CONSENTIMIENTO INFORMADO TAB ========== */}
+        <TabsContent value="consentimiento" className="space-y-4 mt-4">
+          <InformedConsentTemplates
+            templates={evaluarConsentTemplates}
+            heading="Modelos de Consentimiento Informado — Evaluación Psicodiagnóstica"
+            subheading="Plantillas profesionales en formato Word, listas para descargar y personalizar."
+          />
         </TabsContent>
       </Tabs>
 
