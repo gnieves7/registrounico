@@ -53,15 +53,9 @@ const allPatientMenuItems = [
   { title: "Acompañante Virtual", url: "/laura", icon: MessageCircle },
   { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
+  { title: "Consentimiento Informado", url: "/reflexionar/informed-consent", icon: FileSignature },
   { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
-
-// URL del Consentimiento Informado clínico (Reflexionar)
-const REFLEXIONAR_CONSENT_ITEM = {
-  title: "Consentimiento Informado",
-  url: "/reflexionar/informed-consent",
-  icon: FileSignature,
-};
 
 // Items específicos del sistema Acompañar (área forense): Expediente Judicial + 9 secciones independientes
 const acompanarMenuItems = [
