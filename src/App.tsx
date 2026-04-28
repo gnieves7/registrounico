@@ -49,6 +49,7 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import DescargarPdf from "./pages/DescargarPdf";
 import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
+import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/psychobiography" element={<Psychobiography />} />
                 <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
+                <Route path="/reflexionar/informed-consent" element={<ProfessionalOnlyRoute><ReflexionarInformedConsent /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic/:section" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/judicial-case" element={<ProfessionalOnlyRoute><JudicialCase /></ProfessionalOnlyRoute>} />
