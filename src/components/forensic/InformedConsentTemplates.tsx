@@ -3,7 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Info, Pencil } from "lucide-react";
 
-const TEMPLATES = [
+export type ConsentTemplate = {
+  id: string;
+  title: string;
+  description: string;
+  file: string;
+  filename: string;
+};
+
+const DEFAULT_TEMPLATES: ConsentTemplate[] = [
   {
     id: "ci-08",
     title: "CI-08 · Consentimiento Informado — Pericia Civil",
@@ -20,19 +28,29 @@ const TEMPLATES = [
     file: "/templates/CI-09_Pericia_Penal.docx",
     filename: "CI-09_Pericia_Penal.docx",
   },
-] as const;
+];
 
-export function InformedConsentTemplates() {
+interface InformedConsentTemplatesProps {
+  templates?: ConsentTemplate[];
+  heading?: string;
+  subheading?: string;
+}
+
+export function InformedConsentTemplates({
+  templates = DEFAULT_TEMPLATES,
+  heading = "Modelos descargables de Consentimiento Informado",
+  subheading = "Plantillas profesionales en formato Word, listas para personalizar.",
+}: InformedConsentTemplatesProps = {}) {
   return (
     <Card className="p-4 md:p-5 space-y-4 border-primary/20">
       <div className="flex items-start gap-2.5">
         <FileText className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
         <div className="space-y-1">
           <h3 className="text-sm font-semibold md:text-base">
-            Modelos descargables de Consentimiento Informado
+            {heading}
           </h3>
           <p className="text-xs text-muted-foreground md:text-sm">
-            Plantillas profesionales en formato Word, listas para personalizar.
+            {subheading}
           </p>
         </div>
       </div>
@@ -50,7 +68,7 @@ export function InformedConsentTemplates() {
       </div>
 
       <ul className="space-y-2">
-        {TEMPLATES.map((tpl) => (
+        {templates.map((tpl) => (
           <li
             key={tpl.id}
             className="flex flex-col gap-2 rounded-lg border border-border bg-card/50 p-3 md:flex-row md:items-center md:justify-between md:gap-4 md:p-4"
