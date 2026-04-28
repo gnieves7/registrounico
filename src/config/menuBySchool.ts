@@ -7,6 +7,7 @@ import {
   Activity, StickyNote, Hexagon, FolderOpen, Network, GitMerge, CloudSun,
   RefreshCw, Share2, Repeat, Sparkles, Users, BookMarked, FileBarChart,
   Hourglass, FileEdit,
+  FileSignature,
 } from 'lucide-react';
 import type { SchoolType } from './schools';
 
@@ -40,6 +41,7 @@ const ROUTE_MAP: Record<string, string> = {
   assistant: '/laura',
   reports: '/documents',
   profile: '/professional-profile',
+  informed_consent: '/reflexionar/informed-consent',
 };
 
 function r(id: string) { return ROUTE_MAP[id] || '/dashboard'; }
