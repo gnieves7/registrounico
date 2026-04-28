@@ -56,6 +56,13 @@ const allPatientMenuItems = [
   { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
+// URL del Consentimiento Informado clínico (Reflexionar)
+const REFLEXIONAR_CONSENT_ITEM = {
+  title: "Consentimiento Informado",
+  url: "/reflexionar/informed-consent",
+  icon: FileSignature,
+};
+
 // Items específicos del sistema Acompañar (área forense): Expediente Judicial + 9 secciones independientes
 const acompanarMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
@@ -87,6 +94,7 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
   "/forensic/informed_consent",
   "/forensic/report_models",
   "/judicial-case",
+  "/reflexionar/informed-consent",
 ]);
 
 const hiddenByArea: Record<string, string[]> = {
