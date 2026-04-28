@@ -52,6 +52,7 @@ import {
 } from "@/hooks/useProfessionalResources";
 import { TestimonyPsychologyExtended } from "@/components/forensic/TestimonyPsychologyExtended";
 import { PsychologicalAutopsyExtended } from "@/components/forensic/PsychologicalAutopsyExtended";
+import { InformedConsentTemplates } from "@/components/forensic/InformedConsentTemplates";
 import { useUserRole } from "@/hooks/useUserRole";
 import { SessionProposalWidget } from "@/components/patient/SessionProposalWidget";
 import { Info } from "lucide-react";
@@ -306,6 +307,11 @@ export default function Forensic() {
             {/* Extended content for psychological autopsy */}
             {section.id === "psychological_autopsy" && (
               <PsychologicalAutopsyExtended viewMode={isPatient ? "patient" : "professional"} />
+            )}
+
+            {/* Plantillas descargables para consentimiento informado pericial */}
+            {section.id === "informed_consent" && !isPatient && (
+              <InformedConsentTemplates />
             )}
 
             {/* Aviso para pacientes en secciones técnicas */}
