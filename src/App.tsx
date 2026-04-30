@@ -50,6 +50,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import DescargarPdf from "./pages/DescargarPdf";
 import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
+import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 
 const queryClient = new QueryClient();
 
