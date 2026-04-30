@@ -9,6 +9,7 @@ import { Mcmi3Test } from "@/components/psychodiagnostic/Mcmi3Test";
 import { Scl90rTest } from "@/components/psychodiagnostic/Scl90rTest";
 import { InformedConsent } from "@/components/psychodiagnostic/InformedConsent";
 import { InformedConsentTemplates, type ConsentTemplate } from "@/components/forensic/InformedConsentTemplates";
+import { EVALUAR_MODELS } from "@/lib/consentTemplates";
 import { usePsychodiagnostic } from "@/hooks/usePsychodiagnostic";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -95,32 +96,13 @@ const Psychodiagnostic = () => {
     scl90r: "SCL-90-R",
   };
 
-  const evaluarConsentTemplates: ConsentTemplate[] = [
-    {
-      id: "ci-05",
-      title: "CI-05 · Psicodiagnóstico de Niñas, Niños y Adolescentes (NNA)",
-      description:
-        "Modelo para evaluaciones en NNA con autorización de progenitores/tutores.",
-      file: "/templates/CI-05_Psicodiag_NNA.pdf",
-      filename: "CI-05_Psicodiag_NNA.pdf",
-    },
-    {
-      id: "ci-06",
-      title: "CI-06 · Evaluación Neuropsicológica",
-      description:
-        "Modelo orientado a evaluaciones neuropsicológicas (atención, memoria, funciones ejecutivas, etc.).",
-      file: "/templates/CI-06_Neuropsicologica.pdf",
-      filename: "CI-06_Neuropsicologica.pdf",
-    },
-    {
-      id: "ci-07",
-      title: "CI-07 · Aptitud Psicológica para Portación de Arma Reglamentaria",
-      description:
-        "Modelo para evaluaciones de aptitud psicológica en personal con porte de arma reglamentaria.",
-      file: "/templates/CI-07_Arma_Reglamentaria.pdf",
-      filename: "CI-07_Arma_Reglamentaria.pdf",
-    },
-  ];
+  const evaluarConsentTemplates: ConsentTemplate[] = EVALUAR_MODELS.map((m) => ({
+    id: m.id,
+    title: m.title,
+    description: m.description,
+    file: m.file,
+    filename: m.filename,
+  }));
 
   return (
     <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6 space-y-4 md:space-y-6">
@@ -355,7 +337,7 @@ const Psychodiagnostic = () => {
           <InformedConsentTemplates
             templates={evaluarConsentTemplates}
             heading="Modelos de Consentimiento Informado — Evaluación Psicodiagnóstica"
-            subheading="Plantillas profesionales en formato Word, listas para descargar y personalizar."
+            subheading="Modelos en PDF listos para descargar y adaptar con tus datos, criterio clínico y honorarios."
           />
         </TabsContent>
       </Tabs>
