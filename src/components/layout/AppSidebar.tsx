@@ -91,6 +91,7 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
   "/judicial-case",
   "/reflexionar/informed-consent",
   "/evaluar/informed-consent",
+  "/suggestions",
 ]);
 
 const hiddenByArea: Record<string, string[]> = {
