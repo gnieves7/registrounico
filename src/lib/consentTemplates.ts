@@ -313,8 +313,8 @@ export const CONSENT_MODELS: Record<ConsentModelId, ConsentModelMeta> = {
     title: "CI-05 · Psicodiagnóstico — NNA",
     shortTitle: "Psicodiag. NNA",
     description: "Consentimiento para evaluación psicodiagnóstica en niñas, niños y adolescentes.",
-    file: "/templates/CI-05_Psicodiag_NNA.docx",
-    filename: "CI-05_Psicodiag_NNA.docx",
+    file: "/templates/CI-05_Psicodiag_NNA.pdf",
+    filename: "CI-05_Psicodiag_NNA.pdf",
     system: "evaluar",
     includes: [
       "Autorización de progenitores/tutores y asentimiento del NNA según edad.",

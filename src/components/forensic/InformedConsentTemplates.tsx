@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileText, Info, Pencil, FileSignature } from "lucide-react";
+import { FileText, Info, Pencil, FileSignature } from "lucide-react";
 import { CONSENT_MODELS, type ConsentModelMeta } from "@/lib/consentTemplates";
 import { ConsentDetailDrawer } from "./ConsentDetailDrawer";
 import { ConsentSignatureDialog } from "./ConsentSignatureDialog";
@@ -112,12 +112,6 @@ export function InformedConsentTemplates({
                   }
                 />
               )}
-              <Button asChild variant="outline" size="sm" className="shrink-0">
-                <a href={tpl.file} download={tpl.filename}>
-                  <Download className="mr-1.5 h-4 w-4" />
-                  Modelo base
-                </a>
-              </Button>
               {meta && (
                 <Button size="sm" className="shrink-0" onClick={() => openSignDialog(meta)}>
                   <FileSignature className="mr-1.5 h-4 w-4" />

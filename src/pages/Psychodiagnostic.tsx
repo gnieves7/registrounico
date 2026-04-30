@@ -97,36 +97,28 @@ const Psychodiagnostic = () => {
 
   const evaluarConsentTemplates: ConsentTemplate[] = [
     {
-      id: "ci-04",
-      title: "CI-04 · Psicodiagnóstico de Adultos",
-      description:
-        "Modelo de consentimiento para evaluaciones psicodiagnósticas en población adulta.",
-      file: "/templates/CI-04_Psicodiag_Adulto.docx",
-      filename: "CI-04_Psicodiag_Adulto.docx",
-    },
-    {
       id: "ci-05",
       title: "CI-05 · Psicodiagnóstico de Niñas, Niños y Adolescentes (NNA)",
       description:
         "Modelo para evaluaciones en NNA con autorización de progenitores/tutores.",
-      file: "/templates/CI-05_Psicodiag_NNA.docx",
-      filename: "CI-05_Psicodiag_NNA.docx",
+      file: "/templates/CI-05_Psicodiag_NNA.pdf",
+      filename: "CI-05_Psicodiag_NNA.pdf",
     },
     {
       id: "ci-06",
       title: "CI-06 · Evaluación Neuropsicológica",
       description:
         "Modelo orientado a evaluaciones neuropsicológicas (atención, memoria, funciones ejecutivas, etc.).",
-      file: "/templates/CI-06_Neuropsicologica.docx",
-      filename: "CI-06_Neuropsicologica.docx",
+      file: "/templates/CI-06_Neuropsicologica.pdf",
+      filename: "CI-06_Neuropsicologica.pdf",
     },
     {
       id: "ci-07",
       title: "CI-07 · Aptitud Psicológica para Portación de Arma Reglamentaria",
       description:
         "Modelo para evaluaciones de aptitud psicológica en personal con porte de arma reglamentaria.",
-      file: "/templates/CI-07_Arma_Reglamentaria.docx",
-      filename: "CI-07_Arma_Reglamentaria.docx",
+      file: "/templates/CI-07_Arma_Reglamentaria.pdf",
+      filename: "CI-07_Arma_Reglamentaria.pdf",
     },
   ];
 
