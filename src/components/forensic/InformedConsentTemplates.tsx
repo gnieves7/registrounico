@@ -94,7 +94,7 @@ export function InformedConsentTemplates({
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-sm font-medium md:text-base">{tpl.title}</p>
                 <Badge variant="outline" className="text-[10px]">
-                  DOCX · Editable
+                  {tpl.file.toLowerCase().endsWith(".pdf") ? "PDF · Editable" : "DOCX · Editable"}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground md:text-sm">{tpl.description}</p>
