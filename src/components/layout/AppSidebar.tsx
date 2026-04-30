@@ -75,6 +75,7 @@ const acompanarMenuItems = [
   { title: "Consentimiento Informado", url: "/forensic/informed_consent", icon: FileSignature },
   { title: "Modelos de Informes", url: "/forensic/report_models", icon: FileText },
   { title: "Informes", url: "/documents", icon: FileText },
+  { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
 /**
@@ -91,6 +92,7 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
   "/judicial-case",
   "/reflexionar/informed-consent",
   "/evaluar/informed-consent",
+  "/suggestions",
 ]);
 
 const hiddenByArea: Record<string, string[]> = {
