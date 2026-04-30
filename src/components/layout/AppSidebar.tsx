@@ -54,6 +54,7 @@ const allPatientMenuItems = [
   { title: "Informes", url: "/documents", icon: FileText },
   { title: "Perfil del Profesional", url: "/professional-profile", icon: UserCheck },
   { title: "Consentimiento Informado", url: "/reflexionar/informed-consent", icon: FileSignature },
+  { title: "Consentimiento Informado", url: "/evaluar/informed-consent", icon: FileSignature },
   { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
@@ -89,11 +90,12 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
   "/forensic/report_models",
   "/judicial-case",
   "/reflexionar/informed-consent",
+  "/evaluar/informed-consent",
 ]);
 
 const hiddenByArea: Record<string, string[]> = {
-  reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell", "/judicial-case"],
-  evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
+  reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell", "/judicial-case", "/evaluar/informed-consent"],
+  evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura", "/reflexionar/informed-consent"],
   // 'acompanar' usa su propio menú dedicado (acompanarMenuItems), no se filtra desde allPatientMenuItems
 };
 

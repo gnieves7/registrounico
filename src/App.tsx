@@ -50,6 +50,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import DescargarPdf from "./pages/DescargarPdf";
 import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
+import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,7 @@ const App = () => (
                 <Route path="/psychobiography" element={<Psychobiography />} />
                 <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
                 <Route path="/reflexionar/informed-consent" element={<ProfessionalOnlyRoute><ReflexionarInformedConsent /></ProfessionalOnlyRoute>} />
+                <Route path="/evaluar/informed-consent" element={<ProfessionalOnlyRoute><EvaluarInformedConsent /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic/:section" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/judicial-case" element={<ProfessionalOnlyRoute><JudicialCase /></ProfessionalOnlyRoute>} />
