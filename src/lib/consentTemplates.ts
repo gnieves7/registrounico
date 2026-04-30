@@ -606,7 +606,6 @@ export const REFLEXIONAR_MODELS: ConsentModelMeta[] = [
 ];
 
 export const EVALUAR_MODELS: ConsentModelMeta[] = [
-  CONSENT_MODELS["ci-04"],
   CONSENT_MODELS["ci-05"],
   CONSENT_MODELS["ci-06"],
   CONSENT_MODELS["ci-07"],
