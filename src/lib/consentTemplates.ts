@@ -370,8 +370,8 @@ export const CONSENT_MODELS: Record<ConsentModelId, ConsentModelMeta> = {
     title: "CI-06 · Evaluación Neuropsicológica",
     shortTitle: "Neuropsicológica",
     description: "Consentimiento para evaluación neuropsicológica.",
-    file: "/templates/CI-06_Neuropsicologica.docx",
-    filename: "CI-06_Neuropsicologica.docx",
+    file: "/templates/CI-06_Neuropsicologica.pdf",
+    filename: "CI-06_Neuropsicologica.pdf",
     system: "evaluar",
     includes: [
       "Objetivo neuropsicológico (atención, memoria, funciones ejecutivas, lenguaje).",
@@ -424,8 +424,8 @@ export const CONSENT_MODELS: Record<ConsentModelId, ConsentModelMeta> = {
     title: "CI-07 · Aptitud Psicológica para Arma Reglamentaria",
     shortTitle: "Apto Arma",
     description: "Consentimiento para evaluación de aptitud psicológica para portación de arma.",
-    file: "/templates/CI-07_Arma_Reglamentaria.docx",
-    filename: "CI-07_Arma_Reglamentaria.docx",
+    file: "/templates/CI-07_Arma_Reglamentaria.pdf",
+    filename: "CI-07_Arma_Reglamentaria.pdf",
     system: "evaluar",
     includes: [
       "Marco normativo ANMaC (Ley 25.938 y Decreto 395/75).",
