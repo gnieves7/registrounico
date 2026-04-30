@@ -75,6 +75,7 @@ const acompanarMenuItems = [
   { title: "Consentimiento Informado", url: "/forensic/informed_consent", icon: FileSignature },
   { title: "Modelos de Informes", url: "/forensic/report_models", icon: FileText },
   { title: "Informes", url: "/documents", icon: FileText },
+  { title: "Sugerencias", url: "/suggestions", icon: Lightbulb },
 ];
 
 /**
