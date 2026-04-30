@@ -95,7 +95,7 @@ const PROFESSIONAL_ONLY_FORENSIC_URLS = new Set<string>([
 
 const hiddenByArea: Record<string, string[]> = {
   reflexionar: ["/psychodiagnostic", "/forensic", "/junta-medica", "/apto-psicologico", "/camara-gesell", "/judicial-case", "/evaluar/informed-consent"],
-  evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura"],
+  evaluar: ["/forensic", "/judicial-case", "/camara-gesell", "/dream-record", "/anxiety-record", "/emotional-thermometer", "/therapeutic-alliance", "/micro-tasks", "/symbolic-awards", "/notebook", "/laura", "/reflexionar/informed-consent"],
   // 'acompanar' usa su propio menú dedicado (acompanarMenuItems), no se filtra desde allPatientMenuItems
 };
 
