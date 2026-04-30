@@ -51,6 +51,7 @@ import DescargarPdf from "./pages/DescargarPdf";
 import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
 import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
+import Suggestions from "./pages/Suggestions";
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ const App = () => (
                 <Route path="/life-timeline" element={<ProfessionalOnlyRoute><LifeTimeline /></ProfessionalOnlyRoute>} />
                 <Route path="/micro-tasks" element={<ProfessionalOnlyRoute><MicroTasks /></ProfessionalOnlyRoute>} />
                 <Route path="/outcome-monitoring" element={<ProfessionalOnlyRoute><OutcomeMonitoring /></ProfessionalOnlyRoute>} />
+                <Route path="/suggestions" element={<ProfessionalOnlyRoute><Suggestions /></ProfessionalOnlyRoute>} />
               </Route>
               
               {/* Catch-all */}
