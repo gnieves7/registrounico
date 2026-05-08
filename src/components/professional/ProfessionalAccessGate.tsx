@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useConsentVersion } from "@/hooks/useConsentVersion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope, Download, RefreshCw } from "lucide-react";
+import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope, Download, RefreshCw, AlertTriangle, LogOut, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -15,7 +15,7 @@ interface Props {
 
 export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
-  const { user, isApproved, isAdmin } = useAuth();
+  const { user, isApproved, isAdmin, signOut } = useAuth();
   const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
   const {
     loading: consentLoading,
@@ -26,6 +26,22 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
   } = useConsentVersion();
   const [paying, setPaying] = useState(false);
   const [downloadingPrev, setDownloadingPrev] = useState(false);
+  const [emailAuthorized, setEmailAuthorized] = useState<boolean | null>(null);
+
+  // Verificar allowlist del email (admins se omiten)
+  useEffect(() => {
+    if (!user || isAdmin) {
+      setEmailAuthorized(true);
+      return;
+    }
+    let cancel = false;
+    (async () => {
+      const { data, error } = await supabase.rpc("is_current_email_authorized");
+      if (cancel) return;
+      setEmailAuthorized(error ? false : data === true);
+    })();
+    return () => { cancel = true; };
+  }, [user, isAdmin]);
 
   // Auto-redirect a la pantalla unificada de consentimiento si está pendiente
   // (excepto admins, que pueden navegar libremente)
@@ -40,8 +56,39 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     }
   }, [loading, isAdmin, isProfessional, needsConsent, navigate]);
 
-  if (loading || consentLoading) {
+  if (loading || consentLoading || emailAuthorized === null) {
     return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  }
+
+  // Email no autorizado por el admin → bloqueo total
+  if (user && !isAdmin && emailAuthorized === false) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+        <Card className="max-w-md w-full text-center">
+          <CardHeader>
+            <div className="mx-auto h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center mb-3">
+              <AlertTriangle className="h-6 w-6 text-destructive" />
+            </div>
+            <CardTitle>Acceso no autorizado</CardTitle>
+            <CardDescription>
+              El email <strong>{user.email}</strong> no está habilitado para ingresar.
+              Solicitá acceso al administrador para que pre-autorice tu cuenta.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <a
+              href="mailto:ghnieves14@gmail.com?subject=Solicitud%20de%20acceso%20a%20.PSI."
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              <Mail className="h-4 w-4" /> Solicitar acceso al administrador
+            </a>
+            <Button variant="outline" className="w-full" onClick={() => signOut()}>
+              <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   // Admin siempre tiene acceso. Si visita rutas profesionales con consentimiento pendiente,

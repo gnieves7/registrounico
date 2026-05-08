@@ -7,7 +7,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { DemoProvider } from "@/hooks/useDemoMode";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Login from "./pages/Login";
-import ProfessionalLanding from "./pages/ProfessionalLanding";
 import DashboardHome from "./pages/DashboardHome";
 import Notebook from "./pages/Notebook";
 import DreamRecord from "./pages/DreamRecord";
@@ -25,7 +24,6 @@ import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import PatientPrivacy from "./pages/PatientPrivacy";
-import PendingApproval from "./pages/PendingApproval";
 import NotFound from "./pages/NotFound";
 import CaseFormulation from "./pages/CaseFormulation";
 import EmotionalThermometer from "./pages/EmotionalThermometer";
@@ -40,10 +38,7 @@ import SymbolicAwards from "./pages/SymbolicAwards";
 import TelegramCenter from "./pages/TelegramCenter";
 import AdminDashboard from "./pages/AdminDashboard";
 import DemoEntry from "./pages/DemoEntry";
-import ProfessionalRegistration from "./pages/ProfessionalRegistration";
-import ProfessionalLogin from "./pages/ProfessionalLogin";
 import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAccessGate";
-import { PatientOnlyRoute } from "@/components/professional/PatientOnlyRoute";
 import { ProfessionalOnlyRoute } from "@/components/professional/ProfessionalOnlyRoute";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -67,46 +62,45 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/profesional" element={<ProfessionalLanding />} />
-              <Route path="/pending-approval" element={<PendingApproval />} />
+              {/* Compatibilidad: rutas antiguas redirigen al login unificado */}
+              <Route path="/profesional" element={<Navigate to="/login" replace />} />
+              <Route path="/profesional/login" element={<Navigate to="/login" replace />} />
+              <Route path="/profesional/registro" element={<Navigate to="/login" replace />} />
+              <Route path="/profesional/consentimiento" element={<Navigate to="/login" replace />} />
+              <Route path="/profesional/suscripcion" element={<Navigate to="/login" replace />} />
+              <Route path="/pending-approval" element={<Navigate to="/login" replace />} />
               <Route path="/demo" element={<DemoEntry />} />
-              <Route path="/profesional/registro" element={<ProfessionalRegistration />} />
-              <Route path="/profesional/consentimiento" element={<ProfessionalRegistration />} />
-              <Route path="/profesional/login" element={<ProfessionalLogin />} />
-              <Route path="/profesional/suscripcion" element={<ProfessionalAccessGate><Navigate to="/dashboard" replace /></ProfessionalAccessGate>} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/paciente/privacidad" element={<PatientPrivacy />} />
               <Route path="/descargar" element={<DescargarPdf />} />
               <Route path="/diagnostico-acceso" element={<DiagnosticoAcceso />} />
-              
-              {/* Protected routes with sidebar layout */}
 
+              {/* Protected routes — solo profesionales aprobados o admin */}
               <Route element={<ProfessionalAccessGate><AppLayout /></ProfessionalAccessGate>}>
                 <Route path="/dashboard" element={<DashboardHome />} />
-                <Route path="/psychobiography" element={<Psychobiography />} />
-                <Route path="/psychodiagnostic" element={<Psychodiagnostic />} />
+                <Route path="/psychobiography" element={<ProfessionalOnlyRoute><Psychobiography /></ProfessionalOnlyRoute>} />
+                <Route path="/psychodiagnostic" element={<ProfessionalOnlyRoute><Psychodiagnostic /></ProfessionalOnlyRoute>} />
                 <Route path="/reflexionar/informed-consent" element={<ProfessionalOnlyRoute><ReflexionarInformedConsent /></ProfessionalOnlyRoute>} />
                 <Route path="/evaluar/informed-consent" element={<ProfessionalOnlyRoute><EvaluarInformedConsent /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/forensic/:section" element={<ProfessionalOnlyRoute><Forensic /></ProfessionalOnlyRoute>} />
                 <Route path="/judicial-case" element={<ProfessionalOnlyRoute><JudicialCase /></ProfessionalOnlyRoute>} />
-                <Route path="/anxiety-record" element={<PatientOnlyRoute><AnxietyRecord /></PatientOnlyRoute>} />
+                <Route path="/anxiety-record" element={<ProfessionalOnlyRoute><AnxietyRecord /></ProfessionalOnlyRoute>} />
                 <Route path="/junta-medica" element={<ProfessionalOnlyRoute><JuntaMedicaLaboral /></ProfessionalOnlyRoute>} />
                 <Route path="/apto-psicologico" element={<ProfessionalOnlyRoute><AptoPsicologico /></ProfessionalOnlyRoute>} />
                 <Route path="/camara-gesell" element={<ProfessionalOnlyRoute><CamaraGesell /></ProfessionalOnlyRoute>} />
-                <Route path="/notebook" element={<PatientOnlyRoute><Notebook /></PatientOnlyRoute>} />
-                <Route path="/dream-record" element={<PatientOnlyRoute><DreamRecord /></PatientOnlyRoute>} />
-                <Route path="/sessions" element={<PatientOnlyRoute><Sessions /></PatientOnlyRoute>} />
-                <Route path="/laura" element={<PatientOnlyRoute><LauraChat /></PatientOnlyRoute>} />
-                <Route path="/documents" element={<PatientOnlyRoute><Documents /></PatientOnlyRoute>} />
+                <Route path="/notebook" element={<ProfessionalOnlyRoute><Notebook /></ProfessionalOnlyRoute>} />
+                <Route path="/dream-record" element={<ProfessionalOnlyRoute><DreamRecord /></ProfessionalOnlyRoute>} />
+                <Route path="/sessions" element={<ProfessionalOnlyRoute><Sessions /></ProfessionalOnlyRoute>} />
+                <Route path="/laura" element={<ProfessionalOnlyRoute><LauraChat /></ProfessionalOnlyRoute>} />
+                <Route path="/documents" element={<ProfessionalOnlyRoute><Documents /></ProfessionalOnlyRoute>} />
                 <Route path="/professional-profile" element={<ProfessionalOnlyRoute><ProfessionalProfile /></ProfessionalOnlyRoute>} />
-                <Route path="/symbolic-awards" element={<PatientOnlyRoute><SymbolicAwards /></PatientOnlyRoute>} />
+                <Route path="/symbolic-awards" element={<ProfessionalOnlyRoute><SymbolicAwards /></ProfessionalOnlyRoute>} />
                 <Route path="/telegram" element={<ProfessionalOnlyRoute><TelegramCenter /></ProfessionalOnlyRoute>} />
-                {/* Admin routes */}
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
                 <Route path="/case-formulation" element={<ProfessionalOnlyRoute><CaseFormulation /></ProfessionalOnlyRoute>} />
-                <Route path="/emotional-thermometer" element={<PatientOnlyRoute><EmotionalThermometer /></PatientOnlyRoute>} />
+                <Route path="/emotional-thermometer" element={<ProfessionalOnlyRoute><EmotionalThermometer /></ProfessionalOnlyRoute>} />
                 <Route path="/narrative-analysis" element={<ProfessionalOnlyRoute><NarrativeAnalysis /></ProfessionalOnlyRoute>} />
                 <Route path="/symptom-network" element={<ProfessionalOnlyRoute><SymptomNetwork /></ProfessionalOnlyRoute>} />
                 <Route path="/therapeutic-alliance" element={<ProfessionalOnlyRoute><TherapeuticAlliance /></ProfessionalOnlyRoute>} />
@@ -115,8 +109,7 @@ const App = () => (
                 <Route path="/outcome-monitoring" element={<ProfessionalOnlyRoute><OutcomeMonitoring /></ProfessionalOnlyRoute>} />
                 <Route path="/suggestions" element={<ProfessionalOnlyRoute><Suggestions /></ProfessionalOnlyRoute>} />
               </Route>
-              
-              {/* Catch-all */}
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
