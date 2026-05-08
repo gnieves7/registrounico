@@ -2217,7 +2217,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_email_authorized: { Args: { _email: string }; Returns: boolean }
+      is_current_email_authorized: { Args: never; Returns: boolean }
       issue_pdf_code: {
         Args: {
           _hours_valid?: number
