@@ -220,6 +220,30 @@ export type Database = {
         }
         Relationships: []
       }
+      authorized_emails: {
+        Row: {
+          authorized_by: string | null
+          created_at: string
+          email: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          authorized_by?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          authorized_by?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: []
+      }
       case_formulations: {
         Row: {
           created_at: string
@@ -2193,6 +2217,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_email_authorized: { Args: { _email: string }; Returns: boolean }
       issue_pdf_code: {
         Args: {
           _hours_valid?: number
