@@ -47,6 +47,7 @@ import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
 import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 import Suggestions from "./pages/Suggestions";
+import SimplePanel from "./pages/SimplePanel";
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const App = () => (
                 <Route path="/micro-tasks" element={<ProfessionalOnlyRoute><MicroTasks /></ProfessionalOnlyRoute>} />
                 <Route path="/outcome-monitoring" element={<ProfessionalOnlyRoute><OutcomeMonitoring /></ProfessionalOnlyRoute>} />
                 <Route path="/suggestions" element={<ProfessionalOnlyRoute><Suggestions /></ProfessionalOnlyRoute>} />
+                <Route path="/panel" element={<ProfessionalOnlyRoute><SimplePanel /></ProfessionalOnlyRoute>} />
               </Route>
 
               <Route path="*" element={<NotFound />} />
