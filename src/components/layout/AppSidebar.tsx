@@ -33,6 +33,7 @@ import {
 // Fallback menu items (used when no school is active, or for non-Reflexionar systems)
 const allPatientMenuItems = [
   { title: "Inicio", url: "/dashboard", icon: Home },
+  { title: "Panel (4 pestañas)", url: "/panel", icon: BarChart3 },
   { title: "Mi Psicobiografía", url: "/psychobiography", icon: User },
   { title: "Personalidad", url: "/psychodiagnostic", icon: Brain },
   { title: "Recursos Psicoforenses", url: "/forensic", icon: Scale },
