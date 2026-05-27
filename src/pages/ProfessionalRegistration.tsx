@@ -328,14 +328,14 @@ const ProfessionalRegistration = () => {
             className="inline-block rounded-md px-3 py-1 text-[11px] font-semibold uppercase tracking-[1.2px] mb-3"
             style={{ background: "#EEF3FA", color: "#1C3F6E", fontFamily: "'DM Sans', sans-serif" }}
           >
-            Registro Profesional · Gratis para Santa Fe
+            Registro Profesional · Acceso gratuito
           </span>
           <h1 className="text-[28px] md:text-[34px] font-bold leading-tight" style={{ fontFamily: "'DM Sans', sans-serif", color: "#1A1A1A" }}>
             Habilitá tu acceso profesional a{" "}
             <span style={{ color: "#A07C2E", fontFamily: "'Playfair Display', serif" }}>.PSI.</span>
           </h1>
           <p className="text-[15px] mt-3 max-w-xl mx-auto" style={{ color: "#6B6B6B", fontFamily: "'DM Sans', sans-serif" }}>
-            Acreditá tu matrícula y firmá digitalmente el consentimiento informado. El acceso es <strong>gratuito</strong> para psicólogos matriculados en la provincia de Santa Fe. Para otras jurisdicciones el costo es de <strong>USD 5/mes</strong>, sin permanencia.
+            Acreditá tu matrícula y firmá digitalmente el consentimiento informado. El acceso a la plataforma es <strong>totalmente gratuito</strong> una vez que el administrador autorice tu cuenta.
           </p>
         </div>
 
