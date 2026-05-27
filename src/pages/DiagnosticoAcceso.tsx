@@ -26,16 +26,14 @@ export default function DiagnosticoAcceso() {
     if (!user) return;
     setLoading(true);
     try {
-      const [{ data: p }, { data: r }, { data: s }, { data: c }, { data: a }] = await Promise.all([
+      const [{ data: p }, { data: r }, { data: c }, { data: a }] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("user_roles").select("*").eq("user_id", user.id),
-        supabase.from("professional_subscriptions").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("professional_consents").select("*").eq("user_id", user.id).order("accepted_at", { ascending: false }).limit(1).maybeSingle(),
         supabase.from("activity_log").select("event_type, event_detail, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
       ]);
       setDbProfile(p);
       setDbRoles(r ?? []);
-      setDbSub(s);
       setDbConsent(c);
       setActivity(a ?? []);
     } finally {
@@ -64,12 +62,7 @@ export default function DiagnosticoAcceso() {
   else if (dbProfile.account_type !== "professional") { blockReason = `account_type='${dbProfile.account_type}' (debería ser 'professional'). Algún trigger lo revirtió o nunca se cambió.`; blockKind = "error"; }
   else if (!dbProfile.consent_accepted_at) { blockReason = "Falta firmar consentimiento informado."; blockKind = "warn"; }
   else if (!dbProfile.is_approved) { blockReason = "Pendiente de aprobación del admin."; blockKind = "warn"; }
-  else {
-    const jur = (dbProfile.license_jurisdiction ?? "").trim().toLowerCase();
-    if (jur === "santa fe") { blockReason = "Santa Fe: acceso gratuito habilitado."; }
-    else if (dbSub?.paid_until && new Date(dbSub.paid_until) > new Date()) { blockReason = `Suscripción activa hasta ${new Date(dbSub.paid_until).toLocaleDateString()}.`; }
-    else { blockReason = `Jurisdicción '${dbProfile.license_jurisdiction ?? "(vacía)"}' requiere suscripción USD 5/mes.`; blockKind = "warn"; }
-  }
+  else { blockReason = "Acceso gratuito habilitado por el administrador."; }
 
   const sessionRows: Row[] = [
     { label: "isLoading (auth)", value: String(isLoading) },
@@ -102,9 +95,6 @@ export default function DiagnosticoAcceso() {
     { label: "approval_reason", value: dbProfile.approval_reason ?? "—" },
     { label: "approval_decided_at", value: dbProfile.approval_decided_at ?? "—" },
     { label: "roles", value: dbRoles.map(r => r.role).join(", ") || "—", ok: dbRoles.some(r => r.role === "admin" || r.role === "patient") },
-    { label: "subscription.status", value: dbSub?.status ?? "—" },
-    { label: "subscription.plan", value: dbSub?.plan ?? "—" },
-    { label: "subscription.paid_until", value: dbSub?.paid_until ?? "—" },
     { label: "consent (último)", value: dbConsent ? `${dbConsent.full_name} · DNI ${dbConsent.dni} · ${new Date(dbConsent.accepted_at).toLocaleString()}` : "—", ok: !!dbConsent },
   ] : [];
 
