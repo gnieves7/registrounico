@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, MapPin, CreditCard, UserPlus, ShieldAlert } from "lucide-react";
+import { Users, Briefcase, MapPin, UserPlus, ShieldAlert } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
