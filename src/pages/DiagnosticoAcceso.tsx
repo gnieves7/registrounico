@@ -17,7 +17,6 @@ export default function DiagnosticoAcceso() {
   const access = useProfessionalAccess();
   const [dbProfile, setDbProfile] = useState<any>(null);
   const [dbRoles, setDbRoles] = useState<any[]>([]);
-  const [dbSub, setDbSub] = useState<any>(null);
   const [dbConsent, setDbConsent] = useState<any>(null);
   const [activity, setActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
