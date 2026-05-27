@@ -35,7 +35,6 @@ export type AdminSection =
   | "professionals"
   | "authorizations"
   | "allowlist"
-  | "subscriptions"
   | "activity"
   | "audit_consents"
   | "audit_reports"
@@ -60,7 +59,6 @@ const sidebarItems: { key: AdminSection; label: string; icon: React.ElementType 
   { key: "professionals", label: "Profesionales", icon: Briefcase },
   { key: "authorizations", label: "Autorizaciones", icon: ShieldAlert },
   { key: "allowlist", label: "Emails autorizados", icon: ShieldCheck },
-  { key: "subscriptions", label: "Suscripciones", icon: CreditCard },
   { key: "activity", label: "Actividad", icon: Activity },
   { key: "audit_consents", label: "Auditoría Consentimientos", icon: ShieldCheck },
   { key: "audit_reports", label: "Auditoría Informes", icon: ShieldCheck },

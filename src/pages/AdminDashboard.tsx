@@ -13,7 +13,6 @@ import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSugge
 import { AdminPatientProposalsSection } from "@/components/admin/dashboard/AdminPatientProposalsSection";
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
 import { AdminAllowlistSection } from "@/components/admin/dashboard/AdminAllowlistSection";
-import { AdminSubscriptionsSection } from "@/components/admin/dashboard/AdminSubscriptionsSection";
 import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
 import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
 import { AdminReportsAuditSection } from "@/components/admin/dashboard/AdminReportsAuditSection";
@@ -56,7 +55,6 @@ export default function AdminDashboard() {
         {activeSection === "professionals" && <AdminProfessionalsSection />}
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
         {activeSection === "allowlist" && <AdminAllowlistSection />}
-        {activeSection === "subscriptions" && <AdminSubscriptionsSection />}
         {activeSection === "activity" && <AdminActivitySection />}
         {activeSection === "audit_consents" && <AdminAuditConsentsSection />}
         {activeSection === "audit_reports" && <AdminReportsAuditSection />}

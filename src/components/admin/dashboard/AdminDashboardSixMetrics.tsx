@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Briefcase, MapPin, CreditCard, UserPlus, ShieldAlert } from "lucide-react";
+import { Users, Briefcase, MapPin, UserPlus, ShieldAlert } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
@@ -60,9 +60,8 @@ export function AdminDashboardSixMetrics() {
       const weekAgo = subDays(new Date(), 7).toISOString();
       const now = new Date().toISOString();
 
-      const [{ data: allProfiles }, { data: subs }, { data: events }] = await Promise.all([
+      const [{ data: allProfiles }, { data: events }] = await Promise.all([
         supabase.from("profiles").select("user_id, full_name, account_type, is_approved, license_jurisdiction, created_at, approval_decided_at"),
-        supabase.from("professional_subscriptions").select("user_id, paid_until, status"),
         supabase.from("activity_log").select("id, user_id, event_type, event_detail, created_at").order("created_at", { ascending: false }).limit(10),
       ]);
 
@@ -72,12 +71,7 @@ export function AdminDashboardSixMetrics() {
       const activePros = proList.filter((p: any) => p.is_approved).length;
       const santaFePros = proList.filter((p: any) => p.is_approved && isSantaFe(p.license_jurisdiction)).length;
       const pendingAuth = proList.filter((p: any) => !p.is_approved && !p.approval_decided_at).length;
-      const paidUserIds = new Set(
-        (subs || [])
-          .filter((s: any) => s.paid_until && new Date(s.paid_until).getTime() > Date.now())
-          .map((s: any) => s.user_id)
-      );
-      const paidPros = proList.filter((p: any) => paidUserIds.has(p.user_id)).length;
+      const paidPros = 0;
       const newThisWeek = profiles.filter((p: any) => new Date(p.created_at) >= new Date(weekAgo)).length;
 
       setM({ totalPatients, activePros, santaFePros, paidPros, newThisWeek, pendingAuth });
@@ -102,8 +96,7 @@ export function AdminDashboardSixMetrics() {
   const cards = [
     { label: "Pacientes registrados", value: m.totalPatients, icon: Users, color: "text-blue-500" },
     { label: "Profesionales activos", value: m.activePros, icon: Briefcase, color: "text-emerald-500" },
-    { label: "Santa Fe (gratuitos)", value: m.santaFePros, icon: MapPin, color: "text-teal-500" },
-    { label: "Otras provincias (pagos)", value: m.paidPros, icon: CreditCard, color: "text-indigo-500" },
+    { label: "Profesionales Santa Fe", value: m.santaFePros, icon: MapPin, color: "text-teal-500" },
     { label: "Nuevos esta semana", value: m.newThisWeek, icon: UserPlus, color: "text-purple-500" },
     { label: "Autorizaciones pendientes", value: m.pendingAuth, icon: ShieldAlert, color: "text-amber-500" },
   ];

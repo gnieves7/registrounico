@@ -4,9 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Briefcase, Download, FileSignature, Loader2, ShieldCheck, CalendarClock, CheckCircle2, XCircle } from "lucide-react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { Briefcase, Download, FileSignature, Loader2, ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { ProfessionalActivityMonitor } from "./ProfessionalActivityMonitor";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -22,11 +20,6 @@ interface ProfessionalRow {
   license_college: string | null;
   consent_accepted_at: string | null;
   is_approved: boolean;
-  // subscription
-  status?: string;
-  trial_ends_at?: string;
-  paid_until?: string | null;
-  plan?: string | null;
   // consent
   pdf_storage_path?: string | null;
   consent_id?: string | null;
@@ -62,20 +55,15 @@ export function AdminProfessionalsSection() {
       return;
     }
 
-    const [{ data: subs }, { data: consents }] = await Promise.all([
-      supabase.from("professional_subscriptions").select("*").in("user_id", ids),
-      supabase.from("professional_consents").select("id, user_id, pdf_storage_path, accepted_at").in("user_id", ids),
-    ]);
+    const { data: consents } = await supabase
+      .from("professional_consents")
+      .select("id, user_id, pdf_storage_path, accepted_at")
+      .in("user_id", ids);
 
     const merged: ProfessionalRow[] = (profiles || []).map((p: any) => {
-      const sub = (subs || []).find((s: any) => s.user_id === p.user_id);
       const con = (consents || []).find((c: any) => c.user_id === p.user_id);
       return {
         ...p,
-        status: sub?.status,
-        trial_ends_at: sub?.trial_ends_at,
-        paid_until: sub?.paid_until,
-        plan: sub?.plan,
         pdf_storage_path: con?.pdf_storage_path,
         consent_id: con?.id,
       };
@@ -139,18 +127,6 @@ export function AdminProfessionalsSection() {
     load();
   }
 
-  function statusBadge(row: ProfessionalRow) {
-    const now = Date.now();
-    const trial = row.trial_ends_at ? new Date(row.trial_ends_at).getTime() : 0;
-    const paid = row.paid_until ? new Date(row.paid_until).getTime() : 0;
-    if (paid > now) return <Badge className="bg-emerald-600 hover:bg-emerald-700">Suscripción activa</Badge>;
-    if (trial > now) {
-      const days = Math.ceil((trial - now) / (1000 * 60 * 60 * 24));
-      return <Badge variant="secondary">Prueba ({days}d)</Badge>;
-    }
-    return <Badge variant="destructive">Vencido</Badge>;
-  }
-
   return (
     <div className="space-y-6 p-6">
       <div>
@@ -158,7 +134,7 @@ export function AdminProfessionalsSection() {
           <Briefcase className="h-6 w-6 text-primary" /> Profesionales
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Gestión de cuentas profesionales, suscripciones y consentimientos firmados.
+          Gestión de cuentas profesionales y consentimientos firmados. El acceso es gratuito para todos los profesionales autorizados.
         </p>
       </div>
 
@@ -168,7 +144,7 @@ export function AdminProfessionalsSection() {
             <ShieldCheck className="h-4 w-4" /> {rows.length} profesional{rows.length === 1 ? "" : "es"} registrado{rows.length === 1 ? "" : "s"}
           </CardTitle>
           <CardDescription>
-            Aprobá el acceso, descargá los consentimientos firmados y revisá el estado de cada suscripción.
+            Aprobá el acceso y descargá los consentimientos firmados.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -187,7 +163,6 @@ export function AdminProfessionalsSection() {
                   <TableRow>
                     <TableHead>Profesional</TableHead>
                     <TableHead>Matrícula</TableHead>
-                    <TableHead>Suscripción</TableHead>
                     <TableHead>Consentimiento</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
@@ -210,17 +185,6 @@ export function AdminProfessionalsSection() {
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col gap-1">
-                          {statusBadge(r)}
-                          {r.trial_ends_at && (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <CalendarClock className="h-3 w-3" />
-                              hasta {format(new Date(r.paid_until || r.trial_ends_at), "dd/MM/yyyy", { locale: es })}
-                            </span>
-                          )}
-                        </div>
                       </TableCell>
                       <TableCell>
                         {r.consent_accepted_at ? (
