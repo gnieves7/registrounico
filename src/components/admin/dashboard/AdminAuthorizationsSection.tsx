@@ -24,7 +24,6 @@ export function AdminAuthorizationsSection() {
   const [loading, setLoading] = useState(true);
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [processing, setProcessing] = useState<string | null>(null);
-  const [subsByUser, setSubsByUser] = useState<Record<string, { status: string; paid_until: string | null }>>({});
 
   const fetchPending = async () => {
     setLoading(true);
@@ -37,26 +36,12 @@ export function AdminAuthorizationsSection() {
       .order("created_at", { ascending: true });
     const list = (data || []) as PendingPro[];
     setPending(list);
-
-    if (list.length) {
-      const { data: subs } = await supabase
-        .from("professional_subscriptions")
-        .select("user_id, status, paid_until")
-        .in("user_id", list.map((p) => p.user_id));
-      const map: Record<string, { status: string; paid_until: string | null }> = {};
-      (subs || []).forEach((s: any) => {
-        map[s.user_id] = { status: s.status, paid_until: s.paid_until };
-      });
-      setSubsByUser(map);
-    }
     setLoading(false);
   };
 
   useEffect(() => {
     fetchPending();
   }, []);
-
-  const isSantaFe = (j: string | null) => (j || "").trim().toLowerCase() === "santa fe";
 
   const decide = async (userId: string, approve: boolean) => {
     setProcessing(userId);
@@ -112,8 +97,6 @@ export function AdminAuthorizationsSection() {
 
       <div className="grid gap-4 md:grid-cols-2">
         {pending.map((p) => {
-          const sf = isSantaFe(p.license_jurisdiction);
-          const sub = subsByUser[p.user_id];
           return (
             <Card key={p.user_id} className="border-amber-200 dark:border-amber-900/40">
               <CardHeader className="pb-3">
@@ -125,11 +108,7 @@ export function AdminAuthorizationsSection() {
                       {p.email}
                     </p>
                   </div>
-                  {sf ? (
-                    <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">Gratuito (SF)</Badge>
-                  ) : (
-                    <Badge variant="secondary">Pago · USD 5/mes</Badge>
-                  )}
+                  <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">Acceso gratuito</Badge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -146,13 +125,6 @@ export function AdminAuthorizationsSection() {
                     <Calendar className="h-3.5 w-3.5" />
                     <span>Solicitó el {format(new Date(p.created_at), "d MMM yyyy", { locale: es })}</span>
                   </div>
-                </div>
-
-                <div className="text-xs">
-                  <span className="text-muted-foreground">Suscripción actual: </span>
-                  <Badge variant="outline" className="text-[10px]">
-                    {sub?.status || "pending"}
-                  </Badge>
                 </div>
 
                 <Textarea
