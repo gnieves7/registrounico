@@ -29,7 +29,7 @@ interface AccessState {
 }
 
 export function useProfessionalAccess() {
-  const { user, profile, isAdmin } = useAuth();
+  const { user, profile, isAdmin, isApproved } = useAuth();
   const [state, setState] = useState<AccessState>({
     loading: true,
     subscription: null,
@@ -94,28 +94,16 @@ export function useProfessionalAccess() {
     const jurisdiction: string | null = (prof as any)?.license_jurisdiction ?? null;
     const isSantaFe = (jurisdiction || "").trim().toLowerCase() === "santa fe";
 
-    const { data: sub } = await supabase
-      .from("professional_subscriptions")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const now = Date.now();
-    const trialEnds = sub ? new Date((sub as any).trial_ends_at).getTime() : 0;
-    const paidUntil = (sub as any)?.paid_until ? new Date((sub as any).paid_until).getTime() : 0;
-
-    const isOnTrial = !!sub && trialEnds > now;
-    const isPaid = !!sub && paidUntil > now;
-    const trialDaysLeft = Math.max(0, Math.ceil((trialEnds - now) / (1000 * 60 * 60 * 24)));
-
-    // Psicólogos de Santa Fe: acceso gratuito tras firmar consentimiento.
-    // Resto: deben pagar USD 5/mes (sin trial ni plan anual).
-    const hasAccess = !needsConsent && (isSantaFe || isPaid);
-    const needsPayment = !needsConsent && !isSantaFe && !isPaid;
+    // Acceso 100% gratuito para todo profesional autorizado por el administrador.
+    // No hay suscripción ni pago. La aprobación se gestiona desde la allowlist del admin.
+    const hasAccess = !needsConsent && isApproved === true;
+    const needsPayment = false;
+    const isOnTrial = false;
+    const trialDaysLeft = 0;
 
     setState({
       loading: false,
-      subscription: sub as any,
+      subscription: null,
       isProfessional: true,
       hasAccess,
       isOnTrial,
@@ -125,7 +113,7 @@ export function useProfessionalAccess() {
       isSantaFe,
       jurisdiction,
     });
-  }, [user, isAdmin]);
+  }, [user, isAdmin, isApproved]);
 
   useEffect(() => {
     refresh();
