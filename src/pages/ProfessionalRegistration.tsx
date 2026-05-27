@@ -241,12 +241,6 @@ const ProfessionalRegistration = () => {
         .eq("user_id", user.id);
       if (profErr) throw profErr;
 
-      // Ensure subscription row exists (handle_new_user trigger should have created it)
-      await supabase.from("professional_subscriptions").upsert(
-        { user_id: user.id } as any,
-        { onConflict: "user_id", ignoreDuplicates: true } as any
-      );
-
       // Registro de auditoría: firma de consentimiento profesional
       // Guardado en activity_log para trazabilidad clínica/ética y descarga desde panel admin.
       await supabase.from("activity_log").insert({
@@ -303,9 +297,7 @@ const ProfessionalRegistration = () => {
       toast({
         title: "Registro completado",
         description:
-          form.licenseJurisdiction.trim().toLowerCase() === "santa fe"
-            ? "Acceso gratuito habilitado. El administrador revisará tu cuenta."
-            : "Tu acceso requiere suscripción de USD 5/mes. El administrador revisará tu cuenta.",
+          "Acceso gratuito. El administrador revisará y autorizará tu cuenta a la brevedad.",
       });
       navigate("/pending-approval");
     } catch (err: any) {
