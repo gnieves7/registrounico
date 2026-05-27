@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useConsentVersion } from "@/hooks/useConsentVersion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, AlertCircle, FileSignature, CreditCard, CheckCircle2, MapPin, ShieldAlert, Stethoscope, Download, RefreshCw, AlertTriangle, LogOut, Mail } from "lucide-react";
+import { Loader2, FileSignature, CheckCircle2, ShieldAlert, Download, RefreshCw, AlertTriangle, LogOut, Mail } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -16,7 +16,7 @@ interface Props {
 export const ProfessionalAccessGate = ({ children }: Props) => {
   const navigate = useNavigate();
   const { user, isApproved, isAdmin, signOut } = useAuth();
-  const { loading, isProfessional, hasAccess, needsPayment, needsConsent, isSantaFe, jurisdiction } = useProfessionalAccess();
+  const { loading, isProfessional, hasAccess, needsConsent } = useProfessionalAccess();
   const {
     loading: consentLoading,
     consentOutdated,
@@ -24,7 +24,6 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     signedVersion,
     signedPdfPath,
   } = useConsentVersion();
-  const [paying, setPaying] = useState(false);
   const [downloadingPrev, setDownloadingPrev] = useState(false);
   const [emailAuthorized, setEmailAuthorized] = useState<boolean | null>(null);
 
@@ -167,10 +166,10 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
   if (!isProfessional || hasAccess) {
     return (
       <>
-        {isProfessional && isSantaFe && (
+        {isProfessional && (
           <div className="bg-emerald-50 dark:bg-emerald-950/30 border-b border-emerald-200 dark:border-emerald-800 px-4 py-2 text-center text-xs text-emerald-900 dark:text-emerald-200 flex items-center justify-center gap-2">
-            <MapPin className="h-3.5 w-3.5" />
-            Acceso gratuito para psicólogos matriculados en Santa Fe
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Acceso profesional gratuito autorizado por el administrador
           </div>
         )}
         {children ?? <Outlet />}
@@ -197,69 +196,24 @@ export const ProfessionalAccessGate = ({ children }: Props) => {
     );
   }
 
-  // Needs payment (jurisdicciones fuera de Santa Fe)
-  const handleSubscribe = async () => {
-    setPaying(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("mercadopago-create-subscription", {
-        body: { plan: "monthly" },
-      });
-      if (error) throw error;
-      if (data?.init_point) window.location.href = data.init_point;
-      else throw new Error("No se obtuvo el link de pago");
-    } catch (err: any) {
-      console.error(err);
-      toast({ title: "Error al iniciar pago", description: err.message, variant: "destructive" });
-    } finally {
-      setPaying(false);
-    }
-  };
-
+  // Estado por defecto: pendiente de aprobación del administrador.
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-background">
-      <div className="max-w-md w-full space-y-6">
-        <Card>
-          <CardHeader className="text-center">
-            <div className="mx-auto h-12 w-12 rounded-full bg-amber-100 dark:bg-amber-950/40 flex items-center justify-center mb-3">
-              <AlertCircle className="h-6 w-6 text-amber-600" />
-            </div>
-            <CardTitle>Suscripción requerida</CardTitle>
-            <CardDescription>
-              .PSI. es gratuito para psicólogos matriculados en la provincia de Santa Fe.
-              Tu jurisdicción registrada es <strong>{jurisdiction || "(sin definir)"}</strong>, por lo que el acceso tiene un costo de
-              <strong> USD 5 por mes</strong>, sin permanencia.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="text-xs text-muted-foreground space-y-2">
-            <p className="flex items-start gap-2"><Stethoscope className="h-3.5 w-3.5 mt-0.5 shrink-0" /> Si sos de Santa Fe, actualizá tu jurisdicción en el perfil profesional para acceso gratis.</p>
-            <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico de acceso</Button>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2 border-primary">
-          <CardHeader>
-            <CardTitle className="text-lg">Acceso Profesional Mensual</CardTitle>
-            <div className="text-3xl font-bold text-primary">
-              USD 5<span className="text-sm font-normal text-muted-foreground">/mes</span>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Acceso completo a los 3 sistemas</p>
-            <p className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Sin permanencia</p>
-            <p className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-primary" /> Cancelás cuando quieras</p>
-            <Button disabled={paying} className="w-full mt-4 gap-2" onClick={handleSubscribe}>
-              {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-              Suscribirme por USD 5/mes
-            </Button>
-          </CardContent>
-        </Card>
-
-        <p className="text-xs text-center text-muted-foreground">
-          Pagos procesados de forma segura por MercadoPago. El monto en USD se convierte a pesos argentinos al tipo de cambio vigente.
-          Si sos psicólogo/a matriculado/a en Santa Fe, actualizá tu jurisdicción en tu perfil profesional para acceder gratis.
-        </p>
-      </div>
-    </div>
+    <GateShell
+      icon={<ShieldAlert className="h-6 w-6 text-amber-600" />}
+      title="Pendiente de autorización"
+      description="Tu cuenta está esperando la autorización del administrador. El acceso a .PSI. es gratuito para todos los profesionales una vez aprobados."
+    >
+      <a
+        href="mailto:ghnieves14@gmail.com?subject=Solicitud%20de%20acceso%20a%20.PSI."
+        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+      >
+        <Mail className="h-4 w-4" /> Solicitar autorización al administrador
+      </a>
+      <Button variant="outline" className="w-full" onClick={() => navigate("/diagnostico-acceso")}>Ver diagnóstico de acceso</Button>
+      <Button variant="ghost" className="w-full" onClick={() => signOut()}>
+        <LogOut className="h-4 w-4 mr-2" /> Cerrar sesión
+      </Button>
+    </GateShell>
   );
 };
 
