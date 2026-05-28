@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Eye, ClipboardList, Bell, CheckCircle2, XCircle, Trash2, Download, FileText } from "lucide-react";
+import { Search, Eye, ClipboardList, Bell, CheckCircle2, XCircle, Trash2, Download, FileText, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -205,6 +206,11 @@ export function AdminUsersSection() {
                       <div className="flex justify-end gap-1">
                         <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setSelectedPatient(p)}>
                           <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button asChild size="icon" variant="ghost" className="h-8 w-8" title="Abrir ficha completa">
+                          <Link to={`/admin/patient/${p.user_id}`}>
+                            <ExternalLink className="h-4 w-4" />
+                          </Link>
                         </Button>
                         {p.is_approved ? (
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" disabled={updatingStatus === p.user_id} onClick={() => updateStatus(p.user_id, false)}>
