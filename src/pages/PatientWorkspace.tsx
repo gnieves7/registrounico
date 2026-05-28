@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase as supabaseClient } from "@/integrations/supabase/client";
+const supabase: any = supabaseClient;
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
