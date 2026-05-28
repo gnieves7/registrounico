@@ -1,217 +1,113 @@
+## Objetivo
 
+Convertir el panel del profesional en una herramienta de trabajo clínico real: menos clics, más contexto a la vista, tipografía y densidad pensadas para usar muchas horas seguidas. Estética **Workspace enfocado** (grises fríos `#fafbfc / #e8ecf1 / #94a3b8` + azul `#3b82f6` como acento clínico).
 
-## Registro Clínico Personalizado
-### Plataforma Privada para la Dinámica Terapéutica
-
----
-
-### 🎯 Visión General
-
-Una webapp exclusiva para tus pacientes que sirve como espacio de reflexión, comunicación terapéutica y registro clínico compartido. La plataforma acompaña tu práctica profesional manteniendo los más altos estándares éticos de confidencialidad.
-
-**Estilo visual:** Profesional cálido con tonos tierra, beige y mostaza. Sensación acogedora pero profesional, ideal para un espacio terapéutico digital.
+Importante: este rediseño **solo afecta la experiencia del profesional/admin**. La vista del paciente (Reflexionar/Evaluar/Acompañar) queda intacta.
 
 ---
 
-### 👥 Roles de Usuario
+## 1. Sistema visual del workspace profesional
 
-**1. Paciente**
-- Acceso mediante Login con Google (OAuth 2.0)
-- Perfil personal con foto y psicobiografía
-- Vista de sus sesiones y calendario
-- Registro diario de estado emocional
-- Comunicación con Laura (asistente IA)
-- Descarga de documentos pagos
+Nuevo set de tokens semánticos en `index.css` activado con `body[data-area="pro"]` (sin pisar la paleta Borravino del lado paciente):
 
-**2. Psicólogo (Administrador)**
-- Login con Google + verificación de rol admin
-- Panel de administración completo
-- Gestión de todos los pacientes
-- Control total sobre sesiones y documentos
-- Subida de informes y configuración de precios
-- Vista de todos los registros emocionales
+- `--background` blanco frío, `--surface` panel `#f7f9fc`, `--border` `#e8ecf1`.
+- `--accent` azul clínico `#3b82f6`; estados: éxito verde frío, alerta ámbar, riesgo rojo apagado.
+- Tipografía: **Inter** para todo el cuerpo, **IBM Plex Sans** para títulos (más técnica y legible que Playfair en pantalla de trabajo). Tamaño base 13px, line-height 1.5, jerarquía compacta.
+- Densidad: cards con padding reducido, separadores `1px` finos en vez de sombras, radios `6px`.
+- Modo oscuro opcional con los mismos tokens (sin recargar la app).
 
----
+## 2. Sidebar reorganizado por flujo clínico
 
-### 🏠 Páginas y Funcionalidades
+Reemplazo de la lista plana de ~13 ítems administrativos por **5 grupos plegables** que reflejan el flujo de trabajo, manteniendo todas las rutas existentes:
 
-#### Para Pacientes
+- **Hoy** — Inicio, Próxima sesión, Agenda, Notificaciones.
+- **Pacientes** — Listado, ficha unificada (nuevo), formulación de caso, línea de vida.
+- **Evaluar** — Tests (MMPI-2, MCMI-III, MBTI, SCL-90-R), informes PDF, consentimientos.
+- **Seguir** — Monitoreo de resultados, alianza terapéutica, red de síntomas, análisis narrativo, micro-tareas, premios.
+- **Gestión** — Autorizaciones, emails autorizados, actividad, auditorías, sugerencias, configuración.
 
-**Dashboard Personal**
-- Saludo personalizado con nombre del paciente
-- Próxima cita destacada
-- Registro rápido del estado de ánimo del día (emojis)
-- Acceso directo a Laura (asistente)
-- Notificaciones pendientes
+Grupo activo expandido por defecto según la ruta. Modo colapsado con iconos + tooltip. Badge de pendientes solo en el grupo que corresponde (no esparcido).
 
-**Mi Psicobiografía**
-- Formulario digital completo basado en tu modelo (7 páginas)
-- Secciones: Datos personales, Familia, Amigos, Actividades, Historia laboral, Historia médica, Alimentación, Consumos, Valores personales, Historia psicológica, Eventos traumáticos, Historia legal
-- Guardado progresivo (el paciente puede completar en varias visitas)
-- Solo editable por el paciente, administrado por el profesional
-- Descarga en PDF cuando lo desee
+## 3. Dashboard profesional rediseñado (`/admin/dashboard`)
 
-**Calendario y Sesiones**
-- Integración visual con Google Calendar (muestra citas)
-- Enlace directo para agendar: tu link de appointments
-- Lista de sesiones pasadas con tema tratado
-- Posibilidad de agregar notas o preguntas para próxima sesión
-- Algunas sesiones editables por paciente, otras solo visibles
+Layout de tres columnas pensado para abrir la app y ver de un vistazo el día:
 
-**Registro del Estado Emocional**
-- Selector de emoji para estado de ánimo (😊 😐 😢 😤 😰 etc.)
-- Campo de texto para reflexión breve
-- Calendario visual con histórico de estados
-- Patrones y tendencias visibles
+```text
+┌─────────────────────────┬─────────────────────┐
+│ Próxima sesión (grande) │ Agenda de hoy       │
+│ paciente · hora · link  │ lista cronológica   │
+├─────────────────────────┤ próximos 7 días     │
+│ Alertas clínicas        │                     │
+│ (PHQ-9 alto, faltas,    ├─────────────────────┤
+│  ánimo ≤3, rupturas)    │ Pacientes activos   │
+├─────────────────────────┤ últimos en sesión   │
+│ Métricas compactas      │                     │
+│ (6 KPIs en una fila)    │                     │
+└─────────────────────────┴─────────────────────┘
+```
 
-**Laura, tu acompañante terapéutica**
-- Asistente IA conversacional simple
-- Responde preguntas básicas sobre psicología
-- Explica conceptos teóricos de forma accesible
-- Aclara dudas sobre logística (horarios, cancelaciones)
-- **Siempre aclara que no sustituye al psicólogo**
+- **Próxima sesión** ocupa la posición principal, con CTA a Google Calendar y a abrir la ficha del paciente.
+- **Alertas clínicas** unifica las señales que ya existen (ánimo ≤3, no-respondedores, rupturas de alianza) en un solo feed priorizado.
+- **Agenda de hoy** lista compacta con horarios; siempre visible al entrar.
+- KPIs se reducen a una fila horizontal (no 6 cards grandes apiladas).
 
-**Documentos**
-- Lista de documentos disponibles (subidos por el psicólogo)
-- Constancia de terapia e informes clínicos
-- Precio visible por cada documento
-- Botón de pago integrado con Mercado Pago
-- Descarga habilitada tras confirmación de pago
+## 4. Vista unificada de paciente (nuevo)
 
----
+Hoy la información del paciente está repartida en `PatientPsychobiographyView`, `PatientSessionsView`, `PatientDocumentsView`, `PatientDreamsView`, `PatientEmotionalView`, `PatientNotebookView`, `PatientAbcdeView`, `PatientPsychodiagnosticView`. Cada uno abre como modal aparte.
 
-#### Para el Psicólogo (Panel Admin)
+Nueva ruta `/admin/patient/:id` con:
 
-**Dashboard Administrativo**
-- Vista general de pacientes activos
-- Próximas citas del día/semana
-- Alertas de registros emocionales preocupantes
-- Resumen de documentos pendientes de entrega
+- Header sticky: avatar, nombre, edad, escuela activa, última sesión, próxima sesión, botón "Nueva nota".
+- Tabs: **Resumen · Sesiones · Psicobiografía · Tests · Documentos · Seguimiento · Cuaderno**.
+- Resumen muestra: formulación breve, últimos PHQ-9/GAD-7, últimos 3 estados emocionales, micro-tareas activas, alertas. Una pantalla = estado clínico del paciente.
+- Los componentes `Patient*View` actuales se reutilizan dentro de las tabs (no se reescribe la lógica).
 
-**Gestión de Pacientes**
-- Lista de todos los pacientes
-- Perfil completo con psicobiografía
-- Historial de sesiones
-- Registro emocional completo
-- Notas privadas del psicólogo
+Acceso desde el listado de pacientes y desde la agenda (click en sesión → ficha).
 
-**Gestión de Sesiones**
-- Crear/editar sesiones
-- Definir qué sesiones puede editar el paciente
-- Agregar tema tratado, notas clínicas
-- Vincular con calendario
+## 5. Notas de sesión más rápidas
 
-**Documentos e Informes**
-- Subir documentos (constancias, informes)
-- Definir precio por documento (variable)
-- Asignar documento a paciente específico
-- Ver estado de pagos
+Mejoras al editor de sesiones (no cambia el modelo de datos):
 
-**Configuración**
-- Gestión de links de calendario
-- Configuración de precios base
-- Personalización de mensajes de Laura
+- Panel lateral derecho dentro de la ficha del paciente — escribir sin perder el contexto.
+- **Plantillas por escuela** (CBT/Psicoanalítico/Humanista/Sistémico/Conductual) tomadas de `useSchoolContent`: bloques precargados (motivo, intervenciones, indicaciones, próxima sesión).
+- **Autoguardado** a `localStorage` cada 5s + flush a la DB al cerrar, indicador "Guardado hace Xs".
+- **Atajos**: `Cmd/Ctrl+S` guardar, `Cmd/Ctrl+Enter` cerrar sesión, `Cmd/Ctrl+K` paleta de comandos (saltar a paciente, abrir agenda, nueva nota).
+- Toolbar mínima: negrita/itálica/lista/cita y un botón "Insertar plantilla".
+
+## 6. Agenda siempre visible
+
+- Widget de agenda en el dashboard (punto 3).
+- Mini-agenda colapsable en el header de la ficha de paciente (próximos turnos de ese paciente).
+- Sigue usando `list-calendar-events` y el link de Google Calendar ya conectado, no se cambia la integración.
 
 ---
 
-### 🔐 Seguridad y Ética
+## Detalles técnicos
 
-- **Autenticación segura** con Google OAuth 2.0
-- **Separación de roles** en tabla dedicada (no en perfil)
-- **Row Level Security (RLS)** para proteger datos sensibles
-- **Sin criterio clínico en frontend** - la plataforma no diagnostica
-- **Sin almacenamiento de tarjetas** - pagos via Mercado Pago
-- **Datos confidenciales** protegidos según normativas
-- **Aviso ético visible**: "Esta plataforma acompaña la práctica profesional, no la sustituye"
+**Archivos a modificar (frontend, sin lógica de negocio nueva):**
 
----
+- `src/index.css`, `tailwind.config.ts` — tokens `[data-area="pro"]`, fuentes Inter/IBM Plex Sans.
+- `src/components/admin/AdminDashboardLayout.tsx` — sidebar agrupado, header simplificado, aplicación de `data-area="pro"`.
+- `src/components/admin/dashboard/AdminDashboardHome.tsx` — nuevo layout 3 columnas.
+- `src/components/admin/dashboard/AdminDashboardSixMetrics.tsx` — fila compacta.
+- `src/components/admin/dashboard/AdminProfessionalsSection.tsx` y `AdminUsersSection.tsx` — densidad de tabla.
+- **Nuevo** `src/pages/PatientWorkspace.tsx` + ruta `/admin/patient/:id` en `src/App.tsx`.
+- **Nuevo** `src/components/admin/patient/PatientHeader.tsx`, `PatientSummaryTab.tsx`, `SessionNoteEditor.tsx`, `CommandPalette.tsx`.
+- Reutilización (sin cambios internos) de los `Patient*View` actuales como contenido de tabs.
 
-### 💳 Sistema de Pagos
+**Lo que NO se toca:**
 
-- Integración con API de Mercado Pago
-- Generación de links de pago para cada documento
-- Confirmación automática de pago
-- Habilitación automática de descarga
-- Sin almacenar datos bancarios
+- Sidebar/dashboard/rutas del paciente (Reflexionar/Evaluar/Acompañar).
+- RLS, edge functions, esquemas de DB, generación de PDF.
+- Lógica de tests, consentimientos, MMPI-2/MCMI-III, formulación de caso, telegram, Laura.
+- Branding institucional del landing profesional (Playfair/azul institucional sigue ahí).
 
----
+**Riesgo:** bajo. Cambios concentrados en presentación y un nuevo contenedor de paciente que envuelve componentes existentes.
 
-### 🤖 Laura - Asistente IA
+## Orden de implementación
 
-Asistente conversacional simple que:
-- Responde preguntas frecuentes
-- Explica conceptos psicológicos básicos
-- Orienta sobre logística de consultas
-- Siempre indica cuando debe consultar al psicólogo
-- **No da consejos clínicos ni diagnósticos**
-
----
-
-### 📱 Diseño Visual
-
-**Paleta de colores:**
-- Principal: Tonos tierra cálidos (#8B7355)
-- Secundario: Beige suave (#F5F0E8)
-- Acento: Mostaza apagado (#C4A574)
-- Texto: Marrón oscuro (#4A3728)
-
-**Características:**
-- Interfaz simple y acogedora
-- Iconografía clara y profesional
-- Espacios amplios, sin saturación
-- Tipografía legible y cálida
-- Responsive (funciona en móvil y desktop)
-
-**Footer permanente:**
-> © 2026 Registro Clínico Personalizado  
-> Creado y desarrollado por el Lic. Esp. German Nieves  
-> Para más información: www.psicodiagnostico-forense.com.ar
-
----
-
-### 🛠 Tecnología a Utilizar
-
-- **Frontend:** React con TypeScript y Tailwind CSS
-- **Backend:** Lovable Cloud con Supabase
-- **Base de datos:** PostgreSQL (via Supabase)
-- **Autenticación:** Google OAuth 2.0
-- **Pagos:** Mercado Pago API
-- **IA:** Lovable AI Gateway (para Laura)
-- **Almacenamiento:** Supabase Storage (documentos e imágenes)
-
----
-
-### 📋 Fases de Desarrollo
-
-**Fase 1: Infraestructura y Autenticación**
-- Configuración de Lovable Cloud
-- Sistema de login con Google
-- Roles (paciente/psicólogo)
-- Estructura de base de datos
-
-**Fase 2: Funcionalidades Core del Paciente**
-- Dashboard personal
-- Psicobiografía digital completa
-- Registro emocional diario
-- Vista de calendario/sesiones
-
-**Fase 3: Panel de Administración**
-- Dashboard administrativo
-- Gestión de pacientes y sesiones
-- Sistema de notas clínicas
-
-**Fase 4: Documentos y Pagos**
-- Sistema de documentos
-- Integración Mercado Pago
-- Descarga de PDFs
-
-**Fase 5: Laura (Asistente IA)**
-- Chat conversacional
-- Base de conocimiento
-- Límites éticos configurados
-
-**Fase 6: Pulido Final**
-- Optimización de diseño
-- Pruebas de seguridad
-- Ajustes de usabilidad
-
+1. Tokens visuales + tipografía + activación `data-area="pro"`.
+2. Sidebar agrupado por flujo.
+3. Dashboard rediseñado con agenda y alertas.
+4. Vista unificada de paciente con tabs (reutilizando vistas actuales).
+5. Editor de notas rápido + paleta de comandos.
