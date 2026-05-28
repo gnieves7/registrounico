@@ -48,6 +48,7 @@ import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
 import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 import Suggestions from "./pages/Suggestions";
 import SimplePanel from "./pages/SimplePanel";
+import PatientWorkspace from "./pages/PatientWorkspace";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,7 @@ const App = () => (
                 <Route path="/telegram" element={<ProfessionalOnlyRoute><TelegramCenter /></ProfessionalOnlyRoute>} />
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+                <Route path="/admin/patient/:id" element={<AdminGuard><PatientWorkspace /></AdminGuard>} />
                 <Route path="/case-formulation" element={<ProfessionalOnlyRoute><CaseFormulation /></ProfessionalOnlyRoute>} />
                 <Route path="/emotional-thermometer" element={<ProfessionalOnlyRoute><EmotionalThermometer /></ProfessionalOnlyRoute>} />
                 <Route path="/narrative-analysis" element={<ProfessionalOnlyRoute><NarrativeAnalysis /></ProfessionalOnlyRoute>} />

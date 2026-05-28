@@ -46,10 +46,7 @@ export default function AdminDashboard() {
         pendingAuthCount={pendingAuthCount}
       >
         {activeSection === "dashboard" && (
-          <div className="space-y-8">
-            <AdminDashboardSixMetrics />
-            <AdminDashboardHome />
-          </div>
+          <AdminDashboardHome />
         )}
         {activeSection === "users" && <AdminUsersSection />}
         {activeSection === "professionals" && <AdminProfessionalsSection />}

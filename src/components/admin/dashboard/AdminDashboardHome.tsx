@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoMode } from "@/hooks/useDemoMode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Brain, Moon, Thermometer, Award } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Moon, Thermometer, ShieldAlert } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { motion } from "framer-motion";
@@ -11,8 +10,9 @@ import {
   demoPatients,
   demoAdminActivity,
   demoAdminAlerts,
-  demoWeeklyData,
 } from "@/data/demoData";
+import { ProNextSessionCard } from "./ProNextSessionCard";
+import { ProAgendaWidget } from "./ProAgendaWidget";
 
 interface DashboardMetrics {
   totalUsers: number;
@@ -59,7 +59,6 @@ export function AdminDashboardHome() {
     testsCompletedToday: 0,
     newUsersToday: 0,
   });
-  const [weeklyData, setWeeklyData] = useState<{ day: string; tests: number }[]>([]);
   const [recentActivity, setRecentActivity] = useState<{ id: string; event_type: string; event_detail: any; created_at: string }[]>([]);
   const [patientAlerts, setPatientAlerts] = useState<{ id: string; type: string; patient: string; detail: string; time: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +66,6 @@ export function AdminDashboardHome() {
   useEffect(() => {
     if (isDemoMode) {
       setMetrics({ totalUsers: demoPatients.length, testsStartedToday: 2, testsCompletedToday: 1, newUsersToday: 1 });
-      setWeeklyData(demoWeeklyData);
       setRecentActivity(demoAdminActivity);
       setPatientAlerts(demoAdminAlerts);
       setLoading(false);
@@ -75,7 +73,6 @@ export function AdminDashboardHome() {
     }
 
     fetchMetrics();
-    fetchWeeklyData();
     fetchRecentActivity();
     fetchPatientAlerts();
 
@@ -111,27 +108,6 @@ export function AdminDashboardHome() {
       console.error("Error fetching metrics:", e);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchWeeklyData = async () => {
-    try {
-      const days: { day: string; tests: number }[] = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = subDays(new Date(), i);
-        const dayStart = startOfDay(date).toISOString();
-        const dayEnd = startOfDay(subDays(date, -1)).toISOString();
-        const { count } = await supabase
-          .from("activity_log")
-          .select("*", { count: "exact", head: true })
-          .eq("event_type", "test_complete")
-          .gte("created_at", dayStart)
-          .lt("created_at", dayEnd);
-        days.push({ day: format(date, "EEE", { locale: es }), tests: count || 0 });
-      }
-      setWeeklyData(days);
-    } catch (e) {
-      console.error("Error fetching weekly data:", e);
     }
   };
 
@@ -186,140 +162,119 @@ export function AdminDashboardHome() {
   };
 
   const metricCards = [
-    { label: "Usuarios totales", value: metrics.totalUsers, icon: Users, color: "text-blue-500" },
-    { label: "Tests iniciados hoy", value: metrics.testsStartedToday, icon: ClipboardList, color: "text-amber-500" },
-    { label: "Tests completados hoy", value: metrics.testsCompletedToday, icon: CheckCircle2, color: "text-green-500" },
-    { label: "Nuevos registros (24h)", value: metrics.newUsersToday, icon: UserPlus, color: "text-purple-500" },
+    { label: "Usuarios totales", value: metrics.totalUsers, icon: Users },
+    { label: "Tests iniciados hoy", value: metrics.testsStartedToday, icon: ClipboardList },
+    { label: "Completados hoy", value: metrics.testsCompletedToday, icon: CheckCircle2 },
+    { label: "Nuevos hoy", value: metrics.newUsersToday, icon: UserPlus },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Metric Cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {metricCards.map((m, i) => (
-          <motion.div
-            key={m.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-          >
-            <Card>
-              <CardContent className="flex items-center gap-3 py-5">
-                <div className="rounded-xl bg-muted p-2.5">
-                  <m.icon className={`h-5 w-5 ${m.color}`} />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">
-                    {loading ? "—" : m.value}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{m.label}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+    <div className="space-y-5">
+      {/* Compact KPI row */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {metricCards.map((m) => (
+          <Card key={m.label} className="border-border/60">
+            <CardContent className="flex items-center gap-3 py-3 px-4">
+              <div className="rounded-md bg-muted p-1.5">
+                <m.icon className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-xl font-semibold tracking-tight text-foreground">
+                  {loading ? "—" : m.value}
+                </p>
+                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {m.label}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
-      {/* Patient Contributions Alert Panel */}
-      {patientAlerts.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
-          <Card className="border-primary/30 bg-primary/5">
+      {/* Main 3-column workspace */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-5">
+          <ProNextSessionCard />
+
+          {/* Clinical alerts */}
+          <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Bell className="h-4 w-4 text-primary animate-pulse" />
-                Aportes recientes de pacientes
-                <span className="ml-auto rounded-full bg-primary/20 px-2 py-0.5 text-xs font-semibold text-primary">
-                  {patientAlerts.length}
-                </span>
+              <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+                <ShieldAlert className="h-4 w-4 text-amber-500" />
+                Alertas clínicas
+                {patientAlerts.length > 0 && (
+                  <span className="ml-auto rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-600">
+                    {patientAlerts.length}
+                  </span>
+                )}
               </CardTitle>
             </CardHeader>
-            <CardContent className="max-h-[300px] overflow-y-auto space-y-2">
-              {patientAlerts.map((alert) => {
-                const AlertIcon = alertIcons[alert.type] || FileText;
-                const isLowMood = alert.detail.includes("⚠️");
-                return (
-                  <div
-                    key={alert.id}
-                    className={`flex items-start gap-3 rounded-lg border p-3 text-sm transition-colors ${
-                      isLowMood ? "border-destructive/30 bg-destructive/5" : "border-border bg-card"
-                    }`}
-                  >
-                    <div className={`mt-0.5 rounded-lg p-1.5 ${isLowMood ? "bg-destructive/10" : "bg-primary/10"}`}>
-                      <AlertIcon className={`h-4 w-4 ${isLowMood ? "text-destructive" : "text-primary"}`} />
+            <CardContent className="max-h-[260px] overflow-y-auto space-y-1.5">
+              {patientAlerts.length === 0 ? (
+                <p className="text-xs text-muted-foreground text-center py-6">
+                  Sin alertas activas.
+                </p>
+              ) : (
+                patientAlerts.map((alert) => {
+                  const AlertIcon = alertIcons[alert.type] || FileText;
+                  const isLowMood = alert.detail.includes("⚠️");
+                  return (
+                    <div
+                      key={alert.id}
+                      className={`flex items-start gap-2.5 rounded-md border px-2.5 py-2 text-xs transition-colors ${
+                        isLowMood
+                          ? "border-destructive/30 bg-destructive/5"
+                          : "border-border bg-background/50"
+                      }`}
+                    >
+                      <AlertIcon
+                        className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${
+                          isLowMood ? "text-destructive" : "text-muted-foreground"
+                        }`}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground">{alert.patient}</p>
+                        <p className="text-[11px] text-muted-foreground">{alert.detail}</p>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        {format(new Date(alert.time), "d MMM HH:mm", { locale: es })}
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground">{alert.patient}</p>
-                      <p className="text-xs text-muted-foreground">{alert.detail}</p>
-                    </div>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      {format(new Date(alert.time), "d MMM HH:mm", { locale: es })}
-                    </span>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </CardContent>
           </Card>
-        </motion.div>
-      )}
 
-      <div className="grid gap-6 lg:grid-cols-5">
-        {/* Weekly Chart */}
-        <motion.div
-          className="lg:col-span-3"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.45 }}
-        >
+          {/* Activity feed */}
           <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Activity className="h-4 w-4" />
-                Actividad semanal — Tests completados
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Activity className="h-4 w-4 text-muted-foreground" />
+                Actividad reciente
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="day" className="text-xs" />
-                  <YAxis allowDecimals={false} className="text-xs" />
-                  <Tooltip />
-                  <Bar dataKey="tests" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Activity Feed */}
-        <motion.div
-          className="lg:col-span-2"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Feed de actividad</CardTitle>
-            </CardHeader>
-            <CardContent className="max-h-[280px] overflow-y-auto space-y-2">
+            <CardContent className="max-h-[260px] overflow-y-auto space-y-1">
               {recentActivity.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Sin actividad reciente</p>
+                <p className="text-xs text-muted-foreground text-center py-6">
+                  Sin actividad reciente
+                </p>
               ) : (
                 recentActivity.map((a) => (
-                  <div key={a.id} className="flex items-start gap-2 rounded-md border border-border p-2 text-xs">
-                    <span>{eventIcons[a.event_type] || "📌"}</span>
+                  <div
+                    key={a.id}
+                    className="flex items-start gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-muted/50 transition-colors"
+                  >
+                    <span className="text-sm">{eventIcons[a.event_type] || "·"}</span>
                     <div className="flex-1 min-w-0">
                       <span className="font-medium">
                         {(a.event_detail as any)?.user_name || "Usuario"}
-                      </span>
-                      {" — "}
+                      </span>{" "}
                       <span className="text-muted-foreground">
                         {eventLabels[a.event_type] || a.event_type}
-                        {(a.event_detail as any)?.test_type ? ` (${(a.event_detail as any).test_type})` : ""}
                       </span>
                     </div>
-                    <span className="text-muted-foreground whitespace-nowrap">
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                       {format(new Date(a.created_at), "HH:mm")}
                     </span>
                   </div>
@@ -327,7 +282,12 @@ export function AdminDashboardHome() {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
+
+        {/* Right column — agenda always visible */}
+        <div className="lg:col-span-1">
+          <ProAgendaWidget />
+        </div>
       </div>
     </div>
   );
