@@ -61,19 +61,17 @@ function PatientWorkspaceInner() {
     if (!userId) return;
     let cancelled = false;
     (async () => {
-      const [{ data: p }, { data: sessions }] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("user_id, full_name, email, avatar_url, is_approved, created_at, account_type")
-          .eq("user_id", userId)
-          .maybeSingle(),
-        supabase
-          .from("sessions")
-          .select("id, session_date, topic")
-          .eq("user_id", userId)
-          .order("session_date", { ascending: false })
-          .limit(20),
-      ]);
+      const { data: p } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, email, avatar_url, is_approved, created_at, account_type")
+        .eq("user_id", userId)
+        .maybeSingle();
+      const { data: sessions } = await supabase
+        .from("sessions")
+        .select("id, session_date, topic")
+        .eq("user_id", userId)
+        .order("session_date", { ascending: false })
+        .limit(20);
       if (cancelled) return;
       setProfile((p as any) || null);
       const now = Date.now();
@@ -239,19 +237,17 @@ function PatientSummary({
 
   useEffect(() => {
     (async () => {
-      const [sess, docs, dreams, emo, abc, emoRecent] = await Promise.all([
-        supabase.from("sessions").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("documents").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("dream_records").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("emotional_records").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("anxiety_abcde_records").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase
-          .from("emotional_records")
-          .select("id, emoji, mood_score, reflection, created_at")
-          .eq("user_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(5),
-      ]);
+      const sess = await supabase.from("sessions").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const docs = await supabase.from("documents").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const dreams = await supabase.from("dream_records").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const emo = await supabase.from("emotional_records").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const abc = await supabase.from("anxiety_abcde_records").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const emoRecent = await supabase
+        .from("emotional_records")
+        .select("id, emoji, mood_score, reflection, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(5);
       setCounts({
         sessions: sess.count || 0,
         documents: docs.count || 0,
