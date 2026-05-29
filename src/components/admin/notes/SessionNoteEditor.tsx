@@ -176,7 +176,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
       {/* Template + status */}
       <div className="border-b border-border px-3 py-2 flex items-center gap-3 flex-wrap bg-muted/30">
         <div className="flex items-center gap-2">
-          <Label className="text-[11px] text-muted-foreground">Plantilla ({school.label}):</Label>
+          <Label className="text-[11px] text-muted-foreground">Plantilla ({school.name}):</Label>
           <Select value={templateId} onValueChange={(v) => setTemplateId(v)}>
             <SelectTrigger className="h-7 w-[200px] text-xs">
               <SelectValue />
