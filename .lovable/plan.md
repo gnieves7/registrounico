@@ -1,113 +1,88 @@
 ## Objetivo
 
-Convertir el panel del profesional en una herramienta de trabajo clínico real: menos clics, más contexto a la vista, tipografía y densidad pensadas para usar muchas horas seguidas. Estética **Workspace enfocado** (grises fríos `#fafbfc / #e8ecf1 / #94a3b8` + azul `#3b82f6` como acento clínico).
+Convertir el panel profesional en una herramienta simple y productiva: una entrada con **tres accesos clínicos** (Notas clínicas, Reserva de turnos, Recursos simbólicos), y dentro de la ficha del paciente un flujo enfocado en **leer, escribir y exportar notas de sesión** con plantillas por escuela, autoguardado y atajos.
 
-Importante: este rediseño **solo afecta la experiencia del profesional/admin**. La vista del paciente (Reflexionar/Evaluar/Acompañar) queda intacta.
+## 1. Unificar el panel profesional (Home con 3 accesos)
 
----
+Reemplazar el dashboard actual (`AdminDashboardHome.tsx`) por una vista limpia con:
 
-## 1. Sistema visual del workspace profesional
+- **Cabecera**: saludo + próxima sesión (reutiliza `ProNextSessionCard`) en una sola fila compacta.
+- **Tres tarjetas de acceso grandes** (grid 3 columnas, 1 en móvil):
+  1. **Notas clínicas** → abre la sección Pacientes (lista para elegir paciente y entrar a su ficha → tab Sesiones/Notas).
+  2. **Reserva de turnos** → abre Pacientes con foco en "Nueva sesión" y muestra agenda lateral (reutiliza `ProAgendaWidget`).
+  3. **Recursos simbólicos** → nueva sección que agrupa: premios simbólicos del paciente, micro-tareas, alianza terapéutica, recursos profesionales.
+- **Sidebar simplificada**: colapsar los 5 grupos a 3 entradas principales (Hoy, Pacientes, Recursos simbólicos) + un grupo "Gestión" plegable con lo administrativo. La paleta de comandos (⌘K) se mantiene.
 
-Nuevo set de tokens semánticos en `index.css` activado con `body[data-area="pro"]` (sin pisar la paleta Borravino del lado paciente):
+Archivos: `src/components/admin/dashboard/AdminDashboardHome.tsx` (rediseño), `src/components/admin/AdminDashboardLayout.tsx` (sidebar a 3+1 grupos).
 
-- `--background` blanco frío, `--surface` panel `#f7f9fc`, `--border` `#e8ecf1`.
-- `--accent` azul clínico `#3b82f6`; estados: éxito verde frío, alerta ámbar, riesgo rojo apagado.
-- Tipografía: **Inter** para todo el cuerpo, **IBM Plex Sans** para títulos (más técnica y legible que Playfair en pantalla de trabajo). Tamaño base 13px, line-height 1.5, jerarquía compacta.
-- Densidad: cards con padding reducido, separadores `1px` finos en vez de sombras, radios `6px`.
-- Modo oscuro opcional con los mismos tokens (sin recargar la app).
+## 2. Ficha del paciente: notas por fecha
 
-## 2. Sidebar reorganizado por flujo clínico
+En `PatientWorkspace.tsx`, reemplazar el tab "Sesiones" por uno renombrado **"Notas clínicas"** con dos paneles:
 
-Reemplazo de la lista plana de ~13 ítems administrativos por **5 grupos plegables** que reflejan el flujo de trabajo, manteniendo todas las rutas existentes:
+- **Izquierda (lista)**: timeline vertical de sesiones del paciente ordenadas por fecha desc., agrupadas por mes. Cada item muestra fecha, hora, tema, badge "Próxima/Pasada" y un indicador si ya tiene notas. Acciones rápidas en cada item: **Editar**, **Exportar PDF** (jsPDF de esa sola nota), **Eliminar**.
+- **Derecha (editor)**: al seleccionar una nota, se abre el editor (sección 3). Botón "+ Nueva nota" en cabecera.
 
-- **Hoy** — Inicio, Próxima sesión, Agenda, Notificaciones.
-- **Pacientes** — Listado, ficha unificada (nuevo), formulación de caso, línea de vida.
-- **Evaluar** — Tests (MMPI-2, MCMI-III, MBTI, SCL-90-R), informes PDF, consentimientos.
-- **Seguir** — Monitoreo de resultados, alianza terapéutica, red de síntomas, análisis narrativo, micro-tareas, premios.
-- **Gestión** — Autorizaciones, emails autorizados, actividad, auditorías, sugerencias, configuración.
+Componentes nuevos: `src/components/admin/notes/SessionNotesList.tsx`, `src/components/admin/notes/SessionNoteCard.tsx`, `src/lib/sessionNotePdf.ts` (export individual reutilizando estilo Santa Fe).
 
-Grupo activo expandido por defecto según la ruta. Modo colapsado con iconos + tooltip. Badge de pendientes solo en el grupo que corresponde (no esparcido).
+Reescribir parcialmente `PatientSessionsView.tsx` para separar lista (sin modal monolítico) y edición.
 
-## 3. Dashboard profesional rediseñado (`/admin/dashboard`)
+## 3. Editor de notas con plantillas por escuela
 
-Layout de tres columnas pensado para abrir la app y ver de un vistazo el día:
+Crear `src/components/admin/notes/SessionNoteEditor.tsx` con:
 
-```text
-┌─────────────────────────┬─────────────────────┐
-│ Próxima sesión (grande) │ Agenda de hoy       │
-│ paciente · hora · link  │ lista cronológica   │
-├─────────────────────────┤ próximos 7 días     │
-│ Alertas clínicas        │                     │
-│ (PHQ-9 alto, faltas,    ├─────────────────────┤
-│  ánimo ≤3, rupturas)    │ Pacientes activos   │
-├─────────────────────────┤ últimos en sesión   │
-│ Métricas compactas      │                     │
-│ (6 KPIs en una fila)    │                     │
-└─────────────────────────┴─────────────────────┘
-```
+- **Cabecera**: fecha/hora (date+time picker), tema, switch "editable por paciente".
+- **Selector de plantilla** poblado por `useSchoolContent('session_note')` con plantillas específicas por escuela (CBT: ABCDE + SUDs + tarea; Psicoanalítica: après-coup, transferencia; Sistémica: hipótesis, intervención; Humanística: foco vivencial; Conductual: ABC + reforzadores). Al elegir plantilla, se inyectan **campos sugeridos** estructurados como secciones colapsables.
+- **Cuerpo**: campos sugeridos por escuela (textareas titulados) + un bloque libre "Notas adicionales". Todo se persiste como markdown en `sessions.clinical_notes` (estructura: `## Sección\ncontenido`).
+- **Pie**: estado de guardado ("Guardado hace 3s"), botón Guardar, botón Exportar PDF.
 
-- **Próxima sesión** ocupa la posición principal, con CTA a Google Calendar y a abrir la ficha del paciente.
-- **Alertas clínicas** unifica las señales que ya existen (ánimo ≤3, no-respondedores, rupturas de alianza) en un solo feed priorizado.
-- **Agenda de hoy** lista compacta con horarios; siempre visible al entrar.
-- KPIs se reducen a una fila horizontal (no 6 cards grandes apiladas).
+Añadir entradas `session_note` en cada archivo `src/data/{cbt,psychoanalytic,systemic,humanistic,behavioral}Content.ts` con las plantillas.
 
-## 4. Vista unificada de paciente (nuevo)
+## 4. Autoguardado y atajos de teclado
 
-Hoy la información del paciente está repartida en `PatientPsychobiographyView`, `PatientSessionsView`, `PatientDocumentsView`, `PatientDreamsView`, `PatientEmotionalView`, `PatientNotebookView`, `PatientAbcdeView`, `PatientPsychodiagnosticView`. Cada uno abre como modal aparte.
+Hook nuevo `src/hooks/useAutosave.ts`:
+- Debounce 1,5 s tras el último cambio, máximo cada 10 s.
+- Estados: `idle | saving | saved | error`, expuestos al editor.
+- Backup local en `localStorage` con clave `note-draft:<sessionId>` para recuperación si falla la red.
 
-Nueva ruta `/admin/patient/:id` con:
+Atajos (registrados solo cuando el editor tiene foco):
+- **Ctrl/Cmd+S** → guardar inmediato.
+- **Ctrl/Cmd+Enter** → guardar y cerrar el editor.
+- **Ctrl/Cmd+↑ / ↓** → navegar a la nota anterior/siguiente del paciente.
+- **Ctrl/Cmd+N** → nueva nota (fecha = ahora).
+- **Esc** → cerrar editor (avisa si hay cambios sin guardar).
 
-- Header sticky: avatar, nombre, edad, escuela activa, última sesión, próxima sesión, botón "Nueva nota".
-- Tabs: **Resumen · Sesiones · Psicobiografía · Tests · Documentos · Seguimiento · Cuaderno**.
-- Resumen muestra: formulación breve, últimos PHQ-9/GAD-7, últimos 3 estados emocionales, micro-tareas activas, alertas. Una pantalla = estado clínico del paciente.
-- Los componentes `Patient*View` actuales se reutilizan dentro de las tabs (no se reescribe la lógica).
+Indicador visual de atajos en el pie del editor (icono "?" con tooltip).
 
-Acceso desde el listado de pacientes y desde la agenda (click en sesión → ficha).
+## Qué NO se toca
 
-## 5. Notas de sesión más rápidas
-
-Mejoras al editor de sesiones (no cambia el modelo de datos):
-
-- Panel lateral derecho dentro de la ficha del paciente — escribir sin perder el contexto.
-- **Plantillas por escuela** (CBT/Psicoanalítico/Humanista/Sistémico/Conductual) tomadas de `useSchoolContent`: bloques precargados (motivo, intervenciones, indicaciones, próxima sesión).
-- **Autoguardado** a `localStorage` cada 5s + flush a la DB al cerrar, indicador "Guardado hace Xs".
-- **Atajos**: `Cmd/Ctrl+S` guardar, `Cmd/Ctrl+Enter` cerrar sesión, `Cmd/Ctrl+K` paleta de comandos (saltar a paciente, abrir agenda, nueva nota).
-- Toolbar mínima: negrita/itálica/lista/cita y un botón "Insertar plantilla".
-
-## 6. Agenda siempre visible
-
-- Widget de agenda en el dashboard (punto 3).
-- Mini-agenda colapsable en el header de la ficha de paciente (próximos turnos de ese paciente).
-- Sigue usando `list-calendar-events` y el link de Google Calendar ya conectado, no se cambia la integración.
-
----
+- RLS, edge functions, esquema de DB (`sessions` ya tiene todos los campos necesarios).
+- Vista del paciente, Reflexionar/Evaluar/Acompañar, tests psicométricos, Laura, Telegram, branding institucional, footer.
+- Lógica de aprobación profesional ni autenticación.
 
 ## Detalles técnicos
 
-**Archivos a modificar (frontend, sin lógica de negocio nueva):**
+```text
+src/
+├── components/admin/
+│   ├── AdminDashboardLayout.tsx        (sidebar simplificada)
+│   ├── dashboard/
+│   │   └── AdminDashboardHome.tsx      (rediseño 3 accesos)
+│   └── notes/                          (NUEVO)
+│       ├── SessionNotesList.tsx
+│       ├── SessionNoteCard.tsx
+│       └── SessionNoteEditor.tsx
+├── hooks/
+│   └── useAutosave.ts                  (NUEVO)
+├── lib/
+│   └── sessionNotePdf.ts               (NUEVO, jsPDF reutiliza constantes Santa Fe)
+├── data/
+│   ├── cbtContent.ts                   (+ session_note template)
+│   ├── psychoanalyticContent.ts        (+ session_note)
+│   ├── systemicContent.ts              (+ session_note)
+│   ├── humanisticContent.ts            (+ session_note)
+│   └── behavioralContent.ts            (+ session_note)
+└── pages/
+    └── PatientWorkspace.tsx            (tab "Notas clínicas" reemplaza "Sesiones")
+```
 
-- `src/index.css`, `tailwind.config.ts` — tokens `[data-area="pro"]`, fuentes Inter/IBM Plex Sans.
-- `src/components/admin/AdminDashboardLayout.tsx` — sidebar agrupado, header simplificado, aplicación de `data-area="pro"`.
-- `src/components/admin/dashboard/AdminDashboardHome.tsx` — nuevo layout 3 columnas.
-- `src/components/admin/dashboard/AdminDashboardSixMetrics.tsx` — fila compacta.
-- `src/components/admin/dashboard/AdminProfessionalsSection.tsx` y `AdminUsersSection.tsx` — densidad de tabla.
-- **Nuevo** `src/pages/PatientWorkspace.tsx` + ruta `/admin/patient/:id` en `src/App.tsx`.
-- **Nuevo** `src/components/admin/patient/PatientHeader.tsx`, `PatientSummaryTab.tsx`, `SessionNoteEditor.tsx`, `CommandPalette.tsx`.
-- Reutilización (sin cambios internos) de los `Patient*View` actuales como contenido de tabs.
-
-**Lo que NO se toca:**
-
-- Sidebar/dashboard/rutas del paciente (Reflexionar/Evaluar/Acompañar).
-- RLS, edge functions, esquemas de DB, generación de PDF.
-- Lógica de tests, consentimientos, MMPI-2/MCMI-III, formulación de caso, telegram, Laura.
-- Branding institucional del landing profesional (Playfair/azul institucional sigue ahí).
-
-**Riesgo:** bajo. Cambios concentrados en presentación y un nuevo contenedor de paciente que envuelve componentes existentes.
-
-## Orden de implementación
-
-1. Tokens visuales + tipografía + activación `data-area="pro"`.
-2. Sidebar agrupado por flujo.
-3. Dashboard rediseñado con agenda y alertas.
-4. Vista unificada de paciente con tabs (reutilizando vistas actuales).
-5. Editor de notas rápido + paleta de comandos.
+Persistencia: `sessions.clinical_notes` (texto markdown estructurado). No requiere migración. El nombre de la plantilla usada se guarda como primera línea `<!-- template: cbt -->` para reabrir con la misma estructura.
