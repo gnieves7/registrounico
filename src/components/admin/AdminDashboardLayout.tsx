@@ -47,7 +47,8 @@ export type AdminSection =
   | "notifications"
   | "patient_proposals"
   | "suggestions"
-  | "settings";
+  | "settings"
+  | "symbolic";
 
 interface AdminDashboardLayoutProps {
   activeSection: AdminSection;
@@ -63,7 +64,7 @@ type SidebarGroup = { id: string; label: string; icon: React.ElementType; items:
 const sidebarGroups: SidebarGroup[] = [
   {
     id: "today",
-    label: "Hoy",
+    label: "Inicio",
     icon: CalendarClock,
     items: [
       { key: "dashboard", label: "Panel del día", icon: LayoutDashboard },
@@ -72,30 +73,19 @@ const sidebarGroups: SidebarGroup[] = [
   },
   {
     id: "patients",
-    label: "Pacientes",
+    label: "Pacientes y notas",
     icon: Stethoscope,
     items: [
-      { key: "users", label: "Pacientes", icon: Users },
+      { key: "users", label: "Pacientes / Notas clínicas", icon: Users },
       { key: "patient_proposals", label: "Solicitudes", icon: MessageSquarePlus },
     ],
   },
   {
-    id: "evaluate",
-    label: "Evaluar",
-    icon: ClipboardList,
-    items: [
-      { key: "tests", label: "Tests psicométricos", icon: ClipboardList },
-      { key: "reports", label: "Informes PDF", icon: FileText },
-      { key: "audit_consents", label: "Consentimientos", icon: ShieldCheck },
-    ],
-  },
-  {
-    id: "follow",
-    label: "Seguir",
+    id: "symbolic",
+    label: "Recursos simbólicos",
     icon: LineChart,
     items: [
-      { key: "activity", label: "Actividad clínica", icon: Activity },
-      { key: "audit_reports", label: "Auditoría informes", icon: FileText },
+      { key: "symbolic", label: "Recursos simbólicos", icon: LineChart },
     ],
   },
   {
@@ -103,6 +93,11 @@ const sidebarGroups: SidebarGroup[] = [
     label: "Gestión",
     icon: Settings,
     items: [
+      { key: "tests", label: "Tests psicométricos", icon: ClipboardList },
+      { key: "reports", label: "Informes PDF", icon: FileText },
+      { key: "audit_consents", label: "Consentimientos", icon: ShieldCheck },
+      { key: "activity", label: "Actividad clínica", icon: Activity },
+      { key: "audit_reports", label: "Auditoría informes", icon: FileText },
       { key: "professionals", label: "Profesionales", icon: Briefcase },
       { key: "authorizations", label: "Autorizaciones", icon: ShieldAlert },
       { key: "allowlist", label: "Emails autorizados", icon: ShieldCheck },
