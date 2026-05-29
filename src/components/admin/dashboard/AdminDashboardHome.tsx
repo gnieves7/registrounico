@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useDemoMode } from "@/hooks/useDemoMode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Moon, Thermometer, ShieldAlert } from "lucide-react";
+import { Users, ClipboardList, CheckCircle2, UserPlus, Activity, Bell, FileText, BookOpen, Moon, Thermometer, ShieldAlert, NotebookPen, CalendarClock, Sparkles, ArrowRight } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import { motion } from "framer-motion";
@@ -13,6 +14,11 @@ import {
 } from "@/data/demoData";
 import { ProNextSessionCard } from "./ProNextSessionCard";
 import { ProAgendaWidget } from "./ProAgendaWidget";
+import { useAuth } from "@/hooks/useAuth";
+
+interface Props {
+  onNavigateSection?: (section: string) => void;
+}
 
 interface DashboardMetrics {
   totalUsers: number;
@@ -51,8 +57,10 @@ const eventLabels: Record<string, string> = {
   award_granted: "recibió un premio simbólico",
 };
 
-export function AdminDashboardHome() {
+export function AdminDashboardHome({ onNavigateSection }: Props = {}) {
   const { isDemoMode } = useDemoMode();
+  const { profile } = useAuth();
+  const navigate = useNavigate();
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     totalUsers: 0,
     testsStartedToday: 0,
@@ -168,8 +176,64 @@ export function AdminDashboardHome() {
     { label: "Nuevos hoy", value: metrics.newUsersToday, icon: UserPlus },
   ];
 
+  const quickAccess = [
+    {
+      key: 'notes',
+      title: 'Notas clínicas',
+      description: 'Abrí la ficha de un paciente y escribí, editá o exportá notas por sesión.',
+      icon: NotebookPen,
+      accent: 'from-primary/10 to-primary/5',
+      onClick: () => onNavigateSection?.('users'),
+    },
+    {
+      key: 'booking',
+      title: 'Reserva de turnos',
+      description: 'Agendá una nueva sesión y visualizá tu calendario clínico.',
+      icon: CalendarClock,
+      accent: 'from-sky-500/10 to-sky-500/5',
+      onClick: () => onNavigateSection?.('users'),
+    },
+    {
+      key: 'symbolic',
+      title: 'Recursos simbólicos',
+      description: 'Premios, micro-tareas, alianza terapéutica y recursos profesionales.',
+      icon: Sparkles,
+      accent: 'from-emerald-500/10 to-emerald-500/5',
+      onClick: () => onNavigateSection?.('symbolic'),
+    },
+  ];
+
   return (
     <div className="space-y-5">
+      {/* Greeting + three primary accesses */}
+      <div>
+        <h2 className="text-xl font-semibold tracking-tight">
+          Hola{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}.
+        </h2>
+        <p className="text-xs text-muted-foreground mt-1">
+          Elegí por dónde empezar tu jornada clínica.
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        {quickAccess.map((q) => (
+          <button
+            key={q.key}
+            onClick={q.onClick}
+            className={`group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br ${q.accent} p-5 text-left transition-all hover:border-primary/40 hover:shadow-md`}
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="rounded-lg bg-background/80 p-2 shadow-sm">
+                <q.icon className="h-5 w-5 text-primary" />
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-transform" />
+            </div>
+            <h3 className="text-base font-semibold tracking-tight mb-1">{q.title}</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">{q.description}</p>
+          </button>
+        ))}
+      </div>
+
       {/* Compact KPI row */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {metricCards.map((m) => (
