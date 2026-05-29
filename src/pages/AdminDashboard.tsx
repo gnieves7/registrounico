@@ -16,6 +16,7 @@ import { AdminAllowlistSection } from "@/components/admin/dashboard/AdminAllowli
 import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
 import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
 import { AdminReportsAuditSection } from "@/components/admin/dashboard/AdminReportsAuditSection";
+import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/AdminSymbolicResourcesSection";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -46,7 +47,7 @@ export default function AdminDashboard() {
         pendingAuthCount={pendingAuthCount}
       >
         {activeSection === "dashboard" && (
-          <AdminDashboardHome />
+          <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
         )}
         {activeSection === "users" && <AdminUsersSection />}
         {activeSection === "professionals" && <AdminProfessionalsSection />}
@@ -61,6 +62,7 @@ export default function AdminDashboard() {
         {activeSection === "patient_proposals" && <AdminPatientProposalsSection />}
         {activeSection === "suggestions" && <AdminSuggestionsSection />}
         {activeSection === "settings" && <AdminSettingsSection />}
+        {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
       </AdminDashboardLayout>
     </AdminGuard>
   );

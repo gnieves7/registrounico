@@ -15,7 +15,7 @@ import { es } from "date-fns/locale";
 import { useEffect as useEffectAlias } from "react";
 
 import { PatientPsychobiographyView } from "@/components/admin/PatientPsychobiographyView";
-import { PatientSessionsView } from "@/components/admin/PatientSessionsView";
+import { SessionNotesList } from "@/components/admin/notes/SessionNotesList";
 import { PatientDocumentsView } from "@/components/admin/PatientDocumentsView";
 import { PatientEmotionalView } from "@/components/admin/PatientEmotionalView";
 import { PatientDreamsView } from "@/components/admin/PatientDreamsView";
@@ -173,7 +173,7 @@ function PatientWorkspaceInner() {
         <Tabs defaultValue="summary" className="w-full">
           <TabsList className="bg-muted/50">
             <TabsTrigger value="summary">Resumen</TabsTrigger>
-            <TabsTrigger value="sessions">Sesiones</TabsTrigger>
+            <TabsTrigger value="sessions">Notas clínicas</TabsTrigger>
             <TabsTrigger value="psychobiography">Psicobiografía</TabsTrigger>
             <TabsTrigger value="tests">Tests</TabsTrigger>
             <TabsTrigger value="emotional">Emocional</TabsTrigger>
@@ -187,7 +187,7 @@ function PatientWorkspaceInner() {
             <PatientSummary userId={userId} profile={profile} lastSession={lastSession} nextSession={nextSession} />
           </TabsContent>
           <TabsContent value="sessions" className="mt-6">
-            <PatientSessionsView userId={userId} patientName={profile?.full_name || "el paciente"} />
+            <SessionNotesList userId={userId} patientName={profile?.full_name || "el paciente"} />
           </TabsContent>
           <TabsContent value="psychobiography" className="mt-6">
             <PatientPsychobiographyView userId={userId} patientName={profile?.full_name || "Paciente"} />
