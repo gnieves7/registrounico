@@ -49,6 +49,7 @@ import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 import Suggestions from "./pages/Suggestions";
 import SimplePanel from "./pages/SimplePanel";
 import PatientWorkspace from "./pages/PatientWorkspace";
+import SchoolSelection from "./pages/SchoolSelection";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,7 @@ const App = () => (
 
               {/* Protected routes — solo profesionales aprobados o admin */}
               <Route element={<ProfessionalAccessGate><AppLayout /></ProfessionalAccessGate>}>
+                <Route path="/profesional/escuela" element={<SchoolSelection />} />
                 <Route path="/dashboard" element={<DashboardHome />} />
                 <Route path="/psychobiography" element={<ProfessionalOnlyRoute><Psychobiography /></ProfessionalOnlyRoute>} />
                 <Route path="/psychodiagnostic" element={<ProfessionalOnlyRoute><Psychodiagnostic /></ProfessionalOnlyRoute>} />
