@@ -23,7 +23,9 @@ import {
   MessageSquarePlus,
   Command as CommandIcon,
   CalendarClock,
-  Stethoscope,
+  Sparkles,
+  NotebookPen,
+  UserCircle,
   LineChart,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +37,11 @@ import { CommandPalette } from "@/components/admin/CommandPalette";
 
 export type AdminSection =
   | "dashboard"
+  | "clinical_notes"
+  | "booking"
+  | "symbolic"
+  | "profile"
+  | "monitoring"
   | "users"
   | "professionals"
   | "authorizations"
@@ -47,8 +54,7 @@ export type AdminSection =
   | "notifications"
   | "patient_proposals"
   | "suggestions"
-  | "settings"
-  | "symbolic";
+  | "settings";
 
 interface AdminDashboardLayoutProps {
   activeSection: AdminSection;
@@ -63,36 +69,33 @@ type SidebarGroup = { id: string; label: string; icon: React.ElementType; items:
 
 const sidebarGroups: SidebarGroup[] = [
   {
-    id: "today",
-    label: "Inicio",
+    id: "workspace",
+    label: "Workspace clínico",
     icon: CalendarClock,
     items: [
-      { key: "dashboard", label: "Panel del día", icon: LayoutDashboard },
-      { key: "notifications", label: "Notificaciones", icon: Bell },
+      { key: "dashboard", label: "Inicio", icon: LayoutDashboard },
+      { key: "clinical_notes", label: "Notas clínicas", icon: NotebookPen },
+      { key: "booking", label: "Reserva de turnos", icon: CalendarClock },
+      { key: "symbolic", label: "Recursos simbólicos", icon: Sparkles },
     ],
   },
   {
-    id: "patients",
-    label: "Pacientes y notas",
-    icon: Stethoscope,
+    id: "professional",
+    label: "Mi práctica",
+    icon: UserCircle,
     items: [
-      { key: "users", label: "Pacientes / Notas clínicas", icon: Users },
-      { key: "patient_proposals", label: "Solicitudes", icon: MessageSquarePlus },
-    ],
-  },
-  {
-    id: "symbolic",
-    label: "Recursos simbólicos",
-    icon: LineChart,
-    items: [
-      { key: "symbolic", label: "Recursos simbólicos", icon: LineChart },
+      { key: "profile", label: "Perfil profesional", icon: UserCircle },
+      { key: "monitoring", label: "Monitoreo de resultados", icon: LineChart },
     ],
   },
   {
     id: "manage",
-    label: "Gestión",
+    label: "Administración",
     icon: Settings,
     items: [
+      { key: "notifications", label: "Notificaciones", icon: Bell },
+      { key: "users", label: "Pacientes (avanzado)", icon: Users },
+      { key: "patient_proposals", label: "Solicitudes", icon: MessageSquarePlus },
       { key: "tests", label: "Tests psicométricos", icon: ClipboardList },
       { key: "reports", label: "Informes PDF", icon: FileText },
       { key: "audit_consents", label: "Consentimientos", icon: ShieldCheck },
@@ -123,7 +126,7 @@ export function AdminDashboardLayout({
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     sidebarGroups.forEach((g) => {
-      initial[g.id] = g.items.some((i) => i.key === activeSection) || g.id === "today";
+      initial[g.id] = g.items.some((i) => i.key === activeSection) || g.id === "workspace";
     });
     return initial;
   });

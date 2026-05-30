@@ -17,6 +17,10 @@ import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivity
 import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
 import { AdminReportsAuditSection } from "@/components/admin/dashboard/AdminReportsAuditSection";
 import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/AdminSymbolicResourcesSection";
+import { AdminClinicalNotesSection } from "@/components/admin/dashboard/AdminClinicalNotesSection";
+import { AdminBookingSection } from "@/components/admin/dashboard/AdminBookingSection";
+import ProfessionalProfile from "@/pages/ProfessionalProfile";
+import OutcomeMonitoring from "@/pages/OutcomeMonitoring";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -49,6 +53,11 @@ export default function AdminDashboard() {
         {activeSection === "dashboard" && (
           <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
         )}
+        {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
+        {activeSection === "booking" && <AdminBookingSection />}
+        {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
+        {activeSection === "profile" && <ProfessionalProfile />}
+        {activeSection === "monitoring" && <OutcomeMonitoring />}
         {activeSection === "users" && <AdminUsersSection />}
         {activeSection === "professionals" && <AdminProfessionalsSection />}
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
@@ -62,7 +71,6 @@ export default function AdminDashboard() {
         {activeSection === "patient_proposals" && <AdminPatientProposalsSection />}
         {activeSection === "suggestions" && <AdminSuggestionsSection />}
         {activeSection === "settings" && <AdminSettingsSection />}
-        {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
       </AdminDashboardLayout>
     </AdminGuard>
   );
