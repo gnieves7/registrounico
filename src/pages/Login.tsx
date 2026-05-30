@@ -51,8 +51,9 @@ const Login = () => {
       applySystemTheme(null);
       return;
     }
+    const hasSchool = sessionStorage.getItem("psi_active_school");
     if (isAdmin) {
-      navigate("/admin/dashboard", { replace: true });
+      navigate(hasSchool ? "/admin/dashboard" : "/profesional/escuela", { replace: true });
       return;
     }
     if (access === "ok" && isApproved) {
@@ -61,7 +62,7 @@ const Login = () => {
         sessionStorage.removeItem("login_redirect");
         navigate(redirectTo, { replace: true });
       } else {
-        navigate("/dashboard", { replace: true });
+        navigate(hasSchool ? "/dashboard" : "/profesional/escuela", { replace: true });
       }
     }
   }, [user, isLoading, isApproved, isAdmin, access, navigate]);
