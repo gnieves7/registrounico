@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen } from "lucide-react";
+import { BookOpen, FileDown } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { exportClinicalPdf } from "@/lib/clinicalSectionPdf";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PatientNotebookViewProps {
   userId: string;
+  patientName?: string;
 }
 
-export function PatientNotebookView({ userId }: PatientNotebookViewProps) {
+export function PatientNotebookView({ userId, patientName }: PatientNotebookViewProps) {
+  const { profile } = useAuth();
   const [entries, setEntries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,6 +44,20 @@ export function PatientNotebookView({ userId }: PatientNotebookViewProps) {
 
   if (isLoading) return <Skeleton className="h-32 w-full" />;
 
+  const handleExport = () => {
+    exportClinicalPdf({
+      documentTitle: 'Mi Cuaderno · Constancia',
+      patientName: patientName || 'Paciente',
+      professionalName: profile?.full_name || 'Profesional',
+      subtitle: `${entries.length} entradas compartidas`,
+      sections: entries.map((e: any) => ({
+        heading: `${e.title || 'Sin título'} — ${format(new Date(e.updated_at), 'dd/MM/yyyy HH:mm', { locale: es })}`,
+        lines: [e.content || ''],
+      })),
+      filenamePrefix: 'cuaderno',
+    });
+  };
+
   if (entries.length === 0) {
     return (
       <Card>
@@ -53,7 +72,12 @@ export function PatientNotebookView({ userId }: PatientNotebookViewProps) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">{entries.length} entradas compartidas</p>
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <p className="text-sm text-muted-foreground">{entries.length} entradas compartidas</p>
+        <Button variant="outline" size="sm" onClick={handleExport} className="gap-1.5">
+          <FileDown className="h-3.5 w-3.5" /> Exportar constancia
+        </Button>
+      </div>
       {entries.map((entry: any) => (
         <Card key={entry.id}>
           <CardContent className="py-3 px-4">
