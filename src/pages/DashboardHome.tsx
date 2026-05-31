@@ -1,24 +1,12 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import { useDemoMode } from "@/hooks/useDemoMode";
-import { supabase } from "@/integrations/supabase/client";
-import { EmotionalRecordWidget } from "@/components/emotional/EmotionalRecordWidget";
-import { UpcomingSession } from "@/components/dashboard/UpcomingSession";
-import { AvatarUpload } from "@/components/dashboard/AvatarUpload";
-import { getStoredSystemArea, setStoredSystemArea, applySystemTheme, systemBranding, type SystemArea } from "@/lib/systemBranding";
-import { Link } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { PsiLogo } from "@/components/ui/PsiLogo";
-import {
-  User, MessageCircle, FileText, Thermometer, BookOpen, Brain, Scale, Eye,
-  Briefcase, ShieldCheck, Calendar, Moon, ClipboardList, Award, Handshake, BarChart3,
-  TrendingUp, Activity, RefreshCw
-} from "lucide-react";
-import { EmotionalEvolutionChart } from "@/components/dashboard/EmotionalEvolutionChart";
-import { demoSessions, demoEmotionalRecords } from "@/data/demoData";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion } from "framer-motion";
-import { ConsentStatusBanner } from "@/components/professional/ConsentStatusBanner";
+import { Navigate } from "react-router-dom";
+
+/**
+ * El panel profesional se unificó en /admin/dashboard (Workspace clínico).
+ * Esta ruta sólo redirige para mantener compatibilidad con enlaces antiguos.
+ */
+const DashboardHome = () => <Navigate to="/admin/dashboard" replace />;
+
+export default DashboardHome;
 
 interface TodayRecord {
   id: string;
