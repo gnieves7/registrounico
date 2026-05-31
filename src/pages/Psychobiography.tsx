@@ -82,8 +82,8 @@ export default function Psychobiography() {
       sections,
       filenamePrefix: 'psicobiografia',
     });
-    if (profile?.user_id) {
-      void logActivity(profile.user_id, 'export_pdf', { module: 'psychobiography' }).catch(() => {});
+    if (profile?.id) {
+      void logActivity(profile.id, 'export_pdf', { module: 'psychobiography' }).catch(() => {});
     }
   };
 
