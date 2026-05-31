@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Navigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
 import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/AdminSymbolicResourcesSection";
