@@ -82,7 +82,9 @@ export default function Psychobiography() {
       sections,
       filenamePrefix: 'psicobiografia',
     });
-    void logActivity('export_pdf', { module: 'psychobiography' }).catch(() => {});
+    if (profile?.user_id) {
+      void logActivity(profile.user_id, 'export_pdf', { module: 'psychobiography' }).catch(() => {});
+    }
   };
 
   if (isLoading) {
