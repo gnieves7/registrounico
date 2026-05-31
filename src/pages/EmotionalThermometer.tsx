@@ -193,6 +193,31 @@ export default function EmotionalThermometer() {
                   <Label className="text-sm">Check-ins activos</Label>
                 </div>
               )}
+              {selectedPatient && responses.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 sm:ml-auto"
+                  onClick={() => {
+                    const patient = patients.find((p) => p.user_id === selectedPatient);
+                    exportClinicalPdf({
+                      documentTitle: 'Termómetro emocional · Registro EMA',
+                      patientName: patient?.full_name || 'Paciente',
+                      professionalName: 'Profesional tratante',
+                      subtitle: `${responses.length} registros`,
+                      sections: [{
+                        heading: 'Registros emocionales',
+                        lines: responses.map((r: any) =>
+                          `${format(new Date(r.responded_at), 'dd/MM/yyyy HH:mm', { locale: es })}  ·  Ánimo ${r.mood_score}/10  ·  ${r.emotion}${r.note ? `  ·  ${r.note}` : ''}`,
+                        ),
+                      }],
+                      filenamePrefix: 'termometro-emocional',
+                    });
+                  }}
+                >
+                  <FileDown className="h-3.5 w-3.5" /> Exportar PDF
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
