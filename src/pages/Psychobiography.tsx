@@ -105,9 +105,12 @@ export default function Psychobiography() {
     <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6">
       {/* Header */}
       <div className="mb-4 md:mb-8">
-        <div className="flex items-center gap-2 mb-2 md:gap-3">
+        <div className="flex items-center gap-2 mb-2 md:gap-3 flex-wrap">
           <FileText className="h-6 w-6 md:h-8 md:w-8 text-primary" />
           <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">Mi Psicobiografía</h1>
+          <Button onClick={handleExportPdf} variant="outline" size="sm" className="ml-auto gap-1.5">
+            <FileDown className="h-3.5 w-3.5" /> Exportar PDF
+          </Button>
         </div>
         <p className="text-sm text-muted-foreground mb-3 md:text-base md:mb-4">
           Tu historia personal es única. Completa esta información a tu propio ritmo. 
