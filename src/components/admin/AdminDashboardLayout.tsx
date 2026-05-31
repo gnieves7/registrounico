@@ -13,7 +13,6 @@ import {
   Sparkles,
   NotebookPen,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -86,8 +85,6 @@ export function AdminDashboardLayout({
     });
     return initial;
   });
-  const navigate = useNavigate();
-
   // Apply pro workspace theme to body while mounted
   useEffect(() => {
     const prev = document.body.getAttribute("data-area");
