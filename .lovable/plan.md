@@ -1,88 +1,88 @@
+
 ## Objetivo
 
-Convertir el panel profesional en una herramienta simple y productiva: una entrada con **tres accesos clínicos** (Notas clínicas, Reserva de turnos, Recursos simbólicos), y dentro de la ficha del paciente un flujo enfocado en **leer, escribir y exportar notas de sesión** con plantillas por escuela, autoguardado y atajos.
+Consolidar el panel profesional en un solo workspace clínico, dejar visibles únicamente los tres accesos clínicos (Notas Clínicas, Reserva de Turnos y Recursos Simbólicos), usar la escuela elegida en el login para sugerir plantillas, y permitir buscar pacientes y exportar PDF/constancias en las herramientas de Notas Clínicas.
 
-## 1. Unificar el panel profesional (Home con 3 accesos)
+---
 
-Reemplazar el dashboard actual (`AdminDashboardHome.tsx`) por una vista limpia con:
+## Fase 1 · Unificar paneles
 
-- **Cabecera**: saludo + próxima sesión (reutiliza `ProNextSessionCard`) en una sola fila compacta.
-- **Tres tarjetas de acceso grandes** (grid 3 columnas, 1 en móvil):
-  1. **Notas clínicas** → abre la sección Pacientes (lista para elegir paciente y entrar a su ficha → tab Sesiones/Notas).
-  2. **Reserva de turnos** → abre Pacientes con foco en "Nueva sesión" y muestra agenda lateral (reutiliza `ProAgendaWidget`).
-  3. **Recursos simbólicos** → nueva sección que agrupa: premios simbólicos del paciente, micro-tareas, alianza terapéutica, recursos profesionales.
-- **Sidebar simplificada**: colapsar los 5 grupos a 3 entradas principales (Hoy, Pacientes, Recursos simbólicos) + un grupo "Gestión" plegable con lo administrativo. La paleta de comandos (⌘K) se mantiene.
+- `/dashboard` actualmente renderiza `DashboardHome` (mezcla paciente/pro, 366 líneas con quick actions por sistema). Lo convertimos en **redirector** al workspace clínico:
+  - Si el usuario es admin/profesional aprobado → `Navigate` a `/admin/dashboard`.
+  - Si es paciente (caso futuro) → mantiene el contenido actual, pero hoy todos los accesos profesionales viven en `/admin/dashboard`.
+- Quitar el botón "Inicio" / `ArrowLeft` del header de `AdminDashboardLayout` que devolvía a `/dashboard` (ahora apuntará al propio dashboard del workspace, evitando "invasión de secciones").
+- Eliminar de la sección `dashboard` (Home) cualquier referencia a paneles paralelos: el único modelo es el Workspace clínico.
 
-Archivos: `src/components/admin/dashboard/AdminDashboardHome.tsx` (rediseño), `src/components/admin/AdminDashboardLayout.tsx` (sidebar a 3+1 grupos).
+## Fase 2 · Permisos del panel Administración (solo 3 accesos)
 
-## 2. Ficha del paciente: notas por fecha
+- En `src/components/admin/AdminDashboardLayout.tsx`:
+  - Reemplazar `sidebarGroups` por **un solo grupo** con tres items: `clinical_notes`, `booking`, `symbolic` (más `dashboard` como "Inicio" opcional discreto en el header del sidebar).
+  - Eliminar del sidebar los grupos **"Mi práctica"** (Perfil profesional, Monitoreo) y **"Administración"** (Notificaciones, Pacientes avanzado, Solicitudes, Tests, Informes, Consentimientos, Actividad, Auditoría, Profesionales, Autorizaciones, Allowlist, Sugerencias, Configuración).
+  - Limpiar el `type AdminSection` para reflejar solo `dashboard | clinical_notes | booking | symbolic` (mantener los demás como tipo interno solo si los reutiliza `CommandPalette`; si no, removerlos).
+- En `src/pages/AdminDashboard.tsx`:
+  - Eliminar todos los `activeSection === "users" | "professionals" | ... ` y sus imports (`AdminUsersSection`, `AdminProfessionalsSection`, `AdminTestsSection`, `AdminReportsSection`, `AdminNotificationsSection`, `AdminSettingsSection`, `AdminSuggestionsSection`, `AdminPatientProposalsSection`, `AdminAuthorizationsSection`, `AdminAllowlistSection`, `AdminActivitySection`, `AdminAuditConsentsSection`, `AdminReportsAuditSection`, `ProfessionalProfile`, `OutcomeMonitoring`, `AdminDashboardSixMetrics`).
+  - Guard: si llega `?section=` con valor fuera de `{dashboard, clinical_notes, booking, symbolic}`, redirigir a `dashboard`.
+- `CommandPalette` (`⌘K`): podar entradas a las tres nuevas secciones para evitar saltos a vistas ocultas.
+- Los archivos de sección ocultos quedan en el repo (sin importar). Las rutas externas como `/professional-profile`, `/outcome-monitoring`, `/documents` siguen accesibles vía URL directa pero ya no se exponen desde Administración.
 
-En `PatientWorkspace.tsx`, reemplazar el tab "Sesiones" por uno renombrado **"Notas clínicas"** con dos paneles:
+## Fase 3 · Escuela activa → plantillas sugeridas
 
-- **Izquierda (lista)**: timeline vertical de sesiones del paciente ordenadas por fecha desc., agrupadas por mes. Cada item muestra fecha, hora, tema, badge "Próxima/Pasada" y un indicador si ya tiene notas. Acciones rápidas en cada item: **Editar**, **Exportar PDF** (jsPDF de esa sola nota), **Eliminar**.
-- **Derecha (editor)**: al seleccionar una nota, se abre el editor (sección 3). Botón "+ Nueva nota" en cabecera.
+La escuela ya se elige tras el login y se guarda en `sessionStorage['psi_active_school']` (`useActiveSchool`). Vamos a propagarla:
 
-Componentes nuevos: `src/components/admin/notes/SessionNotesList.tsx`, `src/components/admin/notes/SessionNoteCard.tsx`, `src/lib/sessionNotePdf.ts` (export individual reutilizando estilo Santa Fe).
+**Notas Clínicas**
+- `SessionNoteEditor` ya consume `getTemplatesForSchool(schoolId)`. Verificamos que al **crear** una nota nueva se preseleccione la primera plantilla de la escuela activa y se marque visualmente "Sugerida por tu escuela: {school.name}".
+- Añadir en `AdminClinicalNotesSection` un pequeño chip "Escuela activa · {school.name}" para feedback.
 
-Reescribir parcialmente `PatientSessionsView.tsx` para separar lista (sin modal monolítico) y edición.
+**Recursos Simbólicos**
+- En `AdminSymbolicResourcesSection.tsx`, ordenar/etiquetar los 13 items según `useActiveSchool()`:
+  - Agregar a cada item un `recommendedFor: SchoolType[]` (p. ej. **TCC** → Red de síntomas, Formulación del caso, Micro-tareas; **Psicoanalítico** → Análisis narrativo, Mi Cuaderno; **Sistémico** → Formulación del caso; **Forense / todas** → Cámara Gesell, Apto Psicológico, Junta Médica).
+  - Los items recomendados aparecen primero con badge "Sugerido por tu escuela", el resto queda visible debajo en un grupo "Otros recursos".
 
-## 3. Editor de notas con plantillas por escuela
+No requiere migraciones ni cambios de backend.
 
-Crear `src/components/admin/notes/SessionNoteEditor.tsx` con:
+## Fase 4 · Búsqueda + Export PDF/Constancia en Notas Clínicas
 
-- **Cabecera**: fecha/hora (date+time picker), tema, switch "editable por paciente".
-- **Selector de plantilla** poblado por `useSchoolContent('session_note')` con plantillas específicas por escuela (CBT: ABCDE + SUDs + tarea; Psicoanalítica: après-coup, transferencia; Sistémica: hipótesis, intervención; Humanística: foco vivencial; Conductual: ABC + reforzadores). Al elegir plantilla, se inyectan **campos sugeridos** estructurados como secciones colapsables.
-- **Cuerpo**: campos sugeridos por escuela (textareas titulados) + un bloque libre "Notas adicionales". Todo se persiste como markdown en `sessions.clinical_notes` (estructura: `## Sección\ncontenido`).
-- **Pie**: estado de guardado ("Guardado hace 3s"), botón Guardar, botón Exportar PDF.
+**Búsqueda y filtro de pacientes**
+- En `AdminClinicalNotesSection.tsx` agregar un buscador siempre visible (no detrás de toggle) que lista pacientes desde `profiles` (filtrar por `account_type='patient'`) con:
+  - Input de búsqueda por nombre/email (debounced).
+  - Filtro por estado: `Todos | Activos | Pendientes` (campo `is_approved`).
+  - Click en paciente → navega a `/admin/patient/:id` (ya existe `PatientWorkspace`).
+- Reutilizar el query de `AdminUsersSection` (extraer función `listPatients` a `src/lib/adminPatients.ts` para no duplicar).
 
-Añadir entradas `session_note` en cada archivo `src/data/{cbt,psychoanalytic,systemic,humanistic,behavioral}Content.ts` con las plantillas.
+**Export PDF / constancia por sección**
+- **Psicobiografía** (`src/pages/Psychobiography.tsx`): botón "Exportar PDF" → nueva función `exportPsychobiographyPdf(patient, data)` en `src/lib/psychobiographyPdf.ts` (jsPDF, estándar Santa Fe ya existente en `lib/pdf/constants.ts`).
+- **Mi Cuaderno** (`src/components/admin/PatientNotebookView.tsx`): botón "Exportar constancia" → `exportNotebookPdf(patient, entries)` en `src/lib/notebookPdf.ts`.
+- **Termómetro emocional** (`src/pages/EmotionalThermometer.tsx` y/o `PatientEmotionalView`): botón "Exportar PDF" con tabla de registros del rango visible → `exportEmotionalPdf(patient, records)` en `src/lib/emotionalPdf.ts`.
+- Todos usan la misma cabecera/firma profesional (`useProfessionalProfile`) ya implementada en `clinicalHistoryPdf.ts` como referencia.
+- Registrar cada exportación en `activity_log` vía `activityLogger.ts` con acción `export_pdf` y el módulo de origen (consistente con auditoría existente).
 
-## 4. Autoguardado y atajos de teclado
-
-Hook nuevo `src/hooks/useAutosave.ts`:
-- Debounce 1,5 s tras el último cambio, máximo cada 10 s.
-- Estados: `idle | saving | saved | error`, expuestos al editor.
-- Backup local en `localStorage` con clave `note-draft:<sessionId>` para recuperación si falla la red.
-
-Atajos (registrados solo cuando el editor tiene foco):
-- **Ctrl/Cmd+S** → guardar inmediato.
-- **Ctrl/Cmd+Enter** → guardar y cerrar el editor.
-- **Ctrl/Cmd+↑ / ↓** → navegar a la nota anterior/siguiente del paciente.
-- **Ctrl/Cmd+N** → nueva nota (fecha = ahora).
-- **Esc** → cerrar editor (avisa si hay cambios sin guardar).
-
-Indicador visual de atajos en el pie del editor (icono "?" con tooltip).
-
-## Qué NO se toca
-
-- RLS, edge functions, esquema de DB (`sessions` ya tiene todos los campos necesarios).
-- Vista del paciente, Reflexionar/Evaluar/Acompañar, tests psicométricos, Laura, Telegram, branding institucional, footer.
-- Lógica de aprobación profesional ni autenticación.
+---
 
 ## Detalles técnicos
 
-```text
-src/
-├── components/admin/
-│   ├── AdminDashboardLayout.tsx        (sidebar simplificada)
-│   ├── dashboard/
-│   │   └── AdminDashboardHome.tsx      (rediseño 3 accesos)
-│   └── notes/                          (NUEVO)
-│       ├── SessionNotesList.tsx
-│       ├── SessionNoteCard.tsx
-│       └── SessionNoteEditor.tsx
-├── hooks/
-│   └── useAutosave.ts                  (NUEVO)
-├── lib/
-│   └── sessionNotePdf.ts               (NUEVO, jsPDF reutiliza constantes Santa Fe)
-├── data/
-│   ├── cbtContent.ts                   (+ session_note template)
-│   ├── psychoanalyticContent.ts        (+ session_note)
-│   ├── systemicContent.ts              (+ session_note)
-│   ├── humanisticContent.ts            (+ session_note)
-│   └── behavioralContent.ts            (+ session_note)
-└── pages/
-    └── PatientWorkspace.tsx            (tab "Notas clínicas" reemplaza "Sesiones")
-```
+**Archivos a editar**
+- `src/pages/DashboardHome.tsx` → redirector
+- `src/components/admin/AdminDashboardLayout.tsx` → sidebar reducido + header sin "Inicio" externo
+- `src/pages/AdminDashboard.tsx` → solo 4 secciones (dashboard + 3 cards)
+- `src/components/admin/CommandPalette.tsx` → podar entradas
+- `src/components/admin/dashboard/AdminClinicalNotesSection.tsx` → buscador + chip escuela
+- `src/components/admin/dashboard/AdminSymbolicResourcesSection.tsx` → orden por escuela + badge
+- `src/components/admin/notes/SessionNoteEditor.tsx` → preselección plantilla por escuela (si no está)
+- `src/pages/Psychobiography.tsx`, `src/components/admin/PatientNotebookView.tsx`, `src/pages/EmotionalThermometer.tsx` → botones de export
 
-Persistencia: `sessions.clinical_notes` (texto markdown estructurado). No requiere migración. El nombre de la plantilla usada se guarda como primera línea `<!-- template: cbt -->` para reabrir con la misma estructura.
+**Archivos a crear**
+- `src/lib/adminPatients.ts` (listado reutilizable)
+- `src/lib/psychobiographyPdf.ts`
+- `src/lib/notebookPdf.ts`
+- `src/lib/emotionalPdf.ts`
+
+**Fuera de alcance**
+- No tocar RLS, edge functions, esquema de DB.
+- No eliminar archivos de secciones ocultas (solo dejan de exponerse).
+- No modificar el flujo de login ni la selección de escuela.
+- No tocar el área del paciente (`/dashboard` para no-pro), branding, footer, auth ni Laura.
+
+**Ahorro de créditos**
+- Reutilización máxima (templates, jsPDF engine, listado de pacientes).
+- Sin migraciones, sin nuevos endpoints, sin assets generados.
+- Cambios concentrados en ~10 archivos.
