@@ -11,7 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Thermometer, Users, TrendingDown, Send } from "lucide-react";
+import { Thermometer, Users, TrendingDown, Send, FileDown } from "lucide-react";
+import { exportClinicalPdf } from "@/lib/clinicalSectionPdf";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
