@@ -47,7 +47,12 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   const templates = useMemo(() => getTemplatesForSchool(schoolId), [schoolId]);
 
   const parsed = useMemo(() => parseStoredNote(session.clinical_notes), [session.id]);
-  const initialTemplate = templates.find((t) => t.id === parsed.templateId) || templates[0];
+  // For new/empty notes, default to the school-specific template (templates[1]) instead of 'free'.
+  const hasContent = !!(session.clinical_notes && session.clinical_notes.trim());
+  const explicitTemplate = templates.find((t) => t.id === parsed.templateId);
+  const initialTemplate =
+    explicitTemplate ||
+    (!hasContent && templates.length > 1 ? templates[1] : templates[0]);
 
   const [templateId, setTemplateId] = useState<string>(initialTemplate.id);
   const [values, setValues] = useState<Record<string, string>>(parsed.values);

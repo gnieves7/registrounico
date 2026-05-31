@@ -13,20 +13,10 @@ import {
 } from "@/components/ui/command";
 import {
   LayoutDashboard,
-  Users,
-  Briefcase,
-  ShieldAlert,
-  ShieldCheck,
-  ClipboardList,
-  FileText,
-  Bell,
-  Lightbulb,
-  Settings,
+  NotebookPen,
+  CalendarClock,
+  Sparkles,
   Calendar,
-  Network,
-  Map,
-  Activity,
-  MessageSquarePlus,
   User,
 } from "lucide-react";
 import { demoPatients } from "@/data/demoData";
@@ -63,7 +53,6 @@ export function CommandPalette({ open, onOpenChange, onSectionChange }: CommandP
       .from("profiles")
       .select("user_id, full_name, account_type, is_approved")
       .neq("account_type", "professional")
-      .eq("is_approved", true)
       .order("full_name")
       .limit(80)
       .then(({ data }) => setPatients((data || []) as any));
@@ -82,18 +71,26 @@ export function CommandPalette({ open, onOpenChange, onSectionChange }: CommandP
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Buscar pacientes, secciones o atajos…" />
+      <CommandInput placeholder="Buscar pacientes o secciones…" />
       <CommandList>
         <CommandEmpty>Sin resultados.</CommandEmpty>
 
-        <CommandGroup heading="Hoy">
+        <CommandGroup heading="Workspace clínico">
           <CommandItem onSelect={() => section("dashboard")}>
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            Panel del día
+            Inicio
           </CommandItem>
-          <CommandItem onSelect={() => section("notifications")}>
-            <Bell className="mr-2 h-4 w-4" />
-            Notificaciones
+          <CommandItem onSelect={() => section("clinical_notes")}>
+            <NotebookPen className="mr-2 h-4 w-4" />
+            Notas clínicas
+          </CommandItem>
+          <CommandItem onSelect={() => section("booking")}>
+            <CalendarClock className="mr-2 h-4 w-4" />
+            Reserva de turnos
+          </CommandItem>
+          <CommandItem onSelect={() => section("symbolic")}>
+            <Sparkles className="mr-2 h-4 w-4" />
+            Recursos simbólicos
           </CommandItem>
           <CommandItem onSelect={() => go(() => window.open("https://calendar.app.google/4Locar4CbcTB45zv9", "_blank"))}>
             <Calendar className="mr-2 h-4 w-4" />
@@ -104,19 +101,7 @@ export function CommandPalette({ open, onOpenChange, onSectionChange }: CommandP
         <CommandSeparator />
 
         <CommandGroup heading="Pacientes">
-          <CommandItem onSelect={() => section("users")}>
-            <Users className="mr-2 h-4 w-4" />
-            Listado de pacientes
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate("/case-formulation"))}>
-            <Map className="mr-2 h-4 w-4" />
-            Formulación de caso
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate("/life-timeline"))}>
-            <Activity className="mr-2 h-4 w-4" />
-            Línea de vida
-          </CommandItem>
-          {patients.slice(0, 30).map((p) => (
+          {patients.slice(0, 40).map((p) => (
             <CommandItem
               key={p.user_id}
               value={`paciente ${p.full_name || ""}`}
@@ -127,73 +112,6 @@ export function CommandPalette({ open, onOpenChange, onSectionChange }: CommandP
               <span className="text-[10px] text-muted-foreground">abrir ficha</span>
             </CommandItem>
           ))}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="Evaluar">
-          <CommandItem onSelect={() => section("tests")}>
-            <ClipboardList className="mr-2 h-4 w-4" />
-            Tests psicométricos
-          </CommandItem>
-          <CommandItem onSelect={() => section("reports")}>
-            <FileText className="mr-2 h-4 w-4" />
-            Informes PDF
-          </CommandItem>
-          <CommandItem onSelect={() => section("audit_consents")}>
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Consentimientos
-          </CommandItem>
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="Seguir">
-          <CommandItem onSelect={() => go(() => navigate("/outcome-monitoring"))}>
-            <Activity className="mr-2 h-4 w-4" />
-            Monitoreo de resultados
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate("/therapeutic-alliance"))}>
-            <Network className="mr-2 h-4 w-4" />
-            Alianza terapéutica
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate("/symptom-network"))}>
-            <Network className="mr-2 h-4 w-4" />
-            Red de síntomas
-          </CommandItem>
-          <CommandItem onSelect={() => go(() => navigate("/narrative-analysis"))}>
-            <Activity className="mr-2 h-4 w-4" />
-            Análisis narrativo
-          </CommandItem>
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="Gestión">
-          <CommandItem onSelect={() => section("professionals")}>
-            <Briefcase className="mr-2 h-4 w-4" />
-            Profesionales
-          </CommandItem>
-          <CommandItem onSelect={() => section("authorizations")}>
-            <ShieldAlert className="mr-2 h-4 w-4" />
-            Autorizaciones pendientes
-          </CommandItem>
-          <CommandItem onSelect={() => section("allowlist")}>
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Emails autorizados
-          </CommandItem>
-          <CommandItem onSelect={() => section("patient_proposals")}>
-            <MessageSquarePlus className="mr-2 h-4 w-4" />
-            Solicitudes de pacientes
-          </CommandItem>
-          <CommandItem onSelect={() => section("suggestions")}>
-            <Lightbulb className="mr-2 h-4 w-4" />
-            Sugerencias
-          </CommandItem>
-          <CommandItem onSelect={() => section("settings")}>
-            <Settings className="mr-2 h-4 w-4" />
-            Configuración
-          </CommandItem>
         </CommandGroup>
       </CommandList>
     </CommandDialog>

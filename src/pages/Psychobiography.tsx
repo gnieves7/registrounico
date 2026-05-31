@@ -19,6 +19,11 @@ import {
   CalendarDays
 } from "lucide-react";
 import { usePsychobiography } from "@/hooks/usePsychobiography";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
+import { exportClinicalPdf, type ClinicalSection } from "@/lib/clinicalSectionPdf";
+import { logActivity } from "@/lib/activityLogger";
 import { PersonalDataSection } from "@/components/psychobiography/PersonalDataSection";
 import { FamilySection } from "@/components/psychobiography/FamilySection";
 import { MedicalHistorySection } from "@/components/psychobiography/MedicalHistorySection";
@@ -41,6 +46,7 @@ const sections = [
 
 export default function Psychobiography() {
   const { isDemoMode, guardWrite } = useDemoMode();
+  const { profile } = useAuth();
   const [activeTab, setActiveTab] = useState("treatment");
   const { data, isLoading, isSaving, updateSection, calculateProgress } = usePsychobiography();
   const schoolContent = useSchoolContent('history');
@@ -54,6 +60,32 @@ export default function Psychobiography() {
   };
 
   const progress = calculateProgress();
+
+  const handleExportPdf = () => {
+    const sections: ClinicalSection[] = [];
+    const obj = (data as any) || {};
+    const keys = Object.keys(obj).filter((k) => !['id', 'user_id', 'created_at', 'updated_at'].includes(k));
+    for (const key of keys) {
+      const v = obj[key];
+      if (v == null || v === '' || (Array.isArray(v) && v.length === 0)) continue;
+      const heading = key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
+      const lines = typeof v === 'string'
+        ? [v]
+        : [JSON.stringify(v, null, 2)];
+      sections.push({ heading, lines });
+    }
+    exportClinicalPdf({
+      documentTitle: 'Psicobiografía',
+      patientName: profile?.full_name || 'Paciente',
+      professionalName: profile?.full_name || 'Profesional',
+      subtitle: `Progreso completado: ${progress}%`,
+      sections,
+      filenamePrefix: 'psicobiografia',
+    });
+    if (profile?.id) {
+      void logActivity(profile.id, 'export_pdf', { module: 'psychobiography' }).catch(() => {});
+    }
+  };
 
   if (isLoading) {
     return (
@@ -73,9 +105,12 @@ export default function Psychobiography() {
     <div className="mx-auto max-w-4xl px-3 py-4 md:px-4 md:py-6">
       {/* Header */}
       <div className="mb-4 md:mb-8">
-        <div className="flex items-center gap-2 mb-2 md:gap-3">
+        <div className="flex items-center gap-2 mb-2 md:gap-3 flex-wrap">
           <FileText className="h-6 w-6 md:h-8 md:w-8 text-primary" />
           <h1 className="font-serif text-xl font-bold text-foreground md:text-3xl">Mi Psicobiografía</h1>
+          <Button onClick={handleExportPdf} variant="outline" size="sm" className="ml-auto gap-1.5">
+            <FileDown className="h-3.5 w-3.5" /> Exportar PDF
+          </Button>
         </div>
         <p className="text-sm text-muted-foreground mb-3 md:text-base md:mb-4">
           Tu historia personal es única. Completa esta información a tu propio ritmo. 

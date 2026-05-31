@@ -5,30 +5,14 @@ import { Navigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  Users,
-  ClipboardList,
-  FileText,
-  Bell,
-  Settings,
   ChevronLeft,
   ChevronRight,
   LogOut,
-  Home,
-  ArrowLeft,
-  Briefcase,
-  Lightbulb,
-  ShieldAlert,
-  Activity,
-  ShieldCheck,
-  MessageSquarePlus,
   Command as CommandIcon,
   CalendarClock,
   Sparkles,
   NotebookPen,
-  UserCircle,
-  LineChart,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -79,35 +63,6 @@ const sidebarGroups: SidebarGroup[] = [
       { key: "symbolic", label: "Recursos simbólicos", icon: Sparkles },
     ],
   },
-  {
-    id: "professional",
-    label: "Mi práctica",
-    icon: UserCircle,
-    items: [
-      { key: "profile", label: "Perfil profesional", icon: UserCircle },
-      { key: "monitoring", label: "Monitoreo de resultados", icon: LineChart },
-    ],
-  },
-  {
-    id: "manage",
-    label: "Administración",
-    icon: Settings,
-    items: [
-      { key: "notifications", label: "Notificaciones", icon: Bell },
-      { key: "users", label: "Pacientes (avanzado)", icon: Users },
-      { key: "patient_proposals", label: "Solicitudes", icon: MessageSquarePlus },
-      { key: "tests", label: "Tests psicométricos", icon: ClipboardList },
-      { key: "reports", label: "Informes PDF", icon: FileText },
-      { key: "audit_consents", label: "Consentimientos", icon: ShieldCheck },
-      { key: "activity", label: "Actividad clínica", icon: Activity },
-      { key: "audit_reports", label: "Auditoría informes", icon: FileText },
-      { key: "professionals", label: "Profesionales", icon: Briefcase },
-      { key: "authorizations", label: "Autorizaciones", icon: ShieldAlert },
-      { key: "allowlist", label: "Emails autorizados", icon: ShieldCheck },
-      { key: "suggestions", label: "Sugerencias", icon: Lightbulb },
-      { key: "settings", label: "Configuración", icon: Settings },
-    ],
-  },
 ];
 
 const allItems: SidebarItem[] = sidebarGroups.flatMap((g) => g.items);
@@ -130,8 +85,6 @@ export function AdminDashboardLayout({
     });
     return initial;
   });
-  const navigate = useNavigate();
-
   // Apply pro workspace theme to body while mounted
   useEffect(() => {
     const prev = document.body.getAttribute("data-area");
@@ -317,9 +270,6 @@ export function AdminDashboardLayout({
       {/* Main */}
       <main className="flex-1 overflow-auto">
         <header className="sticky top-0 z-30 flex h-12 items-center gap-3 border-b border-border bg-background/85 px-5 backdrop-blur">
-          <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={() => navigate("/dashboard")}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
           <h1 className="text-sm font-semibold text-foreground tracking-tight">
             {activeLabel}
           </h1>
@@ -329,8 +279,8 @@ export function AdminDashboardLayout({
             <span className="hidden md:inline">Buscar</span>
             <kbd className="hidden md:inline-flex h-4 items-center rounded border border-border bg-muted px-1 font-mono text-[10px]">⌘K</kbd>
           </Button>
-          <Button size="sm" variant="ghost" className="gap-1.5 text-xs h-7" onClick={() => navigate("/dashboard")}>
-            <Home className="h-3.5 w-3.5" />
+          <Button size="sm" variant="ghost" className="gap-1.5 text-xs h-7" onClick={() => onSectionChange("dashboard")}>
+            <LayoutDashboard className="h-3.5 w-3.5" />
             Inicio
           </Button>
           <Badge variant="outline" className="text-[10px] font-normal h-5 px-1.5 gap-1">

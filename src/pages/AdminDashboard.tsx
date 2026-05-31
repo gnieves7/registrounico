@@ -1,54 +1,29 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
-import { AdminDashboardSixMetrics } from "@/components/admin/dashboard/AdminDashboardSixMetrics";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
-import { AdminUsersSection } from "@/components/admin/dashboard/AdminUsersSection";
-import { AdminProfessionalsSection } from "@/components/admin/dashboard/AdminProfessionalsSection";
-import { AdminTestsSection } from "@/components/admin/dashboard/AdminTestsSection";
-import { AdminReportsSection } from "@/components/admin/dashboard/AdminReportsSection";
-import { AdminNotificationsSection } from "@/components/admin/dashboard/AdminNotificationsSection";
-import { AdminSettingsSection } from "@/components/admin/dashboard/AdminSettingsSection";
-import { AdminSuggestionsSection } from "@/components/admin/dashboard/AdminSuggestionsSection";
-import { AdminPatientProposalsSection } from "@/components/admin/dashboard/AdminPatientProposalsSection";
-import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
-import { AdminAllowlistSection } from "@/components/admin/dashboard/AdminAllowlistSection";
-import { AdminActivitySection } from "@/components/admin/dashboard/AdminActivitySection";
-import { AdminAuditConsentsSection } from "@/components/admin/dashboard/AdminAuditConsentsSection";
-import { AdminReportsAuditSection } from "@/components/admin/dashboard/AdminReportsAuditSection";
 import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/AdminSymbolicResourcesSection";
 import { AdminClinicalNotesSection } from "@/components/admin/dashboard/AdminClinicalNotesSection";
 import { AdminBookingSection } from "@/components/admin/dashboard/AdminBookingSection";
-import ProfessionalProfile from "@/pages/ProfessionalProfile";
-import OutcomeMonitoring from "@/pages/OutcomeMonitoring";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { supabase } from "@/integrations/supabase/client";
+
+const ALLOWED: AdminSection[] = ["dashboard", "clinical_notes", "booking", "symbolic"];
 
 export default function AdminDashboard() {
   const [searchParams] = useSearchParams();
-  const initialSection = (searchParams.get("section") as AdminSection) || "dashboard";
+  const requested = (searchParams.get("section") as AdminSection) || "dashboard";
+  const initialSection: AdminSection = ALLOWED.includes(requested) ? requested : "dashboard";
   const [activeSection, setActiveSection] = useState<AdminSection>(initialSection);
-  const [pendingAuthCount, setPendingAuthCount] = useState(0);
 
   useEffect(() => {
-    const load = async () => {
-      const { count } = await supabase
-        .from("profiles")
-        .select("user_id", { count: "exact", head: true })
-        .eq("account_type", "professional")
-        .eq("is_approved", false)
-        .is("approval_decided_at", null);
-      setPendingAuthCount(count || 0);
-    };
-    load();
+    if (!ALLOWED.includes(activeSection)) setActiveSection("dashboard");
   }, [activeSection]);
 
   return (
     <AdminGuard>
       <AdminDashboardLayout
         activeSection={activeSection}
-        onSectionChange={setActiveSection}
-        pendingAuthCount={pendingAuthCount}
+        onSectionChange={(s) => setActiveSection(ALLOWED.includes(s) ? s : "dashboard")}
       >
         {activeSection === "dashboard" && (
           <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
@@ -56,21 +31,6 @@ export default function AdminDashboard() {
         {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
         {activeSection === "booking" && <AdminBookingSection />}
         {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
-        {activeSection === "profile" && <ProfessionalProfile />}
-        {activeSection === "monitoring" && <OutcomeMonitoring />}
-        {activeSection === "users" && <AdminUsersSection />}
-        {activeSection === "professionals" && <AdminProfessionalsSection />}
-        {activeSection === "authorizations" && <AdminAuthorizationsSection />}
-        {activeSection === "allowlist" && <AdminAllowlistSection />}
-        {activeSection === "activity" && <AdminActivitySection />}
-        {activeSection === "audit_consents" && <AdminAuditConsentsSection />}
-        {activeSection === "audit_reports" && <AdminReportsAuditSection />}
-        {activeSection === "tests" && <AdminTestsSection />}
-        {activeSection === "reports" && <AdminReportsSection />}
-        {activeSection === "notifications" && <AdminNotificationsSection />}
-        {activeSection === "patient_proposals" && <AdminPatientProposalsSection />}
-        {activeSection === "suggestions" && <AdminSuggestionsSection />}
-        {activeSection === "settings" && <AdminSettingsSection />}
       </AdminDashboardLayout>
     </AdminGuard>
   );
