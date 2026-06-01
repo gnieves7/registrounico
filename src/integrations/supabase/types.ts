@@ -2230,6 +2230,10 @@ export type Database = {
       }
     }
     Functions: {
+      approve_professional: {
+        Args: { _reason?: string; _user_id: string }
+        Returns: undefined
+      }
       consume_pdf_code: {
         Args: { _code: string; _ip?: string }
         Returns: {
@@ -2238,6 +2242,14 @@ export type Database = {
           status: string
           storage_bucket: string
           storage_path: string
+        }[]
+      }
+      get_my_authorization_status: {
+        Args: never
+        Returns: {
+          decided_at: string
+          decision: string
+          reason: string
         }[]
       }
       has_role: {
@@ -2276,6 +2288,14 @@ export type Database = {
           _old: Database["public"]["Tables"]["profiles"]["Row"]
         }
         Returns: boolean
+      }
+      reject_professional: {
+        Args: { _reason?: string; _user_id: string }
+        Returns: undefined
+      }
+      revoke_professional: {
+        Args: { _reason: string; _user_id: string }
+        Returns: undefined
       }
       suspend_inactive_professionals: { Args: never; Returns: number }
     }
