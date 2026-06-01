@@ -12,6 +12,7 @@ import {
   CalendarClock,
   Sparkles,
   NotebookPen,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,6 +62,14 @@ const sidebarGroups: SidebarGroup[] = [
       { key: "clinical_notes", label: "Notas clínicas", icon: NotebookPen },
       { key: "booking", label: "Reserva de turnos", icon: CalendarClock },
       { key: "symbolic", label: "Recursos simbólicos", icon: Sparkles },
+    ],
+  },
+  {
+    id: "admin",
+    label: "Administración",
+    icon: ShieldCheck,
+    items: [
+      { key: "authorizations", label: "Autorizaciones", icon: ShieldCheck },
     ],
   },
 ];
