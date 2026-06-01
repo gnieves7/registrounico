@@ -220,6 +220,36 @@ export type Database = {
         }
         Relationships: []
       }
+      authorization_audit_log: {
+        Row: {
+          consent_id: string | null
+          created_at: string
+          decided_by: string | null
+          decision: string
+          id: string
+          professional_user_id: string
+          reason: string | null
+        }
+        Insert: {
+          consent_id?: string | null
+          created_at?: string
+          decided_by?: string | null
+          decision: string
+          id?: string
+          professional_user_id: string
+          reason?: string | null
+        }
+        Update: {
+          consent_id?: string | null
+          created_at?: string
+          decided_by?: string | null
+          decision?: string
+          id?: string
+          professional_user_id?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       authorized_emails: {
         Row: {
           authorized_by: string | null
@@ -2200,6 +2230,10 @@ export type Database = {
       }
     }
     Functions: {
+      approve_professional: {
+        Args: { _reason?: string; _user_id: string }
+        Returns: undefined
+      }
       consume_pdf_code: {
         Args: { _code: string; _ip?: string }
         Returns: {
@@ -2208,6 +2242,14 @@ export type Database = {
           status: string
           storage_bucket: string
           storage_path: string
+        }[]
+      }
+      get_my_authorization_status: {
+        Args: never
+        Returns: {
+          decided_at: string
+          decision: string
+          reason: string
         }[]
       }
       has_role: {
@@ -2247,10 +2289,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      reject_professional: {
+        Args: { _reason?: string; _user_id: string }
+        Returns: undefined
+      }
+      revoke_professional: {
+        Args: { _reason: string; _user_id: string }
+        Returns: undefined
+      }
       suspend_inactive_professionals: { Args: never; Returns: number }
     }
     Enums: {
-      app_role: "admin" | "patient"
+      app_role: "admin" | "patient" | "professional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2378,7 +2428,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "patient"],
+      app_role: ["admin", "patient", "professional"],
     },
   },
 } as const

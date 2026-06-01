@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import { Archive, ArrowRight, Award, Bell, BellDot, CheckCheck, ClipboardList, Inbox, MessageCircle, Search } from "lucide-react";
+import { Archive, ArrowRight, Award, Bell, BellDot, CheckCheck, ClipboardList, Inbox, MessageCircle, Search, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,8 @@ const getNotificationIcon = (notificationType: string) => {
       return ClipboardList;
     case "telegram_message":
       return MessageCircle;
+    case "professional_status":
+      return ShieldCheck;
     default:
       return Bell;
   }
@@ -40,6 +42,8 @@ const getNotificationLabel = (notificationType: string) => {
       return "Micro-tarea";
     case "telegram_message":
       return "Telegram";
+    case "professional_status":
+      return "Autorización profesional";
     default:
       return "Notificación";
   }
