@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, CheckCircle2, XCircle, MapPin, Mail, IdCard, Calendar, Inbox, FileSignature, History, ShieldOff, AlertCircle, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Loader2, CheckCircle2, XCircle, MapPin, Mail, IdCard, Calendar, Inbox, FileSignature, History, ShieldOff, AlertCircle, Search, Eye, RefreshCw, AlarmClock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -27,7 +28,7 @@ interface PendingPro {
 interface AuditRow {
   id: string;
   professional_user_id: string;
-  decision: "approved" | "rejected" | "revoked";
+  decision: "approved" | "rejected" | "revoked" | "revalidated";
   reason: string | null;
   consent_id: string | null;
   created_at: string;
@@ -35,6 +36,8 @@ interface AuditRow {
   professional_name: string | null;
   professional_email: string | null;
   decided_by_name: string | null;
+  approval_expires_at?: string | null;
+  revalidation_required?: boolean;
 }
 
 export function AdminAuthorizationsSection() {
@@ -46,6 +49,9 @@ export function AdminAuthorizationsSection() {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [filterDecision, setFilterDecision] = useState<"all" | "approved" | "rejected" | "revoked">("all");
   const [search, setSearch] = useState("");
+  const [preview, setPreview] = useState<{ url: string; name: string } | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [runningCheck, setRunningCheck] = useState(false);
 
   const fetchPending = useCallback(async () => {
     setLoading(true);
@@ -90,12 +96,16 @@ export function AdminAuthorizationsSection() {
     const adminIds = Array.from(new Set(rows.map((r) => r.decided_by).filter(Boolean)));
     const allIds = Array.from(new Set([...proIds, ...adminIds]));
     let pmap: Record<string, { full_name: string | null; email: string | null }> = {};
+    let expMap: Record<string, { approval_expires_at: string | null; revalidation_required: boolean }> = {};
     if (allIds.length) {
       const { data: profs } = await supabase
         .from("profiles")
-        .select("user_id, full_name, email")
+        .select("user_id, full_name, email, approval_expires_at, revalidation_required")
         .in("user_id", allIds);
-      (profs || []).forEach((p: any) => { pmap[p.user_id] = { full_name: p.full_name, email: p.email }; });
+      (profs || []).forEach((p: any) => {
+        pmap[p.user_id] = { full_name: p.full_name, email: p.email };
+        expMap[p.user_id] = { approval_expires_at: p.approval_expires_at, revalidation_required: p.revalidation_required };
+      });
     }
     setHistory(
       rows.map((r) => ({
@@ -103,6 +113,8 @@ export function AdminAuthorizationsSection() {
         professional_name: pmap[r.professional_user_id]?.full_name ?? null,
         professional_email: pmap[r.professional_user_id]?.email ?? null,
         decided_by_name: r.decided_by ? pmap[r.decided_by]?.full_name ?? pmap[r.decided_by]?.email ?? null : null,
+        approval_expires_at: expMap[r.professional_user_id]?.approval_expires_at ?? null,
+        revalidation_required: expMap[r.professional_user_id]?.revalidation_required ?? false,
       })),
     );
     setHistoryLoading(false);
@@ -113,19 +125,21 @@ export function AdminAuthorizationsSection() {
     fetchHistory();
   }, [fetchPending, fetchHistory]);
 
-  const viewConsent = async (path: string | null) => {
+  const viewConsent = async (path: string | null, name: string | null) => {
     if (!path) {
       toast({ title: "Sin consentimiento", description: "No hay PDF firmado disponible.", variant: "destructive" });
       return;
     }
+    setPreviewLoading(true);
     const { data, error } = await supabase.storage
       .from("consentimientos-profesionales")
       .createSignedUrl(path, 300);
+    setPreviewLoading(false);
     if (error || !data?.signedUrl) {
       toast({ title: "Error", description: error?.message || "No se pudo abrir el consentimiento", variant: "destructive" });
       return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    setPreview({ url: data.signedUrl, name: name || "Consentimiento informado" });
   };
 
   const decide = async (userId: string, approve: boolean) => {
@@ -174,6 +188,36 @@ export function AdminAuthorizationsSection() {
     fetchPending();
   };
 
+  const revalidate = async (userId: string) => {
+    const reason = window.prompt("Motivo / nota de la revalidación (opcional):", "") ?? "";
+    setProcessing(userId);
+    const { error } = await supabase.rpc("revalidate_professional" as any, { _user_id: userId, _reason: reason || null });
+    setProcessing(null);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Autorización revalidada", description: "El acceso se extendió por 12 meses." });
+    fetchHistory();
+  };
+
+  const runExpiryCheck = async () => {
+    setRunningCheck(true);
+    const { data, error } = await supabase.rpc("expire_overdue_authorizations" as any);
+    setRunningCheck(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    const row = Array.isArray(data) ? (data[0] as any) : (data as any);
+    toast({
+      title: "Verificación de vencimientos",
+      description: `${row?.warned ?? 0} próximos a vencer · ${row?.revoked ?? 0} revocados por vencimiento.`,
+    });
+    fetchHistory();
+    fetchPending();
+  };
+
   const filteredHistory = history.filter((h) => {
     if (filterDecision !== "all" && h.decision !== filterDecision) return false;
     if (search.trim()) {
@@ -189,15 +233,21 @@ export function AdminAuthorizationsSection() {
 
   return (
     <Tabs defaultValue="pending" className="space-y-4">
-      <TabsList>
-        <TabsTrigger value="pending" className="gap-2">
-          <Inbox className="h-4 w-4" /> Pendientes
-          {pending.length > 0 && <Badge variant="secondary" className="ml-1">{pending.length}</Badge>}
-        </TabsTrigger>
-        <TabsTrigger value="history" className="gap-2">
-          <History className="h-4 w-4" /> Historial
-        </TabsTrigger>
-      </TabsList>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <TabsList>
+          <TabsTrigger value="pending" className="gap-2">
+            <Inbox className="h-4 w-4" /> Pendientes
+            {pending.length > 0 && <Badge variant="secondary" className="ml-1">{pending.length}</Badge>}
+          </TabsTrigger>
+          <TabsTrigger value="history" className="gap-2">
+            <History className="h-4 w-4" /> Historial
+          </TabsTrigger>
+        </TabsList>
+        <Button size="sm" variant="outline" className="gap-1.5" disabled={runningCheck} onClick={runExpiryCheck}>
+          {runningCheck ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <AlarmClock className="h-3.5 w-3.5" />}
+          Verificar vencimientos
+        </Button>
+      </div>
 
       <TabsContent value="pending" className="space-y-4">
         {loading ? (
@@ -253,8 +303,8 @@ export function AdminAuthorizationsSection() {
                         Consentimiento firmado el {format(new Date(p.consent_signed_at!), "d MMM yyyy", { locale: es })}
                       </div>
                       {p.consent_pdf_path && (
-                        <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => viewConsent(p.consent_pdf_path)}>
-                          Ver PDF
+                        <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={() => viewConsent(p.consent_pdf_path, p.full_name)} disabled={previewLoading}>
+                          <Eye className="h-3.5 w-3.5" /> Vista previa
                         </Button>
                       )}
                     </div>
@@ -340,9 +390,17 @@ export function AdminAuthorizationsSection() {
                   ? "bg-emerald-100 text-emerald-800"
                   : h.decision === "revoked"
                     ? "bg-orange-100 text-orange-800"
-                    : "bg-rose-100 text-rose-800";
+                    : h.decision === "revalidated"
+                      ? "bg-sky-100 text-sky-800"
+                      : "bg-rose-100 text-rose-800";
               const label =
-                h.decision === "approved" ? "Aprobado" : h.decision === "revoked" ? "Revocado" : "Rechazado";
+                h.decision === "approved" ? "Aprobado"
+                : h.decision === "revoked" ? "Revocado"
+                : h.decision === "revalidated" ? "Revalidado"
+                : "Rechazado";
+              const exp = h.approval_expires_at ? new Date(h.approval_expires_at) : null;
+              const dueSoon = exp && exp.getTime() - Date.now() < 30 * 24 * 3600 * 1000 && exp.getTime() > Date.now();
+              const expired = exp && exp.getTime() < Date.now();
               return (
                 <Card key={h.id}>
                   <CardContent className="py-3 px-4 flex flex-col sm:flex-row sm:items-center gap-3">
@@ -350,6 +408,11 @@ export function AdminAuthorizationsSection() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-medium text-sm truncate">{h.professional_name || h.professional_email || h.professional_user_id}</span>
                         <Badge className={color}>{label}</Badge>
+                        {h.decision === "approved" && exp && (
+                          <Badge variant="outline" className={expired ? "text-destructive border-destructive/40" : dueSoon ? "text-amber-700 border-amber-300" : ""}>
+                            {expired ? "Vencido" : dueSoon ? "Vence pronto" : "Vence"} · {format(exp, "d MMM yyyy", { locale: es })}
+                          </Badge>
+                        )}
                       </div>
                       {h.professional_email && (
                         <p className="text-xs text-muted-foreground truncate">{h.professional_email}</p>
@@ -365,16 +428,28 @@ export function AdminAuthorizationsSection() {
                       </p>
                     </div>
                     {h.decision === "approved" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-1.5 text-destructive hover:text-destructive shrink-0"
-                        disabled={processing === h.professional_user_id}
-                        onClick={() => revoke(h.professional_user_id)}
-                      >
-                        <ShieldOff className="h-3.5 w-3.5" />
-                        Revocar
-                      </Button>
+                      <div className="flex gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1.5"
+                          disabled={processing === h.professional_user_id}
+                          onClick={() => revalidate(h.professional_user_id)}
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Revalidar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1.5 text-destructive hover:text-destructive"
+                          disabled={processing === h.professional_user_id}
+                          onClick={() => revoke(h.professional_user_id)}
+                        >
+                          <ShieldOff className="h-3.5 w-3.5" />
+                          Revocar
+                        </Button>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -383,6 +458,30 @@ export function AdminAuthorizationsSection() {
           </div>
         )}
       </TabsContent>
+
+      <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)}>
+        <DialogContent className="max-w-5xl h-[85vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-3">
+            <DialogTitle className="text-base">Consentimiento informado firmado</DialogTitle>
+            <DialogDescription className="text-xs">{preview?.name}</DialogDescription>
+          </DialogHeader>
+          {preview && (
+            <iframe
+              src={preview.url}
+              title="Consentimiento PDF"
+              className="flex-1 w-full border-t border-border"
+            />
+          )}
+          <div className="flex justify-end gap-2 p-3 border-t border-border">
+            {preview && (
+              <Button asChild size="sm" variant="outline">
+                <a href={preview.url} target="_blank" rel="noopener noreferrer">Abrir en pestaña nueva</a>
+              </Button>
+            )}
+            <Button size="sm" variant="ghost" onClick={() => setPreview(null)}>Cerrar</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Tabs>
   );
 }
