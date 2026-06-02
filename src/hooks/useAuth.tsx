@@ -130,13 +130,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       // Check admin role
-      const { data: roleData } = await supabase
+      const { data: rolesData } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", userId)
-        .maybeSingle();
+        .eq("user_id", userId);
 
-      setIsAdmin(roleData?.role === "admin");
+      setIsAdmin(Array.isArray(rolesData) && rolesData.some((r: any) => r.role === "admin"));
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
