@@ -1,3 +1,4 @@
+import { h } from "@/lib/htmlEscape";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -125,7 +126,7 @@ export const MbtiReportGenerator = ({
         <div class="patient-card">
           <div class="patient-card-icon">${icons.user}</div>
           <div class="patient-grid">
-            <div><span class="label">Paciente</span><span class="value">${patientName || '—'}</span></div>
+            <div><span class="label">Paciente</span><span class="value">${h(patientName || '—')}</span></div>
             <div><span class="label">Fecha de Nacimiento</span><span class="value">${patientBirthDate ? new Date(patientBirthDate).toLocaleDateString('es-AR') : '—'}</span></div>
             <div><span class="label">Edad</span><span class="value">${calcAge()}</span></div>
             <div><span class="label">Fecha del Test</span><span class="value">${new Date(testDate).toLocaleDateString('es-AR')}</span></div>
@@ -182,7 +183,7 @@ export const MbtiReportGenerator = ({
       </div>`;
 
     const html = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Informe MBTI — ${patientName || 'Paciente'}</title>
+<html><head><meta charset="utf-8"><title>Informe MBTI — ${h(patientName || 'Paciente')}</title>
 <style>
   @media print {
     @page { margin: 12mm 14mm; size: A4; }

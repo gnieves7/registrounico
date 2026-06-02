@@ -75,9 +75,13 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const manual = Boolean(body?.manual);
 
-    let isAuthorized = token === supabaseAnonKey;
+    // Allow scheduled cron jobs via CRON_SECRET header
+    const cronSecret = Deno.env.get("CRON_SECRET");
+    const providedCronSecret = req.headers.get("x-cron-secret");
+    let isAuthorized = Boolean(cronSecret && providedCronSecret === cronSecret);
 
-    if (!isAuthorized) {
+    // Reject anon key — it is public. Only real admin JWTs are accepted.
+    if (!isAuthorized && token !== supabaseAnonKey) {
       const { data: claimsData, error } = await authClient.auth.getClaims(token);
       const userId = claimsData?.claims?.sub;
 
