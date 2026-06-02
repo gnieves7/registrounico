@@ -21,6 +21,7 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Tables } from "@/integrations/supabase/types";
+import { h } from "@/lib/htmlEscape";
 
 type Psychobiography = Tables<"psychobiographies">;
 
@@ -302,7 +303,7 @@ export function PatientPsychobiographyView({ userId, patientName }: PatientPsych
       })
       .join('');
 
-    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Psicobiografía — ${patientName || 'Paciente'}</title>
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Psicobiografía — ${h(patientName || 'Paciente')}</title>
 <style>
   body{font-family:'Segoe UI',sans-serif;font-size:10pt;color:#1a1a1a;padding:20mm;max-width:210mm;margin:0 auto}
   h1{color:#4f46e5;font-size:18pt;border-bottom:3px solid #4f46e5;padding-bottom:6px}
@@ -313,16 +314,16 @@ export function PatientPsychobiographyView({ userId, patientName }: PatientPsych
   @media print{@page{margin:15mm;size:A4}}
 </style></head><body>
 <h1>Psicobiografía</h1>
-<div class="row"><span class="label">Paciente</span><span class="value">${patientName || '—'}</span></div>
+<div class="row"><span class="label">Paciente</span><span class="value">${h(patientName || '—')}</span></div>
 <div class="row"><span class="label">Fecha de nacimiento</span><span class="value">${data.birth_date ? new Date(data.birth_date).toLocaleDateString('es-AR') : '—'}</span></div>
-<div class="row"><span class="label">Lugar de nacimiento</span><span class="value">${data.birth_place || '—'}</span></div>
-<div class="row"><span class="label">Nacionalidad</span><span class="value">${data.nationality || '—'}</span></div>
-<div class="row"><span class="label">Dirección</span><span class="value">${data.address || '—'}</span></div>
-<div class="row"><span class="label">Nivel educativo</span><span class="value">${data.education_level || '—'}</span></div>
-<div class="row"><span class="label">Ocupación</span><span class="value">${data.occupation || '—'}</span></div>
-<div class="row"><span class="label">Estado civil</span><span class="value">${data.marital_status || '—'}</span></div>
-<div class="row"><span class="label">Motivo de consulta</span><span class="value">${data.consultation_reason || '—'}</span></div>
-<div class="row"><span class="label">Derivado por</span><span class="value">${data.referred_by || '—'}</span></div>
+<div class="row"><span class="label">Lugar de nacimiento</span><span class="value">${h(data.birth_place || '—')}</span></div>
+<div class="row"><span class="label">Nacionalidad</span><span class="value">${h(data.nationality || '—')}</span></div>
+<div class="row"><span class="label">Dirección</span><span class="value">${h(data.address || '—')}</span></div>
+<div class="row"><span class="label">Nivel educativo</span><span class="value">${h(data.education_level || '—')}</span></div>
+<div class="row"><span class="label">Ocupación</span><span class="value">${h(data.occupation || '—')}</span></div>
+<div class="row"><span class="label">Estado civil</span><span class="value">${h(data.marital_status || '—')}</span></div>
+<div class="row"><span class="label">Motivo de consulta</span><span class="value">${h(data.consultation_reason || '—')}</span></div>
+<div class="row"><span class="label">Derivado por</span><span class="value">${h(data.referred_by || '—')}</span></div>
 ${renderJsonToPrint("Familia", data.family_data)}
 ${renderJsonToPrint("Historia Médica", data.medical_history)}
 ${renderJsonToPrint("Historia Psicológica", data.psychological_history)}
@@ -344,12 +345,12 @@ ${renderJsonToPrint("Valores Personales", data.personal_values)}
       if (typeof v === 'object' && !Array.isArray(v)) {
         return Object.entries(v as Record<string, unknown>)
           .filter(([, sv]) => sv !== null && sv !== undefined && sv !== '')
-          .map(([sk, sv]) => `<div class="row"><span class="label">${sk}</span><span class="value">${String(sv)}</span></div>`)
+          .map(([sk, sv]) => `<div class="row"><span class="label">${h(sk)}</span><span class="value">${h(String(sv))}</span></div>`)
           .join('');
       }
-      return `<div class="row"><span class="label">${k}</span><span class="value">${Array.isArray(v) ? v.join(', ') : String(v)}</span></div>`;
+      return `<div class="row"><span class="label">${h(k)}</span><span class="value">${h(Array.isArray(v) ? v.join(', ') : String(v))}</span></div>`;
     }).join('');
-    return rows ? `<h2>${title}</h2><div class="section">${rows}</div>` : '';
+    return rows ? `<h2>${h(title)}</h2><div class="section">${rows}</div>` : '';
   };
 
   return (
