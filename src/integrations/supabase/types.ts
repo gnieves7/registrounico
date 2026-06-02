@@ -1439,6 +1439,7 @@ export type Database = {
           approval_decided_at: string | null
           approval_decided_by: string | null
           approval_decision: string | null
+          approval_expires_at: string | null
           approval_reason: string | null
           avatar_url: string | null
           consent_accepted_at: string | null
@@ -1449,10 +1450,12 @@ export type Database = {
           full_name: string | null
           id: string
           is_approved: boolean
+          last_revalidated_at: string | null
           license_college: string | null
           license_jurisdiction: string | null
           license_number: string | null
           phone: string | null
+          revalidation_required: boolean
           updated_at: string
           user_id: string
         }
@@ -1461,6 +1464,7 @@ export type Database = {
           approval_decided_at?: string | null
           approval_decided_by?: string | null
           approval_decision?: string | null
+          approval_expires_at?: string | null
           approval_reason?: string | null
           avatar_url?: string | null
           consent_accepted_at?: string | null
@@ -1471,10 +1475,12 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_approved?: boolean
+          last_revalidated_at?: string | null
           license_college?: string | null
           license_jurisdiction?: string | null
           license_number?: string | null
           phone?: string | null
+          revalidation_required?: boolean
           updated_at?: string
           user_id: string
         }
@@ -1483,6 +1489,7 @@ export type Database = {
           approval_decided_at?: string | null
           approval_decided_by?: string | null
           approval_decision?: string | null
+          approval_expires_at?: string | null
           approval_reason?: string | null
           avatar_url?: string | null
           consent_accepted_at?: string | null
@@ -1493,10 +1500,12 @@ export type Database = {
           full_name?: string | null
           id?: string
           is_approved?: boolean
+          last_revalidated_at?: string | null
           license_college?: string | null
           license_jurisdiction?: string | null
           license_number?: string | null
           phone?: string | null
+          revalidation_required?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -2244,6 +2253,13 @@ export type Database = {
           storage_path: string
         }[]
       }
+      expire_overdue_authorizations: {
+        Args: never
+        Returns: {
+          revoked: number
+          warned: number
+        }[]
+      }
       get_my_authorization_status: {
         Args: never
         Returns: {
@@ -2290,6 +2306,10 @@ export type Database = {
         Returns: boolean
       }
       reject_professional: {
+        Args: { _reason?: string; _user_id: string }
+        Returns: undefined
+      }
+      revalidate_professional: {
         Args: { _reason?: string; _user_id: string }
         Returns: undefined
       }
