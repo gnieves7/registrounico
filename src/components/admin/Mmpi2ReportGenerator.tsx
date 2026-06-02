@@ -1,3 +1,4 @@
+import { h } from "@/lib/htmlEscape";
 import { useMemo, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -185,7 +186,7 @@ export const Mmpi2ReportGenerator = ({
       <div class="patient-card">
         <div class="patient-card-icon">${icons.user}</div>
         <div class="patient-grid">
-          <div><span class="label">Paciente</span><span class="value">${patientName || '—'}</span></div>
+          <div><span class="label">Paciente</span><span class="value">${h(patientName || '—')}</span></div>
           <div><span class="label">Fecha de Nacimiento</span><span class="value">${patientBirthDate ? new Date(patientBirthDate).toLocaleDateString('es-AR') : '—'}</span></div>
           <div><span class="label">Edad</span><span class="value">${calcAge()}</span></div>
           <div><span class="label">Fecha del Test</span><span class="value">${new Date(testDate).toLocaleDateString('es-AR')}</span></div>
@@ -362,7 +363,7 @@ export const Mmpi2ReportGenerator = ({
       </div>` : '';
 
     const html = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>Informe MMPI-2 — ${patientName || 'Paciente'}</title>
+<html><head><meta charset="utf-8"><title>Informe MMPI-2 — ${h(patientName || 'Paciente')}</title>
 <style>
   @media print {
     @page { margin: 12mm 14mm; size: A4; }
