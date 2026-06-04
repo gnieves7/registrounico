@@ -22,6 +22,8 @@ import {
   type NoteTemplate,
 } from '@/data/sessionNoteTemplates';
 import { exportSessionNotePdf } from '@/lib/sessionNotePdf';
+import { SchoolSwitcher } from '@/components/SchoolSwitcher';
+import { SCHOOL_CONFIG, type SchoolType } from '@/config/schools';
 
 interface SessionRow {
   id: string;
@@ -44,7 +46,9 @@ interface Props {
 export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNavigate, onNew }: Props) {
   const { profile } = useAuth();
   const { schoolId, school } = useActiveSchool();
-  const templates = useMemo(() => getTemplatesForSchool(schoolId), [schoolId]);
+  const [noteSchoolId, setNoteSchoolId] = useState<SchoolType>(schoolId);
+  const activeSchool = SCHOOL_CONFIG[noteSchoolId];
+  const templates = useMemo(() => getTemplatesForSchool(noteSchoolId), [noteSchoolId]);
 
   const parsed = useMemo(() => parseStoredNote(session.clinical_notes), [session.id]);
   // For new/empty notes, default to the school-specific template (templates[1]) instead of 'free'.
@@ -180,8 +184,20 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
 
       {/* Template + status */}
       <div className="border-b border-border px-3 py-2 flex items-center gap-3 flex-wrap bg-muted/30">
-        <div className="flex items-center gap-2">
-          <Label className="text-[11px] text-muted-foreground">Plantilla ({school.name}):</Label>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Label className="text-[11px] text-muted-foreground">Escuela de esta nota:</Label>
+          <SchoolSwitcher
+            compact
+            value={noteSchoolId}
+            onChange={(id) => {
+              setNoteSchoolId(id);
+              const tpls = getTemplatesForSchool(id);
+              if (!tpls.some((t) => t.id === templateId)) {
+                setTemplateId(tpls[0]?.id || 'free');
+              }
+            }}
+          />
+          <Label className="text-[11px] text-muted-foreground">Plantilla ({activeSchool.name}):</Label>
           <Select value={templateId} onValueChange={(v) => setTemplateId(v)}>
             <SelectTrigger className="h-7 w-[200px] text-xs">
               <SelectValue />
