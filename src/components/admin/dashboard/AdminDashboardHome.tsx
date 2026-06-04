@@ -1,4 +1,4 @@
-import { NotebookPen, CalendarClock, Sparkles, ArrowRight } from "lucide-react";
+import { NotebookPen, CalendarClock, Sparkles, ArrowRight, ClipboardList, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useActiveSchool } from "@/hooks/useActiveSchool";
 import { ProNextSessionCard } from "./ProNextSessionCard";
@@ -33,6 +33,20 @@ export function AdminDashboardHome({ onNavigateSection }: Props = {}) {
       icon: Sparkles,
       accent: "from-emerald-500/10 to-emerald-500/5",
     },
+    {
+      key: "interview_models",
+      title: "Modelos de entrevista e informes",
+      description: "Planillas estructuradas: primera entrevista psicodiagnóstica y modelos descargables/rellenables en PDF.",
+      icon: ClipboardList,
+      accent: "from-amber-500/10 to-amber-500/5",
+    },
+    {
+      key: "authorizations",
+      title: "Autorizaciones de profesionales",
+      description: "Aprobá, rechazá y auditá el acceso de futuros colegas a la plataforma.",
+      icon: ShieldCheck,
+      accent: "from-rose-500/10 to-rose-500/5",
+    },
   ];
 
   return (
@@ -54,7 +68,7 @@ export function AdminDashboardHome({ onNavigateSection }: Props = {}) {
         </span>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {quickAccess.map((q) => (
           <button
             key={q.key}
