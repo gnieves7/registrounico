@@ -6,10 +6,18 @@ import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/Admi
 import { AdminClinicalNotesSection } from "@/components/admin/dashboard/AdminClinicalNotesSection";
 import { AdminBookingSection } from "@/components/admin/dashboard/AdminBookingSection";
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
+import { AdminInterviewModelsSection } from "@/components/admin/dashboard/AdminInterviewModelsSection";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
-const ALLOWED: AdminSection[] = ["dashboard", "clinical_notes", "booking", "symbolic", "authorizations"];
+const ALLOWED: AdminSection[] = [
+  "dashboard",
+  "clinical_notes",
+  "booking",
+  "symbolic",
+  "interview_models",
+  "authorizations",
+];
 
 export default function AdminDashboard() {
   const [searchParams] = useSearchParams();
@@ -48,9 +56,22 @@ export default function AdminDashboard() {
         {activeSection === "dashboard" && (
           <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
         )}
+        {activeSection !== "dashboard" && (
+          <div className="mb-3 -mt-1">
+            <button
+              onClick={() => setActiveSection("dashboard")}
+              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              ← Volver al inicio del workspace
+            </button>
+          </div>
+        )}
         {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
         {activeSection === "booking" && <AdminBookingSection />}
         {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
+        {activeSection === "interview_models" && (
+          <AdminInterviewModelsSection onBack={() => setActiveSection("dashboard")} />
+        )}
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
       </AdminDashboardLayout>
     </AdminGuard>
