@@ -6,10 +6,18 @@ import { AdminSymbolicResourcesSection } from "@/components/admin/dashboard/Admi
 import { AdminClinicalNotesSection } from "@/components/admin/dashboard/AdminClinicalNotesSection";
 import { AdminBookingSection } from "@/components/admin/dashboard/AdminBookingSection";
 import { AdminAuthorizationsSection } from "@/components/admin/dashboard/AdminAuthorizationsSection";
+import { AdminInterviewModelsSection } from "@/components/admin/dashboard/AdminInterviewModelsSection";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { supabase } from "@/integrations/supabase/client";
 
-const ALLOWED: AdminSection[] = ["dashboard", "clinical_notes", "booking", "symbolic", "authorizations"];
+const ALLOWED: AdminSection[] = [
+  "dashboard",
+  "clinical_notes",
+  "booking",
+  "symbolic",
+  "interview_models",
+  "authorizations",
+];
 
 export default function AdminDashboard() {
   const [searchParams] = useSearchParams();
@@ -51,6 +59,9 @@ export default function AdminDashboard() {
         {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
         {activeSection === "booking" && <AdminBookingSection />}
         {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
+        {activeSection === "interview_models" && (
+          <AdminInterviewModelsSection onBack={() => setActiveSection("dashboard")} />
+        )}
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
       </AdminDashboardLayout>
     </AdminGuard>
