@@ -18,6 +18,8 @@ import {
   Sparkles,
   Calendar,
   User,
+  ClipboardList,
+  ShieldCheck,
 } from "lucide-react";
 import { demoPatients } from "@/data/demoData";
 import type { AdminSection } from "@/components/admin/AdminDashboardLayout";
@@ -91,6 +93,14 @@ export function CommandPalette({ open, onOpenChange, onSectionChange }: CommandP
           <CommandItem onSelect={() => section("symbolic")}>
             <Sparkles className="mr-2 h-4 w-4" />
             Recursos simbólicos
+          </CommandItem>
+          <CommandItem onSelect={() => section("interview_models")}>
+            <ClipboardList className="mr-2 h-4 w-4" />
+            Modelos de entrevista e informes
+          </CommandItem>
+          <CommandItem onSelect={() => section("authorizations")}>
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Autorizaciones
           </CommandItem>
           <CommandItem onSelect={() => go(() => window.open("https://calendar.app.google/4Locar4CbcTB45zv9", "_blank"))}>
             <Calendar className="mr-2 h-4 w-4" />
