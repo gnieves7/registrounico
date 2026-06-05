@@ -1,8 +1,24 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ClipboardList, FileText, ChevronRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, ClipboardList, FileText, ChevronRight, ExternalLink, FileDown, Eye } from "lucide-react";
 import { PsicodiagnosticaForm } from "@/components/interview/psicodiagnostica/PsicodiagnosticaForm";
+import { PsicodiagPreviewDialog } from "@/components/interview/psicodiagnostica/PsicodiagPreviewDialog";
+import { EMPTY_PSICODIAG, type PsicodiagFormData } from "@/components/interview/psicodiagnostica/types";
+import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
+import { toast } from "@/hooks/use-toast";
+
+const STORAGE_KEY = "psi_planilla_psicodiag_draft";
+
+function loadDraft(): PsicodiagFormData | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return { ...EMPTY_PSICODIAG, ...JSON.parse(raw) };
+  } catch {
+    return null;
+  }
+}
 
 type ActiveModel = null | "psicodiag";
 
@@ -30,6 +46,33 @@ const PDF_TEMPLATES = [
 
 export function AdminInterviewModelsSection({ onBack }: Props) {
   const [active, setActive] = useState<ActiveModel>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewData, setPreviewData] = useState<PsicodiagFormData>(EMPTY_PSICODIAG);
+
+  const handleQuickExport = () => {
+    const draft = loadDraft();
+    if (!draft) {
+      toast({
+        title: "Sin borrador",
+        description: "Completá la planilla al menos una vez antes de exportar.",
+        variant: "destructive",
+      });
+      setActive("psicodiag");
+      return;
+    }
+    setPreviewData(draft);
+    setPreviewOpen(true);
+  };
+
+  const confirmExport = () => {
+    try {
+      exportPsicodiagPdf(previewData);
+      setPreviewOpen(false);
+      toast({ title: "PDF generado", description: "Se descargó la planilla psicodiagnóstica." });
+    } catch (e: any) {
+      toast({ title: "Error al generar PDF", description: e?.message ?? "", variant: "destructive" });
+    }
+  };
 
   if (active === "psicodiag") {
     return (
@@ -93,6 +136,17 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
                   </p>
                 </div>
               </button>
+              <div className="mt-3 flex flex-wrap gap-2 pl-9">
+                <Button size="sm" variant="outline" className="h-7 gap-1 text-xs" onClick={() => setActive("psicodiag")}>
+                  <FileText className="h-3 w-3" /> Abrir formulario
+                </Button>
+                <Button size="sm" variant="outline" className="h-7 gap-1 text-xs" onClick={handleQuickExport}>
+                  <Eye className="h-3 w-3" /> Previsualizar
+                </Button>
+                <Button size="sm" className="h-7 gap-1 text-xs" onClick={handleQuickExport}>
+                  <FileDown className="h-3 w-3" /> Exportar PDF
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -128,6 +182,13 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
           ))}
         </div>
       </section>
+
+      <PsicodiagPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        data={previewData}
+        onConfirmExport={confirmExport}
+      />
     </div>
   );
 }
