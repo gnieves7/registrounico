@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileDown, Save, RotateCcw, FileText } from "lucide-react";
+import { FileDown, Save, RotateCcw, FileText, Eye } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
 import { EMPTY_PSICODIAG, type PsicodiagFormData } from "./types";
+import { PsicodiagPreviewDialog } from "./PsicodiagPreviewDialog";
 
 const STORAGE_KEY = "psi_planilla_psicodiag_draft";
 
@@ -133,6 +134,7 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
     } catch {}
     return EMPTY_PSICODIAG;
   });
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   // Autosave to localStorage
   useEffect(() => {
@@ -157,9 +159,10 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
     toast({ title: "Borrador guardado", description: "Se almacena en este dispositivo." });
   };
 
-  const exportPdf = () => {
+  const doExport = () => {
     try {
       exportPsicodiagPdf(data);
+      setPreviewOpen(false);
       toast({ title: "PDF generado", description: "Se descargó la planilla completa." });
     } catch (e: any) {
       toast({ title: "Error al generar PDF", description: e?.message ?? "", variant: "destructive" });
@@ -219,7 +222,10 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
             <Button size="sm" variant="outline" onClick={saveDraft} className="h-8 gap-1">
               <Save className="h-3.5 w-3.5" /> Guardar borrador
             </Button>
-            <Button size="sm" onClick={exportPdf} className="h-8 gap-1">
+            <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)} className="h-8 gap-1">
+              <Eye className="h-3.5 w-3.5" /> Vista previa
+            </Button>
+            <Button size="sm" onClick={() => setPreviewOpen(true)} className="h-8 gap-1">
               <FileDown className="h-3.5 w-3.5" /> Exportar PDF
             </Button>
             {onClose && (
@@ -243,6 +249,12 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
           ))}
         </Accordion>
       </CardContent>
+      <PsicodiagPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        data={data}
+        onConfirmExport={doExport}
+      />
     </Card>
   );
 }
