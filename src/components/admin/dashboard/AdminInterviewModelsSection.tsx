@@ -1,18 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ClipboardList, FileText, ChevronRight, ExternalLink, FileDown, Eye } from "lucide-react";
+import { ArrowLeft, ClipboardList, FileText, ChevronRight, ExternalLink, FileDown, Eye, UserRound } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PsicodiagnosticaForm } from "@/components/interview/psicodiagnostica/PsicodiagnosticaForm";
 import { PsicodiagPreviewDialog } from "@/components/interview/psicodiagnostica/PsicodiagPreviewDialog";
 import { EMPTY_PSICODIAG, type PsicodiagFormData } from "@/components/interview/psicodiagnostica/types";
 import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
 import { toast } from "@/hooks/use-toast";
+import { validatePsicodiag } from "@/hooks/usePsicodiagDraft";
 
-const STORAGE_KEY = "psi_planilla_psicodiag_draft";
+const DRAFT_PREFIX = "psi_planilla_psicodiag_draft";
+const ACTIVE_PATIENT_KEY = "psi_planilla_active_patient";
 
-function loadDraft(): PsicodiagFormData | null {
+function patientSlug(patientId: string | undefined | null) {
+  const s = (patientId ?? "").trim().toLowerCase();
+  if (!s) return "__global__";
+  return s.replace(/[^a-z0-9_-]+/g, "_").slice(0, 64);
+}
+
+function loadDraft(patientId: string): PsicodiagFormData | null {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(`${DRAFT_PREFIX}:${patientSlug(patientId)}`);
     if (!raw) return null;
     return { ...EMPTY_PSICODIAG, ...JSON.parse(raw) };
   } catch {
@@ -48,13 +58,20 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
   const [active, setActive] = useState<ActiveModel>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<PsicodiagFormData>(EMPTY_PSICODIAG);
+  const [patientId, setPatientId] = useState<string>(() => {
+    try { return localStorage.getItem(ACTIVE_PATIENT_KEY) ?? ""; } catch { return ""; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem(ACTIVE_PATIENT_KEY, patientId); } catch {}
+  }, [patientId]);
 
   const handleQuickExport = () => {
-    const draft = loadDraft();
+    const draft = loadDraft(patientId);
     if (!draft) {
       toast({
         title: "Sin borrador",
-        description: "Completá la planilla al menos una vez antes de exportar.",
+        description: "No hay borrador guardado para este paciente. Abrí el formulario primero.",
         variant: "destructive",
       });
       setActive("psicodiag");
@@ -65,6 +82,15 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
   };
 
   const confirmExport = () => {
+    const { isValid, missing } = validatePsicodiag(previewData);
+    if (!isValid) {
+      toast({
+        title: "Faltan campos obligatorios",
+        description: `${missing.length} requeridos sin completar.`,
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       exportPsicodiagPdf(previewData);
       setPreviewOpen(false);
@@ -87,7 +113,11 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
             </Button>
           )}
         </div>
-        <PsicodiagnosticaForm onClose={() => setActive(null)} />
+        <PsicodiagnosticaForm
+          onClose={() => setActive(null)}
+          patientId={patientId || null}
+          patientLabel={patientId || "Borrador general (sin paciente)"}
+        />
       </div>
     );
   }
@@ -110,6 +140,27 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
           </p>
         </div>
       </div>
+
+      <Card className="border-border bg-muted/30">
+        <CardContent className="p-3 flex items-center gap-3 flex-wrap">
+          <UserRound className="h-4 w-4 text-muted-foreground shrink-0" />
+          <div className="flex-1 min-w-[200px]">
+            <Label htmlFor="active-patient" className="text-[11px] font-medium">
+              Paciente activo (identificador local)
+            </Label>
+            <Input
+              id="active-patient"
+              value={patientId}
+              onChange={(e) => setPatientId(e.target.value)}
+              placeholder="Ej.: iniciales + nro (M.G. 0421) o id interno"
+              className="h-8 text-sm mt-1"
+            />
+          </div>
+          <p className="text-[10px] text-muted-foreground max-w-xs leading-tight">
+            El borrador y las versiones de la planilla se guardan por paciente en este dispositivo.
+          </p>
+        </CardContent>
+      </Card>
 
       <section className="space-y-2">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
