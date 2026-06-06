@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileDown, Save, RotateCcw, FileText, Eye } from "lucide-react";
+import { FileDown, Save, RotateCcw, FileText, Eye, History, Trash2, RotateCw, GitCompare } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
-import { EMPTY_PSICODIAG, type PsicodiagFormData } from "./types";
+import { type PsicodiagFormData } from "./types";
 import { PsicodiagPreviewDialog } from "./PsicodiagPreviewDialog";
-
-const STORAGE_KEY = "psi_planilla_psicodiag_draft";
+import { usePsicodiagDraft, validatePsicodiag, diffVersions } from "@/hooks/usePsicodiagDraft";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 type FieldKey = keyof PsicodiagFormData;
 type FieldSpec = { key: FieldKey; label: string; type?: "input" | "textarea" | "date"; rows?: number; placeholder?: string };
@@ -124,42 +126,42 @@ const PARTS: { id: string; title: string; fields: FieldSpec[] }[] = [
 
 interface Props {
   onClose?: () => void;
+  patientId?: string | null;
+  patientLabel?: string;
 }
 
-export function PsicodiagnosticaForm({ onClose }: Props) {
-  const [data, setData] = useState<PsicodiagFormData>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return { ...EMPTY_PSICODIAG, ...JSON.parse(raw) };
-    } catch {}
-    return EMPTY_PSICODIAG;
-  });
+export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props) {
+  const { data, setField, reset: resetDraft, versions, saveVersion, deleteVersion, restoreVersion } =
+    usePsicodiagDraft(patientId);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [diffWith, setDiffWith] = useState<string | null>(null);
 
-  // Autosave to localStorage
-  useEffect(() => {
-    const t = setTimeout(() => {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
-    }, 400);
-    return () => clearTimeout(t);
-  }, [data]);
-
-  const set = (k: FieldKey, v: string) => setData((d) => ({ ...d, [k]: v }));
+  const set = (k: FieldKey, v: string) => setField(k, v);
 
   const reset = () => {
-    if (confirm("¿Borrar el borrador actual de la planilla?")) {
-      setData(EMPTY_PSICODIAG);
-      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    if (confirm("¿Borrar el borrador actual de la planilla? Las versiones guardadas se mantienen.")) {
+      resetDraft();
       toast({ title: "Borrador eliminado" });
     }
   };
 
   const saveDraft = () => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
-    toast({ title: "Borrador guardado", description: "Se almacena en este dispositivo." });
+    const label = prompt("Etiqueta opcional para esta versión (ej.: 'Antes de devolución')") || undefined;
+    const v = saveVersion(label);
+    toast({ title: "Versión guardada", description: `${v.label ?? "Sin etiqueta"} · ${new Date(v.savedAt).toLocaleString()}` });
   };
 
   const doExport = () => {
+    const { isValid, missing } = validatePsicodiag(data);
+    if (!isValid) {
+      toast({
+        title: "Faltan campos obligatorios",
+        description: `${missing.length} campos requeridos sin completar.`,
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       exportPsicodiagPdf(data);
       setPreviewOpen(false);
@@ -168,6 +170,9 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
       toast({ title: "Error al generar PDF", description: e?.message ?? "", variant: "destructive" });
     }
   };
+
+  const diffTarget = diffWith ? versions.find((v) => v.id === diffWith) : null;
+  const diffs = diffTarget ? diffVersions(diffTarget.data, data) : [];
 
   const renderField = (f: FieldSpec) => {
     const value = (data[f.key] ?? "") as string;
@@ -212,15 +217,24 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               Versión genérica (Partes I a VI). Completá durante o inmediatamente después de la primera entrevista.
-              Se guarda borrador local en este dispositivo y se exporta a PDF profesional.
+              Borrador autoguardado por paciente · Versionado local · Exportación PDF profesional.
             </p>
+            {(patientLabel || patientId) && (
+              <p className="mt-1 text-[11px]">
+                <span className="font-medium text-foreground">Paciente activo:</span>{" "}
+                <span className="text-muted-foreground">{patientLabel || patientId}</span>
+              </p>
+            )}
           </div>
           <div className="flex gap-2 flex-wrap">
             <Button size="sm" variant="ghost" onClick={reset} className="h-8 gap-1">
               <RotateCcw className="h-3.5 w-3.5" /> Limpiar
             </Button>
+            <Button size="sm" variant="ghost" onClick={() => setHistoryOpen(true)} className="h-8 gap-1">
+              <History className="h-3.5 w-3.5" /> Versiones {versions.length > 0 && <Badge variant="secondary" className="ml-1 h-4 text-[10px]">{versions.length}</Badge>}
+            </Button>
             <Button size="sm" variant="outline" onClick={saveDraft} className="h-8 gap-1">
-              <Save className="h-3.5 w-3.5" /> Guardar borrador
+              <Save className="h-3.5 w-3.5" /> Guardar versión
             </Button>
             <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)} className="h-8 gap-1">
               <Eye className="h-3.5 w-3.5" /> Vista previa
@@ -255,6 +269,71 @@ export function PsicodiagnosticaForm({ onClose }: Props) {
         data={data}
         onConfirmExport={doExport}
       />
+
+      <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><History className="h-4 w-4" /> Historial de versiones</DialogTitle>
+            <DialogDescription>
+              Cada guardado crea una versión local. Restaurá una anterior o comparala contra el borrador actual.
+            </DialogDescription>
+          </DialogHeader>
+          {versions.length === 0 ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">
+              Todavía no guardaste ninguna versión. Usá <span className="font-medium">Guardar versión</span> para crear la primera.
+            </p>
+          ) : (
+            <ScrollArea className="max-h-[55vh] pr-3">
+              <div className="space-y-2">
+                {versions.map((v, i) => (
+                  <div key={v.id} className="border border-border rounded-md p-3 space-y-2">
+                    <div className="flex items-start justify-between gap-2 flex-wrap">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium">
+                          {v.label || `Versión ${versions.length - i}`}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">{new Date(v.savedAt).toLocaleString()}</p>
+                      </div>
+                      <div className="flex gap-1.5">
+                        <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs"
+                          onClick={() => setDiffWith(diffWith === v.id ? null : v.id)}>
+                          <GitCompare className="h-3 w-3" /> {diffWith === v.id ? "Ocultar" : "Comparar"}
+                        </Button>
+                        <Button size="sm" variant="outline" className="h-7 gap-1 text-xs"
+                          onClick={() => { if (restoreVersion(v.id)) toast({ title: "Versión restaurada" }); }}>
+                          <RotateCw className="h-3 w-3" /> Restaurar
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs text-destructive hover:text-destructive"
+                          onClick={() => { if (confirm("¿Eliminar esta versión?")) deleteVersion(v.id); }}>
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    {diffWith === v.id && (
+                      <div className="rounded bg-muted/40 p-2 text-[11px] space-y-1 max-h-56 overflow-auto">
+                        {diffs.length === 0 ? (
+                          <p className="text-muted-foreground italic">Sin diferencias con el borrador actual.</p>
+                        ) : (
+                          diffs.map((d) => (
+                            <div key={d.key} className="border-b border-border/30 pb-1 last:border-0">
+                              <p className="font-mono text-[10px] text-muted-foreground">{d.key}</p>
+                              <p className="text-destructive/80 line-through truncate">{d.from || "—"}</p>
+                              <p className="text-emerald-600 dark:text-emerald-400 truncate">{d.to || "—"}</p>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setHistoryOpen(false)}>Cerrar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

@@ -8,6 +8,16 @@ import {
   LogOut,
   Command as CommandIcon,
   ShieldCheck,
+  Brain,
+  ClipboardCheck,
+  HeartHandshake,
+  NotebookPen,
+  ClipboardList,
+  CalendarClock,
+  Sparkles,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import { SchoolSwitcher } from "@/components/SchoolSwitcher";
+import { cn } from "@/lib/utils";
 
 export type AdminSection =
   | "dashboard"
@@ -55,6 +66,50 @@ const SECTION_LABELS: Record<string, string> = {
   authorizations: "Autorizaciones",
 };
 
+type NavGroup = {
+  id: "reflexionar" | "evaluar" | "acompanar";
+  title: string;
+  color: string;
+  icon: typeof Brain;
+  items: { key: AdminSection; label: string; icon: typeof NotebookPen }[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    id: "reflexionar",
+    title: "Reflexionar",
+    color: "hsl(25 90% 55%)",
+    icon: Brain,
+    items: [{ key: "clinical_notes", label: "Notas clínicas", icon: NotebookPen }],
+  },
+  {
+    id: "evaluar",
+    title: "Evaluar",
+    color: "hsl(200 85% 50%)",
+    icon: ClipboardCheck,
+    items: [
+      { key: "interview_models", label: "Entrevistas e informes", icon: ClipboardList },
+      { key: "authorizations", label: "Autorizaciones", icon: ShieldCheck },
+    ],
+  },
+  {
+    id: "acompanar",
+    title: "Acompañar",
+    color: "hsl(155 65% 40%)",
+    icon: HeartHandshake,
+    items: [
+      { key: "booking", label: "Reserva de turnos", icon: CalendarClock },
+      { key: "symbolic", label: "Recursos simbólicos", icon: Sparkles },
+    ],
+  },
+];
+
+const SIDEBAR_KEY = "psi_admin_sidebar_collapsed";
+
+function findGroup(section: AdminSection): NavGroup | undefined {
+  return NAV_GROUPS.find((g) => g.items.some((i) => i.key === section));
+}
+
 export function AdminDashboardLayout({
   activeSection,
   onSectionChange,
@@ -65,6 +120,12 @@ export function AdminDashboardLayout({
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const { isDemoMode, demoProfile } = useDemoMode();
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    try { return localStorage.getItem(SIDEBAR_KEY) === "1"; } catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0"); } catch {}
+  }, [collapsed]);
   // Apply pro workspace theme to body while mounted
   useEffect(() => {
     const prev = document.body.getAttribute("data-area");
@@ -99,6 +160,7 @@ export function AdminDashboardLayout({
 
   const activeLabel = SECTION_LABELS[activeSection] ?? "Panel";
   const isHome = activeSection === "dashboard";
+  const activeGroup = findGroup(activeSection);
 
   return (
     <div className="flex h-screen flex-col bg-background overflow-hidden">
@@ -110,6 +172,15 @@ export function AdminDashboardLayout({
 
       {/* Top bar — replaces the sidebar */}
       <header className="sticky top-0 z-30 flex h-14 items-center gap-2 md:gap-3 border-b border-border bg-background/90 px-3 md:px-5 backdrop-blur">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 hidden md:inline-flex"
+          onClick={() => setCollapsed((c) => !c)}
+          aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
+        >
+          {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+        </Button>
         <button
           onClick={() => onSectionChange("dashboard")}
           className="flex items-center gap-2 mr-1"
@@ -134,8 +205,34 @@ export function AdminDashboardLayout({
           </Button>
         )}
 
-        <span className="hidden md:inline text-xs text-muted-foreground/60">/</span>
-        <h1 className="text-sm font-semibold truncate">{activeLabel}</h1>
+        {/* Breadcrumbs */}
+        <nav aria-label="Ruta" className="flex items-center gap-1 min-w-0 text-xs">
+          <span className="text-muted-foreground/60 hidden md:inline">/</span>
+          <button
+            onClick={() => onSectionChange("dashboard")}
+            className="text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+          >
+            Workspace
+          </button>
+          {activeGroup && (
+            <>
+              <ChevronRight className="h-3 w-3 text-muted-foreground/60 hidden sm:inline" />
+              <span
+                className="font-medium hidden sm:inline"
+                style={{ color: activeGroup.color }}
+              >
+                {activeGroup.title}
+              </span>
+            </>
+          )}
+          {!isHome && (
+            <>
+              <ChevronRight className="h-3 w-3 text-muted-foreground/60 hidden sm:inline" />
+              <span className="font-semibold truncate">{activeLabel}</span>
+            </>
+          )}
+          {isHome && <span className="font-semibold truncate sm:hidden">{activeLabel}</span>}
+        </nav>
 
         <div className="flex-1" />
 
@@ -196,9 +293,80 @@ export function AdminDashboardLayout({
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto">
-        <div className="p-4 md:p-6 max-w-[1600px] mx-auto">{children}</div>
-      </main>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <aside
+          className={cn(
+            "hidden md:flex flex-col border-r border-border bg-muted/20 transition-all duration-200 overflow-y-auto",
+            collapsed ? "w-14" : "w-60"
+          )}
+          aria-label="Navegación lateral"
+        >
+          <nav className="p-2 space-y-3">
+            <button
+              onClick={() => onSectionChange("dashboard")}
+              className={cn(
+                "w-full flex items-center gap-2 rounded-md px-2 py-2 text-xs font-medium transition-colors",
+                activeSection === "dashboard"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+              title="Inicio del workspace"
+            >
+              <LayoutDashboard className="h-4 w-4 shrink-0" />
+              {!collapsed && <span className="truncate">Inicio</span>}
+            </button>
+            {NAV_GROUPS.map((g) => (
+              <div key={g.id} className="space-y-0.5">
+                {!collapsed && (
+                  <div className="flex items-center gap-1.5 px-2 pt-1.5">
+                    <g.icon className="h-3 w-3" style={{ color: g.color }} />
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-wider"
+                      style={{ color: g.color }}
+                    >
+                      {g.title}
+                    </span>
+                  </div>
+                )}
+                {collapsed && (
+                  <div className="flex justify-center pt-1.5" title={g.title}>
+                    <g.icon className="h-3.5 w-3.5" style={{ color: g.color }} />
+                  </div>
+                )}
+                {g.items.map((it) => {
+                  const active = activeSection === it.key;
+                  return (
+                    <button
+                      key={it.key}
+                      onClick={() => onSectionChange(it.key)}
+                      className={cn(
+                        "w-full flex items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors",
+                        active
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
+                      title={it.label}
+                    >
+                      <it.icon className="h-3.5 w-3.5 shrink-0" />
+                      {!collapsed && <span className="truncate">{it.label}</span>}
+                      {!collapsed && it.key === "authorizations" && pendingAuthCount > 0 && (
+                        <Badge variant="destructive" className="ml-auto h-4 text-[9px] px-1">
+                          {pendingAuthCount}
+                        </Badge>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="flex-1 overflow-auto">
+          <div className="p-4 md:p-6 max-w-[1600px] mx-auto">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }
