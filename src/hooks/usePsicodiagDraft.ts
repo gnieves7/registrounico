@@ -13,6 +13,8 @@ export type PsicodiagVersion = {
   data: PsicodiagFormData;
 };
 
+export type AutosaveStatus = "idle" | "saving" | "saved" | "error";
+
 function patientSlug(patientId: string | undefined | null) {
   const s = (patientId ?? "").trim().toLowerCase();
   if (!s) return "__global__";
@@ -59,6 +61,9 @@ export function usePsicodiagDraft(patientId?: string | null) {
   const [data, setData] = useState<PsicodiagFormData>(() => loadDraft(patientId));
   const [versions, setVersions] = useState<PsicodiagVersion[]>(() => loadVersions(patientId));
   const lastPatient = useRef<string | undefined | null>(patientId);
+  const [autosaveStatus, setAutosaveStatus] = useState<AutosaveStatus>("idle");
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const firstRender = useRef(true);
 
   // Reload when patientId changes
   useEffect(() => {
@@ -66,13 +71,27 @@ export function usePsicodiagDraft(patientId?: string | null) {
     lastPatient.current = patientId;
     setData(loadDraft(patientId));
     setVersions(loadVersions(patientId));
+    setAutosaveStatus("idle");
+    setLastSavedAt(null);
+    firstRender.current = true;
   }, [patientId]);
 
   // Autosave draft (debounced)
   useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    setAutosaveStatus("saving");
     const t = setTimeout(() => {
-      try { localStorage.setItem(draftKey(patientId), JSON.stringify(data)); } catch {}
-    }, 400);
+      try {
+        localStorage.setItem(draftKey(patientId), JSON.stringify(data));
+        setAutosaveStatus("saved");
+        setLastSavedAt(new Date());
+      } catch {
+        setAutosaveStatus("error");
+      }
+    }, 800);
     return () => clearTimeout(t);
   }, [data, patientId]);
 
@@ -126,7 +145,18 @@ export function usePsicodiagDraft(patientId?: string | null) {
     [versions, patientId]
   );
 
-  return { data, setField: update, replace, reset, versions, saveVersion, deleteVersion, restoreVersion };
+  return {
+    data,
+    setField: update,
+    replace,
+    reset,
+    versions,
+    saveVersion,
+    deleteVersion,
+    restoreVersion,
+    autosaveStatus,
+    lastSavedAt,
+  };
 }
 
 // ------------------- Validation -------------------
