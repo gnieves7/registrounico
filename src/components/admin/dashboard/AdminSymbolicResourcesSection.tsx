@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { useActiveSchool } from "@/hooks/useActiveSchool";
 import type { SchoolType } from "@/config/schools";
+import { onAdminAction } from "@/lib/uiEvents";
 
 interface ResourceItem {
   title: string;
@@ -38,6 +40,13 @@ function isRecommended(item: ResourceItem, schoolId: SchoolType): boolean {
 
 export function AdminSymbolicResourcesSection() {
   const { schoolId, school } = useActiveSchool();
+
+  // Contextual action: scroll the resources list into view
+  useEffect(() => {
+    return onAdminAction("new-symbolic", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }, []);
 
   const recommended = items.filter((i) => isRecommended(i, schoolId) && i.recommendedFor !== "all");
   const generic = items.filter((i) => i.recommendedFor === "all");

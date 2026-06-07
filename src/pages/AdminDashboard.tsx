@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AdminDashboardLayout, AdminSection } from "@/components/admin/AdminDashboardLayout";
 import { AdminDashboardHome } from "@/components/admin/dashboard/AdminDashboardHome";
@@ -20,15 +20,21 @@ const ALLOWED: AdminSection[] = [
 ];
 
 export default function AdminDashboard() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const requested = (searchParams.get("section") as AdminSection) || "dashboard";
-  const initialSection: AdminSection = ALLOWED.includes(requested) ? requested : "dashboard";
-  const [activeSection, setActiveSection] = useState<AdminSection>(initialSection);
+  const activeSection: AdminSection = ALLOWED.includes(requested) ? requested : "dashboard";
   const [pendingAuthCount, setPendingAuthCount] = useState(0);
 
-  useEffect(() => {
-    if (!ALLOWED.includes(activeSection)) setActiveSection("dashboard");
-  }, [activeSection]);
+  const handleSectionChange = useCallback(
+    (s: AdminSection) => {
+      const next = ALLOWED.includes(s) ? s : "dashboard";
+      const params = new URLSearchParams(searchParams);
+      if (next === "dashboard") params.delete("section");
+      else params.set("section", next);
+      setSearchParams(params, { replace: false });
+    },
+    [searchParams, setSearchParams],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -50,17 +56,17 @@ export default function AdminDashboard() {
     <AdminGuard>
       <AdminDashboardLayout
         activeSection={activeSection}
-        onSectionChange={(s) => setActiveSection(ALLOWED.includes(s) ? s : "dashboard")}
+        onSectionChange={handleSectionChange}
         pendingAuthCount={pendingAuthCount}
       >
         {activeSection === "dashboard" && (
-          <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
+          <AdminDashboardHome onNavigateSection={(s) => handleSectionChange(s as AdminSection)} />
         )}
         {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
         {activeSection === "booking" && <AdminBookingSection />}
         {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
         {activeSection === "interview_models" && (
-          <AdminInterviewModelsSection onBack={() => setActiveSection("dashboard")} />
+          <AdminInterviewModelsSection onBack={() => handleSectionChange("dashboard")} />
         )}
         {activeSection === "authorizations" && <AdminAuthorizationsSection />}
       </AdminDashboardLayout>

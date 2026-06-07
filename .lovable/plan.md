@@ -1,72 +1,67 @@
+## Objetivo
+Unificar y robustecer la navegación del Admin Dashboard: sincronizar pills con la URL, breadcrumbs clicables, permisos por rol en "Acciones", acciones contextuales por sección, y accesibilidad/atajos consistentes.
 
-# Flujo de autorización de profesionales
+## Cambios propuestos
 
-## Estado actual
+### 1. Sincronización URL ↔ sección activa
+Archivos: `src/pages/AdminDashboard.tsx`
 
-- `profiles.is_approved`, `approval_decision`, `approval_reason`, `approval_decided_at`, `approval_decided_by` ya existen.
-- `AdminAuthorizationsSection` aprueba/rechaza haciendo solo `UPDATE` directo a `profiles`. No asigna rol, no notifica, no audita.
-- Enum `app_role` solo tiene `admin` y `patient` → falta el rol `professional`.
-- `professional_consents` ya guarda firma + PDF cuando el profesional se registra en `/profesional/registro`.
-- Existe `app_notifications` (in-app) y función edge `notify-patient-status` que envía email con Resend.
+- Reemplazar el `useState` local de `activeSection` por estado derivado de `useSearchParams()` (`?section=...`).
+- Crear handler `handleSectionChange(s)` que llame a `setSearchParams({ section: s })` con `replace: false` para que el historial del navegador (Atrás/Adelante) funcione.
+- Mantener fallback a `dashboard` si la sección no está en `ALLOWED`.
 
-## Cambios
+Resultado: deep links (`/admin?section=booking`), recargas y botones Atrás/Adelante marcan correctamente el pill activo.
 
-### 1. Base de datos (migración)
+### 2. Breadcrumbs clicables
+Archivos: `src/components/admin/AdminDashboardLayout.tsx`
 
-- Agregar valor `'professional'` al enum `app_role`.
-- Crear tabla `authorization_audit_log` con: `id`, `professional_user_id`, `decided_by`, `decision` ('approved'|'rejected'|'revoked'), `reason`, `consent_id` (FK opcional a `professional_consents`), `created_at`. RLS: solo admin lee/escribe. GRANTs correspondientes.
-- Función `approve_professional(_user_id uuid, _reason text)` y `reject_professional(_user_id uuid, _reason text)` SECURITY DEFINER que en una transacción:
-  - Verifica `has_role(auth.uid(),'admin')`.
-  - Actualiza `profiles` (is_approved, approval_decision, approval_reason, approval_decided_at, approval_decided_by).
-  - Si aprueba: `INSERT INTO user_roles (user_id, role) VALUES (_user_id, 'professional') ON CONFLICT DO NOTHING` y elimina rol `patient` previo si existiera.
-  - Si rechaza: elimina cualquier rol `professional`.
-  - Inserta fila en `authorization_audit_log` con `consent_id` = último consentimiento firmado del profesional.
-  - Inserta `app_notifications` para el profesional (título y mensaje según decisión).
-- Trigger en `professional_consents` que actualiza `profiles.consent_accepted_at` y `consent_signature_name` (asegurar sincronía).
+- Convertir el span del eje (ej. "Reflexionar") en un `<button>` que navegue a la primera sección del grupo (o a `dashboard` filtrado por eje).
+- "Workspace" ya es botón → confirmar foco visible y `aria-label`.
+- Sección actual queda como `<span aria-current="page">` (no clicable, indica posición).
+- Añadir `nav aria-label="breadcrumb"` y estructura `<ol>/<li>` para semántica correcta.
 
-### 2. Edge function `notify-professional-status`
+### 3. Permisos por rol en "Acciones" y pills
+Archivos: `src/components/admin/AdminDashboardLayout.tsx`, nuevo helper `src/lib/adminPermissions.ts`
 
-- Recibe `{ user_id, decision, reason }`, valida admin igual que `notify-patient-status`.
-- Lee email + nombre del profesional, envía email con Resend:
-  - Aprobado: "Tu cuenta profesional fue aprobada", link a `/dashboard`, recuerda que el consentimiento firmado queda archivado.
-  - Rechazado: motivo + contacto del administrador.
-- Registra envío en `activity_log` (`event_type: 'professional_status_email'`).
+- Definir matriz `SECTION_ROLES: Record<AdminSection, UserRole[]>` (admin ve todo; professional ve clinical_notes/booking/symbolic/interview_models; patient no entra al layout).
+- Usar `useUserRole()` ya existente para filtrar:
+  - `NAV_GROUPS` → ocultar items no permitidos (pills vacíos se ocultan completos).
+  - `DropdownMenu` "Acciones" → ocultar `DropdownMenuItem` no permitidos.
+- Si un usuario llega vía URL a una sección no permitida → redirigir a `dashboard` con toast.
 
-### 3. UI Admin — `AdminAuthorizationsSection`
+### 4. Acciones contextuales por sección
+Archivos: `src/components/admin/AdminDashboardLayout.tsx`, opcional bus de eventos `src/lib/uiEvents.ts`
 
-- Reemplazar el `UPDATE` directo por `supabase.rpc('approve_professional'|'reject_professional', …)`.
-- Después de la RPC invocar `supabase.functions.invoke('notify-professional-status', …)` (no bloquear UX si falla email).
-- Mostrar en cada tarjeta el estado del consentimiento (firmado/pendiente) con link a descargar el PDF desde `pdf_storage_path` (signed URL).
-- Botón "Ver consentimiento firmado" usando `supabase.storage.from('consents').createSignedUrl(...)` o el bucket existente.
-- Agregar pestaña/tabla **Historial de autorizaciones** (lee `authorization_audit_log` joined a profiles): columnas Profesional, Decisión (badge), Motivo, Admin, Fecha. Filtros por decisión y búsqueda por nombre/email. Botón "Revocar acceso" para profesionales aprobados → llama `reject_professional` con motivo obligatorio.
+- El menú "Acciones" se vuelve contextual:
+  - En `clinical_notes` → acción primaria "Nueva nota" emite evento `admin:new-note` (la sección lo escucha y abre su editor).
+  - En `booking` → "Reservar turno" emite `admin:new-booking`.
+  - En `interview_models` → "Nueva entrevista/informe" emite `admin:new-interview`.
+  - En `symbolic` → "Nuevo recurso" emite `admin:new-symbolic`.
+- Mostrar primero la acción de la sección actual (destacada) y debajo el resto como "Otras acciones rápidas".
+- Cada `AdminXxxSection` añade un `useEffect` con `window.addEventListener` para el evento que le corresponde y abre el dialog/form ya existente.
 
-### 4. UI Profesional — notificaciones de estado
+### 5. Accesibilidad y atajos
+Archivos: `src/components/admin/AdminDashboardLayout.tsx`
 
-- `PendingApproval.tsx`: leer última fila de `authorization_audit_log` (vía RPC `get_my_authorization_status` SECURITY DEFINER que devuelve decisión+motivo+fecha del solicitante) y mostrar:
-  - Pendiente (texto actual) si no hay registro.
-  - Rechazado: card en rojo con motivo y CTA contacto.
-  - Aprobado: redirigir a `/dashboard`.
-- `NotificationCenter` ya muestra `app_notifications`; verificar que el nuevo `notification_type='professional_status'` se renderice con icono adecuado.
+- ⌘K / Ctrl+K: ya existe → asegurar que no se dispara cuando el foco está en un input editable (`e.target` instanceof HTMLInputElement/TextArea/contentEditable).
+- Añadir atajos:
+  - `g` luego `h` → Inicio
+  - `g` luego `n` → Notas clínicas
+  - `g` luego `b` → Reserva de turnos
+  - `g` luego `e` → Entrevistas
+  - `/` → enfoca el buscador (abre paleta)
+- Pills y botones: añadir `focus-visible:ring-2 ring-ring`, `role="tablist"` opcional para pills con `aria-selected`.
+- Botones con solo icono: confirmar `aria-label`.
+- Añadir `Skip to content` link al inicio del layout para usuarios de teclado.
+- `nav aria-label="Ejes clínicos"` ya existe → confirmar.
 
-### 5. Consentimiento informado (requisito 4)
-
-- El flujo `/profesional/registro` ya genera y firma el consentimiento (`ProfessionalRegistration.tsx` + `professional_consents`). Asegurar:
-  - Bloquear aprobación en el panel si el profesional no firmó (botón Aprobar deshabilitado con tooltip "Consentimiento no firmado"). La RPC `approve_professional` valida también lado servidor y devuelve error si no hay consent.
-  - El PDF firmado se sube al bucket `consents` (crear bucket privado si no existe) con `pdf_storage_path` y se referencia en `authorization_audit_log.consent_id`.
-  - Si la `consent_version` vigente cambió, el panel marca "Reconsentimiento requerido" y el profesional debe re-firmar antes de poder operar (ya soportado parcialmente en `ProfessionalRegistration`).
-
-## Archivos a crear / editar
-
-- **Migración nueva** (enum + tabla + RPCs + trigger + bucket `consents` si falta).
-- **Crear**: `supabase/functions/notify-professional-status/index.ts`.
-- **Editar**: `src/components/admin/dashboard/AdminAuthorizationsSection.tsx` (RPC + email + ver consentimiento + historial + revocar).
-- **Crear**: `src/components/admin/dashboard/AuthorizationHistoryTable.tsx`.
-- **Editar**: `src/pages/PendingApproval.tsx` (mostrar estado con motivo de rechazo).
-- **Editar**: `src/hooks/useAuth.tsx` si hace falta para reflejar rol `professional` en `isProfessional` (ya existe; verificar que reconozca el enum nuevo).
-- **Editar**: `src/components/layout/NotificationCenter.tsx` (icono para `professional_status`).
+## Notas técnicas
+- No se modifica lógica de negocio (autosave, drafts, PDF, RLS).
+- No se tocan los archivos de Supabase ni edge functions.
+- `useUserRole` ya retorna `isAdmin/isProfessional/isPatient`; reusar sin nueva consulta.
+- El bus de eventos es ligero (CustomEvent) — evita prop-drilling sin meter un store nuevo.
 
 ## Fuera de alcance
-
-- Rediseño visual del panel.
-- Cambios al editor de notas/recursos simbólicos.
-- Migrar profesionales ya aprobados manualmente (script único una vez aplicada la migración: `INSERT INTO user_roles SELECT user_id,'professional' FROM profiles WHERE account_type='professional' AND is_approved=true ON CONFLICT DO NOTHING`).
+- Rediseño visual del header/pills.
+- Cambios en la persistencia de escuela o en el formulario psicodiagnóstico.
+- Nuevas secciones del admin.
