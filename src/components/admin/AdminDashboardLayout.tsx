@@ -231,6 +231,35 @@ export function AdminDashboardLayout({
 
         <SchoolSwitcher compact />
 
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8">
+              <Plus className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Acciones</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-60">
+            <DropdownMenuLabel className="text-[11px]">Acciones rápidas</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onSectionChange("clinical_notes")}>
+              <NotebookText className="mr-2 h-4 w-4" /> Nueva nota clínica
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("booking")}>
+              <CalendarPlus className="mr-2 h-4 w-4" /> Reservar turno
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("interview_models")}>
+              <ClipboardList className="mr-2 h-4 w-4" /> Entrevista / Informe
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("symbolic")}>
+              <Sparkles className="mr-2 h-4 w-4" /> Recursos simbólicos
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setPaletteOpen(true)}>
+              <CommandIcon className="mr-2 h-4 w-4" /> Buscar… <kbd className="ml-auto text-[10px] text-muted-foreground">⌘K</kbd>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button
           size="sm"
           variant="ghost"
