@@ -1,9 +1,17 @@
+import { useEffect } from "react";
 import { CalendarClock, ExternalLink } from "lucide-react";
 import { ProAgendaWidget } from "./ProAgendaWidget";
+import { onAdminAction } from "@/lib/uiEvents";
 
 const CALENDAR_LINK = "https://calendar.app.google/4Locar4CbcTB45zv9";
 
 export function AdminBookingSection() {
+  // Contextual action: open the calendar link in a new tab
+  useEffect(() => {
+    return onAdminAction("new-booking", () => {
+      window.open(CALENDAR_LINK, "_blank", "noopener,noreferrer");
+    });
+  }, []);
   return (
     <div className="space-y-5">
       <div className="flex items-start gap-3">
