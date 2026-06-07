@@ -56,16 +56,6 @@ export default function AdminDashboard() {
         {activeSection === "dashboard" && (
           <AdminDashboardHome onNavigateSection={(s) => setActiveSection(s as AdminSection)} />
         )}
-        {activeSection !== "dashboard" && (
-          <div className="mb-3 -mt-1">
-            <button
-              onClick={() => setActiveSection("dashboard")}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
-              ← Volver al inicio del workspace
-            </button>
-          </div>
-        )}
         {activeSection === "clinical_notes" && <AdminClinicalNotesSection />}
         {activeSection === "booking" && <AdminBookingSection />}
         {activeSection === "symbolic" && <AdminSymbolicResourcesSection />}
