@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { FileDown, Save, RotateCcw, FileText, Eye, History, Trash2, RotateCw, GitCompare } from "lucide-react";
+import { FileDown, Save, RotateCcw, FileText, Eye, History, Trash2, RotateCw, GitCompare, AlertCircle, CheckCircle2, Loader2, CloudOff } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
 import { type PsicodiagFormData } from "./types";
 import { PsicodiagPreviewDialog } from "./PsicodiagPreviewDialog";
-import { usePsicodiagDraft, validatePsicodiag, diffVersions } from "@/hooks/usePsicodiagDraft";
+import { usePsicodiagDraft, validatePsicodiag, diffVersions, REQUIRED_FIELDS } from "@/hooks/usePsicodiagDraft";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -131,11 +131,14 @@ interface Props {
 }
 
 export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props) {
-  const { data, setField, reset: resetDraft, versions, saveVersion, deleteVersion, restoreVersion } =
+  const { data, setField, reset: resetDraft, versions, saveVersion, deleteVersion, restoreVersion, autosaveStatus, lastSavedAt } =
     usePsicodiagDraft(patientId);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [diffWith, setDiffWith] = useState<string | null>(null);
+
+  const { isValid, missing } = useMemo(() => validatePsicodiag(data), [data]);
+  const missingKeys = useMemo(() => new Set(missing.map((m) => m.key as string)), [missing]);
 
   const set = (k: FieldKey, v: string) => setField(k, v);
 
@@ -147,6 +150,14 @@ export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props
   };
 
   const saveDraft = () => {
+    if (!isValid) {
+      toast({
+        title: "No se puede guardar la versión",
+        description: `Faltan ${missing.length} campo${missing.length === 1 ? "" : "s"} obligatorio${missing.length === 1 ? "" : "s"}.`,
+        variant: "destructive",
+      });
+      return;
+    }
     const label = prompt("Etiqueta opcional para esta versión (ej.: 'Antes de devolución')") || undefined;
     const v = saveVersion(label);
     toast({ title: "Versión guardada", description: `${v.label ?? "Sin etiqueta"} · ${new Date(v.savedAt).toLocaleString()}` });
@@ -176,33 +187,64 @@ export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props
 
   const renderField = (f: FieldSpec) => {
     const value = (data[f.key] ?? "") as string;
+    const isRequired = REQUIRED_FIELDS.some((r) => r.key === f.key);
+    const isMissing = isRequired && missingKeys.has(f.key as string);
+    const fieldClass = isMissing
+      ? "border-destructive/60 focus-visible:ring-destructive/40"
+      : "";
     if (f.type === "textarea") {
       return (
         <div key={f.key} className="space-y-1.5">
-          <Label className="text-xs font-medium">{f.label}</Label>
+          <Label className="text-xs font-medium flex items-center gap-1">
+            {f.label}
+            {isRequired && <span className="text-destructive">*</span>}
+          </Label>
           <Textarea
             rows={f.rows ?? 3}
             value={value}
             placeholder={f.placeholder}
             onChange={(e) => set(f.key, e.target.value)}
-            className="text-sm"
+            className={`text-sm ${fieldClass}`}
           />
+          {isMissing && (
+            <p className="text-[10px] text-destructive flex items-center gap-1">
+              <AlertCircle className="h-2.5 w-2.5" /> Campo obligatorio
+            </p>
+          )}
         </div>
       );
     }
     return (
       <div key={f.key} className="space-y-1.5">
-        <Label className="text-xs font-medium">{f.label}</Label>
+        <Label className="text-xs font-medium flex items-center gap-1">
+          {f.label}
+          {isRequired && <span className="text-destructive">*</span>}
+        </Label>
         <Input
           type={f.type === "date" ? "date" : "text"}
           value={value}
           placeholder={f.placeholder}
           onChange={(e) => set(f.key, e.target.value)}
-          className="h-9 text-sm"
+          className={`h-9 text-sm ${fieldClass}`}
         />
+        {isMissing && (
+          <p className="text-[10px] text-destructive flex items-center gap-1">
+            <AlertCircle className="h-2.5 w-2.5" /> Campo obligatorio
+          </p>
+        )}
       </div>
     );
   };
+
+  const autosaveLabel = (() => {
+    if (autosaveStatus === "saving") return "Guardando…";
+    if (autosaveStatus === "error") return "Error al guardar";
+    if (autosaveStatus === "saved" && lastSavedAt)
+      return `Guardado ${lastSavedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    return "Borrador local";
+  })();
+  const AutosaveIcon =
+    autosaveStatus === "saving" ? Loader2 : autosaveStatus === "error" ? CloudOff : CheckCircle2;
 
   return (
     <Card className="border-border">
@@ -225,6 +267,14 @@ export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props
                 <span className="text-muted-foreground">{patientLabel || patientId}</span>
               </p>
             )}
+            <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+              <AutosaveIcon
+                className={`h-3 w-3 ${autosaveStatus === "saving" ? "animate-spin" : ""} ${
+                  autosaveStatus === "error" ? "text-destructive" : autosaveStatus === "saved" ? "text-emerald-600" : ""
+                }`}
+              />
+              <span>{autosaveLabel}</span>
+            </div>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Button size="sm" variant="ghost" onClick={reset} className="h-8 gap-1">
@@ -233,13 +283,13 @@ export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props
             <Button size="sm" variant="ghost" onClick={() => setHistoryOpen(true)} className="h-8 gap-1">
               <History className="h-3.5 w-3.5" /> Versiones {versions.length > 0 && <Badge variant="secondary" className="ml-1 h-4 text-[10px]">{versions.length}</Badge>}
             </Button>
-            <Button size="sm" variant="outline" onClick={saveDraft} className="h-8 gap-1">
+            <Button size="sm" variant="outline" onClick={saveDraft} className="h-8 gap-1" disabled={!isValid} title={!isValid ? `Faltan ${missing.length} campos obligatorios` : "Guardar versión"}>
               <Save className="h-3.5 w-3.5" /> Guardar versión
             </Button>
             <Button size="sm" variant="outline" onClick={() => setPreviewOpen(true)} className="h-8 gap-1">
               <Eye className="h-3.5 w-3.5" /> Vista previa
             </Button>
-            <Button size="sm" onClick={() => setPreviewOpen(true)} className="h-8 gap-1">
+            <Button size="sm" onClick={() => setPreviewOpen(true)} className="h-8 gap-1" disabled={!isValid} title={!isValid ? `Faltan ${missing.length} campos obligatorios` : "Exportar PDF"}>
               <FileDown className="h-3.5 w-3.5" /> Exportar PDF
             </Button>
             {onClose && (
@@ -247,6 +297,29 @@ export function PsicodiagnosticaForm({ onClose, patientId, patientLabel }: Props
             )}
           </div>
         </div>
+
+        {!isValid && (
+          <div className="rounded-md border border-destructive/40 bg-destructive/5 p-2.5">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-destructive">
+                  Faltan {missing.length} campo{missing.length === 1 ? "" : "s"} obligatorio{missing.length === 1 ? "" : "s"}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  Completalos para habilitar el guardado de versión y la exportación a PDF.
+                </p>
+                <ul className="mt-1.5 grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-0.5">
+                  {missing.map((m) => (
+                    <li key={m.key} className="text-[11px] text-destructive/90 list-disc list-inside">
+                      {m.label}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Accordion type="multiple" defaultValue={["p1"]} className="space-y-2">
           {PARTS.map((part) => (
