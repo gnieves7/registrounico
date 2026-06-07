@@ -315,6 +315,44 @@ export function AdminDashboardLayout({
         </div>
       </header>
 
+      {/* Axis pill nav — unified, visible from every section */}
+      <nav
+        aria-label="Ejes clínicos"
+        className="sticky top-14 z-20 border-b border-border bg-background/85 backdrop-blur px-3 md:px-5"
+      >
+        <div className="mx-auto max-w-[1600px] flex items-center gap-1 overflow-x-auto py-1.5">
+          {NAV_GROUPS.map((g) => (
+            <div key={g.id} className="flex items-center gap-1 pr-2 mr-1 border-r border-border/60 last:border-r-0">
+              <span
+                className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5"
+                style={{ color: g.color }}
+              >
+                <g.icon className="h-3 w-3" />
+                {g.title}
+              </span>
+              {g.items.map((it) => {
+                const isActive = activeSection === it.key;
+                return (
+                  <button
+                    key={it.key}
+                    onClick={() => onSectionChange(it.key)}
+                    className={cn(
+                      "inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] whitespace-nowrap transition-colors",
+                      isActive
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    )}
+                  >
+                    <it.icon className="h-3 w-3" />
+                    {it.label}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </nav>
+
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 overflow-auto">
           <div className="p-4 md:p-6 max-w-[1600px] mx-auto">{children}</div>
