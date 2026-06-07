@@ -15,8 +15,6 @@ import {
   ClipboardList,
   CalendarClock,
   Sparkles,
-  PanelLeftClose,
-  PanelLeftOpen,
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
