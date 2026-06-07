@@ -10,6 +10,7 @@ import { EMPTY_PSICODIAG, type PsicodiagFormData } from "@/components/interview/
 import { exportPsicodiagPdf } from "@/lib/psicodiagnosticaPdf";
 import { toast } from "@/hooks/use-toast";
 import { validatePsicodiag } from "@/hooks/usePsicodiagDraft";
+import { onAdminAction } from "@/lib/uiEvents";
 
 const DRAFT_PREFIX = "psi_planilla_psicodiag_draft";
 const ACTIVE_PATIENT_KEY = "psi_planilla_active_patient";
@@ -65,6 +66,11 @@ export function AdminInterviewModelsSection({ onBack }: Props) {
   useEffect(() => {
     try { localStorage.setItem(ACTIVE_PATIENT_KEY, patientId); } catch {}
   }, [patientId]);
+
+  // Contextual action: open the interview form
+  useEffect(() => {
+    return onAdminAction("new-interview", () => setActive("psicodiag"));
+  }, []);
 
   const handleQuickExport = () => {
     const draft = loadDraft(patientId);
