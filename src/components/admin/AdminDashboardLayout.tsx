@@ -16,6 +16,10 @@ import {
   CalendarClock,
   Sparkles,
   ChevronRight,
+  Plus,
+  FileDown,
+  CalendarPlus,
+  NotebookText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,6 +27,14 @@ import { Badge } from "@/components/ui/badge";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import { SchoolSwitcher } from "@/components/SchoolSwitcher";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 export type AdminSection =
@@ -219,6 +231,35 @@ export function AdminDashboardLayout({
 
         <SchoolSwitcher compact />
 
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8">
+              <Plus className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Acciones</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-60">
+            <DropdownMenuLabel className="text-[11px]">Acciones rápidas</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => onSectionChange("clinical_notes")}>
+              <NotebookText className="mr-2 h-4 w-4" /> Nueva nota clínica
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("booking")}>
+              <CalendarPlus className="mr-2 h-4 w-4" /> Reservar turno
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("interview_models")}>
+              <ClipboardList className="mr-2 h-4 w-4" /> Entrevista / Informe
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onSectionChange("symbolic")}>
+              <Sparkles className="mr-2 h-4 w-4" /> Recursos simbólicos
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setPaletteOpen(true)}>
+              <CommandIcon className="mr-2 h-4 w-4" /> Buscar… <kbd className="ml-auto text-[10px] text-muted-foreground">⌘K</kbd>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <Button
           size="sm"
           variant="ghost"
@@ -273,6 +314,44 @@ export function AdminDashboardLayout({
           )}
         </div>
       </header>
+
+      {/* Axis pill nav — unified, visible from every section */}
+      <nav
+        aria-label="Ejes clínicos"
+        className="sticky top-14 z-20 border-b border-border bg-background/85 backdrop-blur px-3 md:px-5"
+      >
+        <div className="mx-auto max-w-[1600px] flex items-center gap-1 overflow-x-auto py-1.5">
+          {NAV_GROUPS.map((g) => (
+            <div key={g.id} className="flex items-center gap-1 pr-2 mr-1 border-r border-border/60 last:border-r-0">
+              <span
+                className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5"
+                style={{ color: g.color }}
+              >
+                <g.icon className="h-3 w-3" />
+                {g.title}
+              </span>
+              {g.items.map((it) => {
+                const isActive = activeSection === it.key;
+                return (
+                  <button
+                    key={it.key}
+                    onClick={() => onSectionChange(it.key)}
+                    className={cn(
+                      "inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] whitespace-nowrap transition-colors",
+                      isActive
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    )}
+                  >
+                    <it.icon className="h-3 w-3" />
+                    {it.label}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </nav>
 
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 overflow-auto">
