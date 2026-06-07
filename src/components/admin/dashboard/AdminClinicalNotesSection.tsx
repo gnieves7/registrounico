@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { listPatients, type PatientLite } from "@/lib/adminPatients";
 import { useActiveSchool } from "@/hooks/useActiveSchool";
+import { onAdminAction } from "@/lib/uiEvents";
 
 const tools = [
   { title: "Psicobiografía", description: "Historia personal estructurada del paciente.", href: "/psychobiography", icon: User },
@@ -30,6 +31,7 @@ export function AdminClinicalNotesSection() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let cancel = false;
@@ -42,6 +44,14 @@ export function AdminClinicalNotesSection() {
       }
     })();
     return () => { cancel = true; };
+  }, []);
+
+  // Contextual action from layout: focus patient search so the pro can pick a patient
+  useEffect(() => {
+    return onAdminAction("new-note", () => {
+      searchRef.current?.focus();
+      searchRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   }, []);
 
   const filtered = useMemo(() => {
@@ -107,6 +117,7 @@ export function AdminClinicalNotesSection() {
             <div className="relative flex-1 min-w-[220px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
+                ref={searchRef}
                 placeholder="Buscar paciente por nombre o email…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
