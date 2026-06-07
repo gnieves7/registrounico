@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useDemoMode } from "@/hooks/useDemoMode";
+import { useUserRole } from "@/hooks/useUserRole";
+import { canAccessSection } from "@/lib/adminPermissions";
+import { emitAdminAction } from "@/lib/uiEvents";
 import { Navigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -127,6 +130,7 @@ export function AdminDashboardLayout({
 }: AdminDashboardLayoutProps) {
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const { isDemoMode, demoProfile } = useDemoMode();
+  const { role } = useUserRole();
   const [paletteOpen, setPaletteOpen] = useState(false);
   // Apply pro workspace theme to body while mounted
   useEffect(() => {
@@ -138,17 +142,54 @@ export function AdminDashboardLayout({
     };
   }, []);
 
-  // Cmd+K / Ctrl+K opens the command palette
+  // Cmd+K / Ctrl+K opens the command palette. Skip when typing in inputs.
   useEffect(() => {
+    const isEditable = (t: EventTarget | null) =>
+      t instanceof HTMLElement &&
+      (t.tagName === "INPUT" ||
+        t.tagName === "TEXTAREA" ||
+        t.tagName === "SELECT" ||
+        t.isContentEditable);
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPaletteOpen((o) => !o);
+        return;
+      }
+      if (isEditable(e.target)) return;
+      if (e.key === "/") {
+        e.preventDefault();
+        setPaletteOpen(true);
+        return;
+      }
+      // "g + <letter>" jump shortcuts
+      if (e.key.toLowerCase() === "g") {
+        const next = (ev: KeyboardEvent) => {
+          const map: Record<string, AdminSection> = {
+            h: "dashboard",
+            n: "clinical_notes",
+            b: "booking",
+            e: "interview_models",
+            s: "symbolic",
+          };
+          const target = map[ev.key.toLowerCase()];
+          if (target && canAccessSection(target, role)) onSectionChange(target);
+          window.removeEventListener("keydown", next);
+        };
+        window.addEventListener("keydown", next, { once: true });
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, []);
+  }, [onSectionChange, role]);
+
+  // Redirect away from sections the current role cannot access.
+  useEffect(() => {
+    if (isLoading || !role) return;
+    if (!canAccessSection(activeSection, role)) {
+      onSectionChange("dashboard");
+    }
+  }, [activeSection, role, isLoading, onSectionChange]);
 
   if (!isDemoMode && isLoading) {
     return (
@@ -164,8 +205,33 @@ export function AdminDashboardLayout({
   const isHome = activeSection === "dashboard";
   const activeGroup = findGroup(activeSection);
 
+  // Filter nav groups by role
+  const visibleGroups = NAV_GROUPS
+    .map((g) => ({ ...g, items: g.items.filter((i) => canAccessSection(i.key, role)) }))
+    .filter((g) => g.items.length > 0);
+
+  // Contextual primary action by section
+  const CONTEXT_ACTION: Partial<Record<AdminSection, { label: string; event: Parameters<typeof emitAdminAction>[0]; icon: typeof Plus }>> = {
+    clinical_notes: { label: "Nueva nota clínica", event: "new-note", icon: NotebookText },
+    booking: { label: "Reservar turno", event: "new-booking", icon: CalendarPlus },
+    interview_models: { label: "Nueva entrevista / informe", event: "new-interview", icon: ClipboardList },
+    symbolic: { label: "Nuevo recurso", event: "new-symbolic", icon: Sparkles },
+  };
+  const contextAction = CONTEXT_ACTION[activeSection];
+
+  const goGroupHome = (g: NavGroup) => {
+    const first = g.items.find((i) => canAccessSection(i.key, role));
+    if (first) onSectionChange(first.key);
+  };
+
   return (
     <div className="flex h-screen flex-col bg-background overflow-hidden">
+      <a
+        href="#admin-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-foreground focus:text-background focus:px-3 focus:py-1.5 focus:text-xs"
+      >
+        Saltar al contenido
+      </a>
       <CommandPalette
         open={paletteOpen}
         onOpenChange={setPaletteOpen}
@@ -199,63 +265,103 @@ export function AdminDashboardLayout({
         )}
 
         {/* Breadcrumbs */}
-        <nav aria-label="Ruta" className="flex items-center gap-1 min-w-0 text-xs">
-          <span className="text-muted-foreground/60 hidden md:inline">/</span>
-          <button
-            onClick={() => onSectionChange("dashboard")}
-            className="text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
-          >
-            Workspace
-          </button>
-          {activeGroup && (
-            <>
-              <ChevronRight className="h-3 w-3 text-muted-foreground/60 hidden sm:inline" />
-              <span
-                className="font-medium hidden sm:inline"
-                style={{ color: activeGroup.color }}
+        <nav aria-label="breadcrumb" className="min-w-0 text-xs">
+          <ol className="flex items-center gap-1">
+            <li className="hidden sm:inline">
+              <button
+                onClick={() => onSectionChange("dashboard")}
+                className="text-muted-foreground hover:text-foreground transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring px-1"
               >
-                {activeGroup.title}
-              </span>
-            </>
-          )}
-          {!isHome && (
-            <>
-              <ChevronRight className="h-3 w-3 text-muted-foreground/60 hidden sm:inline" />
-              <span className="font-semibold truncate">{activeLabel}</span>
-            </>
-          )}
-          {isHome && <span className="font-semibold truncate sm:hidden">{activeLabel}</span>}
+                Workspace
+              </button>
+            </li>
+            {activeGroup && (
+              <li className="hidden sm:flex items-center gap-1">
+                <ChevronRight aria-hidden className="h-3 w-3 text-muted-foreground/60" />
+                <button
+                  onClick={() => goGroupHome(activeGroup)}
+                  className="font-medium rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring px-1 hover:underline"
+                  style={{ color: activeGroup.color }}
+                >
+                  {activeGroup.title}
+                </button>
+              </li>
+            )}
+            {!isHome && (
+              <li className="flex items-center gap-1 min-w-0">
+                <ChevronRight aria-hidden className="h-3 w-3 text-muted-foreground/60 hidden sm:inline" />
+                <span aria-current="page" className="font-semibold truncate">
+                  {activeLabel}
+                </span>
+              </li>
+            )}
+            {isHome && (
+              <li className="sm:hidden">
+                <span aria-current="page" className="font-semibold truncate">{activeLabel}</span>
+              </li>
+            )}
+          </ol>
         </nav>
 
         <div className="flex-1" />
 
         <SchoolSwitcher compact />
 
+        {contextAction && (
+          <Button
+            size="sm"
+            className="gap-1.5 text-xs h-8 hidden sm:inline-flex"
+            onClick={() => emitAdminAction(contextAction.event)}
+          >
+            <contextAction.icon className="h-3.5 w-3.5" />
+            <span className="hidden md:inline">{contextAction.label}</span>
+            <span className="md:hidden">Acción</span>
+          </Button>
+        )}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8">
+            <Button size="sm" variant="outline" className="gap-1.5 text-xs h-8" aria-label="Acciones rápidas">
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden md:inline">Acciones</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
+            {contextAction && (
+              <>
+                <DropdownMenuLabel className="text-[11px]">En esta sección</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => emitAdminAction(contextAction.event)}>
+                  <contextAction.icon className="mr-2 h-4 w-4" /> {contextAction.label}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuLabel className="text-[11px]">Acciones rápidas</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onSectionChange("clinical_notes")}>
-              <NotebookText className="mr-2 h-4 w-4" /> Nueva nota clínica
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSectionChange("booking")}>
-              <CalendarPlus className="mr-2 h-4 w-4" /> Reservar turno
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSectionChange("interview_models")}>
-              <ClipboardList className="mr-2 h-4 w-4" /> Entrevista / Informe
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onSectionChange("symbolic")}>
-              <Sparkles className="mr-2 h-4 w-4" /> Recursos simbólicos
-            </DropdownMenuItem>
+            {canAccessSection("clinical_notes", role) && (
+              <DropdownMenuItem onClick={() => onSectionChange("clinical_notes")}>
+                <NotebookText className="mr-2 h-4 w-4" /> Notas clínicas
+              </DropdownMenuItem>
+            )}
+            {canAccessSection("booking", role) && (
+              <DropdownMenuItem onClick={() => onSectionChange("booking")}>
+                <CalendarPlus className="mr-2 h-4 w-4" /> Reservar turno
+              </DropdownMenuItem>
+            )}
+            {canAccessSection("interview_models", role) && (
+              <DropdownMenuItem onClick={() => onSectionChange("interview_models")}>
+                <ClipboardList className="mr-2 h-4 w-4" /> Entrevista / Informe
+              </DropdownMenuItem>
+            )}
+            {canAccessSection("symbolic", role) && (
+              <DropdownMenuItem onClick={() => onSectionChange("symbolic")}>
+                <Sparkles className="mr-2 h-4 w-4" /> Recursos simbólicos
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setPaletteOpen(true)}>
-              <CommandIcon className="mr-2 h-4 w-4" /> Buscar… <kbd className="ml-auto text-[10px] text-muted-foreground">⌘K</kbd>
+              <CommandIcon className="mr-2 h-4 w-4" /> Buscar…
+              <kbd className="ml-auto text-[10px] text-muted-foreground">⌘K</kbd>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -319,25 +425,30 @@ export function AdminDashboardLayout({
       <nav
         aria-label="Ejes clínicos"
         className="sticky top-14 z-20 border-b border-border bg-background/85 backdrop-blur px-3 md:px-5"
+        role="tablist"
       >
         <div className="mx-auto max-w-[1600px] flex items-center gap-1 overflow-x-auto py-1.5">
-          {NAV_GROUPS.map((g) => (
+          {visibleGroups.map((g) => (
             <div key={g.id} className="flex items-center gap-1 pr-2 mr-1 border-r border-border/60 last:border-r-0">
-              <span
-                className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5"
+              <button
+                onClick={() => goGroupHome(g)}
+                className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-1.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:opacity-80"
                 style={{ color: g.color }}
+                aria-label={`Ir a ${g.title}`}
               >
                 <g.icon className="h-3 w-3" />
                 {g.title}
-              </span>
+              </button>
               {g.items.map((it) => {
                 const isActive = activeSection === it.key;
                 return (
                   <button
                     key={it.key}
                     onClick={() => onSectionChange(it.key)}
+                    role="tab"
+                    aria-selected={isActive}
                     className={cn(
-                      "inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] whitespace-nowrap transition-colors",
+                      "inline-flex items-center gap-1 h-7 px-2 rounded-md text-[11px] whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       isActive
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted",
@@ -354,7 +465,7 @@ export function AdminDashboardLayout({
       </nav>
 
       <div className="flex flex-1 overflow-hidden">
-        <main className="flex-1 overflow-auto">
+        <main id="admin-main" className="flex-1 overflow-auto" tabIndex={-1}>
           <div className="p-4 md:p-6 max-w-[1600px] mx-auto">{children}</div>
         </main>
       </div>
