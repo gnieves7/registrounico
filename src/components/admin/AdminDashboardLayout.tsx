@@ -162,15 +162,6 @@ export function AdminDashboardLayout({
 
       {/* Top bar — replaces the sidebar */}
       <header className="sticky top-0 z-30 flex h-14 items-center gap-2 md:gap-3 border-b border-border bg-background/90 px-3 md:px-5 backdrop-blur">
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 hidden md:inline-flex"
-          onClick={() => setCollapsed((c) => !c)}
-          aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
-        >
-          {collapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-        </Button>
         <button
           onClick={() => onSectionChange("dashboard")}
           className="flex items-center gap-2 mr-1"
