@@ -16,6 +16,10 @@ import {
   CalendarClock,
   Sparkles,
   ChevronRight,
+  Plus,
+  FileDown,
+  CalendarPlus,
+  NotebookText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,6 +27,14 @@ import { Badge } from "@/components/ui/badge";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import { SchoolSwitcher } from "@/components/SchoolSwitcher";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 export type AdminSection =
