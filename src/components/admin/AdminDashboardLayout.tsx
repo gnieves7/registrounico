@@ -102,8 +102,6 @@ const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-const SIDEBAR_KEY = "psi_admin_sidebar_collapsed";
-
 function findGroup(section: AdminSection): NavGroup | undefined {
   return NAV_GROUPS.find((g) => g.items.some((i) => i.key === section));
 }
@@ -118,12 +116,6 @@ export function AdminDashboardLayout({
   const { isAdmin, isLoading, profile, signOut } = useAuth();
   const { isDemoMode, demoProfile } = useDemoMode();
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState<boolean>(() => {
-    try { return localStorage.getItem(SIDEBAR_KEY) === "1"; } catch { return false; }
-  });
-  useEffect(() => {
-    try { localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0"); } catch {}
-  }, [collapsed]);
   // Apply pro workspace theme to body while mounted
   useEffect(() => {
     const prev = document.body.getAttribute("data-area");
