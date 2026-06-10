@@ -1,67 +1,68 @@
-## Objetivo
-Unificar y robustecer la navegación del Admin Dashboard: sincronizar pills con la URL, breadcrumbs clicables, permisos por rol en "Acciones", acciones contextuales por sección, y accesibilidad/atajos consistentes.
 
-## Cambios propuestos
+# Independizar la app del flujo de autoregistro del paciente
 
-### 1. Sincronización URL ↔ sección activa
-Archivos: `src/pages/AdminDashboard.tsx`
+Objetivo: dejar esta app como herramienta clínica autónoma del profesional. El backend (Supabase) se mantiene intacto; solo se eliminan las superficies UI/rutas/triggers que servían al auto-registro y a la "app paciente".
 
-- Reemplazar el `useState` local de `activeSection` por estado derivado de `useSearchParams()` (`?section=...`).
-- Crear handler `handleSectionChange(s)` que llame a `setSearchParams({ section: s })` con `replace: false` para que el historial del navegador (Atrás/Adelante) funcione.
-- Mantener fallback a `dashboard` si la sección no está en `ALLOWED`.
+## 1. Limpiar rutas y páginas orientadas al paciente
 
-Resultado: deep links (`/admin?section=booking`), recargas y botones Atrás/Adelante marcan correctamente el pill activo.
+En `src/App.tsx`:
+- Quitar las rutas y los `import`:
+  - `/paciente/privacidad` (`PatientPrivacy`)
+  - `/descargar` (`DescargarPdf`) — flujo del código de descarga para el paciente
+  - `/diagnostico-acceso` (`DiagnosticoAcceso`) — autodiagnóstico de acceso del paciente
+- Quitar el redirect `/pending-approval → /login` y eliminar la página `src/pages/PendingApproval.tsx` (ya no aplica: el profesional se autoriza por allowlist; si no está, ve el bloque "Acceso no autorizado" del Login actual).
+- Borrar archivos: `src/pages/PatientPrivacy.tsx`, `src/pages/DescargarPdf.tsx`, `src/pages/DiagnosticoAcceso.tsx`, `src/pages/PendingApproval.tsx`.
 
-### 2. Breadcrumbs clicables
-Archivos: `src/components/admin/AdminDashboardLayout.tsx`
+Conservar `/admin/patient/:id` (`PatientWorkspace`) porque es la vista clínica que el profesional usa para leer la ficha del paciente — sigue siendo herramienta del profesional.
 
-- Convertir el span del eje (ej. "Reflexionar") en un `<button>` que navegue a la primera sección del grupo (o a `dashboard` filtrado por eje).
-- "Workspace" ya es botón → confirmar foco visible y `aria-label`.
-- Sección actual queda como `<span aria-current="page">` (no clicable, indica posición).
-- Añadir `nav aria-label="breadcrumb"` y estructura `<ol>/<li>` para semántica correcta.
+## 2. Quitar el widget flotante de paciente del layout
 
-### 3. Permisos por rol en "Acciones" y pills
-Archivos: `src/components/admin/AdminDashboardLayout.tsx`, nuevo helper `src/lib/adminPermissions.ts`
+En `src/components/layout/AppLayout.tsx`:
+- Eliminar el `import` y el render de `<SessionProposalFloating />` (es un widget pensado para que el paciente acepte/decline propuestas de turno desde su app).
+- Borrar `src/components/patient/SessionProposalFloating.tsx` y `src/components/patient/SessionProposalWidget.tsx` si no se usan en otra superficie del profesional (verificar con `rg`).
 
-- Definir matriz `SECTION_ROLES: Record<AdminSection, UserRole[]>` (admin ve todo; professional ve clinical_notes/booking/symbolic/interview_models; patient no entra al layout).
-- Usar `useUserRole()` ya existente para filtrar:
-  - `NAV_GROUPS` → ocultar items no permitidos (pills vacíos se ocultan completos).
-  - `DropdownMenu` "Acciones" → ocultar `DropdownMenuItem` no permitidos.
-- Si un usuario llega vía URL a una sección no permitida → redirigir a `dashboard` con toast.
+## 3. Eliminar el alta por email y los rastros de "patient" en el alta de usuarios
 
-### 4. Acciones contextuales por sección
-Archivos: `src/components/admin/AdminDashboardLayout.tsx`, opcional bus de eventos `src/lib/uiEvents.ts`
+En `src/hooks/useAuth.tsx`:
+- Quitar `signUpWithEmail` del contexto, su tipo y la implementación. El único login soportado queda Google (lo que ya hace `Login.tsx`).
+- Mantener `signInWithEmail` solo si alguna página lo usa; si no, quitarlo también (validar con `rg`).
 
-- El menú "Acciones" se vuelve contextual:
-  - En `clinical_notes` → acción primaria "Nueva nota" emite evento `admin:new-note` (la sección lo escucha y abre su editor).
-  - En `booking` → "Reservar turno" emite `admin:new-booking`.
-  - En `interview_models` → "Nueva entrevista/informe" emite `admin:new-interview`.
-  - En `symbolic` → "Nuevo recurso" emite `admin:new-symbolic`.
-- Mostrar primero la acción de la sección actual (destacada) y debajo el resto como "Otras acciones rápidas".
-- Cada `AdminXxxSection` añade un `useEffect` con `window.addEventListener` para el evento que le corresponde y abre el dialog/form ya existente.
+En la BD (migración):
+- Reescribir `public.handle_new_user()` para que:
+  - No inserte el rol `'patient'` en `user_roles`.
+  - No cree fila en `psychobiographies` para el nuevo usuario (esa tabla se crea sólo al cargar pacientes desde el workspace clínico).
+  - Sí mantenga el insert en `profiles` con `account_type='professional'` e `is_approved` desde `authorized_emails`, y la fila en `professional_subscriptions`.
+- No se eliminan tablas ni datos existentes (no se rompen pacientes ya cargados que use el profesional como fichas).
 
-### 5. Accesibilidad y atajos
-Archivos: `src/components/admin/AdminDashboardLayout.tsx`
+## 4. Sacar referencias a "30 pacientes activos" del marketing interno
 
-- ⌘K / Ctrl+K: ya existe → asegurar que no se dispara cuando el foco está en un input editable (`e.target` instanceof HTMLInputElement/TextArea/contentEditable).
-- Añadir atajos:
-  - `g` luego `h` → Inicio
-  - `g` luego `n` → Notas clínicas
-  - `g` luego `b` → Reserva de turnos
-  - `g` luego `e` → Entrevistas
-  - `/` → enfoca el buscador (abre paleta)
-- Pills y botones: añadir `focus-visible:ring-2 ring-ring`, `role="tablist"` opcional para pills con `aria-selected`.
-- Botones con solo icono: confirmar `aria-label`.
-- Añadir `Skip to content` link al inicio del layout para usuarios de teclado.
-- `nav aria-label="Ejes clínicos"` ya existe → confirmar.
+En `src/pages/ProfessionalLanding.tsx`:
+- Reemplazar el plan que dice "Hasta 30 pacientes activos" por "Pacientes ilimitados" (la app es libre para el profesional una vez autorizado por el admin).
+- Revisar copy del hero/FAQ que insinúe "el paciente usa la app": dejar claro que es herramienta del profesional; los pacientes sólo aparecen como fichas/registros que él gestiona.
 
-## Notas técnicas
-- No se modifica lógica de negocio (autosave, drafts, PDF, RLS).
-- No se tocan los archivos de Supabase ni edge functions.
-- `useUserRole` ya retorna `isAdmin/isProfessional/isPatient`; reusar sin nueva consulta.
-- El bus de eventos es ligero (CustomEvent) — evita prop-drilling sin meter un store nuevo.
+## 5. Auditoría textual final
+
+Tras los cambios, correr `rg -n "PatientPrivacy|DescargarPdf|DiagnosticoAcceso|PendingApproval|SessionProposalFloating|signUpWithEmail"` para confirmar que no quedan imports/usos huérfanos. Si Telegram o notificaciones tenían rutas tipo `/paciente/...` codificadas (no detecté ninguna), redirigirlas al panel del profesional.
 
 ## Fuera de alcance
-- Rediseño visual del header/pills.
-- Cambios en la persistencia de escuela o en el formulario psicodiagnóstico.
-- Nuevas secciones del admin.
+
+- No se cambia el branding ni los esquemas teóricos.
+- No se tocan Edge Functions de consentimientos/PDF: siguen disponibles porque el profesional puede emitir códigos para enviar archivos a un contacto, pero el endpoint público de "canje" ya no tiene página en esta app (si más adelante hace falta canjear códigos, se hace fuera de esta app).
+- No se borran tablas `psychobiographies`, `secure_pdf_codes`, etc., para preservar datos clínicos existentes.
+- No se modifican RLS más allá del trigger `handle_new_user`.
+
+## Detalle técnico (resumen)
+
+```text
+src/App.tsx                          ── borrar 4 rutas + imports
+src/components/layout/AppLayout.tsx  ── quitar SessionProposalFloating
+src/hooks/useAuth.tsx                ── quitar signUpWithEmail
+src/pages/ProfessionalLanding.tsx    ── ajustar copy de planes
+DB migration                         ── nueva versión de handle_new_user
+delete:
+  src/pages/PatientPrivacy.tsx
+  src/pages/DescargarPdf.tsx
+  src/pages/DiagnosticoAcceso.tsx
+  src/pages/PendingApproval.tsx
+  src/components/patient/SessionProposal*.tsx  (si no quedan usos)
+```

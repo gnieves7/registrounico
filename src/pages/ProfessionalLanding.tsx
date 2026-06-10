@@ -401,7 +401,7 @@ const ProfessionalLanding = () => {
               <p className="text-[11px] font-semibold uppercase tracking-[1.2px] mb-2" style={{ color: "#6B6B6B" }}>Plan Básico</p>
               <p className="text-[20px] font-bold mb-4" style={{ color: "#1A1A1A" }}>Precio de lanzamiento</p>
               <ul className="space-y-2 mb-6">
-                {["Sistema Reflexionar completo", "Hasta 30 pacientes activos", "Informes PDF básicos", "Soporte por email"].map((f, i) => (
+                {["Sistema Reflexionar completo", "Pacientes ilimitados", "Informes PDF básicos", "Soporte por email"].map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-[14px]" style={{ color: "#1A1A1A", fontFamily: "'DM Sans', sans-serif" }}>
                     <Check className="h-4 w-4 shrink-0 mt-0.5" style={{ color: "#1C3F6E" }} /> {f}
                   </li>
