@@ -23,7 +23,6 @@ import AnxietyRecord from "./pages/AnxietyRecord";
 import JuntaMedicaLaboral from "./pages/JuntaMedicaLaboral";
 import AptoPsicologico from "./pages/AptoPsicologico";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import PatientPrivacy from "./pages/PatientPrivacy";
 import NotFound from "./pages/NotFound";
 import CaseFormulation from "./pages/CaseFormulation";
 import EmotionalThermometer from "./pages/EmotionalThermometer";
@@ -42,8 +41,6 @@ import { ProfessionalAccessGate } from "@/components/professional/ProfessionalAc
 import { ProfessionalOnlyRoute } from "@/components/professional/ProfessionalOnlyRoute";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import DescargarPdf from "./pages/DescargarPdf";
-import DiagnosticoAcceso from "./pages/DiagnosticoAcceso";
 import ReflexionarInformedConsent from "./pages/ReflexionarInformedConsent";
 import EvaluarInformedConsent from "./pages/EvaluarInformedConsent";
 import Suggestions from "./pages/Suggestions";
@@ -74,9 +71,6 @@ const App = () => (
               <Route path="/pending-approval" element={<Navigate to="/login" replace />} />
               <Route path="/demo" element={<DemoEntry />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-              <Route path="/paciente/privacidad" element={<PatientPrivacy />} />
-              <Route path="/descargar" element={<DescargarPdf />} />
-              <Route path="/diagnostico-acceso" element={<DiagnosticoAcceso />} />
 
               {/* Protected routes — solo profesionales aprobados o admin */}
               <Route element={<ProfessionalAccessGate><AppLayout /></ProfessionalAccessGate>}>
