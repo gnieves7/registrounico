@@ -5,6 +5,8 @@ export interface NoteTemplateField {
   label: string;
   placeholder?: string;
   rows?: number;
+  required?: boolean;
+  hint?: string;
 }
 
 export interface NoteTemplate {
@@ -51,6 +53,18 @@ export const SESSION_NOTE_TEMPLATES: Record<SchoolType, NoteTemplate[]> = {
         { key: 'plan', label: 'Plan / próxima sesión', rows: 3 },
       ],
     },
+    {
+      id: 'cbt_full',
+      name: 'Sesión completa (con seguimiento)',
+      description: 'Incluye Tareas entre Sesiones, Logros Terapéuticos y Monitoreo de Resultados (requeridos).',
+      fields: [
+        { key: 'focus', label: 'Foco de sesión', rows: 3 },
+        { key: 'intervention', label: 'Intervención aplicada', rows: 4 },
+        { key: 'tasks', label: 'Tareas entre sesiones', rows: 3, required: true, hint: 'Tareas asignadas para practicar entre sesiones.' },
+        { key: 'rewards', label: 'Logros terapéuticos', rows: 3, required: true, hint: 'Evidencias de cambio o aprendizajes.' },
+        { key: 'monitoring', label: 'Monitoreo de resultados', rows: 3, required: true, hint: 'PHQ-9, GAD-7 u otra escala de seguimiento.' },
+      ],
+    },
   ],
   psychoanalytic: [
     FREE,
@@ -64,6 +78,18 @@ export const SESSION_NOTE_TEMPLATES: Record<SchoolType, NoteTemplate[]> = {
         { key: 'formations', label: 'Formaciones del inconsciente (sueños, actos fallidos, síntomas)', rows: 3 },
         { key: 'apres_coup', label: 'Lectura à après-coup', rows: 3 },
         { key: 'intervention', label: 'Intervención del analista', rows: 3 },
+      ],
+    },
+    {
+      id: 'psy_full',
+      name: 'Sesión completa (con seguimiento)',
+      description: 'Incluye Indicaciones de Trabajo, Hitos del Proceso y Evolución del Proceso (requeridos).',
+      fields: [
+        { key: 'material', label: 'Material asociativo / discurso', rows: 4 },
+        { key: 'transference', label: 'Vínculo transferencial', rows: 3 },
+        { key: 'tasks', label: 'Indicaciones de trabajo', rows: 3, required: true, hint: 'Encuadre, abstinencia, variaciones técnicas indicadas.' },
+        { key: 'rewards', label: 'Hitos del proceso', rows: 3, required: true, hint: 'Indicadores de elaboración o cambio estructural.' },
+        { key: 'monitoring', label: 'Evolución del proceso', rows: 3, required: true, hint: 'Lectura clínica longitudinal (RF-S, OQ-45, indicadores).' },
       ],
     },
   ],
@@ -81,6 +107,18 @@ export const SESSION_NOTE_TEMPLATES: Record<SchoolType, NoteTemplate[]> = {
         { key: 'task', label: 'Tarea / prescripción', rows: 3 },
       ],
     },
+    {
+      id: 'sys_full',
+      name: 'Sesión completa (con seguimiento)',
+      description: 'Incluye Prescripciones y Rituales, Cambios del Sistema y Cambio Relacional (requeridos).',
+      fields: [
+        { key: 'present', label: 'Asistentes y miembros presentes', rows: 2 },
+        { key: 'hypothesis', label: 'Hipótesis sistémica', rows: 3 },
+        { key: 'tasks', label: 'Prescripciones y rituales', rows: 3, required: true, hint: 'Tareas, rituales o prescripciones invariables asignadas al sistema.' },
+        { key: 'rewards', label: 'Cambios del sistema', rows: 3, required: true, hint: 'Reorganizaciones o cambios no lineales observados.' },
+        { key: 'monitoring', label: 'Cambio relacional', rows: 3, required: true, hint: 'FACES-IV, SCORE-15 u observación cualitativa.' },
+      ],
+    },
   ],
   humanistic: [
     FREE,
@@ -93,6 +131,18 @@ export const SESSION_NOTE_TEMPLATES: Record<SchoolType, NoteTemplate[]> = {
         { key: 'experience', label: 'Experiencia significativa en sesión', rows: 4 },
         { key: 'presence', label: 'Presencia del terapeuta / vínculo', rows: 3 },
         { key: 'meaning', label: 'Sentido construido por el consultante', rows: 3 },
+      ],
+    },
+    {
+      id: 'hum_full',
+      name: 'Sesión completa (con seguimiento)',
+      description: 'Incluye Invitaciones de Exploración, Celebración del Crecimiento y Proceso de Crecimiento (requeridos).',
+      fields: [
+        { key: 'focus', label: 'Foco vivencial / tema emergente', rows: 3 },
+        { key: 'experience', label: 'Experiencia significativa en sesión', rows: 4 },
+        { key: 'tasks', label: 'Invitaciones de exploración', rows: 3, required: true, hint: 'Experimentos o aperturas propuestas al consultante.' },
+        { key: 'rewards', label: 'Celebración del crecimiento', rows: 3, required: true, hint: 'Lo que ya existe y merece ser nombrado.' },
+        { key: 'monitoring', label: 'Proceso de crecimiento', rows: 3, required: true, hint: 'Ryff, SWLS, PIL u observación cualitativa.' },
       ],
     },
   ],
@@ -108,6 +158,17 @@ export const SESSION_NOTE_TEMPLATES: Record<SchoolType, NoteTemplate[]> = {
         { key: 'c', label: 'C · Consecuencia / reforzador', rows: 3 },
         { key: 'plan', label: 'Plan de modificación', rows: 4 },
         { key: 'task', label: 'Tarea entre sesiones', rows: 3 },
+      ],
+    },
+    {
+      id: 'beh_full',
+      name: 'Sesión completa (con seguimiento)',
+      description: 'Incluye Tareas Conductuales, Reforzadores de Logro y Datos de Intervención (requeridos).',
+      fields: [
+        { key: 'analysis', label: 'Análisis funcional', rows: 4 },
+        { key: 'tasks', label: 'Tareas conductuales', rows: 3, required: true, hint: 'Exposición, activación, contrato o autoregistro.' },
+        { key: 'rewards', label: 'Reforzadores de logro', rows: 3, required: true, hint: 'DRI/DRA, FCT, autoeficacia observada.' },
+        { key: 'monitoring', label: 'Datos de intervención', rows: 3, required: true, hint: 'Línea de base, A-B-A-B, CBCL, BRIEF.' },
       ],
     },
   ],
