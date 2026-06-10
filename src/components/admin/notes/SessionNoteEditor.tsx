@@ -94,6 +94,15 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   };
 
   const saveNow = async () => {
+    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+    if (missing.length > 0) {
+      toast({
+        title: 'Faltan campos requeridos',
+        description: `Completá: ${missing.map((m) => m.label).join(', ')}`,
+        variant: 'destructive',
+      });
+      throw new Error('missing-required-fields');
+    }
     const payload = buildPayload();
     const { error } = await supabase.from('sessions').update(payload).eq('id', session.id);
     if (error) throw error;
@@ -148,6 +157,15 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   }, [flush, onClose, onNavigate, onNew]);
 
   const handleExportPdf = async () => {
+    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+    if (missing.length > 0) {
+      toast({
+        title: 'Faltan campos requeridos',
+        description: `No se puede exportar. Completá: ${missing.map((m) => m.label).join(', ')}`,
+        variant: 'destructive',
+      });
+      return;
+    }
     await flush();
     exportSessionNotePdf({
       patientName,
@@ -243,13 +261,17 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
         <p className="text-xs text-muted-foreground italic">{template.description}</p>
         {template.fields.map((f) => (
           <div key={f.key} className="space-y-1.5">
-            <Label className="text-xs font-semibold">{f.label}</Label>
+            <Label className="text-xs font-semibold flex items-center gap-1">
+              {f.label}
+              {f.required && <span className="text-destructive" aria-label="requerido">*</span>}
+            </Label>
+            {f.hint && <p className="text-[10px] text-muted-foreground">{f.hint}</p>}
             <Textarea
               value={values[f.key] || ''}
               onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
               rows={f.rows || 3}
               placeholder={f.placeholder}
-              className="text-sm resize-y"
+              className={`text-sm resize-y ${f.required && !(values[f.key] || '').trim() ? 'border-destructive/40 focus-visible:ring-destructive/30' : ''}`}
             />
           </div>
         ))}
