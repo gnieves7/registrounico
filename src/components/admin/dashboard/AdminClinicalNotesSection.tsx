@@ -7,18 +7,23 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   NotebookPen, User, BookOpen, Handshake, Activity, Thermometer,
-  ArrowRight, Search, Loader2,
+  ArrowRight, Search, Loader2, Pin, Milestone, TrendingUp,
 } from "lucide-react";
 import { listPatients, type PatientLite } from "@/lib/adminPatients";
 import { useActiveSchool } from "@/hooks/useActiveSchool";
+import { MENU_BY_SCHOOL } from "@/config/menuBySchool";
 import { onAdminAction } from "@/lib/uiEvents";
 
-const tools = [
-  { title: "Psicobiografía", description: "Historia personal estructurada del paciente.", href: "/psychobiography", icon: User },
-  { title: "Mi Cuaderno", description: "Notas y reflexiones compartidas por el paciente.", href: "/notebook", icon: BookOpen },
-  { title: "Alianza terapéutica", description: "Vínculo, rupturas y reparación clínica.", href: "/therapeutic-alliance", icon: Handshake },
-  { title: "Línea de vida", description: "Eventos vitales y ventanas de vulnerabilidad.", href: "/life-timeline", icon: Activity },
-  { title: "Termómetro emocional", description: "Registro EMA del estado emocional diario.", href: "/emotional-thermometer", icon: Thermometer },
+type Tool = { id: string; fallbackTitle: string; description: string; href: string; icon: typeof User };
+const BASE_TOOLS: Tool[] = [
+  { id: "history",    fallbackTitle: "Psicobiografía",        description: "Historia personal estructurada del paciente.",        href: "/psychobiography",        icon: User },
+  { id: "notebook",   fallbackTitle: "Mi Cuaderno",           description: "Notas y reflexiones compartidas por el paciente.",     href: "/notebook",               icon: BookOpen },
+  { id: "alliance",   fallbackTitle: "Alianza terapéutica",   description: "Vínculo, rupturas y reparación clínica.",              href: "/therapeutic-alliance",   icon: Handshake },
+  { id: "timeline",   fallbackTitle: "Línea de vida",         description: "Eventos vitales y ventanas de vulnerabilidad.",        href: "/life-timeline",          icon: Activity },
+  { id: "emotional",  fallbackTitle: "Termómetro emocional",  description: "Registro EMA del estado emocional diario.",            href: "/emotional-thermometer",  icon: Thermometer },
+  { id: "tasks",      fallbackTitle: "Micro-tareas",          description: "Indicaciones de trabajo entre sesiones.",              href: "/micro-tasks",            icon: Pin },
+  { id: "rewards",    fallbackTitle: "Premios simbólicos",    description: "Hitos del proceso y logros del paciente.",             href: "/symbolic-awards",        icon: Milestone },
+  { id: "monitoring", fallbackTitle: "Monitoreo de resultados", description: "Evolución del proceso y escalas de seguimiento.",    href: "/outcome-monitoring",     icon: TrendingUp },
 ];
 
 const getInitials = (name: string | null) =>
@@ -26,7 +31,14 @@ const getInitials = (name: string | null) =>
 
 export function AdminClinicalNotesSection() {
   const navigate = useNavigate();
-  const { school } = useActiveSchool();
+  const { school, schoolId } = useActiveSchool();
+  const tools = useMemo(() => {
+    const menu = MENU_BY_SCHOOL[schoolId] ?? [];
+    return BASE_TOOLS.map((t) => {
+      const m = menu.find((x) => x.id === t.id);
+      return { ...t, title: m?.label ?? t.fallbackTitle };
+    });
+  }, [schoolId]);
   const [patients, setPatients] = useState<PatientLite[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");

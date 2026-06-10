@@ -1,68 +1,43 @@
+## Cambios por escuela y limpieza del panel
 
-# Independizar la app del flujo de autoregistro del paciente
+### A) Psicoanalítico — `src/config/menuBySchool.ts`
+Los labels que pediste ya están aplicados en el menú: `Historia del Sujeto`, `Cronología del Conflicto`, `Registro Afectivo`, `Vínculo Transferencial`, `Indicaciones de Trabajo`, `Hitos del Proceso`, `Evolución del Proceso`. **No hace falta renombrar nada en sidebar.**
 
-Objetivo: dejar esta app como herramienta clínica autónoma del profesional. El backend (Supabase) se mantiene intacto; solo se eliminan las superficies UI/rutas/triggers que servían al auto-registro y a la "app paciente".
+### B) Humanista — `src/config/menuBySchool.ts`
+- `Mi Historia de Vida` ✓ ya está
+- `Calidad del Encuentro` ✓ ya está
+- `Invitaciones de Exploración` ✓ ya está
+- `Celebración del Crecimiento` ✓ ya está
+- `Proceso de Crecimiento` ✓ ya está
+- `Diario de Experiencias` ✓ ya está (en `unconscious`)
+- **Renombrar**: `emotional` → `Registro de la Experiencia` (hoy "Registro Experiencial")
 
-## 1. Limpiar rutas y páginas orientadas al paciente
+### C) Sistémica — `src/config/menuBySchool.ts`
+- `Historia del Sistema`, `Línea del Sistema`, `Clima Relacional`, `Prescripciones y Rituales`, `Cambios del Sistema`, `Cambio Relacional` ✓ ya están
+- **Renombrar**: `alliance` → `Vínculo Sistémico` (hoy "Vínculo con el Sistema")
 
-En `src/App.tsx`:
-- Quitar las rutas y los `import`:
-  - `/paciente/privacidad` (`PatientPrivacy`)
-  - `/descargar` (`DescargarPdf`) — flujo del código de descarga para el paciente
-  - `/diagnostico-acceso` (`DiagnosticoAcceso`) — autodiagnóstico de acceso del paciente
-- Quitar el redirect `/pending-approval → /login` y eliminar la página `src/pages/PendingApproval.tsx` (ya no aplica: el profesional se autoriza por allowlist; si no está, ve el bloque "Acceso no autorizado" del Login actual).
-- Borrar archivos: `src/pages/PatientPrivacy.tsx`, `src/pages/DescargarPdf.tsx`, `src/pages/DiagnosticoAcceso.tsx`, `src/pages/PendingApproval.tsx`.
+### Incluir en Notas Clínicas (las 3 escuelas)
+En `src/components/admin/dashboard/AdminClinicalNotesSection.tsx`, ampliar la grilla `tools` para mostrar también, además de las actuales (Psicobiografía, Mi Cuaderno, Alianza, Línea de vida, Termómetro):
 
-Conservar `/admin/patient/:id` (`PatientWorkspace`) porque es la vista clínica que el profesional usa para leer la ficha del paciente — sigue siendo herramienta del profesional.
+- **Indicaciones de trabajo / Invitaciones de Exploración / Prescripciones y Rituales** → ruta `/micro-tasks`
+- **Hitos del Proceso / Celebración del Crecimiento / Cambios del Sistema** → ruta `/symbolic-awards`
+- **Evolución del Proceso / Proceso de Crecimiento / Cambio Relacional** → ruta `/outcome-monitoring`
 
-## 2. Quitar el widget flotante de paciente del layout
+Para que los títulos se adapten dinámicamente a la escuela activa, se leerán los `label` desde `MENU_BY_SCHOOL[schoolId]` por `id` (`tasks`, `rewards`, `monitoring`) usando `useActiveSchool()`, con fallback a los nombres genéricos para escuelas que no estén en la solicitud (CBT / Conductual).
 
-En `src/components/layout/AppLayout.tsx`:
-- Eliminar el `import` y el render de `<SessionProposalFloating />` (es un widget pensado para que el paciente acepte/decline propuestas de turno desde su app).
-- Borrar `src/components/patient/SessionProposalFloating.tsx` y `src/components/patient/SessionProposalWidget.tsx` si no se usan en otra superficie del profesional (verificar con `rg`).
+### E) Quitar la barra de navegación duplicada — `src/components/admin/AdminDashboardLayout.tsx`
+La cabecera ya muestra breadcrumbs (Workspace › Eje › Sección) y un dropdown "Acciones". Debajo hay además una **segunda barra** (`<nav aria-label="Ejes clínicos">` con los pills Reflexionar / Evaluar / Acompañar y sus secciones) que repite la misma información. 
 
-## 3. Eliminar el alta por email y los rastros de "patient" en el alta de usuarios
+- **Eliminar** ese bloque completo de pills (líneas ~424-465).
+- Los saltos entre secciones quedan disponibles mediante: breadcrumbs clicables, dropdown "Acciones", paleta `⌘K` y atajos `g+letra` (ya implementados).
+- Resultado: una sola fila de navegación, sin spans repetidos.
 
-En `src/hooks/useAuth.tsx`:
-- Quitar `signUpWithEmail` del contexto, su tipo y la implementación. El único login soportado queda Google (lo que ya hace `Login.tsx`).
-- Mantener `signInWithEmail` solo si alguna página lo usa; si no, quitarlo también (validar con `rg`).
+### Fuera de alcance
+- No se tocan los `tooltip`, contenidos clínicos por escuela, ni la lógica de permisos.
+- No se modifica la escuela CBT / Conductual (no incluidas en el pedido).
+- No hay cambios de backend ni de rutas.
 
-En la BD (migración):
-- Reescribir `public.handle_new_user()` para que:
-  - No inserte el rol `'patient'` en `user_roles`.
-  - No cree fila en `psychobiographies` para el nuevo usuario (esa tabla se crea sólo al cargar pacientes desde el workspace clínico).
-  - Sí mantenga el insert en `profiles` con `account_type='professional'` e `is_approved` desde `authorized_emails`, y la fila en `professional_subscriptions`.
-- No se eliminan tablas ni datos existentes (no se rompen pacientes ya cargados que use el profesional como fichas).
-
-## 4. Sacar referencias a "30 pacientes activos" del marketing interno
-
-En `src/pages/ProfessionalLanding.tsx`:
-- Reemplazar el plan que dice "Hasta 30 pacientes activos" por "Pacientes ilimitados" (la app es libre para el profesional una vez autorizado por el admin).
-- Revisar copy del hero/FAQ que insinúe "el paciente usa la app": dejar claro que es herramienta del profesional; los pacientes sólo aparecen como fichas/registros que él gestiona.
-
-## 5. Auditoría textual final
-
-Tras los cambios, correr `rg -n "PatientPrivacy|DescargarPdf|DiagnosticoAcceso|PendingApproval|SessionProposalFloating|signUpWithEmail"` para confirmar que no quedan imports/usos huérfanos. Si Telegram o notificaciones tenían rutas tipo `/paciente/...` codificadas (no detecté ninguna), redirigirlas al panel del profesional.
-
-## Fuera de alcance
-
-- No se cambia el branding ni los esquemas teóricos.
-- No se tocan Edge Functions de consentimientos/PDF: siguen disponibles porque el profesional puede emitir códigos para enviar archivos a un contacto, pero el endpoint público de "canje" ya no tiene página en esta app (si más adelante hace falta canjear códigos, se hace fuera de esta app).
-- No se borran tablas `psychobiographies`, `secure_pdf_codes`, etc., para preservar datos clínicos existentes.
-- No se modifican RLS más allá del trigger `handle_new_user`.
-
-## Detalle técnico (resumen)
-
-```text
-src/App.tsx                          ── borrar 4 rutas + imports
-src/components/layout/AppLayout.tsx  ── quitar SessionProposalFloating
-src/hooks/useAuth.tsx                ── quitar signUpWithEmail
-src/pages/ProfessionalLanding.tsx    ── ajustar copy de planes
-DB migration                         ── nueva versión de handle_new_user
-delete:
-  src/pages/PatientPrivacy.tsx
-  src/pages/DescargarPdf.tsx
-  src/pages/DiagnosticoAcceso.tsx
-  src/pages/PendingApproval.tsx
-  src/components/patient/SessionProposal*.tsx  (si no quedan usos)
-```
+### Archivos a editar
+1. `src/config/menuBySchool.ts` — 2 renames puntuales.
+2. `src/components/admin/dashboard/AdminClinicalNotesSection.tsx` — 3 tools nuevos con labels dinámicos por escuela.
+3. `src/components/admin/AdminDashboardLayout.tsx` — eliminar la `<nav>` de pills duplicada.
