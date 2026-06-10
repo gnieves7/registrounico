@@ -100,6 +100,22 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
     onSaved?.();
   };
 
+  const validateRequired = (): boolean => {
+    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+    if (missing.length === 0) return true;
+    toast({
+      title: 'Faltan campos requeridos',
+      description: `Completá: ${missing.map((m) => m.label).join(', ')}`,
+      variant: 'destructive',
+    });
+    return false;
+  };
+
+  const handleManualSave = async () => {
+    if (!validateRequired()) return;
+    await flush();
+  };
+
   const autosaveValue = useMemo(
     () => ({ templateId, values, date, time, topic, editable }),
     [templateId, values, date, time, topic, editable],
@@ -123,11 +139,13 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
       const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key.toLowerCase() === 's') {
         e.preventDefault();
+        if (!validateRequired()) return;
         void flush().then(() =>
           toast({ title: 'Guardado', description: 'Nota guardada manualmente.' }),
         );
       } else if (mod && e.key === 'Enter') {
         e.preventDefault();
+        if (!validateRequired()) return;
         void flush().then(() => onClose());
       } else if (mod && e.key === 'ArrowUp') {
         e.preventDefault();
@@ -148,6 +166,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   }, [flush, onClose, onNavigate, onNew]);
 
   const handleExportPdf = async () => {
+    if (!validateRequired()) return;
     await flush();
     exportSessionNotePdf({
       patientName,
@@ -243,13 +262,17 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
         <p className="text-xs text-muted-foreground italic">{template.description}</p>
         {template.fields.map((f) => (
           <div key={f.key} className="space-y-1.5">
-            <Label className="text-xs font-semibold">{f.label}</Label>
+            <Label className="text-xs font-semibold flex items-center gap-1">
+              {f.label}
+              {f.required && <span className="text-destructive" aria-label="requerido">*</span>}
+            </Label>
+            {f.hint && <p className="text-[10px] text-muted-foreground">{f.hint}</p>}
             <Textarea
               value={values[f.key] || ''}
               onChange={(e) => setValues((v) => ({ ...v, [f.key]: e.target.value }))}
               rows={f.rows || 3}
               placeholder={f.placeholder}
-              className="text-sm resize-y"
+              className={`text-sm resize-y ${f.required && !(values[f.key] || '').trim() ? 'border-destructive/40 focus-visible:ring-destructive/30' : ''}`}
             />
           </div>
         ))}
@@ -263,7 +286,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
           <FileDown className="h-3.5 w-3.5" />
           Exportar PDF
         </Button>
-        <Button size="sm" onClick={() => void flush()} className="gap-1.5 h-8">
+        <Button size="sm" onClick={() => void handleManualSave()} className="gap-1.5 h-8">
           <Save className="h-3.5 w-3.5" />
           Guardar
         </Button>

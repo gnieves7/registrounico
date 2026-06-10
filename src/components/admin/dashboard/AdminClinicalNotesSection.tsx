@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { SchoolSwitcher } from "@/components/SchoolSwitcher";
 import {
   NotebookPen, User, BookOpen, Handshake, Activity, Thermometer,
   ArrowRight, Search, Loader2, Pin, Milestone, TrendingUp,
@@ -14,16 +16,35 @@ import { useActiveSchool } from "@/hooks/useActiveSchool";
 import { MENU_BY_SCHOOL } from "@/config/menuBySchool";
 import { onAdminAction } from "@/lib/uiEvents";
 
-type Tool = { id: string; fallbackTitle: string; description: string; href: string; icon: typeof User };
-const BASE_TOOLS: Tool[] = [
-  { id: "history",    fallbackTitle: "Psicobiografía",        description: "Historia personal estructurada del paciente.",        href: "/psychobiography",        icon: User },
-  { id: "notebook",   fallbackTitle: "Mi Cuaderno",           description: "Notas y reflexiones compartidas por el paciente.",     href: "/notebook",               icon: BookOpen },
-  { id: "alliance",   fallbackTitle: "Alianza terapéutica",   description: "Vínculo, rupturas y reparación clínica.",              href: "/therapeutic-alliance",   icon: Handshake },
-  { id: "timeline",   fallbackTitle: "Línea de vida",         description: "Eventos vitales y ventanas de vulnerabilidad.",        href: "/life-timeline",          icon: Activity },
-  { id: "emotional",  fallbackTitle: "Termómetro emocional",  description: "Registro EMA del estado emocional diario.",            href: "/emotional-thermometer",  icon: Thermometer },
-  { id: "tasks",      fallbackTitle: "Micro-tareas",          description: "Indicaciones de trabajo entre sesiones.",              href: "/micro-tasks",            icon: Pin },
-  { id: "rewards",    fallbackTitle: "Premios simbólicos",    description: "Hitos del proceso y logros del paciente.",             href: "/symbolic-awards",        icon: Milestone },
-  { id: "monitoring", fallbackTitle: "Monitoreo de resultados", description: "Evolución del proceso y escalas de seguimiento.",    href: "/outcome-monitoring",     icon: TrendingUp },
+type Tool = { id: string; fallbackTitle: string; href: string; icon: typeof User };
+type ToolGroup = { id: string; label: string; tools: Tool[] };
+const TOOL_GROUPS: ToolGroup[] = [
+  {
+    id: "historia",
+    label: "Historia y vínculo",
+    tools: [
+      { id: "history",  fallbackTitle: "Psicobiografía",       href: "/psychobiography",       icon: User },
+      { id: "timeline", fallbackTitle: "Línea de vida",        href: "/life-timeline",         icon: Activity },
+      { id: "alliance", fallbackTitle: "Alianza terapéutica",  href: "/therapeutic-alliance",  icon: Handshake },
+    ],
+  },
+  {
+    id: "registros",
+    label: "Registros del paciente",
+    tools: [
+      { id: "notebook",  fallbackTitle: "Mi Cuaderno",          href: "/notebook",              icon: BookOpen },
+      { id: "emotional", fallbackTitle: "Termómetro emocional", href: "/emotional-thermometer", icon: Thermometer },
+    ],
+  },
+  {
+    id: "seguimiento",
+    label: "Indicaciones · Hitos · Evolución",
+    tools: [
+      { id: "tasks",      fallbackTitle: "Micro-tareas",            href: "/micro-tasks",         icon: Pin },
+      { id: "rewards",    fallbackTitle: "Premios simbólicos",      href: "/symbolic-awards",     icon: Milestone },
+      { id: "monitoring", fallbackTitle: "Monitoreo de resultados", href: "/outcome-monitoring",  icon: TrendingUp },
+    ],
+  },
 ];
 
 const getInitials = (name: string | null) =>
@@ -32,12 +53,14 @@ const getInitials = (name: string | null) =>
 export function AdminClinicalNotesSection() {
   const navigate = useNavigate();
   const { school, schoolId } = useActiveSchool();
-  const tools = useMemo(() => {
+  const groups = useMemo(() => {
     const menu = MENU_BY_SCHOOL[schoolId] ?? [];
-    return BASE_TOOLS.map((t) => {
-      const m = menu.find((x) => x.id === t.id);
-      return { ...t, title: m?.label ?? t.fallbackTitle };
-    });
+    const lookup = (id: string, fallback: string) =>
+      menu.find((x) => x.id === id)?.label ?? fallback;
+    return TOOL_GROUPS.map((g) => ({
+      ...g,
+      tools: g.tools.map((t) => ({ ...t, title: lookup(t.id, t.fallbackTitle) })),
+    }));
   }, [schoolId]);
   const [patients, setPatients] = useState<PatientLite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,41 +109,53 @@ export function AdminClinicalNotesSection() {
           <NotebookPen className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-lg font-semibold tracking-tight">Notas clínicas</h2>
-            <span
-              className="text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-0.5"
-              style={{ background: `${school.color}15`, color: school.color }}
-            >
-              Escuela activa · {school.name}
-            </span>
-          </div>
+          <h2 className="text-lg font-semibold tracking-tight">Notas clínicas</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Abrí la ficha del paciente para escribir, editar y exportar notas. Las plantillas sugeridas se adaptan a tu escuela.
+            Plantillas, registros y seguimiento se adaptan a tu escuela activa.
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span
+            className="hidden sm:inline text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-0.5"
+            style={{ background: `${school.color}15`, color: school.color }}
+          >
+            {school.name}
+          </span>
+          <SchoolSwitcher compact />
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        {tools.map((t) => (
-          <Card key={t.href} className="border-border hover:border-primary/40 transition-colors">
-            <CardContent className="p-4">
-              <Link to={t.href} className="flex items-start gap-3 group">
-                <div className="rounded-md bg-primary/10 p-2 shrink-0">
-                  <t.icon className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p className="text-sm font-semibold">{t.title}</p>
-                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
-                </div>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card className="border-border">
+        <CardContent className="p-2">
+          <Accordion type="multiple" defaultValue={["seguimiento"]} className="w-full">
+            {groups.map((g) => (
+              <AccordionItem key={g.id} value={g.id} className="border-b last:border-b-0">
+                <AccordionTrigger className="px-2 py-2.5 hover:no-underline">
+                  <span className="text-sm font-medium">{g.label}</span>
+                </AccordionTrigger>
+                <AccordionContent className="px-2 pb-2">
+                  <ul className="divide-y divide-border">
+                    {g.tools.map((t) => (
+                      <li key={t.href}>
+                        <Link
+                          to={t.href}
+                          className="flex items-center gap-3 py-2 px-1 hover:bg-muted/50 rounded-md transition-colors group"
+                        >
+                          <div className="rounded-md bg-primary/10 p-1.5 shrink-0">
+                            <t.icon className="h-3.5 w-3.5 text-primary" />
+                          </div>
+                          <span className="flex-1 text-sm">{(t as any).title}</span>
+                          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </CardContent>
+      </Card>
 
       {/* Patient search & list */}
       <Card className="border-border">
