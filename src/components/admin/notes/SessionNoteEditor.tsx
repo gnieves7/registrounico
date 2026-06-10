@@ -286,7 +286,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
           <FileDown className="h-3.5 w-3.5" />
           Exportar PDF
         </Button>
-        <Button size="sm" onClick={() => void flush()} className="gap-1.5 h-8">
+        <Button size="sm" onClick={() => void handleManualSave()} className="gap-1.5 h-8">
           <Save className="h-3.5 w-3.5" />
           Guardar
         </Button>
