@@ -94,19 +94,26 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   };
 
   const saveNow = async () => {
-    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
-    if (missing.length > 0) {
-      toast({
-        title: 'Faltan campos requeridos',
-        description: `Completá: ${missing.map((m) => m.label).join(', ')}`,
-        variant: 'destructive',
-      });
-      throw new Error('missing-required-fields');
-    }
     const payload = buildPayload();
     const { error } = await supabase.from('sessions').update(payload).eq('id', session.id);
     if (error) throw error;
     onSaved?.();
+  };
+
+  const validateRequired = (): boolean => {
+    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+    if (missing.length === 0) return true;
+    toast({
+      title: 'Faltan campos requeridos',
+      description: `Completá: ${missing.map((m) => m.label).join(', ')}`,
+      variant: 'destructive',
+    });
+    return false;
+  };
+
+  const handleManualSave = async () => {
+    if (!validateRequired()) return;
+    await flush();
   };
 
   const autosaveValue = useMemo(
@@ -132,11 +139,13 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
       const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key.toLowerCase() === 's') {
         e.preventDefault();
+        if (!validateRequired()) return;
         void flush().then(() =>
           toast({ title: 'Guardado', description: 'Nota guardada manualmente.' }),
         );
       } else if (mod && e.key === 'Enter') {
         e.preventDefault();
+        if (!validateRequired()) return;
         void flush().then(() => onClose());
       } else if (mod && e.key === 'ArrowUp') {
         e.preventDefault();
@@ -157,15 +166,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   }, [flush, onClose, onNavigate, onNew]);
 
   const handleExportPdf = async () => {
-    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
-    if (missing.length > 0) {
-      toast({
-        title: 'Faltan campos requeridos',
-        description: `No se puede exportar. Completá: ${missing.map((m) => m.label).join(', ')}`,
-        variant: 'destructive',
-      });
-      return;
-    }
+    if (!validateRequired()) return;
     await flush();
     exportSessionNotePdf({
       patientName,
