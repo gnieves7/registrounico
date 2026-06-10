@@ -38,7 +38,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 
 export type AdminSection =
   | "dashboard"
@@ -204,11 +203,6 @@ export function AdminDashboardLayout({
   const activeLabel = SECTION_LABELS[activeSection] ?? "Panel";
   const isHome = activeSection === "dashboard";
   const activeGroup = findGroup(activeSection);
-
-  // Filter nav groups by role
-  const visibleGroups = NAV_GROUPS
-    .map((g) => ({ ...g, items: g.items.filter((i) => canAccessSection(i.key, role)) }))
-    .filter((g) => g.items.length > 0);
 
   // Contextual primary action by section
   const CONTEXT_ACTION: Partial<Record<AdminSection, { label: string; event: Parameters<typeof emitAdminAction>[0]; icon: typeof Plus }>> = {
