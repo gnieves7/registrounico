@@ -19,6 +19,8 @@ import {
   parseStoredNote,
   serializeNote,
   plainTextFromNote,
+  equivalentTemplateInSchool,
+  getMissingRequiredFields,
   type NoteTemplate,
 } from '@/data/sessionNoteTemplates';
 import { exportSessionNotePdf } from '@/lib/sessionNotePdf';
@@ -46,11 +48,13 @@ interface Props {
 export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNavigate, onNew }: Props) {
   const { profile } = useAuth();
   const { schoolId, school } = useActiveSchool();
-  const [noteSchoolId, setNoteSchoolId] = useState<SchoolType>(schoolId);
+  // Each note carries its own school marker, so reopening shows the right labels/fields.
+  const parsedInit = useMemo(() => parseStoredNote(session.clinical_notes), [session.id]);
+  const [noteSchoolId, setNoteSchoolId] = useState<SchoolType>(parsedInit.schoolId ?? schoolId);
   const activeSchool = SCHOOL_CONFIG[noteSchoolId];
   const templates = useMemo(() => getTemplatesForSchool(noteSchoolId), [noteSchoolId]);
 
-  const parsed = useMemo(() => parseStoredNote(session.clinical_notes), [session.id]);
+  const parsed = parsedInit;
   // For new/empty notes, default to the school-specific template (templates[1]) instead of 'free'.
   const hasContent = !!(session.clinical_notes && session.clinical_notes.trim());
   const explicitTemplate = templates.find((t) => t.id === parsed.templateId);
@@ -74,6 +78,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   // Sync when session changes
   useEffect(() => {
     const p = parseStoredNote(session.clinical_notes);
+    if (p.schoolId) setNoteSchoolId(p.schoolId);
     setTemplateId(p.templateId);
     setValues(p.values);
     setTopic(session.topic || '');
@@ -84,7 +89,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   }, [session.id]);
 
   const buildPayload = () => {
-    const body = serializeNote(templateId, template, values);
+    const body = serializeNote(templateId, template, values, noteSchoolId);
     return {
       session_date: `${date}T${time}:00`,
       topic: topic.trim() || null,
@@ -101,7 +106,7 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
   };
 
   const validateRequired = (): boolean => {
-    const missing = template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+    const missing = getMissingRequiredFields(template, values);
     if (missing.length === 0) return true;
     toast({
       title: 'Faltan campos requeridos',
@@ -210,10 +215,10 @@ export function SessionNoteEditor({ session, patientName, onClose, onSaved, onNa
             value={noteSchoolId}
             onChange={(id) => {
               setNoteSchoolId(id);
-              const tpls = getTemplatesForSchool(id);
-              if (!tpls.some((t) => t.id === templateId)) {
-                setTemplateId(tpls[0]?.id || 'free');
-              }
+              // Re-map template so labels of Indicaciones/Hitos/Evolución update
+              // for the new school without losing the captured content.
+              const nextId = equivalentTemplateInSchool(templateId, id);
+              if (nextId !== templateId) setTemplateId(nextId);
             }}
           />
           <Label className="text-[11px] text-muted-foreground">Plantilla ({activeSchool.name}):</Label>
