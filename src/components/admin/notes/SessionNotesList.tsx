@@ -120,7 +120,10 @@ export function SessionNotesList({ userId, patientName }: Props) {
 
   const handleQuickExport = (s: SessionRow) => {
     const parsed = parseStoredNote(s.clinical_notes);
-    const templates = getTemplatesForSchool(schoolId);
+    // Use the school that was active when the note was written so the exported
+    // labels match what the professional sees inside the editor.
+    const noteSchool = parsed.schoolId ?? schoolId;
+    const templates = getTemplatesForSchool(noteSchool);
     const template = templates.find((t) => t.id === parsed.templateId) || templates[0];
     exportSessionNotePdf({
       patientName,
