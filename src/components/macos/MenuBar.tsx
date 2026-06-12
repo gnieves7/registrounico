@@ -7,7 +7,7 @@ import {
   DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { NotificationCenter } from "@/components/layout/NotificationCenter";
-import { Apple, Moon, Sun, LogOut, User, Settings, FileText, NotebookPen, Calendar, FolderOpen, Brain } from "lucide-react";
+import { Moon, Sun, LogOut, User, Settings, FileText, NotebookPen, Calendar, FolderOpen, Brain } from "lucide-react";
 import { applySystemTheme, setStoredSystemArea, type SystemArea } from "@/lib/systemBranding";
 
 const formatTime = (d: Date) =>
