@@ -47,6 +47,7 @@ import Suggestions from "./pages/Suggestions";
 import SimplePanel from "./pages/SimplePanel";
 import PatientWorkspace from "./pages/PatientWorkspace";
 import SchoolSelection from "./pages/SchoolSelection";
+import Finder from "./pages/Finder";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
               <Route element={<ProfessionalAccessGate><AppLayout /></ProfessionalAccessGate>}>
                 <Route path="/profesional/escuela" element={<SchoolSelection />} />
                 <Route path="/dashboard" element={<DashboardHome />} />
+                <Route path="/finder" element={<ProfessionalOnlyRoute><Finder /></ProfessionalOnlyRoute>} />
                 <Route path="/psychobiography" element={<ProfessionalOnlyRoute><Psychobiography /></ProfessionalOnlyRoute>} />
                 <Route path="/psychodiagnostic" element={<ProfessionalOnlyRoute><Psychodiagnostic /></ProfessionalOnlyRoute>} />
                 <Route path="/reflexionar/informed-consent" element={<ProfessionalOnlyRoute><ReflexionarInformedConsent /></ProfessionalOnlyRoute>} />
