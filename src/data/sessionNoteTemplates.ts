@@ -178,19 +178,73 @@ export function getTemplatesForSchool(school: SchoolType): NoteTemplate[] {
   return SESSION_NOTE_TEMPLATES[school] ?? [FREE];
 }
 
+/** Per-school id of the "Sesión completa" template (the one with required tracking fields). */
+export const FULL_TEMPLATE_BY_SCHOOL: Record<SchoolType, string> = {
+  cognitive_behavioral: 'cbt_full',
+  psychoanalytic: 'psy_full',
+  systemic: 'sys_full',
+  humanistic: 'hum_full',
+  behavioral: 'beh_full',
+};
+
+const ALL_FULL_IDS = new Set(Object.values(FULL_TEMPLATE_BY_SCHOOL));
+
+/**
+ * Returns the templateId that best matches the current note when its school changes.
+ * - 'free' stays 'free'
+ * - any *_full template maps to the new school's *_full (so labels of
+ *   Indicaciones/Hitos/Evolución update without losing content, since all *_full
+ *   templates share the keys `tasks`, `rewards`, `monitoring`).
+ * - otherwise returns the first available template id for the new school.
+ */
+export function equivalentTemplateInSchool(currentTemplateId: string, newSchool: SchoolType): string {
+  if (currentTemplateId === 'free') return 'free';
+  if (ALL_FULL_IDS.has(currentTemplateId)) return FULL_TEMPLATE_BY_SCHOOL[newSchool];
+  const tpls = getTemplatesForSchool(newSchool);
+  if (tpls.some((t) => t.id === currentTemplateId)) return currentTemplateId;
+  return tpls[0]?.id ?? 'free';
+}
+
+/** Returns the list of required fields that are missing/empty for a given template. */
+export function getMissingRequiredFields(
+  template: NoteTemplate,
+  values: Record<string, string>,
+): NoteTemplateField[] {
+  return template.fields.filter((f) => f.required && !(values[f.key] || '').trim());
+}
+
 const TEMPLATE_MARKER_RE = /^<!--\s*template:\s*([a-z0-9_-]+)\s*-->/i;
+const SCHOOL_MARKER_RE = /<!--\s*school:\s*([a-z_]+)\s*-->/i;
+
+const VALID_SCHOOLS: SchoolType[] = [
+  'cognitive_behavioral',
+  'psychoanalytic',
+  'systemic',
+  'humanistic',
+  'behavioral',
+];
 
 export function parseStoredNote(content: string | null | undefined): {
   templateId: string;
+  schoolId: SchoolType | null;
   values: Record<string, string>;
   raw: string;
 } {
-  if (!content) return { templateId: 'free', values: { notes: '' }, raw: '' };
+  if (!content) return { templateId: 'free', schoolId: null, values: { notes: '' }, raw: '' };
   const trimmed = content.trimStart();
-  const m = trimmed.match(TEMPLATE_MARKER_RE);
-  if (!m) return { templateId: 'free', values: { notes: content }, raw: content };
+  const schoolMatch = trimmed.match(SCHOOL_MARKER_RE);
+  const schoolId =
+    schoolMatch && (VALID_SCHOOLS as string[]).includes(schoolMatch[1])
+      ? (schoolMatch[1] as SchoolType)
+      : null;
+  // Strip both markers (in any order) before parsing the body.
+  const stripped = trimmed
+    .replace(SCHOOL_MARKER_RE, '')
+    .replace(/^\s+/, '');
+  const m = stripped.match(TEMPLATE_MARKER_RE);
+  if (!m) return { templateId: 'free', schoolId, values: { notes: content }, raw: content };
   const templateId = m[1];
-  const body = trimmed.slice(m[0].length).trimStart();
+  const body = stripped.slice(m[0].length).trimStart();
   const values: Record<string, string> = {};
   // Split by "## key — label" headings; we store keys to be robust.
   const parts = body.split(/^##\s+\[([a-z0-9_]+)\][^\n]*\n/im);
@@ -203,11 +257,17 @@ export function parseStoredNote(content: string | null | undefined): {
   if (Object.keys(values).length === 0) {
     values.notes = body;
   }
-  return { templateId, values, raw: content };
+  return { templateId, schoolId, values, raw: content };
 }
 
-export function serializeNote(templateId: string, template: NoteTemplate, values: Record<string, string>): string {
-  const header = `<!-- template: ${templateId} -->\n`;
+export function serializeNote(
+  templateId: string,
+  template: NoteTemplate,
+  values: Record<string, string>,
+  schoolId?: SchoolType | null,
+): string {
+  const schoolMarker = schoolId ? `<!-- school: ${schoolId} -->\n` : '';
+  const header = `${schoolMarker}<!-- template: ${templateId} -->\n`;
   if (templateId === 'free') {
     return header + (values.notes || '').trim();
   }
