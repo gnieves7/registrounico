@@ -2,25 +2,27 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Footer from "@/components/layout/Footer";
 import {
-  ShieldCheck, LogOut, ArrowRight, Lock, Stethoscope, Mail,
-  Moon, Sun, Loader2, AlertTriangle,
+  ShieldCheck, LogOut, ArrowRight, Lock, Mail, Loader2, AlertTriangle, Wifi, Battery, Search,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { PsiLogo } from "@/components/ui/PsiLogo";
 import { applySystemTheme } from "@/lib/systemBranding";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type AccessState = "checking" | "ok" | "blocked";
 
 const Login = () => {
   const { user, isLoading, isApproved, isAdmin, signInWithGoogle, signOut } = useAuth();
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
   const [access, setAccess] = useState<AccessState>("checking");
   const [signingIn, setSigningIn] = useState(false);
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
 
   // Verifica si el email del usuario está autorizado
   useEffect(() => {
@@ -67,12 +69,6 @@ const Login = () => {
     }
   }, [user, isLoading, isApproved, isAdmin, access, navigate]);
 
-  const toggleDark = () => {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-  };
-
   const handleGoogleLogin = async () => {
     setSigningIn(true);
     try {
@@ -92,8 +88,8 @@ const Login = () => {
   // ── Loading global ──
   if (isLoading || (user && access === "checking")) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="mac-lockscreen flex min-h-screen items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-[var(--mac-cream)]" />
       </div>
     );
   }
@@ -101,37 +97,36 @@ const Login = () => {
   // ── Email no autorizado por el admin ──
   if (user && access === "blocked") {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="mac-lockscreen flex min-h-screen flex-col">
         <main className="flex flex-1 items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center shadow-lg">
+          <div className="mac-glass w-full max-w-md rounded-2xl p-8 text-center text-[var(--mac-cream)]">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
               <AlertTriangle className="h-7 w-7 text-destructive" />
             </div>
-            <h1 className="mb-2 font-serif text-2xl font-bold text-foreground">
+            <h1 className="mb-2 font-serif text-2xl font-bold">
               Acceso no autorizado
             </h1>
-            <p className="mb-3 text-sm text-muted-foreground">
-              El email <strong className="text-foreground">{user.email}</strong> no está
+            <p className="mb-3 text-sm opacity-90">
+              El email <strong>{user.email}</strong> no está
               habilitado para ingresar a la plataforma.
             </p>
-            <p className="mb-6 text-sm text-muted-foreground">
+            <p className="mb-6 text-sm opacity-80">
               Solicitá acceso al administrador del sistema para que pre-autorice tu cuenta.
             </p>
             <a
               href="mailto:ghnieves14@gmail.com?subject=Solicitud%20de%20acceso%20a%20.PSI."
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--mac-gold)] px-4 py-2.5 text-sm font-semibold text-[var(--mac-borravino)] transition-opacity hover:opacity-90"
             >
               <Mail className="h-4 w-4" /> Solicitar acceso al administrador
             </a>
             <button
               onClick={() => signOut()}
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-80"
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/30 px-4 py-2.5 text-sm font-semibold text-[var(--mac-cream)] transition-opacity hover:bg-white/10"
             >
               <LogOut className="h-4 w-4" /> Cerrar sesión
             </button>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -139,107 +134,98 @@ const Login = () => {
   // ── Email autorizado pero pendiente de aprobación ──
   if (user && access === "ok" && !isApproved && !isAdmin) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className="mac-lockscreen flex min-h-screen flex-col">
         <main className="flex flex-1 items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center shadow-lg">
+          <div className="mac-glass w-full max-w-md rounded-2xl p-8 text-center text-[var(--mac-cream)]">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-              <ShieldCheck className="h-7 w-7 text-primary" />
+              <ShieldCheck className="h-7 w-7 text-[var(--mac-gold)]" />
             </div>
-            <h1 className="mb-2 font-serif text-2xl font-bold text-foreground">
+            <h1 className="mb-2 font-serif text-2xl font-bold">
               Acceso pendiente de autorización
             </h1>
-            <p className="mb-6 text-sm text-muted-foreground">
+            <p className="mb-6 text-sm opacity-90">
               Tu solicitud fue recibida. El administrador revisará tu cuenta y te
               habilitará en breve. Te avisaremos cuando puedas ingresar.
             </p>
             <button
               onClick={() => signOut()}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-opacity hover:opacity-80"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/30 px-4 py-2.5 text-sm font-semibold transition-opacity hover:bg-white/10"
             >
               <LogOut className="h-4 w-4" /> Cerrar sesión
             </button>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
 
-  // ── Pantalla pública de login ──
+  // ── Lock screen estilo macOS ──
+  const timeStr = now.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit", hour12: false });
+  const dateStr = now.toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" });
+
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <button
-        onClick={toggleDark}
-        className="fixed right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-transform hover:scale-105"
-        aria-label="Alternar modo oscuro"
-      >
-        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      </button>
+    <div className="mac-lockscreen relative flex min-h-screen flex-col text-[var(--mac-cream)]">
+      {/* faux menu bar */}
+      <div className="flex items-center justify-between px-4 py-1.5 text-[12px] opacity-90">
+        <div className="flex items-center gap-3">
+          <span className="font-serif font-semibold tracking-wide" style={{ color: "var(--mac-gold)" }}>.PSI.</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <Wifi className="h-3.5 w-3.5" />
+          <Battery className="h-3.5 w-3.5" />
+          <Search className="h-3.5 w-3.5" />
+          <span>{now.toLocaleString("es-AR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+        </div>
+      </div>
 
-      <main className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md space-y-8 animate-fade-in">
-          <div className="text-center">
-            <PsiLogo size="2xl" />
-            <p className="mt-3 text-xs font-medium uppercase tracking-[0.18em] text-primary">
-              Plataforma de Sistemas Interactivos
-            </p>
-          </div>
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
+        {/* Hora y fecha */}
+        <div className="mb-12 text-center mac-unlock-in">
+          <div className="font-serif text-7xl font-light leading-none tracking-tight md:text-8xl">{timeStr}</div>
+          <div className="mt-3 text-base capitalize opacity-90 md:text-lg">{dateStr}</div>
+        </div>
 
-          <div className="rounded-xl border border-border bg-card p-8 shadow-xl">
-            <div className="mb-6 text-center">
-              <span className="inline-block rounded-md bg-primary/10 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-[1.2px] text-primary">
-                Acceso exclusivo
-              </span>
-              <h1 className="mt-3 font-serif text-2xl font-bold leading-tight text-foreground">
-                Profesional de la salud mental
-              </h1>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Plataforma reservada para psicólogos/as y profesionales acreditados.
-                El ingreso se realiza con tu cuenta de Google previamente autorizada
-                por el administrador.
-              </p>
-            </div>
+        {/* Avatar + acceso */}
+        <div className="flex flex-col items-center gap-5 mac-unlock-in">
+          <Avatar className="h-24 w-24 ring-4 ring-white/25 shadow-2xl">
+            <AvatarImage src="" />
+            <AvatarFallback className="bg-[var(--mac-borravino)] font-serif text-2xl text-[var(--mac-gold)]">PSI</AvatarFallback>
+          </Avatar>
 
-            <button
-              onClick={handleGoogleLogin}
-              disabled={signingIn}
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
-              {signingIn ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Stethoscope className="h-4 w-4" />
-              )}
-              Ingresar con Google
-              <ArrowRight className="h-4 w-4" />
-            </button>
+          <PsiLogo size="md" color="#F5EFE6" />
+          <p className="text-xs uppercase tracking-[0.22em] opacity-80">Mi Práctica · Profesional</p>
 
-            <div className="mt-6 flex items-start gap-2 border-t border-border pt-4">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-              <p className="text-[11px] leading-relaxed text-muted-foreground">
-                Al ingresar aceptás nuestra{" "}
-                <Link to="/privacy-policy" className="font-medium text-primary underline">
-                  Política de Privacidad
-                </Link>{" "}
-                y el cumplimiento de la Ley N° 25.326. Tu email debe estar
-                pre-autorizado por el administrador para ingresar.
-              </p>
-            </div>
-          </div>
+          <button
+            onClick={handleGoogleLogin}
+            disabled={signingIn}
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[var(--mac-cream)] px-7 py-2.5 text-sm font-semibold text-[var(--mac-borravino)] shadow-lg transition-transform hover:scale-[1.03] disabled:opacity-60"
+          >
+            {signingIn ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Lock className="h-4 w-4" />
+            )}
+            Acceder con Google
+            <ArrowRight className="h-4 w-4" />
+          </button>
 
-          <p className="text-center text-xs text-muted-foreground">
-            ¿No tenés acceso?{" "}
-            <a
-              href="mailto:ghnieves14@gmail.com?subject=Solicitud%20de%20acceso%20a%20.PSI."
-              className="font-semibold text-primary underline"
-            >
-              Solicitalo al administrador
-            </a>
+          <p className="mt-4 max-w-xs text-center text-[11px] leading-relaxed opacity-75">
+            Acceso exclusivo para psicólogos/as autorizados. Al ingresar aceptás nuestra{" "}
+            <Link to="/privacy-policy" className="underline decoration-[var(--mac-gold)] underline-offset-2">Política de Privacidad</Link>.
           </p>
+
+          <a
+            href="mailto:ghnieves14@gmail.com?subject=Solicitud%20de%20acceso%20a%20.PSI."
+            className="mt-1 text-[11px] underline decoration-white/40 underline-offset-2 opacity-80 hover:opacity-100"
+          >
+            ¿No tenés acceso? Solicitalo al administrador
+          </a>
         </div>
       </main>
 
-      <Footer />
+      <div className="pb-4 text-center text-[11px] opacity-60">
+        <span className="rounded-full border border-white/15 px-3 py-1">Pulsá para desbloquear</span>
+      </div>
     </div>
   );
 };
