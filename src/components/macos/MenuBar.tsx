@@ -7,7 +7,7 @@ import {
   DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { NotificationCenter } from "@/components/layout/NotificationCenter";
-import { Apple, Moon, Sun, LogOut, User, Settings, FileText, NotebookPen, Calendar, FolderOpen, Brain } from "lucide-react";
+import { Moon, Sun, LogOut, User, Settings, FileText, NotebookPen, Calendar, FolderOpen, Brain } from "lucide-react";
 import { applySystemTheme, setStoredSystemArea, type SystemArea } from "@/lib/systemBranding";
 
 const formatTime = (d: Date) =>
@@ -44,7 +44,6 @@ export function MacMenuBar() {
       {/* Apple-style logo (PSI) */}
       <DropdownMenu>
         <DropdownMenuTrigger className="mac-menu-item flex h-6 items-center gap-1 font-semibold" style={{ color: "var(--mac-gold)" }}>
-          <Apple className="h-3.5 w-3.5" />
           <span className="font-serif tracking-wider">.PSI.</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-56">
